@@ -26,8 +26,15 @@ require_codex() {
   fi
 }
 
+run_codex() {
+  (
+    cd "$HOME"
+    codex "$@"
+  )
+}
+
 marketplace_exists() {
-  codex plugin marketplace list 2>/dev/null | awk 'NR > 1 {print $1}' | grep -Fxq "$marketplace"
+  run_codex plugin marketplace list 2>/dev/null | awk 'NR > 1 {print $1}' | grep -Fxq "$marketplace"
 }
 
 installed_root() {
@@ -40,19 +47,28 @@ installed_root() {
 
 install_or_update() {
   require_codex
-  if [ "$marketplace" != "$legacy_marketplace" ] \
-    && codex plugin marketplace list 2>/dev/null | awk 'NR > 1 {print $1}' | grep -Fxq "$legacy_marketplace"; then
-    codex plugin remove "$plugin@$legacy_marketplace" >/dev/null 2>&1 || true
-    codex plugin marketplace remove "$legacy_marketplace" --json >/dev/null 2>&1 || true
+  if [ "$marketplace" != "$legacy_marketplace" ]; then
+    # Remove the historical development registration by its config key. Its
+    # local manifest may already advertise the new marketplace name, so the
+    # human-readable marketplace list is not reliable for detecting it.
+    run_codex plugin remove "$plugin@$legacy_marketplace" >/dev/null 2>&1 || true
+    run_codex plugin marketplace remove "$legacy_marketplace" --json >/dev/null 2>&1 || true
   fi
   if marketplace_exists; then
-    codex plugin marketplace upgrade "$marketplace" --json >/dev/null
+    # A previous development install may use the same marketplace name but
+    # still point at a local checkout. `upgrade` only accepts Git-backed
+    # marketplaces, so replace a non-Git source with the canonical GitHub one.
+    if ! run_codex plugin marketplace upgrade "$marketplace" --json >/dev/null 2>&1; then
+      run_codex plugin remove "$plugin@$marketplace" >/dev/null 2>&1 || true
+      run_codex plugin marketplace remove "$marketplace" --json >/dev/null 2>&1 || true
+      run_codex plugin marketplace add "$source" --ref "$ref" --json >/dev/null
+    fi
   else
-    codex plugin marketplace add "$source" --ref "$ref" --json >/dev/null
+    run_codex plugin marketplace add "$source" --ref "$ref" --json >/dev/null
   fi
 
   local result
-  result="$(codex plugin add "$plugin@$marketplace" --json)"
+  result="$(run_codex plugin add "$plugin@$marketplace" --json)"
   printf '%s\n' "$result"
 
   local root
@@ -81,9 +97,9 @@ case "${1:-}" in
   status)
     require_codex
     echo "-- marketplace --"
-    codex plugin marketplace list | awk -v name="$marketplace" 'NR == 1 || $1 == name'
+    run_codex plugin marketplace list | awk -v name="$marketplace" 'NR == 1 || $1 == name'
     echo "-- plugin --"
-    codex plugin list | awk -v id="$plugin@$marketplace" 'index($0,id) {print}'
+    run_codex plugin list | awk -v id="$plugin@$marketplace" 'index($0,id) {print}'
     root="$(installed_root || true)"
     if [ -n "$root" ]; then
       echo "-- installed cache --"
