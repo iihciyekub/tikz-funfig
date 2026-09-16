@@ -1,0 +1,136 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames, svgnames, x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.5}
+\pgfplotsset{width=10cm,compat=1.16}
+\newcommand{\fz}[1]{\fontsize{#1 pt}{0.001mm}\selectfont}
+\usepackage{pgfkeys}
+
+\usetikzlibrary{calc,arrows.meta,positioning,intersections}
+\begin{document}
+	\begin{tikzpicture}
+		
+		\begin{axis}[smooth,
+		axis line shift=6.5pt, grid=major,grid style={gray!24,opacity = 0.4,line width=0.02pt},
+		title style ={ align = left ,font = \fz{10pt}},
+		title={$ p = 10, c = 4, s = 3,w = 6,B = 100, r = 0.05$\\$ \mu = 100, \sigma = 100$},
+			xlabel={\fz{10}Acceptable Bankruptcy Risk: $\large \alpha$},
+		ylabel={\fz{10}Order Quantity Set: $\large \tilde{q}^{c} \in \{\tilde{q}_s ,\tilde{q}_t\}$},
+		xtick={0,0.125,0.206667, 0.5, 0.828571428571429, 1},
+		xmin =0,xmax=1,
+		ymin =-100,ymax=453.05,
+		ytick={-100,0,100,194,453.05},
+		legend style={
+			at={(4cm,19.2463cm)},
+			anchor=west,cells={anchor=west},font=\footnotesize,
+		}
+		]		
+
+		\legend{$F^{-1}(\alpha)$,,
+			$\tilde{q}_{t}=\frac{(p-s) F^{-1}(\alpha)+B(1+r)}{c(1+r)-s}$,,
+			$\tilde{q}_{s}=F^{-1}\left(\frac{p-c(1+r)}{p-s}\right)$};
+
+
+		\fill [fill=MistyRose,opacity=0.38]  (0.125,0) rectangle (0.206,194);
+
+		\node at(0.11,111) [rotate = 90,inner sep = 0pt,font=\fz{2pt},] {$\tilde{q}^c$ increasing area};
+
+
+
+
+		% alpha
+		\addplot [black,opacity =0.2,line width =0.5pt] table {inverse(CDF)};
+		% qt
+		\addplot [blue!80!red,opacity=0.53,line width=0.7pt,dash dot] table {qt};
+		\addplot [blue!80!red,line width=1.35pt] table {qt_e};
+%		
+		% qs0	0.828571428571429	194.853504082664
+		\addplot[red,opacity=0.53,line width=0.7pt,dash dot] coordinates {(0,194.853504082664) (0.828571428571429,194.853504082664)};
+		\addplot[red,line width=1.35pt] coordinates {(0.828571428571429,194.853504082664) (1,194.853504082664)};
+		\draw[red,line width=1.35pt](0.206667,194.853504082664)--(1,194.853504082664);
+%		
+%		% qs=qt
+		\coordinate (a) at (0.206667,194.853504082664);
+			\draw[fill=white,draw = black!70] (a) circle (0.7mm) ;	
+		\node (n1) at ($(a)+(22mm,7.5mm)$) {\fz{8pt}$( \alpha ,\tilde{q}_t,\tilde{q}_s ) = (0.206,194,194) $};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--($(a)+(-0.4mm,0.4mm)$);
+	
+		
+		
+		
+		\coordinate (c) at (0.12333333333333334,	-0.8);
+		\draw[fill=Bisque,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c)+(2.8mm,-6.5mm)$) {
+		$ ( \alpha ,\tilde{q}_t ) =(0.125,	0)$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);	
+		
+	
+		
+		\coordinate (c) at (0.828571428571429,	194.853504082664);	
+		\draw[fill=DarkSalmon,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c)+(-13.98mm,-8.5mm)$) {
+		$ ( \alpha ,\tilde{q}_s ) =(0.828,194)$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);	
+		
+		
+		\coordinate (c) at (0.828571428571429,	-360);	
+		\draw[fill=DarkSalmon,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{7pt}] (n1) at ($(c)+(-2.8mm,-6.5mm)$) {
+		$ (0.83,194)$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);	
+		
+	
+		
+		\coordinate (c) at (0.828571428571429,	-100);	
+		\draw[fill=DarkSalmon,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{7pt}] (n1) at ($(c)+(-16.mm,6.5mm)$) {
+		$ \frac{p-c(1+r)}{p-s} = 0.828 $
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);	
+		
+	
+		
+		
+		
+%		
+%		\draw[fill]  (b1)  circle (0.4mm) ;
+%		\draw[dashed,opacity =0.4](b) --(0.828571428571429,-380);
+%		\node (n2) at (0.9,-255) {\fz{10pt}$ \frac{p-c(1+r)}{p-s} $};
+%	
+%		
+	
+		
+		% M
+		\coordinate[label=90:{\fz{8pt}M}] (c) at (0.5,100);
+		\draw[fill=OrangeRed,draw = black!70] (c) circle (0.7mm) ;
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+%		
+%		
+%		
+		% 
+		\coordinate (b) at(0.828571428571429,	194.853504082664);	
+ 
+		\coordinate (b1) at(0.828571428571429,-360);
+ 
+			
+	\end{axis}
+\end{tikzpicture}
+\end{document}

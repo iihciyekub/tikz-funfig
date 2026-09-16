@@ -1,0 +1,21 @@
+\documentclass[dvipsnames,svgnames,x11names,margin=3pt]{standalone}
+\usepackage{tikz,pgfplots,xparse,pgfmath,pgffor}
+\pgfplotsset{compat = 1.18,width=10cm,height=10cm}
+ 
+\begin{document}\begin{tikzpicture}
+
+
+\begin{axis}[colorbar]
+    
+\addplot+ [
+    mesh,no markers,nodes near coords,
+    % none | expression | x | y | z | f(x) | explicit | explicit symbolic
+    % e colorbar 时 必须指定数值类型的数据列
+    point meta= {\thisrow{x1} + y},
+    % 获取 meta 的数值或符号,必须有 meta
+    % point meta = explicit symbolic,
+] table [x = x ,y = y,meta = x1]  {z.data.dat};
+
+\end{axis}
+ 
+\end{tikzpicture}\end{document}

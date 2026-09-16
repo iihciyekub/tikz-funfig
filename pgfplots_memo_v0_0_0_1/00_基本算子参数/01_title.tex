@@ -1,0 +1,24 @@
+\documentclass[margin = 10pt]{standalone}
+\usepackage{tikz,pgfplots}
+
+\pgfplotsset{compat = 1.18,    % 对坐标系中所有标题增加样式
+        every axis title/.append style={
+        at = {(axis description cs:0.15,1)}, 
+        color = red,
+        }
+}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+    name = p1,
+    title = {eerer},
+    title style ={
+        font = {\large}
+        },
+    ]
+\addplot3 [surf] {x*y};
+\end{axis}
+
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,45 @@
+
+\documentclass[margin = 10pt]{standalone}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{
+compat = 1.9
+}
+
+\begin{document}
+\begin{tikzpicture}[remember picture]
+\begin{axis}[
+    symbolic x coords={a,b,c},
+    xtick=data,
+    % xticklabels from table={06data.dat}{label},
+    % xticklabels= {a,b,c,d},
+    % ytick= {42,50,60,80},
+    % 
+    % xticklabel= \empty,
+    % yticklabel= {$\pgfmathprintnumber{\tick}_e$},
+    % 
+    % xticklabels= {$\pgfmathprintnumber{\tick}_e$},
+    % yticklabels= {$\pgfmathprintnumber{\tick}_e$},
+    % 
+    % 坐标轴数值或标签样式设置
+    xticklabel style = {
+        % 命名标记每一个刻度,用作坐标调用
+        name=tick no \ticknum,
+        /pgf/number format/fixed zerofill,
+        rotate = 90},
+]
+
+]
+\addplot+ coordinates{
+(a,1)
+(b,2)
+(a,3)
+(c,4)
+(c,6)
+};
+
+\end{axis}
+\node [yshift=-4mm]at(tick no 0) {d};
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,19 @@
+\documentclass[border=2mm]{standalone}
+\usepackage{tikz}
+\begin{document}
+
+
+\tikz{
+\fill[red] (0,0) rectangle (3,3);
+};
+
+% 等价
+
+\tikz{
+\path[fill,red] (0,0) rectangle (3,3);
+}
+
+
+ 
+ 
+\end{document}

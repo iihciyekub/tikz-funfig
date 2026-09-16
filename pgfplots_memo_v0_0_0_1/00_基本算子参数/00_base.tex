@@ -1,0 +1,64 @@
+
+\documentclass{standalone}
+\usepackage{tikz,pgfplots}
+
+\pgfplotsset{
+    compat = 1.18,
+    width = 10cm,
+    height = 10cm,
+    plotset/.style={
+        name = ii,
+        compat = 1.18,
+        scale = 0.5,
+        width = 10cm,
+        height = 10cm,
+        scale only axis,
+        clip = false,
+        opacity  = 0.4,
+        % x轴扩大 10% ( pgfplots,P329 )
+        enlarge x limits = {0,1},
+        enlarge y limits = {0,1},
+        enlargelimits = auto
+        }
+}
+\begin{document}
+
+\begin{tikzpicture}
+\begin{axis}
+    \addplot {x^3};
+\end{axis}
+\end{tikzpicture}
+
+\end{document}    
+    
+\documentclass{standalone}
+\usepackage{tikz,pgfplots}
+
+\pgfplotsset{
+    compat = 1.18,
+    width = 10cm,
+    height = 10cm,
+    plotset/.style={
+        name = ii,
+        compat = 1.18,
+        scale = 0.5,
+        width = 10cm,
+        height = 10cm,
+        scale only axis,
+        clip = false,
+        opacity  = 0.4,
+        % x轴扩大 10% ( pgfplots,P329 )
+        enlarge x limits = {0,1},
+        enlarge y limits = {0,1},
+        enlargelimits = auto
+        }
+}
+\begin{document}
+
+\begin{tikzpicture}
+\begin{axis}
+    \addplot {x^3};
+\end{axis}
+\end{tikzpicture}
+
+\end{document}

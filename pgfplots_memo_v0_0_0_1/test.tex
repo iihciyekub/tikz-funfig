@@ -1,0 +1,179 @@
+\documentclass[border=2pt]{standalone}
+\usepackage{itikz}
+
+
+\begin{document}
+\pgfplotsset{%
+    axissty/.style={
+        % 光滑曲线
+        % smooth,
+        % 
+        % 用于两个坐标系叠加
+        % set layers,
+        % 
+        % 宽度
+        % widht = 10cm,
+        % 高度
+        % height = 10cm,
+        % 收缩比例
+        % scale = 1,
+        % 
+        % x , y坐标轴比例一致
+        scale only axis,
+        % 
+        % 散步图时,自动收缩坐标轴
+        enlargelimits=0.2, 
+        % 
+        % 风格辅助线
+        % grid = major,
+        % grid style = {color=gray,opacity=0.1,line width =0.1pt},
+        % 
+        % 图标题
+        % title = {$\lambda=1.5,c=0.3,c_r=0.07 $},
+        % title style = { align = left ,font = \footnotesize},
+        % 
+        % 隐藏坐标系；
+        % hide axis
+        % 坐标轴设置 box | top | middle | center | bottom | none | left | right
+        % axis x line = bottom,
+        % axis y line = left,
+        % 
+        % 设置坐标轴方向
+        % x dir=reverse,
+        % y dir=reverse,
+        % 
+        % 设置轴偏移
+        % axis x line shift = -3,
+        % axis y line shift = -3,
+        % axis line shift = 6.5pt,
+        % 
+        % 坐标轴样式
+        % x axis line style = {-Latex[],blue,shorten > = -10pt},
+        % y axis line style = {-Latex[],red,shorten > = -20pt},
+        % axis line style = {-Latex[]},
+        % 
+        % 设置轴刻度的跳跃值 crunch | parallel | none 
+        % axis x discontinuity = crunch ,
+        % axis y discontinuity = parallel ,
+        % 
+        % 坐标轴标签
+        % xlabel = x-label,
+        % ylabel = y-label,
+        % 
+        % 坐标轴标签样式 lower | upper | bottom | top | left | right | default
+        % ylabel style = { align = left,red,font = \footnotesize},
+        % label style = { align = left,red,font = \footnotesize},
+        % 
+        % 坐标轴上下限
+        % xmin = 0, 
+        % xmax = 31.1,
+        % ymin = 0, 
+        % ymax= 7,
+        % 
+        % 坐标轴刻度
+        % xtick = {\xmin,10,12,\xmax},
+        % ytick = {\ymin,2.2,1,\ymax},
+        % 
+        % 坐标轴显示的刻度
+        % xtickmin = 4,
+        % xtickmax = 5,
+        % 
+        % 坐标轴子刻度
+        % minor xtick={0.5,2.4,3.6,4.8},
+        % minor ytick={2.7,3.5,3.7,4.1},
+        % 
+        % 
+        % 设置轴刻度位置 inside | center | outside
+        % xtick align = outside,
+        % ytick align = outside,
+        % tick align = outside,
+        % 
+        % 刻度距离
+        % xtick distance = 1,
+        % ytick distance = 1,
+        % 
+        % 坐标轴刻度标签
+        % xticklabels = {0,$a$,1.222,$\gamma_i$},
+        % yticklabels = {0,$ \lambda c $,1.08,$v_i$},
+        % 
+        % 坐标轴标签样式设置
+        % x tick label style = {/pgf/number format/fixed zerofill,rotate = 90},
+        % y tick label style = {/pgf/number format/precision=2},
+        % tick label style = {/pgf/number format/precision=2,rotate = 90,},
+        %
+        % 
+        % 图例的设置
+        % legend style = {
+        % 	% 设置图例文字对齐方式
+        % 	legend cell align = left,
+        % 	%设置图例水平显示的例数量
+        % 	legend columns = 1,
+        %     % 设置图例中 小图的对齐位置
+        % 	cells = {anchor= east},
+        % 	% 设置图例锚点
+        % 	anchor = north east,
+        % 	% 图例的位置
+        %     % at = {($(current bounding box.north west) - (0mm, 0mm)$) },
+        % 	% 设置图例位置 
+        % 	legend pos= outer north east,
+        %     },
+        % 
+        % 3D 图 或热力图相关
+        % colorbar: horizontal | left | right 
+        % colorbar horizontal, % 必须配合算子参数 scatter or mesh 使用
+        % blackwhite | greenyellow | violet | PuBu-9  (see pgf_plots.pdf, P420)
+        % colormap/PuBu-9,
+        % colorbar/width=3mm,
+        % colorbar style={
+        %     at={($(plot.north) + (0,10mm) $)},
+        %     anchor=south,
+        %     % right | left | upper | lower
+        %     ticklabel pos= right,
+        % },
+        % colorbar style={y dir=reverse},
+        % 
+        % 3D x轴60度, y轴30度
+        % view={45}{45},
+    }
+}
+
+
+
+\begin{tikzpicture}[even odd rule]
+\begin{axis}[axis lines* = left]
+
+
+\addplot+ [raw gnuplot, no markers,name path= g]%
+        gnuplot {%
+        set xrange [ 0 : 25 ];
+        set yrange [ 0 : 7 ];
+        plot sample [*:6] x, [6:8] cos(x), [8:10] (x-8)**2;
+    };
+
+
+
+
+% \addplot3+ [ no markers,
+%         name path= g,
+%         surf,
+%         domain = -500:500,
+%         y domain = -400:400, 
+%         z buffer=sort,]%
+%      {sin(sqrt((x-20.)^2+(y-20.)^2))/sqrt((x-20.)^2+(y-20.)^2) };
+
+
+
+
+
+
+% \fun[0:24][0:5][F2] { y - 4* (1 - exp(-(6-y)*(23-x)/18)) +3}
+
+
+
+% \fill [name intersections={of=F2 and g, name = i,total = \n},fill = red] ;
+
+
+
+\end{axis}
+\end{tikzpicture}
+\end{document}

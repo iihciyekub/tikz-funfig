@@ -1,0 +1,40 @@
+\documentclass{standalone}
+\usepackage{tikz,pgfplots}
+\pgfplotsset{compat = 1.18}
+% 定义全局 \pgfmathprintnumber 的数值格式
+\pgfkeys{/pgf/number format/.cd,
+    fixed,precision=2,
+    skip 0.
+}
+
+
+
+\def\calxy#1{%
+\footnotesize\pgfplotspointgetcoordinates{#1}%
+(\pgfmathprintnumber[fixed,precision=2]{\pgfkeysvalueof{/data point/x}},%
+\pgfmathprintnumber[fixed,precision=2]{\pgfkeysvalueof{/data point/y}})
+}
+
+\def\addcoord#1#2{
+coordinate [pos=#1] (f) 
+node [circle, fill=Green,
+    inner sep=1.5pt,draw=Snow1,line width=0.47pt,
+    pin={[fill=white,pin edge={{Kite[length=6pt,width=2.5pt]}-,black!80},
+        opacity=0.88,font=\small,
+        text=black]#2:$\calxy{(f)}$}] at (f) {}
+}
+
+\begin{document}\begin{tikzpicture}
+\begin{axis}[xmin=-1,xmax=4,ymin=-1,ymax=3]
+
+
+\coordinate (v) at(1.544,0.00300) ;
+
+\node at(3,1) {
+\calxy{(v)}
+};
+
+\addplot {x} \addcoord{0}{45};
+
+\end{axis}
+\end{tikzpicture}\end{document}

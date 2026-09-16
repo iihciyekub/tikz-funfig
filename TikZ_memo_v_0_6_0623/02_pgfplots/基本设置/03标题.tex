@@ -1,0 +1,25 @@
+\documentclass[margin = 10pt]{standalone}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat = 1.18}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.misc}
+
+\begin{document}
+\begin{tikzpicture}[remember picture]
+\begin{axis}[
+    title = {$\sum\frac{\pi}{1 - \gamma}$},
+    title style ={
+        anchor = west,
+        at = {(current bounding box.east)},
+        font = {\large},
+        text = red,
+        draw = black,
+        circle,
+        }
+    ] 
+\addplot {x^3};
+\end{axis}
+\end{tikzpicture}
+\end{document}

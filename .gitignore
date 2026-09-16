@@ -1,0 +1,63 @@
+# macOS / editor noise
+.DS_Store
+**/.DS_Store
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+
+# FunFig runtime/build artifacts
+.funfig/build/
+.funfig/cache/
+.funfig/tmp/
+.smoke/
+*.manifest.tmp.json
+
+# LaTeX / PGFPlots generated files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+*.pgf-plot.gnuplot
+*.pgf-plot.table
+*.gnuplot
+*.table
+
+# Rendered/reference binaries are reproducible or source-adjacent assets,
+# but are not part of the code repository by default.
+*.pdf
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.webp
+
+# Large/non-development reference binaries and notebook state
+*.ttf
+*.otf
+*.ipynb
+.ipynb_checkpoints/
+
+# Workspace/application caches
+.mcp-cache/
+

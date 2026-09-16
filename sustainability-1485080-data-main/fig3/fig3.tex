@@ -1,0 +1,110 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames, svgnames, x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.5}
+\pgfplotsset{width=10cm,compat=1.16}
+\newcommand{\fz}[1]{\fontsize{#1 pt}{0.001mm}\selectfont}
+\usepackage{pgfkeys}
+\usetikzlibrary{calc,arrows.meta,positioning,intersections}
+
+\begin{document}
+\begin{tikzpicture}
+	
+	\begin{axis}[smooth,
+		axis line shift=6.5pt, grid=major,grid style={gray!24,opacity = 0.4,line width=0.02pt},
+		title style ={ align = left ,font = \fz{10pt}},
+		title={$p=10, c=4, s=3,w=6, B=100, r=0.05\hfill.$\\ $\theta=0.8,b=3, \mu=100, \sigma=100$},
+		xlabel={\fz{10}Acceptable Bankruptcy Risk: $\large \alpha$},
+		ylabel={\fz{10}Order Quantity Set: $\large q^\star \in\{q^d_t,q^d_s\}$},
+		xtick={0,0.113333,0.203333,0.34,0.5,1},
+		xmin =0,xmax=1,
+		ymin =-150,ymax=403.05,
+		ytick={-150,0,58,100,403.05},
+		ticklabel style ={/pgf/number format/fixed,/pgf/number format/precision=2},
+		legend style={
+			at={(0.1484cm,7.8353cm)},
+			anchor=west,cells={anchor=west},font=\footnotesize,
+		}
+		]		
+
+		\legend{$F^{-1}(\alpha)$,,
+				$q_{t}^{d}=\frac{(\theta p-b) F^{-1}(\alpha)+B(1+r)}{w(1+r)-b}$,,
+				$q^d_{s}=F^{-1}\left(\frac{\theta p-w(1+r)}{\theta p-b}\right)$
+			};
+
+
+			
+		\fill [fill=MistyRose,opacity=0.38]  (0.113139446443977,0) rectangle (0.204061855829433,58);
+		
+		\node (p)at(0.33,-20) [inner sep = 0pt,font=\fz{6pt}] {$q^\star$ increasing area};
+		\draw[-<,shorten > = 1mm,opacity=0.8] (p)--(0.167,20);
+
+
+
+		% X is normally distributed
+		\addplot [black,opacity =0.24,line width =0.35pt] table {inverse(CDF)};
+		
+		
+		% qt
+		\addplot [blue!80!red,opacity=0.45,line width=0.7pt,dash dot] table {qd_t};
+		\addplot [blue!80!red,line width=1.35pt] table {qd_t_e};
+ 
+		% qs
+		\addplot[red,opacity=0.45,line width=0.7pt,dash dot] coordinates {(0,58) (0.34,58)};
+		\addplot[red,line width=1.35pt] coordinates {(0.204061855829433,58) (1,58)};
+ 
+			
+			
+			 
+		\coordinate[label=-90:{\fz{8pt}M}] (c) at (0.5,100);
+		\draw[fill=OrangeRed,draw = black!70] (c) circle (0.7mm) ;
+ 	
+ 
+		\coordinate (c) at (0.340,58);
+		\draw[fill=LightSkyBlue,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.-45)+(2mm,-3mm)$) {
+			$\ (\alpha,q^d_s) = (0.340,58)$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1.180)--(c);
+		
+ 	
+			
+			
+		%%%%%%%%%%%%%%%%%%%%%%%55% 最高点
+		\coordinate  (c) at (0.113139446443977,0);
+		\draw[fill=Thistle,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.-45)+(-9mm,-12mm)$) {
+			$\ (\alpha,q^d_t) = (0.113,0)$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+		
+
+		
+			
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\coordinate  (c) at (0.204061855829433,58);
+		\draw[fill=SeaGreen,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.45)+(-19mm,15mm)$) {
+			$\{\alpha,q_s^d,q_t^d\} = \{0.204,58,58\}$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+		
+ 	
+			
+			
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\coordinate  (c) at (0.34,-150);
+		\draw[fill=LawnGreen,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.-45)+(3mm,6mm)$) {
+			$\frac{\theta p-w(1+r)}{\theta p-b} =0.340  $
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+		
+ 	
+			
+ 
+				
+	\end{axis}
+\end{tikzpicture}
+\end{document}

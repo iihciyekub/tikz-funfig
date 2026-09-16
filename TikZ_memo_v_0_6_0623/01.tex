@@ -1,0 +1,66 @@
+% 绘制隐函数
+\documentclass[dvipsnames, svgnames, x11names,border=3pt]{standalone}
+\usepackage{tikz,pgfplots,pgfkeys,pgfmath,pgffor}
+\pgfplotsset{compat = 1.18,width=10cm, height=10cm}
+\usetikzlibrary{math,bending,intersections,calc,graphs,arrows,arrows.meta,decorations.pathmorphing,backgrounds,positioning,fit,spy,shapes.geometric,decorations.text,decorations}
+
+
+\NewDocumentCommand{\iipolt}{ O{name}  m  O{;}}{
+\ifdefined\xmin\else
+    \def\xmin{\pgfkeysvalueof{/pgfplots/xmin}}
+    \def\xmax{\pgfkeysvalueof{/pgfplots/xmax}}
+    \def\ymin{\pgfkeysvalueof{/pgfplots/ymin}}
+    \def\ymax{\pgfkeysvalueof{/pgfplots/ymax}}
+\fi
+\addplot+ gnuplot[no markers, raw gnuplot, empty line = jump, name path = #1] {
+    set xrange [\xmin : \xmax ];
+    set yrange [\ymin : \ymax ];
+    set contour;%启用了等高线绘制模式
+    unset surface;%禁用了表面绘制模式
+    set view map;%将图形视图设置为2D平面视图
+    set cntrparam levels discrete 0;%等高线级别设置为0，这样只会绘制函数等于0的等高线，实现了隐函数的绘制
+    set isosamples 100;
+    set samples 100;
+    #2
+} #3
+}
+\NewDocumentCommand\calxy{m}{%
+\pgfplotspointgetcoordinates{(#1)}%
+(\pgfmathprintnumber[precision=2]{\pgfkeysvalueof{/data point/x}},%
+\pgfmathprintnumber[precision=2]{\pgfkeysvalueof{/data point/y}})
+}
+\begin{document}
+
+\begin{tikzpicture}
+ 
+
+
+
+
+
+\begin{axis}[xmax=1,xmin=0,ymax=1,ymin=0]
+
+% 普通函数图
+\iipolt[a,OrangeRed1,->]{
+    f(x)=x+0.4;
+    plot [0:0.2] f(x);
+};
+
+
+
+% 普通函数图
+\iipolt[b,->]{
+    f(x)=-x+0.6;
+    plot [0:0.2] f(x);
+};
+\draw [name intersections={of= a and b,by={c}} ]  node at(c) [circle,draw,pin={45:\calxy{c}}] {};
+
+
+
+
+
+\end{axis}
+
+
+
+\end{tikzpicture}\end{document}

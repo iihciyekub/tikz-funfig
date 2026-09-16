@@ -1,0 +1,77 @@
+\documentclass{standalone}
+\usepackage{xparse}
+\begin{document}
+
+
+% m（mandatory）表示标准的必选项:单个参数
+\NewDocumentCommand\fa{m}{#1 world}
+\fa{hello}
+% m（mandatory）表示标准的必选项:多个参数
+\RenewDocumentCommand\fa{m m}{#1 world#2}
+\fa{hello}{!}
+
+
+% r 读取必须定界的选项
+\NewDocumentCommand\foo{r||}{\ttfamily #1}
+\foo|hello|
+\RenewDocumentCommand\foo{r()}{\ttfamily #1}
+\foo(world)
+\RenewDocumentCommand\foo{r""}{\ttfamily #1}
+\foo"world"
+\RenewDocumentCommand\foo{r<>}{\ttfamily #1}
+\foo<world>
+\RenewDocumentCommand\foo{r--}{\ttfamily #1}
+\foo-world-
+\RenewDocumentCommand\foo{r``}{\ttfamily #1}
+\foo`world`
+
+% R 读取必须定界的选项,默认定界符{}
+\NewDocumentCommand\fR{R||{}}{\ttfamily #1}
+\fR|hello|
+
+
+% v（verbatim）读取抄录选项
+\NewDocumentCommand\fv{v}{\ttfamily #1}
+\fv{\def\i{d}}
+
+
+% o（optional）标准的 latex 可选项,位于方括号内
+\NewDocumentCommand\fo{o}{\ttfamily #1}
+\fo[3]
+
+% O（optional）标准的 latex 可选项,位于方括号内,带默认参数
+\NewDocumentCommand\fO{O{hit}}{\ttfamily #1}
+\fO
+
+% s（star）可选的星号，当星号存在时会返回BooleanTrue否则返回BooleanFalse
+\NewDocumentCommand\fs{sm}{
+\IfBooleanTF{#1}
+{with * #2}
+{not with * #2}
+}
+\fs{test}
+\fs*{test}
+
+
+% t(token) 可选的字符,当符号存在时会返回BooleanTrue否则返回BooleanFalse
+\NewDocumentCommand\ft{t+m}{
+\IfBooleanTF{#1}
+{with + #2}
+{not with + #2}
+}
+\ft{test}
+\ft+{test}
+
+% t(token) 可选的字符,当符号存在时会返回BooleanTrue否则返回BooleanFalse
+\RenewDocumentCommand\ft{t@m}{
+\IfBooleanTF{#1}
+{with @ #2}
+{not with @ #2}
+}
+\ft{test}
+\ft@{test}
+
+
+
+
+\end{document}

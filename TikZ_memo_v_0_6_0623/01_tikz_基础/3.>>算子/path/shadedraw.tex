@@ -1,0 +1,26 @@
+\documentclass[margin=2mm]{standalone}
+\usepackage{tikz}
+
+
+
+
+\begin{document}
+\ch{我}
+\tikz{
+\shadedraw [shading=axis,shading angle=90] (0,0) rectangle (1,1);
+}
+
+
+\tikz{
+\shade[bottom color = black, top color = white] (0, 5) rectangle +(2,2);
+}
+
+
+
+\tikz{
+\path [shade,draw,inner color=red!30!white, outer color=red!90!black, 
+line width=1.6pt] (0,0) circle (1cm);
+}
+
+
+\end{document}

@@ -1,0 +1,20 @@
+\documentclass[border=2mm]{standalone}
+\usepackage{tikz}
+
+
+
+\begin{document}
+% \ifx 比较的是两个控制序列的定义，而不是它们的展开结果。如果你需要比较宏的展开结果，请使用其他条件命令，例如 \ifnum 或 \ifdim 等。
+
+\def\i{aaa}
+\def\j{aaa}
+
+\ifx\i\j
+  \textbf{Strings are equal.}
+\else
+  \textbf{Strings are not equal.}
+\fi
+
+
+
+\end{document}

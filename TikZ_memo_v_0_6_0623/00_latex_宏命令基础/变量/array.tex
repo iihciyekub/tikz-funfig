@@ -1,0 +1,22 @@
+
+
+
+\documentclass[border=2mm]{standalone}
+
+\usepackage{tikz}
+\begin{document}
+
+ 
+\def\myarray{{7,-3,4,-9,11}}
+% \pgfmathsetmacro{\var}{\myarray[1]}
+
+
+
+
+
+
+\pgfmathparse{\myarray[1]}
+\global\let\var\pgfmathprintnumber[precision=2]{\pgfmathresult}
+
+
+\end{document}

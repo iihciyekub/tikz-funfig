@@ -1,0 +1,14 @@
+\documentclass[border=2mm]{standalone}
+\usepackage{tikz}
+
+
+\begin{document}
+
+\tikzset{
+my pic/.pic = {
+\path [pic actions] (#1,0) circle[radius=3mm];
+\draw (-3mm,-3mm) rectangle (3mm,3mm);
+}
+}
+\tikz \pic[] {my pic};
+\end{document}

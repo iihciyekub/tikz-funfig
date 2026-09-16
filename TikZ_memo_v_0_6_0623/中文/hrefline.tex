@@ -1,0 +1,49 @@
+% !TEX program = xelatex
+\documentclass{article}
+\usepackage{xeCJK}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\setmainfont{Times New Roman}
+\setsansfont{Times New Roman}
+\setmonofont{Times New Roman}
+
+\setCJKmainfont[
+    Path =./,
+    AutoFakeSlant = 0.2,
+    AutoFakeBold = 2.17
+]{KaiTi}
+
+\setCJKmonofont[
+    Path =./,
+    AutoFakeSlant = 0.2,
+    AutoFakeBold = 2.17
+]{KaiTi}
+
+\setCJKsansfont[
+    Path =./,
+    AutoFakeSlant = 0.2,
+    AutoFakeBold = 2.17
+]{KaiTi}
+
+\begin{document}
+
+\href{https://www.overleaf.com/project/62a2fafe3ae9f98d587c2bbe}{文字}
+
+
+
+
+text here\label{lab1}
+\newpage
+Please see the\hyperref[lab1]{target text}
+
+
+
+
+
+\hypertarget{mytarget}{This is the target text.}
+\newpage
+Please see the \hyperlink{mytarget}{target text}.
+
+
+
+\end{document}

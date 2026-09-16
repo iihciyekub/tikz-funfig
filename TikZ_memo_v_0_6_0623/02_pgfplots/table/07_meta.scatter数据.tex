@@ -1,0 +1,86 @@
+\documentclass[dvipsnames,svgnames,x11names,margin=3pt]{standalone}
+\usepackage{tikz,pgfplots,xparse,pgfmath,pgffor}
+\pgfplotsset{compat = 1.18,width=10cm,height=10cm}
+\usepgfplotslibrary{groupplots}
+
+\begin{document}\begin{tikzpicture}
+
+\begin{groupplot}[
+    group style={group size=3 by 2,
+        vertical sep=3em,horizontal sep=3em,
+        % xlabels at=all|edge top|edge bottom
+        % ylabels at=all|edge left|edge right
+        % xlabels at={edge bottom},
+        % ylabels at={edge left},
+        % 
+        xticklabels at= {edge bottom},
+        yticklabels at= {edge left},
+        % 
+        % x descriptions (xlabels+ xticklabels)
+        % x descriptions at= edge bottom,
+        % y descriptions at= edge right,
+    },
+    width=8cm,height=8cm,
+    xlabel= xlabel,
+    ylabel= ylabel,
+]
+
+% 空图形
+% \nextgroupplot[group/empty plot]
+
+
+% 1
+\nextgroupplot
+\addplot+ [scatter,
+    only marks,
+    point meta=x
+] table[x=x,y=y] {z.data.dat};
+
+
+% 2
+\nextgroupplot
+\addplot+ [scatter,
+    only marks,
+    point meta=\thisrow{x}+1,
+] table[x=x,y=y] {z.data.dat};
+
+
+
+% 3 显示 元数据的序号
+\nextgroupplot
+\addplot+ [scatter,
+    only marks,
+    point meta=\coordindex,
+] table[x=x,y=y] {z.data.dat};
+
+
+
+% 4 显示 元数据的行号
+\nextgroupplot
+\addplot+ [scatter,
+    only marks,
+    point meta=\lineno,
+] table[x=x,y=y] {z.data.dat};
+
+
+% 5
+\nextgroupplot
+\addplot+ [scatter,
+    only marks,
+    point meta=explicit,
+] table[x=x,y=y,meta=x1] {z.data.dat};
+
+% 6
+\nextgroupplot
+\addplot+ [scatter,
+    only marks,
+    nodes near coords=,
+    scatter src=explicit symbolic,
+] table[x=x,y=y,meta=label] {z.data.dat};
+
+
+
+
+\end{groupplot}
+\end{tikzpicture}
+\end{document}

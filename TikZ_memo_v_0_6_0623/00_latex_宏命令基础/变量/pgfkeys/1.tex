@@ -1,0 +1,32 @@
+\documentclass{standalone}
+\usepackage{tikz}
+
+\begin{document}
+
+\def\a{bottom}
+\def\b{\a}
+\def\c{\b}
+
+% 定义初始体
+\pgfkeys{/key1/.initial=\c}
+% 展开1次
+\pgfkeys{/key2/.initial/.expand once=\c}
+% 展开2次
+\pgfkeys{/key3/.initial/.expand twice=\c}
+% 完全展开
+\pgfkeys{/key4/.initial/.expanded=\c}
+
+
+\def\a{{\ttfamily\string\a}}
+\def\b{{\ttfamily\string\b}}
+\def\c{{\ttfamily\string\c}}
+
+\begin{tabular}{ll}
+Key 1:& \pgfkeys{/key1} \\
+Key 2:& \pgfkeys{/key2} \\
+Key 3:& \pgfkeys{/key3} \\
+Key 4:& \pgfkeys{/key4}
+\end{tabular}
+
+
+\end{document}

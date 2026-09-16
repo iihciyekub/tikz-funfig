@@ -1,0 +1,24 @@
+\documentclass[tikz,border=10pt]{standalone}
+\begin{document}
+\pgfdeclarelayer{lata}
+\pgfdeclarelayer{latb}
+\pgfdeclarelayer{latc}
+\pgfsetlayers{lata,latb,latc }
+
+ 
+\begin{tikzpicture} 
+ \begin{pgfonlayer}{latb}
+ \node[circle,fill=blue ] at (0,0) {22222233222222222222};
+\end{pgfonlayer}
+
+\begin{pgfonlayer}{lata}
+ \node[circle,fill=red ,inner sep=4pt] at (1,0) {222222222222222222};
+\end{pgfonlayer}
+
+\draw (0,2) -- (0,5);
+
+
+
+ 
+\end{tikzpicture}
+\end{document}

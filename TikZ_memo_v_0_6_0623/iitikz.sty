@@ -1,0 +1,108 @@
+\usepackage[dvipsnames,svgnames,x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfmath}
+\usepackage{pgffor}
+\usepackage{xparse}
+\usepackage{ifthen}
+
+\usepackage{pgfplots}\usetikzlibrary{
+    bending,                    % node 之间连线可弯曲
+    intersections,              % 线段交点
+    calc,                       % 坐标计算
+    arrows.meta,                % 箭头样式
+    decorations.pathmorphing,
+    backgrounds,                % 设置图层前背景
+    positioning,                % 位置关键词,left below,above,right,center....
+    fit,                        % 指定点的最小 box
+    shapes.geometric,           % 形状
+    decorations,
+    decorations.text,           % 文字沿线段
+    spy,                        % 放大缩小
+} 
+
+
+\pgfplotsset{compat = 1.16,width=8cm,height=8cm}
+
+
+
+% 取出当前坐标系的轴端点值
+\def\getxmin{\pgfkeysvalueof{/pgfplots/xmin}}
+\def\getxmax{\pgfkeysvalueof{/pgfplots/xmax}}
+\def\getymin{\pgfkeysvalueof{/pgfplots/ymin}}
+\def\getymax{\pgfkeysvalueof{/pgfplots/ymax}}
+
+% 核心方法, iiplot 用于绘制一元函数或二元隐函数
+\NewDocumentCommand\iiplot{ O{name}  m }{
+\addplot+ gnuplot[no markers, raw gnuplot, empty line = jump, name path = #1] {
+    set xrange [\getxmin : \getxmax ];
+    set yrange [\getymin : \getymax ];
+    set contour;                        %启用了等高线绘制模式
+    unset surface;                      %禁用了表面绘制模式
+    set view map;                       %将图形视图设置为2D平面视图
+    set cntrparam levels discrete 0;    %等高线级别设置为0，绘制函数等于0的等高线，变相绘制隐函数图像
+    set isosamples 100;
+    set samples 100;
+    % plot f(x);
+    % plot x=0.4,f(x),x=0.4,f(x);
+    % splot y-x;
+    % splot [][] y-x;
+    #2
+}
+}
+
+% 定义全局数值打印格式,更多格式参考: /pgf/number.format
+\pgfkeys{/pgf/number format/.cd,
+    fixed,precision=2,
+    skip 0.
+}
+
+% 给定坐标名称,自动计算坐标值
+\NewDocumentCommand\calxy{ O{xy} m}{%
+\pgfplotspointgetcoordinates{(#2)}%
+\pgfmathsetmacro{\getx}{\pgfkeysvalueof{/data point/x}}
+\pgfmathsetmacro{\gety}{\pgfkeysvalueof{/data point/y}}
+\ifthenelse{\equal{#1}{xy}}{%
+    \footnotesize(\pgfmathprintnumber{\getx},\pgfmathprintnumber{\gety})
+    }{
+    \ifthenelse{\equal{#1}{x}}{\getx}{
+        \ifthenelse{\equal{#1}{y}}{\gety}{}
+    }
+}
+}
+
+\tikzset{
+calarrow/.tip={>.Stealth[length=4pt,width=2pt]},
+calpin/.style={
+    red,
+    pin distance=6pt,
+    font=\footnotesize,
+    pin edge={calarrow-},
+    },
+calnode/.style={
+    circle,
+    fill=Mahogany,
+    draw=LimeGreen,
+    inner sep=1pt,
+    }
+}
+%  iiplot  尾接 tikz 宏命令 \addsymbol{0~1 位置,...}{文本内容}
+\NewDocumentCommand\addsymbol{m m}{
+node [sloped,inner xsep=2pt,inner ysep=1pt,pos=#1] {#2}
+}
+%  iiplot  尾接 tikz 宏命令,角度位置,\addpoint{0~1 位置,...}{角度}
+\NewDocumentCommand\addpoint{m m}{
+node [pos=#1,opacity=0] (p) {} 
+node [calnode,pos=#1,pin={[calpin]#2:$\calxy{p}$}] {}
+}
+
+
+%%%%%%%%%%%
+\iffalse
+\calxy[x]{坐标点名称}    -> 返回坐标点 x 的数值;
+\calxy[y]{坐标点名称}    -> 返回坐标点 y 的数值;
+\calxy[xy]{坐标点名称}   -> 返回格式化的数值文本;
+% 
+\addsymbol{0~1 位置,...}{文本内容}
+% 
+\addpoint{0~1 位置,...}{角度}
+\fi

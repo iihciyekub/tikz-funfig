@@ -1,0 +1,47 @@
+%% 自定义命令
+% fun[x范围][y范围][路径名称,或其它算子参数][表達式]
+\NewDocumentCommand\fun{  O{xmin:xmax} O{ymin:ymax}  O{name} O{} m }{%
+\addplot+ [raw gnuplot, empty line = jump, no markers, name path = #3]%
+        gnuplot {%
+        set xrange [#1];
+        set yrange [#2];
+        set contour base;
+        set cntrparam levels discrete 0.003;
+        unset surface;
+        % set view map;
+        % set isosamples 50;
+        set samples 50;
+        splot #5;
+    }  #4;
+}
+% 
+\NewDocumentCommand\calxy{r()}{%
+    \footnotesize
+    \pgfplotspointgetcoordinates{(#1)}%
+    (\pgfmathprintnumber[/pgf/number format/precision=2]{\pgfkeysvalueof{/data point/x}},%
+    \pgfmathprintnumber[/pgf/number format/precision=2]{\pgfkeysvalueof{/data point/y}})
+}
+
+% 
+\NewDocumentCommand\calx{r()}{%
+\pgfplotspointgetcoordinates{(#1)}%
+\pgfmathprintnumber[/pgf/number format/precision=2]%
+{\pgfkeysvalueof{/data point/x}}%
+}
+% 
+\NewDocumentCommand\caly{r()}{%
+\footnotesize\pgfplotspointgetcoordinates{(#1)}%
+\pgfmathprintnumber[/pgf/number format/precision=2]%
+{\pgfkeysvalueof{/data point/y}}%
+}
+
+
+
+\NewDocumentCommand\mathexp{m m}{%
+node[pos = #1, pin = #2]{}
+}
+% 
+\def\xmin{\pgfkeysvalueof{/pgfplots/xmin}}
+\def\xmax{\pgfkeysvalueof{/pgfplots/xmax}}
+\def\ymin{\pgfkeysvalueof{/pgfplots/ymin}}
+\def\ymax{\pgfkeysvalueof{/pgfplots/ymax}}

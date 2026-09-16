@@ -1,0 +1,52 @@
+% 颜色库
+\usepackage[dvipsnames, svgnames, x11names]{xcolor}
+% 命令宏包 https://www.latexstudio.net/index/details/index/mid/1432
+\RequirePackage{xparse}
+% 函数图宏包
+\RequirePackage{pgfplots}
+% PGF 数学计算
+\RequirePackage{pgfmath}
+% PGF 宏包库
+\usepgfplotslibrary{
+    smithchart,
+    polar,
+    fillbetween,
+    decorations.softclip,
+    colorbrewer,% colorbar 颜色设置
+}
+\usepackage{}
+% foreach \breakforeach 命令
+\RequirePackage{}
+% 
+% 设置画布大小
+\pgfplotsset{width=10.5 cm,compat=1.16}
+% 
+% 
+% tikz 绘图宏包
+\RequirePackage{tikz}
+\usetikzlibrary{
+    bending,% node 之间连线可弯曲
+    intersections,% 线段交点
+    calc, % 坐标计算
+    graphs,
+    arrows, % 箭头
+    arrows.meta,% 箭头样式
+    decorations.pathmorphing,
+    petri, 
+    backgrounds,
+    positioning,% 位置关键词,left below,above,right,center....
+    fit,% 指定点的最小 box
+    shapes.geometric,% 形状
+    decorations,
+    decorations.text,% 文字沿线段
+    spy,
+} 
+
+% 加载自定义命令
+\input{icommand}
+
+\tikzset{
+every pin/.style = {inner sep = 0pt},
+pin distance=15pt,
+every pin edge/.style={Latex-,shorten <= 1 pt},
+}

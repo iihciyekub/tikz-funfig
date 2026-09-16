@@ -1,0 +1,17 @@
+\documentclass[margin = 10pt]{standalone}
+\usepackage{tikz,pgfplots}
+\pgfplotsset{compat = 1.18}
+
+\begin{document}\begin{tikzpicture}
+
+\begin{axis}
+\addplot+ [
+    xcomb,
+    % ycomb,
+] coordinates {
+(4,0) (1,1) (2,2)
+(5,3) (6,4) (1,5)
+};
+\end{axis}
+
+\end{tikzpicture}\end{document}

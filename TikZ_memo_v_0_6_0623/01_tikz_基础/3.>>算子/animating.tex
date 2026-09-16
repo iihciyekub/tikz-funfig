@@ -1,0 +1,13 @@
+
+
+
+\documentclass[border=2mm]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{animations}
+\begin{document}
+\tikz
+\node :fill opacity = { 0s="1", 2s="0", begin on=click }
+:rotate = { 0s="0", 2s="90", begin on=click }
+[fill = blue!20, draw = blue, ultra thick, circle]
+{Click me!};
+\end{document}

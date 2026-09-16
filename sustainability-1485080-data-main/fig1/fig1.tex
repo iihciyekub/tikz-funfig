@@ -1,0 +1,99 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames, svgnames, x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.5}
+\pgfplotsset{width=10cm,compat=1.16}
+\newcommand{\fz}[1]{\fontsize{#1 pt}{0.001mm}\selectfont}
+\usepackage{pgfkeys}
+\usetikzlibrary{calc}
+\begin{document}
+\begin{tikzpicture}
+	
+	\begin{axis}[smooth,
+		axis line shift=6.5pt, grid=major,grid style={gray!24,opacity = 0.4,line width=0.02pt},
+		title style ={ align = left , font = \footnotesize},
+		title={$p = 10, c = 4, s = 3,w = 6,B = 100, r = 0.05 $ \\ $\mu = 100, \sigma = 100$},
+		xlabel={\fz{10}Acceptable Bankruptcy Risk: $\large \alpha$},
+		ylabel={\fz{10}Order Quantity Set: $\large q^c \in \{q_t,q_s\}$},
+		ticklabel style={
+					/pgf/number format/precision=4,
+				},
+		xtick={0,0.124,0.397,0.5,0.814 ,1},
+		xmin =0,xmax=1,
+		ymin =-360,ymax=803.05,
+		ytick={-360,0,100,189  ,803.05},
+		legend style={
+			at={(0.2cm,6.25cm)},
+			anchor=west,cells={anchor=west},font=\footnotesize,
+		}
+		]		
+
+		\legend{$F^{-1}(\alpha)$,,
+			$q_{t}=\frac{(p-s) F^{-1}(\alpha)+B(1+r)}{w(1+r)-s}$,,
+			$q_{s}=F^{-1}\left(\frac{p-c-w r}{p-s}\right)$};
+
+			
+		\fill [fill=MistyRose,opacity=0.38]  (0.124,0) rectangle (0.397,189);
+		
+		\node at(0.28,25) [inner sep = 0pt,font=\fz{2pt},] {$q^c$ increasing area};
+		% alpha
+		\addplot [black,opacity =0.2,line width =0.5pt] table {inverse(CDF)};
+		% qt
+		\addplot [blue!80!red,opacity=0.45,line width=0.7pt,dash dot] table {qt};
+		\addplot [blue!80!red,line width=1.35pt] table {qt_e};
+		
+		% qs
+		\addplot[red,opacity=0.45,line width=0.7pt,dash dot] coordinates {(0,189) (0.4,189)};
+		\addplot[red,line width=1.35pt] coordinates {(0.4,189) (1,189)};
+		\draw[red,line width=1pt](0.4,189)--(1,189);
+		
+		
+		
+		% qs = qt 
+		\coordinate  (c) at (0.397,189);
+		\draw[fill=SeaGreen,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.-45)+(-32mm,5mm)$) {
+			$ (\alpha,q_s,q_t) = (0.397,189,189)$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+		
+		
+		
+		% _qt 
+		\coordinate  (c) at (0.124,0);
+		\draw[fill=CarnationPink,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.-45)+(-5mm,-8mm)$) {
+			$(\alpha,q_t) = (0.124,0)$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+		
+		
+		
+		% -qt 
+		\coordinate  (c) at (0.814,189);
+		\draw[fill=Dandelion,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.-45)+(-18mm,-8.6mm)$) {
+			$(\alpha,q_s) = (0.814,189)$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+		
+		
+		% -qt 
+		\coordinate  (c) at (0.814,-360);
+		\draw[fill=GreenYellow,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.-45)+(-19mm,5.6mm)$) {
+			$\frac{p-c-w r}{p-s} = 0.814$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+		
+		
+		% M
+		\coordinate[label=90:{\fz{8pt}M}] (c) at (0.5,100);
+		\draw[fill=OrangeRed,draw = black!70] (c) circle (0.7mm) ;
+
+
+			
+	\end{axis}
+\end{tikzpicture}
+	\end{document}

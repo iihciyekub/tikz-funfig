@@ -1,0 +1,196 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames, svgnames, x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.5}
+\pgfplotsset{width=10cm,compat=1.16}
+\newcommand{\fz}[1]{\fontsize{#1 pt}{0.001mm}\selectfont}
+\usepackage{pgfkeys}
+
+\usetikzlibrary{calc,arrows.meta,positioning,intersections}
+\begin{document}
+	\begin{tikzpicture}
+		
+		\begin{axis}[
+			axis line shift=6.5pt, grid=major,grid style={gray!24,opacity = 0.4,line width=0.02pt},
+		title style ={ align = left ,font = \fz{10pt}},
+			title={$p=10, c=4, s=3,w=6, B=100, r=0.05$\\$\mu=100, \sigma=100$},
+			xlabel={\fz{10}Acceptable Bankruptcy Risk: $\large \alpha$},
+			ylabel={\fz{10}Revenue Share: $\large p\theta^\star$ \& Buy-Back Price: $b^\star$},
+%					grid=major,grid style={color=gray,opacity=0.053,line width =0.2pt},
+			xtick={0,0.180,0.3,0.5,0.7,0.85,1},
+			xmin =0,xmax=1,
+			ymin =0,ymax=20.305,
+			ytick={0,2,4,7.08,6.12, 15,20.305},
+			yticklabel style={
+				/pgf/number format/precision=3,
+			},
+			legend style={
+				at={(7.8cm,6.253cm)},
+				anchor=east,cells={anchor=west},font=\footnotesize,
+			}
+			]		
+			
+			\legend{,\fz{10}$b^\star$,\fz{10}$ p\theta^\star$,,asymptote};
+%			
+			\fill [fill=LavenderBlush,opacity=0.8]  (0,0) rectangle (0.18,20.305);
+			\fill [fill=Azure,opacity=0.8] (0.18,0) rectangle (1,20.305);
+ 
+			\addplot [blue!80!red,line width=0.77pt] table {b_l};
+			\addplot [blue!80!red,line width=0.77pt,name path =b] table {b_r};
+				
+			\addplot [red!80!gray,line width=0.77pt] table {thetap_l};
+			\addplot [red!80!gray,line width=0.77pt,name path =r] table {thetap_r};
+ 
+			\addplot [draw = black!70,opacity=0.45,line width=0.17pt,dash dot] coordinates {
+	(0.181,0) [0]
+	(0.181,21) [1]
+};
+
+			\addplot [draw = black!70,opacity=0.45,line width=0.17pt,dash dot] coordinates {
+	(0,6.24) [0]
+	(1,6.24) [1]
+};
+
+
+
+		% 
+		\coordinate (c) at (0.5000 ,	4.7368);
+			\draw[fill=white,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{7pt}] (n1) at ($(c)+(-8mm,-9mm)$) {
+			$(\alpha, p\theta^\star)=(0.5 ,	4.74)$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+		
+		
+		% 
+		\coordinate (c) at (0.500,6.657);
+			\draw[fill=Bisque,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{7pt}] (n1) at ($(c)+(-22.8mm,9.5mm)$) {
+			$ (\alpha, b^\star)=(0.5,6.66)$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+		
+		
+   
+
+
+		% M
+		\coordinate (c) at (0.2500 ,	0.1128);
+			\draw[fill=DarkSalmon,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=south west,font=\fz{6pt}] (n1) at (c.north) {
+			$(0.25,0.11)$
+		};
+
+
+
+		% M
+		\coordinate (c) at (0.9967 ,	5.9098);
+			\draw[fill=DarkTurquoise,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=north east,font=\fz{6pt}] (n1) at (c.north) {
+			$(1,	5.91)$
+		};
+
+		
+		
+				% M
+		\coordinate (c) at (0.997 ,	6.389);
+					\draw[fill=DodgerBlue,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=south east,font=\fz{6pt}] (n1) at (c.south) {
+				$(1,6.39)$
+		};
+		
+		
+		
+		
+		
+		
+				% M
+		\coordinate (c) at (0.0033 ,	7.0792 );
+					\draw[fill=Fuchsia,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor= west,font=\fz{6pt}] (n1) at (c.south) {
+				$(0, 	7.08 )$
+		};
+		
+		
+				% M
+		\coordinate (c) at (0.1568 	,20.305 );
+					\draw[fill=DarkSalmon,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=north east,font=\fz{6pt}] (n1) at (c.south) {
+				$(0.16 ,20)$
+		};
+		
+		
+		
+				% M
+		\coordinate (c) at (0.190 ,	20.305 );
+					\draw[fill=LightSalmon,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=north west,font=\fz{6pt}] (n1) at (c.south) {
+				$(0.19 ,20)$
+		};
+		
+		
+		
+		
+		
+		
+		
+				% M
+		\coordinate (c) at (0.170 ,	0);
+					\draw[fill=LawnGreen,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=south east,font=\fz{6pt}] (n1) at (c.north) {
+				$(0.17 ,	0.07 )$
+		};
+		
+		
+		
+		
+		
+		
+				% M
+		\coordinate (c) at (0,6.122);
+					\draw[fill=MediumPurple,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=north west,font=\fz{6pt},yshift=-3mm] (n1) at (c.north) {
+				$(0,6.12 )$
+		};
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+			\node[anchor=west,rotate=90] (n2) at (0.05,12) {\fz{6pt}area of ($p\theta^\star >b^\star $)};
+
+			\node[anchor=west,rotate=90] (n2) at (0.25,12) {\fz{6pt}area of ($p\theta^\star < b^\star  $)};
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+			
+		\end{axis}
+	\end{tikzpicture}
+\end{document}

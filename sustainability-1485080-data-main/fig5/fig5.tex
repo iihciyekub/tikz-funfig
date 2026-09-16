@@ -1,0 +1,105 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames, svgnames, x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.5}
+\pgfplotsset{width=10cm,compat=1.16}
+\newcommand{\fz}[1]{\fontsize{#1 pt}{0.001mm}\selectfont}
+\usepackage{pgfkeys}
+\usetikzlibrary{calc}
+\begin{document}
+	\begin{tikzpicture}
+		
+		\begin{axis}[smooth,
+			axis line shift=6.5pt, grid=major,grid style={gray!24,opacity = 0.4,line width=0.02pt},
+		title style ={ align = left ,font = \fz{10pt}},
+			title={ $p=10, c=4, s=3,w=6, B=100, r=0.05$\\$\mu=100, \sigma=100$},
+		xlabel={\fz{10}Acceptable Bankruptcy Risk: $\large \alpha$},
+			ylabel={\fz{10}Revenue Share: $\large \theta^\star$},
+			%		grid=major,grid style={color=gray,opacity=0.23,line width =0.2pt},
+			xtick={0,0.1,0.25, 0.5,1},
+			xmin =0,xmax=1,
+			ymin =0,ymax=1,
+			ytick={0,0.2,0.47368421,0.5911 ,0.694,1},
+			yticklabel style={
+				/pgf/number format/precision=4,
+			},
+			legend style={
+				at={(0.99,0.95)},
+				anchor=north east ,cells={anchor=west},font=\footnotesize,
+			}
+			]		
+			
+			\legend{\fz{10}$\theta^{*}$,,asymptote};
+
+			% qt
+
+			\fill[fill=LavenderBlush] (0,0.5910) rectangle (1.0,0.694) (0.1000,0) rectangle (0.2500,1);
+			\addplot [blue!80!red,opacity=0.9,line width=0.8pt] table {thetal};
+			\addplot [blue!80!red,opacity=0.9,line width=0.8pt] table {thetar};
+ 		
+			\addplot [draw = black!70,opacity=0.45,line width=0.17pt,dash dot] coordinates {
+				(0.101,0) [0]
+				(0.101,1) [1]
+			};
+			
+			
+			% ^qt 
+			\coordinate  (c) at (0.5,0.473684211);
+			\draw[fill=FireBrick,draw = black!70] (c) circle (0.7mm) ;
+			\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.-45)+(-10mm,-7.6mm)$) {
+				$(0.5,0.473)$
+			};
+			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+						
+						
+			
+			
+			
+			% ^qt 
+			\coordinate  (c) at (0,0.694);
+			\draw[fill=Turquoise,draw = black!70] (c) circle (0.7mm) ;
+			\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.-45)+(22mm,6.6mm)$) {
+				$(\alpha,\theta^\star)\approx (0,0.694)$
+			};
+			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+						
+						
+			
+			% ^qt 
+			\coordinate  (c) at (0.2500,0.0);
+			\draw[fill=CornflowerBlue,draw = black!70] (c) circle (0.7mm) ;
+			\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.-45)+(4mm,6.6mm)$) {
+				$(\alpha,\theta^\star) \approx (0.25,0)$
+			};
+			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+						
+			
+			\draw[draw = black!70,opacity=0.45,line width=0.17pt,dash dot] (0.2510,0) -- (0.251,1.2) ;
+			\draw[draw = black!70,opacity=0.45,line width=0.17pt,dash dot] (0,0.592) -- (1,0.591) ;
+			\draw[draw = black!70,opacity=0.45,line width=0.17pt,dash dot] (0,0.694) -- (1,0.694) ;
+
+			\coordinate (c) at (1,0.5940 );
+			\draw[fill=Fuchsia,draw = black!70] (c) circle (0.7mm) ;
+			\node[align=left,anchor=east,font=\fz{8pt}] (n1) at ($(c)-(4mm,12mm)$) {
+				$\ (\alpha,\theta^\star) \approx (1,0.59)$
+			};
+			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+%			
+%
+%
+			\node at(0.2,0.613) {\fz{7pt}$\theta^\star$=nan area};
+%
+%
+			\coordinate (c) at (0.09,1);
+			\draw[fill=LightGoldenrod,draw = black!70] (c) circle (0.7mm) ;
+			\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c)+(12mm,-5mm)$) {
+			$\ (\alpha,\theta^\star) \approx (0.10,1)$
+			};
+			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+			
+ 
+
+		\end{axis}
+	\end{tikzpicture}
+\end{document}

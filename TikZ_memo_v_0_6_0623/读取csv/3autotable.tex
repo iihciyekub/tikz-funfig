@@ -1,0 +1,39 @@
+% XeLaTeX
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{CJKutf8}
+\newcommand{\ch}[1]{\begin{CJK}{UTF8}{gkai}#1\end{CJK}}
+
+\usepackage{csvsimple}
+\usepackage{booktabs,longtable }
+
+\begin{document}
+
+\ch{q我}
+
+\begin{table}[htbp]
+    \centering
+    \caption{read csv data}
+    \label{tab:mytable}
+    \csvautotabular{grade.csv} 
+\end{table}
+
+
+
+\begin{table}[htbp]
+    \centering
+    \caption{read csv data2}
+    \label{tab:mytable2}
+    \csvautolongtable[]{grade.csv} 
+\end{table}
+
+
+\begin{table}[htbp]
+    \centering
+    \caption{read csv data}
+    \label{tab:mytable3}
+    \csvautobooktabular{grade.csv} 
+\end{table}
+
+
+\end{document}

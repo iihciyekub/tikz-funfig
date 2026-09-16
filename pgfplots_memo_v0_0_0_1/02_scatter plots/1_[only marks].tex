@@ -1,0 +1,16 @@
+\documentclass{standalone}
+\usepackage{tikz,pgfplots}
+\pgfplotsset{compat = 1.18}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[enlargelimits=false,clip=true]
+
+\addplot+ [
+    only marks,
+    samples=400,
+] {rand};
+
+\end{axis}
+\end{tikzpicture}
+\end{document}

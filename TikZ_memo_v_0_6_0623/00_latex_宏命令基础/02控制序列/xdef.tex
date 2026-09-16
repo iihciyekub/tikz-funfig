@@ -1,0 +1,16 @@
+\documentclass[border=2mm]{standalone}
+% 必须加这个宏包
+\usepackage{tikz}
+
+
+\begin{document}
+\foreach [count =\e] \o in {3,5,6}{
+\ifnum\e=2
+\xdef\popo{\e}
+\fi
+}
+\popo
+
+
+\end{document}
+

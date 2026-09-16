@@ -1,0 +1,23 @@
+\documentclass[dvipsnames,svgnames,x11names,margin=3pt]{standalone}
+\usepackage{tikz,pgfplots,xparse,pgfmath,pgffor}
+\pgfplotsset{compat = 1.18,width=10cm,height=10cm}
+ 
+\begin{document}\begin{tikzpicture}
+
+\begin{axis}
+    
+\addplot+ [
+    only marks,
+    nodes near coords,
+    point meta=explicit symbolic
+] coordinates {
+    (0.5,0.2) [(a)]
+    (0.2,0.1) [(2)]
+    (0.7,0.6) [(3)]
+    (0.35,0.4) [(4)]
+    (0.65,0.1) [(5)]
+};
+
+\end{axis}
+ 
+\end{tikzpicture}\end{document}

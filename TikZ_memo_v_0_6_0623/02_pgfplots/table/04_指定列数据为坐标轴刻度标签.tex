@@ -1,0 +1,41 @@
+\documentclass[margin = 10pt]{standalone}
+\usepackage{tikz,pgfplots}
+\pgfplotsset{compat = 1.18}
+\usepgfplotslibrary{groupplots}
+\begin{document}\begin{tikzpicture}
+
+\begin{groupplot}[
+    group style={group size=1 by 5,vertical sep=2em,},
+    width=8cm,height=8cm,
+]
+
+ 
+% \thisrow{x1} :按列名; | \thisrowno{2} :按列位置;\coordindex \lineno
+\nextgroupplot[
+    % 从文件中读取轴标签
+    xticklabels from table={z.data.dat}{label},
+    % 
+    % 坐标轴数值或标签样式设置
+    yticklabel style = {
+        /pgf/number format/fixed zerofill,
+        /pgf/number format/precision=2,
+        },
+]
+\addplot table [x=x,y=y] {z.data.dat};
+
+\nextgroupplot[
+    % 从文件中读取轴标签
+    xticklabels from table={z.data.dat}{label},
+    yticklabels from table={z.data.dat}{mark},
+    % 
+]
+\addplot3 [
+    smooth,
+    surf,
+    mesh/rows = 10,
+    mesh/cols = 11,
+    point meta=x,
+    ] table [x=x,y=y,z expr={x^2+y^2}] {3d.data.dat};
+
+\end{groupplot}
+\end{tikzpicture}\end{document}

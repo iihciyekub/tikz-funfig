@@ -1,0 +1,23 @@
+\documentclass[margin = 10pt]{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots} 
+\pgfplotsset{
+compat = 1.18
+}
+
+\begin{document}
+\begin{tikzpicture}[remember picture]
+\begin{axis}[grid=major]
+\addplot+ [
+    unbounded coords=jump,
+    % x filter/.expression={x+1},
+    % x filter/.expression={\thisrow{x1} == 0.26 ? nan : x},
+    y filter/.expression={0.3>y>0.2 ? nan : y},
+    x filter/.code={
+        % # 执行\pgfmath 方法
+        \pgfmathadd{#1}{1.5}
+        },
+    ] table[x=x,y=y] {99_data/data3.dat};
+\end{axis}
+\end{tikzpicture}
+\end{document}

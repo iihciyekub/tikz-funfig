@@ -1,0 +1,27 @@
+\documentclass[margin = 10pt]{standalone}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{
+compat = 1.18
+}
+
+\begin{document}
+\begin{tikzpicture}[remember picture]
+\begin{axis}[
+    xlabel = x,
+    ylabel = $y$,
+    % ylabel style = { align = right,red,font = \footnotesize},
+    % xlabel style = { align = left,red,font = \footnotesize},
+    label style = { 
+            align = right,
+            text = red,
+            font = \huge
+            },
+    ]
+    
+    
+\addplot {x^3};
+\end{axis}
+\end{tikzpicture}
+\end{document}

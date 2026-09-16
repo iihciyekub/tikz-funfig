@@ -1,0 +1,23 @@
+\documentclass[dvipsnames,svgnames,x11names,margin=3pt]{standalone}
+\usepackage{tikz,pgfplots,xparse,pgfmath,pgffor}
+\pgfplotsset{compat = 1.18,width=10cm,height=10cm}
+\usepgfplotslibrary{groupplots}
+
+\begin{document}
+\begin{tikzpicture}
+
+\begin{groupplot}[
+    group style={
+        group size=1 by 5,
+        vertical sep=1em,
+        },
+        width=8cm,height=8cm,
+    ]
+    
+\nextgroupplot[] \addplot3 [surf] {x*y};
+
+\nextgroupplot[] \addplot3 [surf] {x*y};
+   
+\end{groupplot}
+\end{tikzpicture}
+\end{document}

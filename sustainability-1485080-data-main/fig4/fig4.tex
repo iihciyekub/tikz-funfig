@@ -1,0 +1,115 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames, svgnames, x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.5}
+\pgfplotsset{width=10cm,compat=1.16}
+\newcommand{\fz}[1]{\fontsize{#1 pt}{0.001mm}\selectfont}
+\usepackage{pgfkeys}
+\usetikzlibrary{calc,arrows.meta,positioning,intersections}
+
+\newcommand{\getX}[1]{
+	\pgfplotspointgetcoordinates{#1}
+	\pgfmathprintnumber[fixed]{\pgfkeysvalueof{/data point/x}}
+}
+
+\newcommand{\getY}[1]{
+	\pgfplotspointgetcoordinates{#1}
+	\pgfmathprintnumber[fixed]{\pgfkeysvalueof{/data point/y}}
+}
+
+\newcommand{\getXY}[1]{
+\pgfplotspointgetcoordinates{#1}
+$(\pgfmathprintnumber[fixed]{
+	\pgfkeysvalueof{/data point/x}},
+\pgfmathprintnumber[fixed]{
+	\pgfkeysvalueof{/data point/y}})$
+}
+
+\begin{document}
+	\begin{tikzpicture}
+		
+		\begin{axis}[smooth,
+			axis line shift=6.5pt, grid=major,grid style={gray!24,opacity = 0.4,line width=0.02pt},
+		title style ={ align = left ,font = \fz{10pt}},
+			title={$p=10, c=4, s=3,w=6, B=100, r=0.05$\\$\theta=0.8,b=3,\mu=100, \sigma=100$},
+			xlabel={\fz{10}Acceptable Bankruptcy Risk: $\large \alpha$},
+			ylabel={\fz{10}Retailer's \& Manufacturer's Profit: $\large \pi_r , \pi_s$},
+			xtick={0,0.11,0.203333,0.5,1},
+			xmin =0,xmax=1,
+			ymin =-100,ymax=403.5,
+			ytick={-100,0, 33.424,203.82894030661,403.05},
+			legend style={
+				at={(0.2cm,20.675cm)},
+				anchor=west,cells={anchor=west},font=\footnotesize,
+			}
+			]		
+			
+			\legend{,$\pi_{r}=q(\theta p-w)-(p \theta-b) \int_{0}^{q} F(x) d x-(w q-B)^+ r$,,,
+			$\pi_{s}=q[(1-\theta) p+w-c]-[(1-\theta) p-s+b] \int_{0}^{q} F(x) d x$};
+			
+			
+			
+			
+			\fill [fill=DarkTurquoise,opacity=0.38]  (0.11,0) rectangle (0.203333,33.424);
+			\node at(0.28,10) [inner sep = 0pt,font=\fz{2pt},] {$\pi_r$ increasing area};	
+			
+			\fill [fill=Aquamarine,opacity=0.138]  (0.11,0) rectangle  (0.203333,203.82894030661);
+			\node at(0.134,170) [inner sep = 0pt,rotate = 90,font=\fz{2pt},] {$\pi_s$ increasing area};	
+
+
+
+
+
+
+
+
+
+			\addplot [blue!80!red,opacity=0.45,line width=0.57pt,dash dot,name path=A] table {pir};
+			\addplot [blue!80!red,line width=1.15pt] table {pir_in};	
+			\addplot[blue!80!red,line width=1pt] coordinates {(0.204,33.448885) (1,	33.448885)};
+
+
+			\addplot [DarkSeaGreen,opacity=0.4,line width=0.57pt,dash dot,name path=C] table {pis};
+			\addplot [DarkSeaGreen,line width=1.15pt] table {pis_in};	
+ 			\addplot[DarkSeaGreen,line width=1pt] coordinates {(0.204,203.828940306612) (1,203.828940306612)};
+
+
+
+
+
+
+
+
+
+
+
+			\coordinate (c) at (0.203333,33.448885);
+			\draw[fill=OrangeRed,draw = black!70] (c) circle (0.7mm) ;
+			\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.-45)+(10.2mm,6mm)$) {
+				$(\alpha,q^\star,\pi_r) = (0.203,58,33.424)$
+			};
+			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1.180)--(c);
+
+
+
+			\coordinate (c) at (0.203,203.82894030661);
+			\draw[fill=Plum,draw = black!70] (c) circle (0.7mm) ;
+			\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.-45)+(9.8mm,-6mm)$) {
+				$\ (\alpha,q^\star,\pi_s) = (0.203,58,203.828)$
+			};
+			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1.180)--(c);
+
+
+
+			% 绘制交点
+			\node [name intersections={of=A and C,by=F},xshift =3mm] at (F) {};
+			\draw[fill=BurntOrange,draw = black!70] (F) circle (0.7mm)  ;
+			\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(F.-45)+(4mm,-8mm)$) {
+				$\ (\alpha,q^\star,\pi_r,\pi_s) = (0.113,0,0,0)$
+			};
+			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1.180)--(F);
+			
+			\end{axis}
+	\end{tikzpicture}
+\end{document}

@@ -1,0 +1,44 @@
+\documentclass[margin = 10pt]{standalone} 
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat = 1.18}
+ 
+\begin{document}
+\begin{tikzpicture} 
+\begin{axis}[
+    3d box=complete,
+    3d box=complete*,
+    grid=major,
+    colorbar,
+    colormap/viridis,
+    view={45}{45},
+    % view/h=0,
+    % view/v=0, 
+    ]
+
+% \addplot3 [
+%     smooth, 
+%     surf, 
+%     % shader=flat | interp | faceted | flat corner | flat mean | faceted interp
+%     shader = interp, 
+%     mesh/rows = 10, % y值的非重复数量
+%     mesh/cols = 11, % x值的非重复数量
+%     % z filter/.expression ={-40},
+%     point meta= \thisrow{z2},
+%     ] table[x=x,y=y,z expr=-40] {99_data/data2.dat};
+
+    
+\addplot3+ [opacity = 0.8,
+    smooth,
+    surf,scatter,
+    mesh/rows = 10,
+    mesh/cols = 11,
+    shader = faceted interp,
+    point meta = \thisrow{z2},
+    ] table [x=x,y=y,z=z2]  {99_data/data2.dat};
+    
+    
+    
+\end{axis}
+\end{tikzpicture}
+\end{document}

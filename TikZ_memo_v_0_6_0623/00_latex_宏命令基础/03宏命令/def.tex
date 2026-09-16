@@ -1,0 +1,62 @@
+\documentclass[border=2mm]{standalone}
+
+\usepackage{tikz}
+
+\begin{document}
+\def\text#1#2#3{#1#2#3}
+\text{1,4555!}{}{}
+
+
+\def\a{eeeeeeee}
+\a
+
+
+% 可传入外部参数的\def
+\def\ea#1#2#3{#1---,#2----,#3}
+\ea{one}{two}{tree}
+
+
+
+
+
+
+% 定义一个宏,里面的宏会展开
+\def\addcircle#1{
+\pgfmathparse{max(#1,58)}\pgfmathresult
+}
+
+\addcircle{33}
+\addcircle{1}
+
+
+
+
+% 内置随机数
+\def\x{
+\pgfmathparse{rand}\pgfmathresult
+}
+
+\x,\x,\x,\x
+
+
+
+
+% 内置随机数
+\def\y{
+\pgfmathparse{random(1,100)}\pgfmathresult
+}
+
+\y, \y, \y, \y, 
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

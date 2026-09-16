@@ -1,0 +1,38 @@
+\documentclass[border=2mm]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes.callouts}
+
+\begin{document}
+
+\if09
+ellipse callout
+    callout relative pointer={(0,1)}
+    callout absolute pointer=
+    callout pointer shorten=1cm
+rectangle callout
+    callout pointer width
+ellipse callout
+    callout pointer arc=30
+cloud callout
+    callout pointer start size=
+    callout pointer end size=
+    callout pointer segments=
+\fi
+
+
+
+
+
+\begin{tikzpicture}
+\node[ellipse callout, draw] (hallo) {Hallo!};
+\end{tikzpicture}
+
+
+
+
+
+
+
+ 
+ 
+\end{document}

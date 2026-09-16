@@ -1,0 +1,122 @@
+\documentclass[margin=0pt,border=0pt]{standalone}
+\usepackage{iitikz}
+
+
+
+\begin{document}
+\begin{tikzpicture}[remember picture]
+
+\begin{axis}
+
+
+\iffalse
+% gnuplot #1  普通表达式图像绘制(支持tikz的样式参数)
+%% 一元函数
+\iiplot[a,Coral4,dashed]{
+    plot x+0.4;
+};
+%% 二元函数
+\iiplot[a,Coral4,dashed]{
+    splot y-x+1;
+};
+
+
+
+
+
+
+% gnuplot #2  普通表达式图像绘制(支持tikz算子选项)
+%% 一元函数
+\iiplot[a,Coral4]{
+    plot x+2;
+} coordinate [pos=0.2] (a) coordinate [pos=0.5] (b) (a) -| (b)
+;
+%% 二元函数
+\iiplot[a,Coral4]{
+    splot y^2 + x^2 - 16;
+}  foreach \i in {0.3,0.6,1} {node[pos=\i] {$\i$}};
+
+
+
+
+
+
+
+%  gnuplot #3  x定义域下 f(X) 表达式图像绘制
+%% 一元函数
+\iiplot[a,Brown]{
+    f(x)=x+0.4;
+    plot [0:2] f(x);
+};
+%% 二元函数
+\iiplot[a,Blue]{
+    f(x,y)= x^2+y^2-4 ;
+    splot [0:2][0:2] f(x,y);
+};
+
+
+
+
+
+
+
+
+
+%  gnuplot #4  带赋值的多个 f(X) 表达式图像绘制
+%% 一元函数
+\iiplot[Coral2]{
+    f(x)=x+b;
+    plot [0:0.5] b=4, f(x) , b=6,f(x);
+};
+%% 二元函数
+\iiplot[Coral2]{
+    f(x,y)=y+x^2+b;
+    splot [0:1][-10:10] b=4, f(x,y), b=6,f(x,y);
+};
+
+
+
+
+
+
+
+
+% gnuplot #5  do for 语句下的多个 f(X) 表达式图像绘制
+%% 一元函数
+\iiplot[Coral2]{
+    array B[6] = [ 1,2,3,4,5];
+    do for [i=1:5] {
+        plot f(x)=x+B[i], f(x) ;
+    };
+};
+%% 二元函数
+\iiplot[Dandelion]{
+    do for [i=1:5] {
+        splot [0:1][-10:10] b=i, f(x,y);
+    };
+};
+
+
+\fi
+
+
+
+
+%  gnuplot #6   f(X) 抽象表达式图像绘制(可结合\def命令更改自变量)
+\def\f#1{
+f(#1)= i + j + k^2;
+}
+\iiplot[a]{
+    \f{k}
+    plot [0:2] i=0,j=0,f(x);
+} 
+\addpoint{45}{0.3}
+;
+
+
+
+  
+\end{axis}
+
+
+\end{tikzpicture}\end{document}

@@ -1,0 +1,21 @@
+\documentclass[margin = 10pt]{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots} 
+\pgfplotsset{compat = 1.16}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}
+\addplot+ [
+    error bars/.cd,
+    x dir=both, x explicit,
+    y dir=both, y explicit,
+    ] table [
+        x error plus = ex+,
+        x error minus = ex-,
+        y error plus = ey+,
+        y error minus = ey-,
+    ] {99_data/errordata.dat};
+\end{axis}
+\end{tikzpicture}
+\end{document}

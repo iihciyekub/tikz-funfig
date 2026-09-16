@@ -1,0 +1,25 @@
+\documentclass{article}
+\usepackage[boxed,ruled,shortend,vlined,linesnumbered,commentsnumbered,]{algorithm2e}
+
+\begin{document}
+\begin{algorithm}[!htp]
+\DontPrintSemicolon %  算法的每行结尾不打印分号
+
+\Switch{the value of T}{
+    \uCase{a value}{
+        do this\;
+        do that\;
+    }
+    \uCase{last value}{
+        do this\;
+        break\;
+    }
+    \Other{
+        for the other values\;
+        do that\;
+    }
+}
+
+\caption{title}
+\end{algorithm}
+\end{document}

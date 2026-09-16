@@ -1,0 +1,15 @@
+% p805
+\documentclass[margin=2mm]{standalone}
+\usepackage{tikz}
+\tikzset   {
+    seagull/.pic={
+        \draw (-3mm,0) to [bend left] (0,0) to [bend left] (3mm,0);
+    }
+}
+\begin{document}
+
+\tikz {
+    \pic at (1,0) {seagull};
+}
+  
+\end{document}

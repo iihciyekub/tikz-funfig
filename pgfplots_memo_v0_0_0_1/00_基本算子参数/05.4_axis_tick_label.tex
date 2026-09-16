@@ -1,0 +1,44 @@
+\documentclass[margin = 10pt]{standalone} 
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat = 1.9}
+
+\begin{document}
+\begin{tikzpicture}[remember picture]
+\begin{axis}[
+    xtick = data,
+    % ytick= data,
+    % 
+    % xticklabel= \empty,
+    % yticklabel= {$\ticknum_e$},
+    % 
+    % lower | upper | bottom | top | left | right | default
+    yticklabel pos = right,
+    xticklabel pos = top,
+    % 
+    ticklabel shift=8,
+    % xticklabel shift=4,
+    % 
+    % 指定
+    % xticklabels= {a,b,c,d,f,hew,h,k},
+    % 从数据中读取
+    % xticklabels from table = {99_data/idata.dat}{label},
+    % yticklabels= {},
+    % 
+    % 坐标轴数值或标签样式设置\
+    ticklabel style = {
+        % 命名标记每一个刻度,用作坐标调用
+        name=tick no \ticknum,
+        font = \tiny,
+        /pgf/number format/fixed zerofill,
+        rotate = 90},
+    xticklabel style={}
+]
+
+\addplot+ table [x=x1,y=f(x)] {99_data/idata.dat};
+\end{axis}
+
+
+
+\end{tikzpicture}
+\end{document}

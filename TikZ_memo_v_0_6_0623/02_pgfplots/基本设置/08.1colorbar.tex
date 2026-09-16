@@ -1,0 +1,15 @@
+\documentclass[dvipsnames,svgnames,x11names,margin=3pt]{standalone}
+\usepackage{tikz,pgfplots}
+\pgfplotsset{compat = 1.18,width=10cm,height=10cm}
+
+\begin{document}\begin{tikzpicture}
+
+\begin{axis}[
+    colorbar sampled line,
+    colorbar shift/.style={xshift=0.3cm},
+    point meta = {x+10},
+]
+\addplot+ [scatter] {sin(deg(x))};
+\end{axis}
+
+\end{tikzpicture}\end{document}

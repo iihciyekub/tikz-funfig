@@ -1,0 +1,141 @@
+\documentclass[border=2mm]{standalone}
+% 必须加这个宏包
+\usepackage{tikz}
+\usepackage{pgffor}
+
+
+\begin{document}
+
+% 1 迭代数字范围：
+\foreach \i in {1,2,...,10} {
+  % 在此处执行循环体操作，可以使用 \i 表示当前迭代的数字
+}
+
+% 2 迭代列表元素：
+\foreach \i in {apple,banana,cherry} {
+  % 在此处执行循环体操作，可以使用 \i 表示当前迭代的列表元素
+}
+
+% 3 迭代指定步长的数字范围：
+\foreach \i in {0,0.1,...,1} {
+  % 在此处执行循环体操作，可以使用 \i 表示当前迭代的数字
+}
+
+% 4 迭代使用变量控制的循环次数：
+\def\n{4}
+\foreach \i in {1,...,\n} {
+  % 在此处执行循环体操作，可以使用 \i 表示当前迭代的循环计数
+}
+
+% 5 自定义变量名称和索引变量名称：
+\foreach \i [count=\i] in {a,b,c,d} {
+  % 在此处执行循环体操作，可以使用 \i 表示当前迭代的列表元素
+  % 可以使用 \i 表示当前迭代的索引值（从 1 开始）
+}
+
+% 6 自定义变量名称和索引变量名称：from
+\foreach \i [count=\i from 3] in {a,b,c,d} {
+  % 在此处执行循环体操作，可以使用 \i 表示当前迭代的列表元素
+  % 可以使用 \i 表示从 1 开始的循环计数器
+}
+
+% 7 循环嵌套：
+\foreach \i in {1,2,3} {
+  \foreach \y in {a,b,c} {
+    % 在此处执行循环体操作，可以使用 \i 表示外层循环的当前迭代值
+    % 可以使用 \y 表示内层循环的当前迭代值
+  }
+}
+
+% 8 evaluate：用于对迭代变量进行计算或生成新的变量 as 形式
+\foreach \i [evaluate=\i as \y using \i^2] in {1,2,3,4} {
+  % 在此处执行循环体操作，可以使用 \i 表示当前迭代的数字
+  % 可以使用 \y 表示根据 \i 计算得到的新变量
+}
+ 
+
+% 9 evaluate：用于对迭代变量进行计算或生成新的变量形式 {}形式
+\foreach  [evaluate={\N= max(99, \i-7)}] \i in {0,...,5}{
+  % 在此处执行循环体操作，可以使用 \i 表示当前迭代的数字
+  % 可以使用 \y 表示根据 \i 计算得到的新变量
+}
+
+% 10 evaluate：用于对迭代变量进行计算或生成新的变量,{}组合形式,;为分割符
+\foreach [evaluate={\n=max(-4,\i-7);\m=min(3,\i+4);}] \i in {0,...,5}{
+  % 在此处执行循环体操作，可以使用 \i 表示当前迭代的数字
+  % 可以使用 \y 表示根据 \i 计算得到的新变量
+  \i
+}
+
+% 11 parse：用于将迭代变量作为字符串进行处理。
+\foreach  [parse=true] \i in {a,...,e} {
+  % 在此处执行循环体操作，可以使用 \i 表示当前迭代的字符串
+}
+
+% 12 remember：用于在循环中保持前一次迭代的值。
+\foreach  [remember=\i as \lastx] \i in {1,2,3,4} {
+  % 在此处执行循环体操作，可以使用 \i 表示当前迭代的数字
+  % 可以使用 \lastx 表示前一次迭代的值
+}
+
+% 13 remember initially：用于在循环中保持前一次迭代的值。
+\foreach  [remember=\i as \lastx (initially 5)] \i in {1,2,3,4,5} {
+  % 在此处执行循环体操作，可以使用 \i 表示当前迭代的数字
+  % 可以使用 \lastx 表示上一个迭代的值，在第一次迭代时使用初始值 0
+  \i,\lastx
+}
+
+% 14 filter：用于根据条件筛选迭代的元素。
+\foreach \i in {1,2,...,10} {
+    % 在此处执行循环体操作，仅当 \i 小于 5 时执行
+    \ifnum \i > 3
+        % \usepackage{pgffor}
+        \breakforeach
+    \fi
+}
+
+% 15 全局变量取出
+\foreach [count =\e] \o in {3,5,6}{
+    \xdef\popo{\e}
+    }
+% \popo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+
+
+
+
+
+\end{document}

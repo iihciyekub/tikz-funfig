@@ -1,0 +1,23 @@
+\documentclass[dvipsnames,svgnames,x11names,margin=3pt]{standalone}
+\usepackage{tikz}
+
+
+\begin{document}
+
+\pgfkeys{/pgf/number format/.cd,
+    fixed,
+    precision=1,
+    skip 0.
+}
+\pgfmathprintnumber{4.0192034664}
+
+
+
+
+\pgfkeys{/mykey/.initial=3.1415229} % 假设键的初始值为3.14159
+
+\pgfkeys{/mykey}
+
+
+
+\end{document}

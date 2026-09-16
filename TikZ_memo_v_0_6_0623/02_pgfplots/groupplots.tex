@@ -1,0 +1,36 @@
+\documentclass[dvipsnames,svgnames,x11names,margin=3pt]{standalone}
+\usepackage{tikz,pgfplots,xparse,pgfmath,pgffor}
+\pgfplotsset{compat = 1.18,width=10cm,height=10cm}
+\usepgfplotslibrary{groupplots}
+
+\begin{document}\begin{tikzpicture}
+
+\begin{groupplot}[
+    group style={group size=2 by 1,
+        vertical sep=3em,
+        horizontal sep=3em,
+        % xlabels at=all|edge top|edge bottom
+        % ylabels at=all|edge left|edge right
+        % xlabels at={edge bottom},
+        % ylabels at={edge left},
+        % 
+        % xticklabels at= {edge bottom},
+        % yticklabels at= {edge left},
+        % 
+        % x descriptions (xlabels+ xticklabels)
+        % x descriptions at= edge bottom,
+        % y descriptions at= edge right,
+    },
+    width=8cm,height=8cm,
+    % xlabel= xlabel,
+    % ylabel= ylabel,
+]    
+\nextgroupplot
+\addplot  {x^2};
+
+\nextgroupplot
+\addplot [surf] {x*2};
+   
+\end{groupplot}
+\end{tikzpicture}
+\end{document}

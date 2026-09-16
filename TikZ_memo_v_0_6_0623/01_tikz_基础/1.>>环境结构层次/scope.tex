@@ -1,0 +1,58 @@
+ \documentclass[border=2mm]{standalone}
+
+\usepackage{tikz}
+\usetikzlibrary{calc,3d}
+\begin{document}
+\begin{tikzpicture}
+
+
+      \begin{scope}[ 
+            yshift=-100,
+            every node/.append style={yslant=0.5,xslant=-0.6},
+            yslant=0.5,xslant=-0.6
+        ] 
+            % The frame:
+            \draw[black!80, thin,fill= blue!40,opacity = 0.35821] (0,0) rectangle (70,70); 
+            % Agents:
+            \draw[fill=red]  
+                (5,2) circle (.1) % Firms
+                (2,2) circle (.1); % Households
+            % Flows:
+            \path[-latex,thin] node[fill ,yellow,inner sep =2pt](b1) at (0,18) {} 
+                node[fill ,yellow,inner sep =2pt](a1) at (20,5) {}   node[fill ,yellow,inner sep =2pt](b1) at (50,18) {}
+                (a) edge[out=-90,in=-90] (b); % Labour Powers
+            \draw[-latex,thin]
+                (50,22) to[out=90,in=90] (20,22); % Wages
+
+        \end{scope}
+
+
+
+        \begin{scope}[ 
+            yshift=-80,
+            every node/.append style={yslant=0.5,xslant=-0.6},
+            yslant=0.5,xslant=-0.6
+        ] 
+            % The frame:
+            \draw[black!80, thin,fill= blue!40,opacity = 0.35821] (0,0) rectangle (70,70); 
+            % Agents:
+            \draw[fill=red]  
+                (5,2) circle (.1) % Firms
+                (2,2) circle (.1); % Households
+            % Flows:
+            \path[-latex,thin] 
+                node[fill ,yellow,inner sep =2pt](a1) at (30,18) {}   node[fill ,yellow,inner sep =2pt](b1) at (50,18) {}
+                (a) edge[out=-90,in=-90] (b); % Labour Powers
+            \draw[-latex,thin]
+                (50,22) to[out=90,in=90] (20,22); % Wages
+
+        \end{scope}
+
+
+
+
+
+ 
+ 
+\end{tikzpicture}
+\end{document}

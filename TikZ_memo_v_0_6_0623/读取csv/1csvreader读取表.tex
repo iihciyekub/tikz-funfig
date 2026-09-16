@@ -1,0 +1,28 @@
+% XeLaTeX
+\documentclass[12pt,a4paper]{article}
+% \usepackage[utf8]{inputenc}
+\usepackage{csvsimple}
+\usepackage{booktabs}
+
+
+\begin{document}
+% \csvreader[<options>]{<file name>}{<assignments>}{<command list>}
+% \thecsvrow
+% \csvcoli, \csvcolii, \csvcoliii, . . . ,
+
+\begin{table}[htbp]
+\centering
+\caption{3}
+\csvreader[
+    tabular={llc}, 
+    table head=\toprule Name &  Matr &  Grade\\ \midrule,, 
+    table foot=\bottomrule,
+]
+{grade.csv}%
+{name=\name,givenname=\firstname,grade=\grade}%
+{\thecsvrow & \firstname~\name~\grade & \csvcoliii}
+
+\end{table}
+
+
+\end{document}

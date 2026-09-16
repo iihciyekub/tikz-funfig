@@ -1,0 +1,31 @@
+\documentclass{article}
+\usepackage[boxed,ruled,shortend,vlined,linesnumbered,commentsnumbered,]{algorithm2e}
+
+\begin{document}
+\begin{algorithm}[!htp]
+\DontPrintSemicolon %  算法的每行结尾不打印分号
+
+% forall
+\ForAll{elements of $S_1$}{
+    remove an element e from $S_1$\;
+    put e in the set $S_2$\;
+}
+
+% 多行
+\For{$i=1$ \KwTo max}{
+    mark $i$\;
+    mark ++\;
+}
+
+% 单行
+\lFor{$i=1$ \KwTo max}{mark $i$}\;
+
+% foreach
+\ForEach{$e$ in the set}{
+    put $e$ in ${\cal E}$\;
+    mark $e$\;
+}
+
+\caption{title}
+\end{algorithm}
+\end{document}

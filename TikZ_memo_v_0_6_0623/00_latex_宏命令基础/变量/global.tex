@@ -1,0 +1,37 @@
+
+
+
+
+
+\documentclass[border=2mm]{standalone}
+% 必须添加
+\usepackage{tikz}
+\begin{document}
+
+\def\c{0}
+
+\foreach[evaluate ={\n = int(\c+\i);}] \i in {1,2,...,7}{
+    \n, \def\c{\n}
+}
+ \c
+ 
+ 
+ 
+ 
+ 
+% 定义为全局变量后, 数值保留
+\global\def\c{0}
+
+\foreach[evaluate ={\n = int(\c+\i);}] \i in {1,2,...,7}{
+    \n, \global\def\c{\n}
+}
+ \c
+ 
+  
+ 
+ 
+ 
+ 
+ 
+
+\end{document}

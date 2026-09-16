@@ -1,0 +1,32 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usetikzlibrary{math}
+\begin{document}
+
+% 整数计算 \pgfmathtruncatemacro<宏名称>{<表达式>}
+\pgfmathtruncatemacro{\var}{3.93+5}
+\var
+
+\\
+
+
+% 浮点数计算 \pgfmathtruncatemacro<宏名称>{<表达式>}
+\pgfmathsetmacro{\var}{3.3+5}
+\var
+
+
+\\
+
+% \pgfmathprintnumber[格式]{数值}
+\pgfmathprintnumber[fixed,precision=2]{4.53234867}
+
+\pgfkeys{/pgf/number format/.cd,fixed,precision=2,skip 0.}
+\pgfmathprintnumber{4.234664}
+
+\end{document}
+
+
+
+
+
+

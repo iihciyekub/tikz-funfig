@@ -1,0 +1,23 @@
+\documentclass[border=2mm]{standalone}
+\usepackage{tikz}
+\begin{document}
+\tikz{
+
+\filldraw[red,draw=black]
+(.913,1.8) -- (1.369,.1) -- (1.162,-.283) -- (.775,1.545)--cycle;
+}
+% 等价
+
+
+\tikz{
+\path [fill=red,draw=black] (.913,1.8) -- (1.369,.1) -- (1.162,-.283) -- (.775,1.545)--cycle;
+}
+
+
+
+
+
+
+ 
+ 
+\end{document}

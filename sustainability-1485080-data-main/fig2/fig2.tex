@@ -1,0 +1,70 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames, svgnames, x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.5}
+\pgfplotsset{width=10cm,compat=1.16}
+\newcommand{\fz}[1]{\fontsize{#1 pt}{0.001mm}\selectfont}
+\usepackage{pgfkeys}
+\usetikzlibrary{calc}
+\begin{document}
+	\begin{tikzpicture}
+		
+		\begin{axis}[smooth,
+		axis line shift=6.5pt, grid=major,grid style={gray!24,opacity = 0.4,line width=0.02pt},
+		title style ={ align = left ,font = \fz{10pt}},
+		title={$p=10, c=4, s=3,w=6, B=100, r=0.05 $ \\$\mu=100, \sigma=100$},
+		xlabel={\fz{10}Acceptable Bankruptcy Risk: $\large \alpha$},
+		ylabel={\fz{10}Channel's Profit: $\large \pi^\star(q^c)$},
+		ticklabel style={
+				/pgf/number format/precision=4,
+			},
+		xtick={0,0.124,0.397,1},
+		xmin =0,xmax=1,
+		ymin =0,ymax=703.05,
+		ytick={0,446.,703.05},
+		legend style={
+			at={(0.2cm,30.68cm)},
+			anchor=west,cells={anchor=west},font=\footnotesize,
+		}
+		]		
+
+		\legend{,$\pi^\star(q^c) = q(p-c)-(p-s) \int_{0}^{q} F(x) d x-(w q-B)^+ r$};
+
+
+			
+		\fill [fill=MistyRose,opacity=0.38]  (0.124,0) rectangle (0.397,446);
+		\addplot [gray,line width=0.2457pt,dash dot] table {piqc};
+		\addplot [blue!80!red,line width=1.25pt] table {piqc_in};	
+		
+		
+		% qs
+		\addplot[blue!80!red,line width=1.35pt] coordinates {(0.39666666666666667,	446.012984016604) (1,	446.012984016604)};
+
+	
+		% ^qt 
+		\coordinate  (c) at (0.397,	446.012984016604);
+		\draw[fill=Turquoise,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.-45)+(-14mm,6.6mm)$) {
+			$\{\alpha,q^c,\pi^\star(q^c)\} = \{0.397,189,446\}$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+
+		\node at(0.37,290) [rotate = 90,font=\fz{8pt}] {$\pi^\star$ increasing area};
+
+
+		
+		% _qt 
+		\coordinate  (c) at (0.124,5);
+		\draw[fill=GreenYellow,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{8pt}] (n1) at ($(c.-45)+(4mm,6.6mm)$) {
+			$\{\alpha,q^c,\pi^\star(q^c)\}= \{0.124,0,0\}$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);
+
+
+
+			
+	\end{axis}
+\end{tikzpicture}
+\end{document}

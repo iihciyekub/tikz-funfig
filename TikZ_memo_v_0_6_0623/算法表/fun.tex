@@ -1,0 +1,22 @@
+\documentclass{article}
+\usepackage[boxed,ruled,shortend,vlined,linesnumbered,commentsnumbered,]{algorithm2e}
+
+\begin{document}
+\begin{algorithm}[!htp]
+\DontPrintSemicolon %  算法的每行结尾不打印分号
+
+\SetAlgoLined
+\SetKwProg{Fn}{Function}{ :}{end}
+\Fn{afunc(i)}{
+    i++\;
+    return 0\;
+}
+
+
+\SetKwProg{Def}{def}{:}{end}
+\Def{afunc(i)}{return 0\;}
+
+
+\caption{title}
+\end{algorithm}
+\end{document}

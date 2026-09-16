@@ -1,0 +1,16 @@
+\documentclass{article}
+\usepackage[boxed,ruled,shortend,vlined,linesnumbered,commentsnumbered,]{algorithm2e}
+
+\begin{document}
+\begin{algorithm}[!htp]
+\DontPrintSemicolon %  算法的每行结尾不打印分号
+
+tcc note here\tcc*[l]{note 1}
+tcc note here\tcc*[r]{note 2}
+
+tcp note here\tcp*[l]{note 2}
+tcp note here\tcp*[r]{note 1}
+
+\caption{title}
+\end{algorithm}
+\end{document}

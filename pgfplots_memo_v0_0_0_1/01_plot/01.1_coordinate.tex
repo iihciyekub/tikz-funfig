@@ -1,0 +1,21 @@
+\documentclass[margin = 10pt]{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat = 1.18}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[ 
+    symbolic x coords={a,b,c,f,g,h,i},
+]
+\addplot  coordinates {
+    (a,42)
+    (b,50)
+    (c,80)
+    (f,60)
+    (g,62)
+    (i,90)
+};
+\end{axis}
+\end{tikzpicture}
+\end{document}

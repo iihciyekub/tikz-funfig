@@ -1,0 +1,173 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames, svgnames, x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.5}
+\pgfplotsset{width=10cm,compat=1.16}
+\newcommand{\fz}[1]{\fontsize{#1 pt}{0.001mm}\selectfont}
+\usepackage{pgfkeys}
+
+\usetikzlibrary{calc,arrows.meta,positioning,intersections}
+
+\newcommand{\getX}[1]{
+	\pgfplotspointgetcoordinates{#1}
+	\pgfmathprintnumber[fixed]{\pgfkeysvalueof{/data point/x}}
+}
+
+\newcommand{\getY}[1]{
+	\pgfplotspointgetcoordinates{#1}
+	\pgfmathprintnumber[fixed]{\pgfkeysvalueof{/data point/y}}
+}
+
+
+\begin{document}
+	\begin{tikzpicture}
+		
+		\begin{axis}[smooth,
+			axis line shift=6.5pt, grid=major,grid style={gray!24,opacity = 0.4,line width=0.02pt},
+		title style ={ align = left ,font = \fz{10pt}},
+			title={ $p=10, c=4, s=3,w=6, B=100, r=0.05$\\$\mu=100, \sigma=100$ },
+			xlabel={\fz{10}Acceptable Bankruptcy Risk: $\large \alpha$},
+			ylabel={\fz{10}Revenue Share: $(\large  p\theta^\star, p\tilde{\theta}^\star)$ \& Buy-Back price: $(b^\star, \tilde{b}^\star)$},
+			%					grid=major,grid style={color=gray,opacity=0.053,line width =0.2pt},
+			xtick={0,0.123,0.29,0.5,0.7,0.85,1},
+			xmin =0,xmax=1,
+			ymin =0,ymax=20.001,
+			ytick={0,1.05,6.01,7.22,8.89,16,20.001},
+			ticklabel style={
+				/pgf/number format/precision=4,
+					},
+			legend style={
+				at={(8.25cm,17.9153cm)},font=\fz{10}
+				anchor=east,cells={anchor=west},font=\footnotesize,
+			}
+			]		
+			
+			\legend{,$b^\star$,$\tilde{b}^\star$,,$p\theta^\star$,$p\tilde{\theta}^\star$};
+			
+			
+			\addplot [MediumBlue,densely dash dot,line width=0.457pt,opacity=0.454,name path =b1] table {b_l};
+			\addplot [MediumBlue,densely dash dot,line width=0.457pt,opacity=0.454,name path =b2] table {b_r};
+			
+			
+			
+			\addplot [MediumBlue ,line width=0.8pt,name path =nb] table {bfl};	
+			
+			
+			
+			
+			
+			
+			\addplot [Maroon,densely dash dot,line width=0.457pt,opacity=0.454,name path =t1,] table {thetap_l};
+			\addplot [Maroon,densely dash dot,line width=0.457pt,opacity=0.454,name path =t2,] table {thetap_r};
+			
+			\addplot [Crimson,line width=0.8pt,name path =nt] table {theta10time};	
+			
+
+
+
+		
+			\coordinate (c) at (0.09,5.59);	
+			\draw[fill=DarkOrange,draw = black!70] (c) circle (0.7mm) ;
+			\node[align=left,anchor=west,font=\fz{7pt}] (n1) at ($(c)+(-8.mm,-8.5mm)$) {
+				$ (0.09,5.59)$
+			};
+			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);	
+		
+			\coordinate (c) at (0.125,6);	
+			\draw[fill=LawnGreen,draw = black!70] (c) circle (0.7mm) ;
+			\node[align=left,anchor=west,font=\fz{7pt}] (n1) at ($(c)+(5.mm,-1.5mm)$) {
+				$ \{\alpha ,\tilde{b}^\star,p\tilde{\theta}^\star\} = \{0.125,6,6\}$
+			};
+			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);	
+
+
+			\coordinate (c) at (0.073,8.87);	
+			\draw[fill=Chocolate,draw = black!70] (c) circle (0.7mm) ;
+			\node[align=left,anchor=west,font=\fz{6pt}] (n1) at ($(c)+(5.mm,5.5mm)$) {
+				$(0.07,8.89)$
+			};
+			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);	
+
+
+
+			\coordinate (c) at (0.295,7.22);	
+			\draw[fill=Brown,draw = black!70] (c) circle (0.7mm) ;
+			\node[align=left,anchor=west,font=\fz{6pt}] (n1) at ($(c)+(3.mm,9.5mm)$) {
+				$(0.295,7.22)$
+			};
+			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);	
+
+
+			\coordinate (c) at (0.264,1.05);	
+			\draw[fill=OldLace,draw = black!70] (c) circle (0.7mm) ;
+			\node[align=left,anchor=west,font=\fz{6pt}] (n1) at ($(c)+(3.mm,3.5mm)$) {
+				$(0.264,1.05)$
+			};
+			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);	
+
+
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%			\draw[fill=DarkOrange,name intersections={of = b1 and nb ,by={F1}}] (F1) circle (0.7mm) ;	
+%			\draw[fill=Chocolate,name intersections={of = b2 and nb ,by={F2}}] (F2) circle (0.7mm) ;	
+%			\draw[fill=Brown,name intersections={of = t1 and nt ,by={H1}}] (H1) circle (0.7mm) ;	
+%			\draw[fill=OldLace,name intersections={of = t2 and nt ,by={H2}}] (H2) circle (0.7mm) ;	
+%			\draw[fill=LawnGreen,name intersections={of = nb and nt ,by={V}}] (V) circle (0.7mm) ;	
+%			
+%		
+%			
+%			\node[align=left,anchor=north west,font=\fz{4pt},xshift=4mm] (n1) at (V) {
+%				$ (\alpha,\tilde{b}^\star,\tilde{\theta}^\star)= (\getX{(V)},\getY{(V)},\getY{(V)})$
+%			};
+%			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1.west)--(V);
+%			
+%			
+%			
+%			\node[align=left,anchor=north,font=\fz{4pt},xshift=1mm,yshift=-4mm] (n1) at (F1) {
+%				$	(\getX{(F1)},\getY{(F1)} )$
+%			};
+%			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(F1);
+%			
+%			
+%			
+%			\node[align=left,anchor=north west,font=\fz{4pt},xshift=4mm,yshift=8mm] (n1) at (F2) {
+%				$	(\getX{(F2)},\getY{(F2)} )$
+%			};
+%			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1.west)--(F2);
+%			
+%			
+%			
+%			\node[align=left,anchor=north west,font=\fz{4pt},xshift=6mm,yshift=8mm] (n1) at (H1) {
+%				$	(\getX{(H1)},\getY{(H1)} )$
+%			};
+%			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1.west)--(H1);
+%			
+%			
+%			
+%			\node[align=left,anchor=north west,font=\fz{4pt},xshift=4mm] (n1) at (H2) {
+%				$(\getX{(H2)},\getY{(H2)} )$
+%			};
+%			\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1.west)-- (H2);
+%			
+%			
+%			
+			
+		\end{axis}
+	\end{tikzpicture}
+\end{document}

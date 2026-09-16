@@ -1,0 +1,30 @@
+\documentclass[12pt,a4paper]{article}
+% \usepackage[utf8]{inputenc}
+\usepackage{csvsimple}
+\usepackage{booktabs}
+
+
+\begin{document}
+% \csvreader[<options>]{<file name>}{<assignments>}{<command list>}
+% \thecsvrow
+% \csvcoli, \csvcolii, \csvcoliii, . . . ,
+
+
+\csvset{
+    mystyle/.style={
+        tabular={llc}, 
+        table head=\toprule #1 \\ \midrule,, 
+        table foot=\bottomrule
+    }
+}
+\csvnames{colname}{name=\name,givenname=\firstname,grade=\grade}
+
+\csvreader[
+    mystyle={col1 name & col2 name & col3 name},
+    colname
+]
+{grade.csv}{}%
+{\thecsvrow & \firstname~\name~\grade & \csvcoliii}
+
+
+\end{document}

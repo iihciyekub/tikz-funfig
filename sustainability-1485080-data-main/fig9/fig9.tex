@@ -1,0 +1,54 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames, svgnames, x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.5}
+\pgfplotsset{width=10cm,compat=1.16}
+\newcommand{\fz}[1]{\fontsize{#1 pt}{0.001mm}\selectfont}
+\usepackage{pgfkeys}
+
+\usetikzlibrary{calc,arrows.meta,positioning,intersections}
+\begin{document}
+	\begin{tikzpicture}
+		
+		\begin{axis}[smooth,
+			axis line shift=6.5pt, grid=major,grid style={gray!24,opacity = 0.4,line width=0.02pt},
+		title style ={ align = left ,font = \fz{10pt}},
+		title={ $ p=10, c=4, s=3,w=6,  r=0.05$ \\$ \mu=100, \sigma=100$ },
+			xlabel={\fz{10}Acceptable Bankruptcy Risk: $\large \alpha$},
+		ylabel={\fz{10}Own Funds: $\large \bar{B}$},
+		grid=major,grid style={color=gray,opacity=0.23,line width =0.2pt},
+		xtick={0,0.25,0.5,0.92,1},
+		xmin =0,xmax=1,
+		ymin =-2000,ymax=1500,
+		ytick={-2000,500,0,-1305,1500},
+		legend style={
+			at={(0.35cm,7.14cm)},
+			anchor=west,cells={anchor=west},font=\footnotesize,
+		}
+		]		
+
+		\legend{$\bar{B}=(c(1+r)-s) F^{-1}\left(\frac{p-c(1+r)}{p-s}\right)-(p-s) F^{-1}(\alpha)$};
+
+ 
+		\addplot [blue!20!red,line width=1pt] table {Bbar};
+ 	
+ 	
+
+ 			
+ 	
+ 	\coordinate (c) at (0.25333333333333335,-1.34993493475443);	
+ 	\draw[fill=DarkSeaGreen,draw = black!70] (c) circle (0.7mm) ;
+ 	\node[align=left,anchor=west,font=\fz{7pt}] (n1) at ($(c)+(1.mm,6.5mm)$) {
+ 		$ (\alpha, \bar{B}) = (0.25,0)$
+ 	};
+ 	\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);	
+ 	
+ 	
+ 	
+ 	
+
+			
+	\end{axis}
+\end{tikzpicture}
+\end{document}

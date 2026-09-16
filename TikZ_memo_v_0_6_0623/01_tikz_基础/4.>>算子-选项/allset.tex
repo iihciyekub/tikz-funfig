@@ -1,0 +1,183 @@
+% 颜色
+fill=green!20
+draw=green!50!black
+solid
+
+
+% 形状\usepgflibrary{shapes.geometric}
+shape aspect=1,iamond
+shape=circle
+shape=rectangle
+trapezium
+ellipse
+semicircle
+regular polygon
+star
+kite
+rounded corners =10pt
+sharp corners 
+
+
+% 尺寸 
+scale=3,
+
+
+
+% node
+sloped
+above
+below = of org
+right
+left
+midway
+pos = 0.5
+near start
+very near end
+label=x
+label=above:$s\le3$
+align = center
+align = left
+align = right
+align=justify
+align=flush left
+inner sep = 5pt
+inner xsep = 2.5cm
+inner ysep = 2.5cm
+minimum height
+minimum width
+text width=3cm,
+minimum size=2.5cm 设置节点大小
+behind path,
+
+anchor=north
+anchor = south
+anchor = east
+anchor = west
+transform shape
+
+% 网格
+step = 0.5pt
+help lines = 3pt
+step=.5cm
+
+
+
+% \usetikzlibrary{positioning}
+[above=2pt+3pt,draw]
+[above=.2 and 3mm,draw]
+[above=5mm of somenode.north east]
+[on grid,above=1cm of a2]
+[left=of a]
+[base right=of X]
+mid right
+
+% 变换
+x = 2pt
+y = 2pt
+shift = {(0,1)}
+shift={(30:1cm)}
+xshift = 2pt
+yshift = 2pt
+xslant = 1
+yslant = 1
+xscale = 1.5
+yscale = 1.5
+scale = 1.5
+rotate = 30
+rotate around={40:(1,1)},
+rotate around x = 0
+rotate around y = 0
+rotate around z = 0
+rotate around = {45:(0,3)}
+transform canvas={scale=2}
+transform canvas={rotate=90}
+
+
+% 箭头
+> =latex
+shorten > =13pt
+shorten < =13pt
+-{Stealth[length=10mm, open]}
+-{Stealth[length=10mm, open, round]}
+-Latex[width=10pt, length=10pt]
+-Latex[width’=0pt .5, length=10pt]
+-Stealth[length=10pt, inset=5pt]
+-Stealth[inset=0pt, angle=30:10pt]
+-Stealth[scale=1.5]
+-Stealth[scale width=1.5]
+
+
+% 线段样式
+line width = 0.5pt
+very thick
+double equal sign distance
+double distance between line centers = 3pt
+double distance = 3pt
+dotted
+loosely dotted
+densely dotted
+dashed
+densely dotted
+loosely dashed
+dash dot
+densely dash dot
+loosely dash dot
+dash dot dot
+densely dash dot dot
+loosely dash dot dot
+dash = on 2pt off 1pt phase 0pt
+
+
+
+
+% 线段连接
+rounded corners=2pt
+line join=round
+line join=bevel
+line join=miter
+line cap=round
+line cap=butt
+line cap=rect
+
+
+% 点对点路径
+move to
+in
+out
+relative
+bend left
+bend left = 22
+bend right
+bend angle = 22
+looseness = 0.3 弯曲程度
+out looseness = 0.8
+in looseness = 0.1
+in control = +(1,1)
+out control = +(1,1)
+controls = +(90:1) and +(90:1)]
+distance =1cm
+in distance = 1cm
+out distance = 1cm
+min distance = 1cm
+max distance = 1cm
+in min distance = 1cm
+out min distance = 1cm
+in maxdistance = 1cm
+out max distance = 1cm
+组合参数
+in=30,out=60,loop
+loop above
+loop below
+loop left
+loop right
+
+
+
+
+
+% 作用算子 path \usetikzlibrary{intersections}
+name path = A
+name = name
+name = n
+name path = n
+name intersections={of=A and C,by=F}  

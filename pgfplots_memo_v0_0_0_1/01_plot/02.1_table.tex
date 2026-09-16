@@ -1,0 +1,16 @@
+\documentclass[margin = 10pt]{standalone} 
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat = 1.18}
+ 
+\begin{document}
+\begin{tikzpicture} 
+\begin{axis}
+    
+\addplot+  table [x = x, y = f(x) ] {99_data/idata.dat};
+
+\addplot+  table [x index = 1,y index = 3 ] {99_data/idata.dat};
+
+\end{axis}
+\end{tikzpicture}
+\end{document}

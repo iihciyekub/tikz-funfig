@@ -1,0 +1,24 @@
+\documentclass[margin = 10pt]{standalone} 
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat = 1.18}
+ 
+\begin{document}
+\begin{tikzpicture} 
+\begin{axis}[
+    % colorbar
+    % colorbar: horizontal | left | right 
+    colorbar left, % 必须配合算子参数 scatter or mesh 使用
+    % blackwhite | greenyellow | violet | PuBu-9  (see pgf_plots.pdf, P420)
+    % colormap/bright,
+    % colorbar/width=3mm,
+]
+\addplot+ [
+    only marks,
+    scatter,
+    scatter src = explicit, 
+    scatter src = {\thisrow{z}}, 
+    ] table [x = x, y = y ,meta = z] {99_data/data2.dat};
+\end{axis}
+\end{tikzpicture}
+\end{document}

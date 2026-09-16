@@ -1,0 +1,73 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames, svgnames, x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.5}
+\pgfplotsset{width=10cm,compat=1.16}
+\newcommand{\fz}[1]{\fontsize{#1 pt}{0.001mm}\selectfont}
+\usepackage{pgfkeys}
+
+\usetikzlibrary{calc,arrows.meta,positioning,intersections}
+\begin{document}
+	\begin{tikzpicture}
+		
+		\begin{axis}[smooth,
+			axis line shift=6.5pt, grid=major,grid style={gray!24,opacity = 0.4,line width=0.02pt},
+		title style ={ align = left ,font = \fz{10pt}},
+		title={$p=10, c=4, s=3,w=6, B=100, r=0.05$\\$ \mu=100, \sigma=100$},
+			xlabel={\fz{10}Acceptable Bankruptcy Risk: $\large \alpha$},
+		ylabel={\fz{10}Channel Profit: $\large \tilde{\pi}(\tilde{q}^c)$},
+%		grid=major,grid style={color=gray,opacity=0.23,line width =0.2pt},
+		xtick={0,0.125,0.206,0.5,1},
+		xmin =0,xmax=1,
+		ymin =-100,ymax=703.05,
+		ytick={-100,0,465 ,703.05},
+		legend style={
+			at={(0.75cm,64.8054cm)},
+			anchor=west,cells={anchor=west},font=\footnotesize,
+		}
+		]		
+
+		\legend{,$\tilde{\pi}(\tilde{q}^c) =q(p-c)-(p-s) \int_{0}^{q} F(x) d x-(c q-B)^+ r$};
+			
+		\fill [fill=MistyRose,opacity=0.38]  (0.12569,0) rectangle (0.21,465.22);
+		
+		\node at(0.1828,135) [rotate = 90,inner sep = 0pt,font=\fz{2pt},] {$\tilde{\pi}(\tilde{q}^c)$ increasing area};
+
+
+
+
+		\addplot [gray!80!red,line width=0.47pt,,dash dot] table {piqc};
+		\addplot [blue!80!red,line width=1pt] table {piqc_in};	
+		% qs
+		\addplot[blue!80!red,line width=1pt] coordinates {(0.205,465.218891871100) (1,465.218891871100)};
+
+	
+		
+		
+		\coordinate (c) at (0.206667,465.218891871100);	
+		\draw[fill=DarkSalmon,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{7pt}] (n1) at ($(c)+(-10.mm,6.5mm)$) {
+		$(\alpha,\tilde{q^c},\tilde{\pi},) = (0.21,194,465.22)$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);	
+		
+		
+
+		
+		
+		
+		\coordinate (c) at (0.12569,0);	
+		\draw[fill=OrangeRed,draw = black!70] (c) circle (0.7mm) ;
+		\node[align=left,anchor=west,font=\fz{7pt}] (n1) at ($(c)+(1.mm,-6.5mm)$) {
+		$(\alpha,\tilde{q^c},\tilde{\pi},) = (0.13,0,0 )$
+		};
+		\draw[-stealth,shorten > = 1mm,opacity=0.8] (n1)--(c);	
+		
+		
+
+	
+			
+	\end{axis}
+\end{tikzpicture}
+\end{document}

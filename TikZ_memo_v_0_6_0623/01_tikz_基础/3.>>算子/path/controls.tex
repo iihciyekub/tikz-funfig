@@ -1,0 +1,23 @@
+\documentclass[border=2mm]{standalone}
+\usepackage{tikz}
+
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{bending}
+
+\begin{document}
+\begin{tikzpicture}
+
+ 
+
+\node (a) at(0,0) {};
+\node (b) at(2,3) {};
+
+
+\draw[-{Stealth[length=1cm,open,blue,flex]}] (a) .. controls +(0:2cm) and +(-90:1.13cm) .. (b);
+
+
+
+\draw (a) .. controls +(0,2) and +(-1,-1) .. (b);
+ 
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,33 @@
+\documentclass[dvipsnames, svgnames, x11names,border=3pt]{standalone}
+\usepackage{tikz,pgfplots}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{patterns}
+\pgfplotsset{compat = 1.18,width=10cm, height=10cm}
+
+\begin{document}\begin{tikzpicture}
+
+\begin{axis}[xmin=0,xmax=5,ymin=0,ymax=5]
+\addplot [name path=f,domain=0:5,samples=100]
+    {(x - 2)^2/(7*x) + 1};
+\addplot [name path=border,
+    color=blue, ultra thick, dashed]
+    coordinates {(2,0) (2,5) } ;
+    
+\fill [red,opacity=0.3,
+intersection segments={
+    of=f and border,
+    sequence={L1 -- R2},
+    reverse
+},
+] -- cycle;
+
+\fill [DarkOliveGreen2,opacity=0.4,
+intersection segments={
+    of=f and border,
+    sequence={R2[reverse] -- L2}
+},
+] -- (rel axis cs:1,1) -- cycle;
+
+\end{axis}
+
+\end{tikzpicture}\end{document}

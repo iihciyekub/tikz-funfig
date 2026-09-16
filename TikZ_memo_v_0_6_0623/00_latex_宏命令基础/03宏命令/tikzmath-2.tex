@@ -1,0 +1,45 @@
+\documentclass[border=2mm]{standalone}
+\usepackage{tikz}
+% 必须添加库
+\usetikzlibrary{math}
+% P692
+
+\begin{document}
+\tikzmath{
+function fun(\n) {
+    return \n+1;
+};
+int \f;
+\f = fun(100);
+print {\f,16565ll };
+}
+\end{document}
+
+
+
+
+
+ 
+%case 3
+\tikzmath{
+function fibonacci(\n) {
+if \n == 0 then {
+return 0;
+} else {
+return fibonacci2(\n, 0, 1);
+};
+};
+function fibonacci2(\n, \p, \q) {
+if \n == 1 then {
+return \q;
+} else {
+return fibonacci2(\n-1, \q, \p+\q);
+};
+};
+int \f, \i;
+for \i in {0,1,...,20}{
+\f = fibonacci(\i);
+print {\f, };
+};
+}
+  

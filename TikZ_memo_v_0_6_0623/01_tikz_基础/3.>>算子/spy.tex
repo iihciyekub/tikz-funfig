@@ -1,0 +1,27 @@
+% p805
+\documentclass[margin=2mm]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{spy}
+\begin{document}
+
+\begin{tikzpicture}[
+    % spy using overlays={},
+    spy using outlines={%
+        % circle, 
+        blue,
+        rectangle,
+        magnification=10, 
+        % size=2cm, 
+        height=0.5cm,
+        width=2cm,
+        lens={scale=4,rotate=45},
+        connect spies,
+        % spy connection path={\draw[<->] (tikzspyonnode) -- (tikzspyinnode);},
+        },
+    ]
+    \draw [help lines] (0,0) grid (3,2);
+    \node [circle,draw,inner sep =1pt]  at (1,1) {};
+    \spy[>->] on (1,1) in node at (0,-1.25);
+\end{tikzpicture}
+
+\end{document}

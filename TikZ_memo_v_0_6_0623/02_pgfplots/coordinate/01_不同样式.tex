@@ -1,0 +1,24 @@
+\documentclass[dvipsnames,svgnames,x11names,margin=3pt]{standalone}
+\usepackage{tikz,pgfplots,xparse,pgfmath,pgffor}
+\pgfplotsset{compat = 1.18,width=10cm,height=10cm}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+    scatter/classes={
+        a={mark=square*,blue},
+        b={mark=triangle*,red},
+        c={mark=o,draw=black} % <-- don't add comma
+    },
+]
+\addplot [
+    scatter,only marks,
+    scatter src = explicit symbolic,
+] coordinates {
+    (0.1,0.15) [a]
+    (0.45,0.27) [c]
+    (0.9,0.5) [b]
+};
+\end{axis}
+\end{tikzpicture}
+\end{document}

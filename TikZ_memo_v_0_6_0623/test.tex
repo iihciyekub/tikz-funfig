@@ -1,0 +1,42 @@
+\documentclass[margin=0pt,border=0pt]{standalone}
+\usepackage{iitikz}
+
+
+
+\begin{document}\begin{tikzpicture}\begin{axis}
+
+
+\def\f#1{
+f(#1)= i + j + k^2;
+}
+\iiplot[a]{
+    \f{k}
+    plot [0:2] i=0,j=0,f(x);
+} 
+\addpoint{0.3}{45}
+;
+
+
+
+  
+\end{axis}\end{tikzpicture}
+
+
+
+\begin{figure}[H]
+\centering
+\subfloat[subfigtitle a]{
+    \includegraphics[page=1,height=\figheight]{*.pdf}
+    \label{fig:b1b}
+}
+\hfill
+\subfloat[subfigtitle b]{
+    \includegraphics[page=1,height=\figheight]{*.pdf}
+    \label{fig:b1b}
+}
+\caption{fig title}
+\end{figure}
+
+
+
+\end{document}

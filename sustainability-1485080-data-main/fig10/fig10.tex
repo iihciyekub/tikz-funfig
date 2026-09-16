@@ -1,0 +1,49 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames, svgnames, x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.5}
+\pgfplotsset{width=10cm,compat=1.16}
+\newcommand{\fz}[1]{\fontsize{#1 pt}{0.001mm}\selectfont}
+\usepackage{pgfkeys}
+
+\usetikzlibrary{calc,arrows.meta,positioning,intersections}
+\begin{document}
+	\begin{tikzpicture}
+		
+		\begin{axis}[smooth,
+			axis line shift=6.5pt, grid=major,grid style={gray!24,opacity = 0.4,line width=0.02pt},
+		title style ={ align = left ,font = \fz{10pt}},
+		title={$p=10, c=4, s=3,w=6,  r=0.05 $\\$\mu=100, \sigma=100$},
+		xlabel={\fz{10}Own Funds: $\large B$},
+		ylabel={\fz{10}Acceptable Bankruptcy Risk: $\large \alpha$},
+		grid=major,grid style={color=gray,opacity=0.23,line width =0.2pt},
+		xtick={0,50,200,500,700,999},
+		xmin =0,xmax=999,
+		ymin =0.0152,ymax=0.35,
+		ytick={0.0152,0.1,0.15,0.253,0.35},
+		yticklabel style={
+			/pgf/number format/precision=4,
+		},
+		legend style={
+			at={(19.6645cm,6.6164cm)},
+			anchor=west,cells={anchor=west},inner sep = 8pt,
+		}
+		]		
+
+		\legend{$\bar{\alpha}=F\left(\frac{[c(1+r)-s] F^{-1}\left(\frac{p-c(1+r)}{p-s}\right)-B(1+r)}{p-s}\right)$};
+
+ 
+		\addplot [blue!20!red,line width=1pt] table {abar};
+ 
+		\coordinate (b) at(999,0.0152143238096826);	
+		\draw[fill]  (b)  circle (0.4mm) ;
+
+		\coordinate (b) at(1,0.252237444837337);	
+		\draw[fill]  (b)  circle (0.4mm) ;
+				
+ 
+			
+	\end{axis}
+\end{tikzpicture}
+\end{document}

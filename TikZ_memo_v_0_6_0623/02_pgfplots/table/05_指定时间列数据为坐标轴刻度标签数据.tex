@@ -1,0 +1,20 @@
+\documentclass[margin = 10pt]{standalone}
+\usepackage{tikz,pgfplots}
+\pgfplotsset{compat = 1.18}
+\usepgfplotslibrary{dateplot}
+
+% \addplot {<options>} table [<col selection>] {<file or inline table>} <trailing path commands>;
+\begin{document}\begin{tikzpicture}
+
+\begin{axis}[
+    date coordinates in=x,
+    % \year.\month.\day.\hour.\minute.\Hour.\Minute.\lowlevel.\second
+    xticklabel={\month.\day},
+    % 坐标轴数值或标签样式设置
+    xticklabel style = {rotate = 90},
+]
+
+\addplot table [x=date,y=y] {./z.data.dat};
+\end{axis}
+
+\end{tikzpicture}\end{document}

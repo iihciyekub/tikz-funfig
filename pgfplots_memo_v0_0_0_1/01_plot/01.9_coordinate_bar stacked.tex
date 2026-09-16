@@ -1,0 +1,26 @@
+\documentclass[margin = 10pt]{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots} 
+\pgfplotsset{compat = 1.16}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+    % =plus | minus
+    stack plots = y,
+    /tikz/ybar,
+    ybar stacked,
+    bar width = 15pt,
+    nodes near coords ]
+\addplot coordinates {
+(0,1) (1,1) (2,3) (3,2) (4,1.5)
+};
+\addplot coordinates {
+(0,1) (1,1) (2,3) (3,2) (4,1.5)
+};
+\addplot coordinates {
+(0,1) (1,1) (2,3) (3,2) (4,1.5)
+};
+\end{axis}
+\end{tikzpicture}
+\end{document}

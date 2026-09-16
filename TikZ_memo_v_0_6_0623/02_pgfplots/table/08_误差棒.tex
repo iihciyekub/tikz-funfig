@@ -1,0 +1,102 @@
+\documentclass[dvipsnames,svgnames,x11names,margin=3pt]{standalone}
+\usepackage{tikz,pgfplots,xparse,pgfmath,pgffor}
+\pgfplotsset{compat = 1.18,width=10cm,height=10cm}
+\usepgfplotslibrary{groupplots}
+
+\begin{document}\begin{tikzpicture}
+
+\begin{groupplot}[
+    group style={group size=2 by 2,
+        vertical sep=3em,horizontal sep=3em,
+        % xlabels at=all|edge top|edge bottom
+        % ylabels at=all|edge left|edge right
+        % xlabels at={edge bottom},
+        % ylabels at={edge left},
+        % 
+        xticklabels at= {edge bottom},
+        yticklabels at= {edge left},
+        % 
+        % x descriptions (xlabels+ xticklabels)
+        % x descriptions at= edge bottom,
+        % y descriptions at= edge right,
+    },
+    width=8cm,height=8cm,
+    xlabel= xlabel,
+    ylabel= ylabel,
+]
+
+% 空图形
+% \nextgroupplot[group/empty plot]
+
+
+\iffalse
+x dir=none|plus|minus|both % xyz同设置
+x fixed=0.1 % 绝对误差 +- 0.1
+x fixed relative=0.1 % 相对误差 0.1*x
+x explicit
+x explicit relative
+error mark=diamond*
+x error plus=
+x error plus index=
+x error plus expr=
+x error minus=
+x error minus index=
+x error minus expr=
+\fi
+
+% 1 读取误差数据列,进行
+\nextgroupplot
+\addplot+ [
+    error bars/.cd,
+        x dir=plus,
+        x explicit,
+] table[x=x,y=y,x error=xer+] {z.data.dat};
+
+
+% 2
+\nextgroupplot
+\addplot+ [
+    error bars/.cd,
+        y dir=plus,
+        y explicit relative,
+] table[x=x,y=y,y error expr=\thisrow{y}] {z.data.dat};
+
+
+
+% 3
+\nextgroupplot
+\addplot+ [
+    error bars/.cd,
+        x dir=both,
+        y dir=both,
+        x explicit,
+        y explicit,
+] table[
+    x=x,y=y,
+    x error plus=xer+,
+    y error plus=yer+,
+    x error minus=xer-,
+    y error minus=yer-
+] {z.data.dat};
+
+
+% 4
+\nextgroupplot
+\addplot+ [
+    error bars/.cd,
+        x dir=both,
+        y dir=both,
+        x fixed=0.1,
+        y fixed relative=0.25,
+        error mark=none,
+        error bar style={IndianRed1,circle,line width=1pt,-|,opacity=0.45},
+] table[x=x,y=y,] {z.data.dat};
+
+
+
+
+
+
+\end{groupplot}
+\end{tikzpicture}
+\end{document}

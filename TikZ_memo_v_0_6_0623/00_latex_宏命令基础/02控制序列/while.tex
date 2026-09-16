@@ -1,0 +1,10 @@
+\documentclass{article}
+\usepackage{forloop}
+
+\begin{document}
+\newcounter{count}
+\forloop{count}{0}{\value{count} < 6}{
+  Loop iteration \arabic{count}.\roman{count}.\Roman{count}.\alph{count}.\Alph{count}\par
+}
+\space\empty\emph{3}
+\end{document}

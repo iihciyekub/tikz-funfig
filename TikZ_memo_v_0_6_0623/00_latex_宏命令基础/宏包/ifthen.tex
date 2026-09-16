@@ -1,0 +1,33 @@
+\documentclass[border=2mm]{standalone}
+\usepackage{ifthen}
+\begin{document}
+ 
+\def\x{3}
+\def\y{ervf}
+
+\ifthenelse{3=3}{right-1}{wrong-1}
+
+\ifthenelse{\x > 3}{right-2}{wrong-2}
+
+\ifthenelse{\equal{\x}{3}}{right-3}{wrong-3}
+
+\ifthenelse{\equal{ervf}{\y}}{right-4}{wrong-4}
+
+
+
+
+
+
+\newcounter{count}
+\setcounter{count}{0}
+\whiledo{\value{count} < 5}{
+  Count: \thecount
+  \stepcounter{count}
+}
+ 
+
+ 
+
+
+
+\end{document}

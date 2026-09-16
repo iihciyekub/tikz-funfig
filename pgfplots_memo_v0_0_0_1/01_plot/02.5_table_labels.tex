@@ -1,0 +1,28 @@
+\documentclass[margin = 10pt]{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{
+compat = 1.18
+}
+
+\begin{document}
+\begin{tikzpicture}[remember picture]
+\begin{axis}[
+    % 从文件中读取轴标签
+    xticklabels from table={99_data/data3.dat}{label},
+    % 
+    % 坐标轴数值或标签样式设置
+    xticklabel style = {
+        % 命名标记每一个刻度,用作坐标调用
+        rotate = 90},
+    yticklabel style={
+        /pgf/number format/fixed zerofill,
+        /pgf/number format/precision=4,
+        name=tick no \ticknum,
+    }
+]
+
+\addplot table [x=x,y=y] {99_data/data3.dat};
+\end{axis}
+\end{tikzpicture}
+\end{document}

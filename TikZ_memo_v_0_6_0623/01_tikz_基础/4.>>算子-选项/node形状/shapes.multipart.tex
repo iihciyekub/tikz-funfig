@@ -1,0 +1,35 @@
+\documentclass[border=2mm]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes.multipart}
+
+\begin{document}
+
+\if09
+circle split
+circle solidus
+ellipse split
+rectangle split
+    rectangle split horizontal
+    rectangle split parts3
+    rectangle split part align={center, left, right}
+    rectangle split part fill={red!50, green!50, blue!50, yellow!50}
+\fi
+
+
+
+
+
+\begin{tikzpicture}
+\node [rectangle split ,rectangle split parts=3,draw,double,fill=red!20,rectangle split part align={center, left, right}]
+{1\nodepart{two}222\nodepart{three}3\nodepart{four}433333333};
+\end{tikzpicture}
+
+
+
+
+
+
+
+ 
+ 
+\end{document}

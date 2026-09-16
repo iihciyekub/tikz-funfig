@@ -1,0 +1,24 @@
+\documentclass[dvipsnames,svgnames,x11names,margin=3pt]{standalone}
+\usepackage{tikz,pgfplots,xparse,pgfmath,pgffor}
+\usepgfplotslibrary{colormaps}
+\pgfplotsset{compat = 1.18,width=10cm,height=10cm}
+
+\begin{document}\begin{tikzpicture}
+\begin{axis}[
+    colorbar,
+    % colorbar：horizontal | left | right 
+    colorbar left, % 必须配合算子参数 scatter or mesh 使用 
+    % \usepgfplotslibrary{colormaps} blackwhite | greenyellow | violet | PuBu-9  (see pgf_plots.pdf, P420)
+    colormap/bright,
+    colorbar/width=3mm,
+]
+\addplot+ [
+    only marks,
+    scatter,
+    % scatter src = explicit, 
+    point meta = {\thisrow{z}}, 
+    ] table [x = x, y = y] {3d.data.dat};
+\end{axis}
+
+\end{tikzpicture}
+\end{document}

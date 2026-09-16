@@ -1,0 +1,24 @@
+\documentclass[border=2mm]{standalone}
+
+
+
+\usepackage{tikz}
+\begin{document}
+\newcommand{\mycase}[1]{%
+  \ifcase#1
+    Case 0%
+  \or
+    Case 1%
+  \or
+    Case 2%
+  \else
+    Other Cases%
+  \fi
+}
+
+\mycase{0} % 输出：Case 0
+\mycase{1} % 输出：Case 1
+\mycase{2} % 输出：Case 2
+\mycase{3} % 输出：Other Cases
+
+\end{document}

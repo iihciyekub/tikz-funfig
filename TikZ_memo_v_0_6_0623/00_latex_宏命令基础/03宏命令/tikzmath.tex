@@ -1,0 +1,19 @@
+\documentclass[border=2mm]{standalone}
+\usepackage{tikz}
+% 必须添加库
+\usetikzlibrary{math}
+% P692
+
+\begin{document}
+\def\var#1{log10(2048) / log10(#1)}
+\tikzmath{
+    \x = 2;
+    \y = 3;
+    \z = \x + \y;
+    \result = sqrt(\z);
+    \b = sin(30)*4;
+    \mycount = \var{2048};
+    \mydimen = 15^2;
+}
+\mydimen,\mycount
+\end{document}

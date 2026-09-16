@@ -1,0 +1,23 @@
+\ch{q我}% XeLaTeX
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{CJKutf8}
+\newcommand{\ch}[1]{\begin{CJK}{UTF8}{gkai}#1\end{CJK}}
+
+\usepackage{csvsimple}
+\usepackage{booktabs,longtable }
+
+\begin{document}
+
+
+\begin{table}[htbp]
+    \centering
+    \caption{read csv data}
+    \label{tab:mytable}
+    \csvautotabular{grade2.csv} 
+\end{table}
+
+
+
+
+\end{document}

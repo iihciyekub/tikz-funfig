@@ -1,0 +1,15 @@
+\documentclass[dvipsnames, svgnames, x11names,border=3pt]{standalone}
+\usepackage{tikz,pgfplots}
+\usepgfplotslibrary{fillbetween}
+\pgfplotsset{compat = 1.18,width=10cm, height=10cm}
+\begin{document}\begin{tikzpicture}\begin{axis}
+
+\addplot+ [name path=A,samples=7,smooth,domain=0:1] {sin(360*x)};
+\addplot+ [name path=B,samples=15,domain=0:1] {cos(360*x)};
+\addplot [orange] fill between [of=A and B,
+    split,
+    every odd segment/.style={Honeydew1},
+    every even segment/.style={Khaki3},
+];
+
+\end{axis}\end{tikzpicture}\end{document}

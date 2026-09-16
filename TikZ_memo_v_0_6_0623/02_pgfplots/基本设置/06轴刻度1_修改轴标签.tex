@@ -1,0 +1,37 @@
+
+\documentclass[margin = 10pt]{standalone}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{
+compat = 1.9
+}
+
+\begin{document}
+\begin{tikzpicture}[remember picture]
+\begin{axis}[
+    xtick = data,
+    ytick= data,
+    % 
+    % xticklabel= \empty,
+    % yticklabel= {$\ticknum_e$},
+    yticklabel= {$\tick_e$},
+    % 
+    % 指定了
+    xticklabels= {a,b,c,d},
+    % yticklabels= {},
+    % 
+    % 坐标轴数值或标签样式设置
+    xticklabel style = {
+        % 命名标记每一个刻度,用作坐标调用
+        name=tick no \ticknum,
+        /pgf/number format/fixed zerofill,
+        rotate = 90},
+]
+
+]
+\addplot+ table [x=x,y=y] {06data.dat};
+
+\end{axis}
+\end{tikzpicture}
+\end{document}
