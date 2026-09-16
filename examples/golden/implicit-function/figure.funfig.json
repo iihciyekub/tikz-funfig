@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.0",
+  "id": "implicit-function",
+  "recipe": "implicit-function",
+  "kind": "pgfplots",
+  "canvas": {"width": "8.6cm", "height": "7.2cm", "border": "2pt"},
+  "engine": {"latex": "pdflatex", "compute": "gnuplot"},
+  "axes": {
+    "preset": "publication-offset",
+    "x": {"label": "$x$", "min": -1.4, "max": 1.4},
+    "y": {"label": "$y$", "min": -1.4, "max": 1.4},
+    "grid": "major",
+    "legend": {"position": "north east"}
+  },
+  "data_sources": [
+    {
+      "id": "circle",
+      "type": "implicit",
+      "equation": "x^2 + y^2 = 1",
+      "level": 0,
+      "samples": 100,
+      "isosamples": 100
+    },
+    {
+      "id": "diagonal",
+      "type": "function",
+      "expression": "x",
+      "domain": "-1.2:1.2",
+      "samples": 80
+    }
+  ],
+  "series": [
+    {
+      "id": "circle",
+      "source": "circle",
+      "label": "$x^2+y^2=1$",
+      "name_path": "circle-path",
+      "style": {"color": "MidnightBlue", "line_width": "1pt"}
+    },
+    {
+      "id": "diagonal",
+      "source": "diagonal",
+      "label": "$y=x$",
+      "name_path": "diagonal-path",
+      "style": {"color": "Maroon", "line": "dashed", "line_width": "0.8pt"}
+    }
+  ],
+  "regions": [],
+  "annotations": [
+    {
+      "type": "curve_probe",
+      "series": "circle",
+      "position": 0.12,
+      "name": "P",
+      "show": "xy",
+      "precision": 2,
+      "label_prefix": "$P=$",
+      "shift": "(6pt,8pt)",
+      "font": "\\scriptsize",
+      "style": {"fill": "Dandelion", "draw": "black!70"}
+    },
+    {
+      "type": "curve_label",
+      "series": "diagonal",
+      "position": 0.72,
+      "label": "$y=x$",
+      "sloped": true,
+      "font": "\\scriptsize"
+    },
+    {
+      "type": "intersection",
+      "path_a": "circle-path",
+      "path_b": "diagonal-path",
+      "name": "I",
+      "style": {"fill": "OrangeRed", "draw": "black!70"}
+    },
+    {
+      "type": "coordinate_ref",
+      "ref": "I",
+      "show": "xy",
+      "precision": 3,
+      "label_prefix": "$I=$",
+      "shift": "(7pt,-12pt)",
+      "font": "\\scriptsize"
+    }
+  ],
+  "panels": [],
+  "outputs": {"basename": "implicit-function", "keep_build": false},
+  "metadata": {
+    "golden": true,
+    "provenance": "references/legacy/tikz-memo/iitikz.sty",
+    "purpose": "Regression case for promoted iiplot/calxy/addpoint/addsymbol semantics."
+  }
+}

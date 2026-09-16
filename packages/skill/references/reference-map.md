@@ -12,6 +12,7 @@ All paths are relative to the workspace root.
 - `.agents/skills/TIKZ-FunFig/scripts/check_dependencies.sh` — verify the full local toolchain.
 - `.agents/skills/TIKZ-FunFig/scripts/setup_macos.sh` — install missing gnuplot on macOS through Homebrew and then verify the toolchain.
 - `.agents/skills/TIKZ-FunFig/scripts/compile_tikz.sh` — compile figures and automatically enable shell escape only for detected gnuplot-backed PGFPlots source.
+- `.agents/skills/TIKZ-FunFig/references/methods.md` — promoted method contracts for implicit contours, curve probes, curve labels, and coordinate references.
 
 ## 1. Publication-style worked figures
 

@@ -159,6 +159,7 @@ Choose the simplest suitable mode:
 
 - **TikZ diagram** — `mechanism-diagram` for conceptual models, workflows, mechanisms, arrows, and named nodes.
 - **PGFPlots analytic plot** — `function-plot` for explicit or gnuplot-backed functions.
+- **Implicit equation** — `implicit-function` for equations such as `x^2+y^2=1`; FunFig converts the equation to a managed gnuplot contour, inherits the axis bounds, and handles shell escape/cleanup through the normal build contract.
 - **PGFPlots data plot** — `data-series` for CSV/DAT/table/coordinate-driven figures.
 - **Error-bar plot** — `error-bar` for explicit/asymmetric, relative, or fixed x/y uncertainty.
 - **Scatter plot** — `scatter-plot` for metadata-driven scientific points, including structured colorbar output.
@@ -272,6 +273,21 @@ When a source uses `gnuplot` or `raw gnuplot`:
 - use `raw gnuplot` for genuine implicit/contour problems where it is the clearest approach;
 - prefer direct PGFPlots expressions for ordinary explicit functions where an external process adds no value;
 - never enable shell escape for arbitrary uninspected third-party TeX source. Inspect the source first because shell escape allows TeX to launch external commands.
+
+### 8. Promoted legacy methods
+
+Do not copy the historical `\iiplot`, `\calxy`, `\addpoint`, or `\addsymbol` macros into a
+new figure unless reproducing legacy source verbatim. Their semantics now have stable
+FigureSpec forms:
+
+- `data_sources[].type: implicit` replaces `\iiplot` / `\iipolt` / `\fun` for implicit curves;
+- `annotations[].type: curve_probe` replaces `\addpoint` and can automatically display x, y,
+  or `(x,y)` at a relative series position;
+- `annotations[].type: curve_label` replaces `\addsymbol` and follows the series geometry;
+- `annotations[].type: coordinate_ref` replaces `\calxy`, `\calx`, `\caly`, `\getX`,
+  `\getY`, and `\getXY` for named coordinates/intersections.
+
+Read `references/methods.md` for the compact method contract used by the portable Skill.
 
 ## Supported tasks
 

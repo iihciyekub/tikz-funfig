@@ -88,7 +88,7 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
     source_ids = _unique_ids(spec.get("data_sources", []), "data_sources", errors)
     series_ids = _unique_ids(spec.get("series", []), "series", errors)
 
-    source_types = {"function", "file", "coordinates", "gnuplot", "raw_gnuplot"}
+    source_types = {"function", "file", "coordinates", "gnuplot", "raw_gnuplot", "implicit"}
     for index, source in enumerate(spec.get("data_sources", [])):
         if not isinstance(source, dict):
             continue
@@ -100,6 +100,10 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
             errors.append(f"data_sources[{index}] type={source_type} requires expression")
         if source_type == "raw_gnuplot" and not source.get("script"):
             errors.append(f"data_sources[{index}] type=raw_gnuplot requires script")
+        if source_type == "implicit" and not (source.get("expression") or source.get("equation")):
+            errors.append(
+                f"data_sources[{index}] type=implicit requires expression or equation"
+            )
         if source_type == "file":
             path = source.get("path")
             if not isinstance(path, str) or not path:
@@ -187,13 +191,27 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
     for index, annotation in enumerate(spec.get("annotations", [])):
         if not isinstance(annotation, dict):
             continue
-        if annotation.get("type") == "intersection":
+        annotation_type = annotation.get("type")
+        if annotation_type == "intersection":
             for field in ("path_a", "path_b"):
                 path_name = annotation.get(field)
                 if path_name not in name_paths:
                     errors.append(
                         f"annotations[{index}].{field} references unknown name_path: {path_name!r}"
                     )
+        if annotation_type in {"curve_probe", "curve_label"}:
+            series_id = annotation.get("series")
+            if series_id not in series_ids:
+                errors.append(
+                    f"annotations[{index}].series references unknown series: {series_id!r}"
+                )
+            position = annotation.get("position")
+            if not isinstance(position, (int, float)) or not 0 <= position <= 1:
+                errors.append(
+                    f"annotations[{index}].position must be a number between 0 and 1"
+                )
+        if annotation_type == "coordinate_ref" and not annotation.get("ref"):
+            errors.append(f"annotations[{index}] type=coordinate_ref requires ref")
 
     diagram = spec.get("diagram")
     if diagram is not None:

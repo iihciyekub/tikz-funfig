@@ -20,6 +20,7 @@ from funfig.schema import validate_spec
 GOLDEN_CASES = ("fig1", "fig4", "fig11")
 SCIENTIFIC_GOLDEN_CASES = ("error-bar", "scatter-plot", "confidence-band", "groupplot")
 ADVANCED_GOLDEN_CASES = ("surface-plot", "contour-plot", "heatmap", "quiver-field")
+METHOD_GOLDEN_CASES = ("implicit-function",)
 
 
 class FunFigCoreTests(unittest.TestCase):
@@ -31,6 +32,10 @@ class FunFigCoreTests(unittest.TestCase):
         self.assertEqual(
             (PROJECT_ROOT / "packages/skill/SKILL.md").read_text(encoding="utf-8"),
             (plugin / "skills/TIKZ-FunFig/SKILL.md").read_text(encoding="utf-8"),
+        )
+        self.assertEqual(
+            (PROJECT_ROOT / "packages/skill/references/methods.md").read_text(encoding="utf-8"),
+            (plugin / "skills/TIKZ-FunFig/references/methods.md").read_text(encoding="utf-8"),
         )
         self.assertEqual(
             (PROJECT_ROOT / "schemas/figure-spec.schema.json").read_text(encoding="utf-8"),
@@ -68,6 +73,7 @@ class FunFigCoreTests(unittest.TestCase):
         self.assertEqual(
             recipe_ids(),
             [
+                "implicit-function",
                 "function-plot",
                 "data-series",
                 "error-bar",
@@ -94,6 +100,48 @@ class FunFigCoreTests(unittest.TestCase):
                         (PROJECT_ROOT / reference).exists(),
                         f"missing recipe reference: {reference}",
                     )
+
+    def test_legacy_method_catalog_tracks_promoted_helpers(self) -> None:
+        catalog = load_json(PROJECT_ROOT / "references/methods/legacy-methods.json")
+        methods = catalog["methods"]
+        promoted = {
+            item["semantic_method"]
+            for item in methods
+            if item.get("status") == "promoted"
+        }
+        self.assertTrue(
+            {
+                "implicit-contour",
+                "coordinate-value",
+                "curve-probe",
+                "curve-label",
+                "named-intersection",
+                "fill-between",
+            }.issubset(promoted)
+        )
+
+    def test_implicit_method_golden_renders_promoted_semantics(self) -> None:
+        path = PROJECT_ROOT / "examples/golden/implicit-function/figure.funfig.json"
+        spec = load_json(path)
+        result = validate_spec(spec, path)
+        self.assertTrue(result.ok, result.errors)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            spec_path = root / "figure.funfig.json"
+            write_json_atomic(spec_path, spec)
+            tex_path, manifest = render_spec(spec, spec_path)
+            tex = tex_path.read_text(encoding="utf-8")
+            self.assertIn("set xrange [-1.4:1.4];", tex)
+            self.assertIn("set yrange [-1.4:1.4];", tex)
+            self.assertIn("set cntrparam levels discrete 0;", tex)
+            self.assertIn("splot (x**2 + y**2)-(1);", tex)
+            self.assertIn("coordinate[pos=0.12] (P)", tex)
+            self.assertIn("node[pos=0.72,sloped,font=\\scriptsize] {$y=x$}", tex)
+            self.assertIn("\\funfigcoordxy{P}{2}", tex)
+            self.assertIn("name intersections={of=circle-path and diagonal-path,by=I}", tex)
+            self.assertIn("\\funfigcoordxy{I}{3}", tex)
+            self.assertTrue(manifest["dependencies"]["gnuplot"])
+            self.assertTrue(manifest["dependencies"]["shell_escape"])
 
     def test_legacy_reference_policy_excludes_generated_artifacts(self) -> None:
         legacy = PROJECT_ROOT / "references/legacy"
@@ -255,6 +303,37 @@ class FunFigCoreTests(unittest.TestCase):
             "quiver-field": ("quiver={", "u={-y}", "v={x}"),
         }
         for case in ADVANCED_GOLDEN_CASES:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temp:
+                source_dir = PROJECT_ROOT / f"examples/golden/{case}"
+                expected_tex = source_dir / f"{case}.tex"
+                expected = expected_tex.read_text(encoding="utf-8")
+                work_dir = Path(temp) / case
+                shutil.copytree(
+                    source_dir,
+                    work_dir,
+                    ignore=shutil.ignore_patterns("*.pdf", ".funfig", f"{case}.tex"),
+                )
+                spec_path = work_dir / "figure.funfig.json"
+                spec = load_json(spec_path)
+                tex_path, _ = render_spec(spec, spec_path)
+                actual = tex_path.read_text(encoding="utf-8")
+                self.assertEqual(actual, expected)
+                for fragment in required_fragments[case]:
+                    self.assertIn(fragment, actual)
+
+    def test_method_goldens_match_committed_tex(self) -> None:
+        required_fragments = {
+            "implicit-function": (
+                "raw gnuplot",
+                "set cntrparam levels discrete 0;",
+                "coordinate[pos=0.12] (P)",
+                "node[pos=0.72,sloped,font=\\scriptsize] {$y=x$}",
+                "\\funfigcoordxy{P}{2}",
+                "name intersections={of=circle-path and diagonal-path,by=I}",
+                "\\funfigcoordxy{I}{3}",
+            )
+        }
+        for case in METHOD_GOLDEN_CASES:
             with self.subTest(case=case), tempfile.TemporaryDirectory() as temp:
                 source_dir = PROJECT_ROOT / f"examples/golden/{case}"
                 expected_tex = source_dir / f"{case}.tex"
@@ -436,6 +515,28 @@ class FunFigCoreTests(unittest.TestCase):
                 self.assertGreater(pdf_path.stat().st_size, 5_000)
                 self.assertFalse((work_dir / ".funfig/build").exists())
                 self.assertFalse(list(work_dir.glob("*_contourtmp*")))
+
+    @unittest.skipUnless(
+        shutil.which("latexmk") and shutil.which("pdflatex") and shutil.which("gnuplot"),
+        "implicit-function toolchain unavailable",
+    )
+    def test_method_goldens_build(self) -> None:
+        for case in METHOD_GOLDEN_CASES:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temp:
+                source_dir = PROJECT_ROOT / f"examples/golden/{case}"
+                work_dir = Path(temp) / case
+                shutil.copytree(
+                    source_dir,
+                    work_dir,
+                    ignore=shutil.ignore_patterns("*.pdf", ".funfig"),
+                )
+                spec_path = work_dir / "figure.funfig.json"
+                spec = load_json(spec_path)
+                pdf_path = build_spec(spec, spec_path)
+                self.assertTrue(pdf_path.exists())
+                self.assertGreater(pdf_path.stat().st_size, 5_000)
+                self.assertFalse((work_dir / ".funfig/build").exists())
+                self.assertFalse(list(work_dir.glob("*.pgf-plot.gnuplot")))
 
     @unittest.skipUnless(
         shutil.which("latexmk") and shutil.which("pdflatex") and shutil.which("gnuplot"),

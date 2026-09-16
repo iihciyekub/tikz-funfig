@@ -11,6 +11,7 @@ from .schema import validate_spec
 
 
 PUBLICATION_OFFSET_RECIPES = {
+    "implicit-function",
     "function-plot",
     "data-series",
     "error-bar",
@@ -166,6 +167,77 @@ def _plot_mode(series: dict[str, Any]) -> dict[str, Any]:
     return {"kind": "line"}
 
 
+def _gnuplot_expression(source: dict[str, Any]) -> str:
+    """Return a gnuplot expression for an implicit source.
+
+    Historical TIKZ-FunFig helpers accepted a mathematical equation and
+    plotted its zero contour. Preserve that semantic contract here instead of
+    requiring callers to hand-write raw gnuplot every time.
+    """
+    raw = str(source.get("equation") or source.get("expression") or "").strip()
+    if "=" in raw:
+        lhs, rhs = raw.split("=", 1)
+        raw = f"({lhs.strip()})-({rhs.strip()})"
+    # PGF math examples commonly use ^, while gnuplot exponentiation is **.
+    return raw.replace("^", "**")
+
+
+def _axis_range(axes: dict[str, Any], key: str, fallback: str) -> str:
+    axis = (axes or {}).get(key) or {}
+    if axis.get("min") is not None and axis.get("max") is not None:
+        return f"{_fmt(axis['min'])}:{_fmt(axis['max'])}"
+    return fallback
+
+
+def _implicit_gnuplot_script(source: dict[str, Any], axes: dict[str, Any]) -> str:
+    xrange = source.get("domain") or _axis_range(axes, "x", "-5:5")
+    yrange = source.get("y_domain") or _axis_range(axes, "y", "-5:5")
+    level = _fmt(source.get("level", 0))
+    samples = int(source.get("samples", 100))
+    isosamples = int(source.get("isosamples", samples))
+    expression = _gnuplot_expression(source)
+    return "\n".join(
+        [
+            f"set xrange [{xrange}];",
+            f"set yrange [{yrange}];",
+            "set contour;",
+            "unset surface;",
+            "set view map;",
+            f"set cntrparam levels discrete {level};",
+            f"set isosamples {isosamples};",
+            f"set samples {samples};",
+            f"splot {expression};",
+        ]
+    )
+
+
+def _series_path_decorations(
+    series: dict[str, Any], annotations: list[dict[str, Any]] | None
+) -> list[str]:
+    result: list[str] = []
+    for index, annotation in enumerate(annotations or [], start=1):
+        if annotation.get("series") != series.get("id"):
+            continue
+        kind = annotation.get("type")
+        position = annotation.get("position")
+        if kind == "curve_probe":
+            name = annotation.get("name", f"funfigProbe{index}")
+            result.append(f"coordinate[pos={_fmt(position)}] ({name})")
+        elif kind == "curve_label":
+            node_options = [f"pos={_fmt(position)}"]
+            if annotation.get("sloped", True):
+                node_options.append("sloped")
+            if annotation.get("anchor"):
+                node_options.append(f"anchor={annotation['anchor']}")
+            if annotation.get("font"):
+                node_options.append(f"font={annotation['font']}")
+            node_options.extend(_style_options(annotation.get("style")))
+            result.append(
+                f"node[{','.join(node_options)}] {{{annotation.get('label', '')}}}"
+            )
+    return result
+
+
 def _error_bar_options(error_bars: dict[str, Any] | None) -> tuple[list[str], list[str]]:
     if not error_bars:
         return [], []
@@ -201,7 +273,12 @@ def _error_bar_options(error_bars: dict[str, Any] | None) -> tuple[list[str], li
     return plot_options, table_options
 
 
-def _render_series(series: dict[str, Any], source: dict[str, Any]) -> list[str]:
+def _render_series(
+    series: dict[str, Any],
+    source: dict[str, Any],
+    axes: dict[str, Any] | None = None,
+    annotations: list[dict[str, Any]] | None = None,
+) -> list[str]:
     options = _style_options(series.get("style"))
     plot_mode = _plot_mode(series)
     plot_kind = plot_mode.get("kind", "line")
@@ -261,11 +338,11 @@ def _render_series(series: dict[str, Any], source: dict[str, Any]) -> list[str]:
     options.extend(error_options)
 
     source_type = source["type"]
-    if source.get("domain"):
+    if source_type != "implicit" and source.get("domain"):
         options.append(f"domain={source['domain']}")
-    if source.get("y_domain"):
+    if source_type != "implicit" and source.get("y_domain"):
         options.append(f"y domain={source['y_domain']}")
-    if source.get("samples"):
+    if source_type != "implicit" and source.get("samples"):
         options.append(f"samples={source['samples']}")
 
     bracket = f"[{','.join(options)}]" if options else ""
@@ -307,8 +384,16 @@ def _render_series(series: dict[str, Any], source: dict[str, Any]) -> list[str]:
     elif source_type == "raw_gnuplot":
         gp_options = ["raw gnuplot"] + options
         plot = f"\\addplot+ gnuplot[{','.join(gp_options)}] {{\n{source['script']}\n}};"
+    elif source_type == "implicit":
+        gp_options = ["raw gnuplot", "empty line=jump"] + options
+        script = _implicit_gnuplot_script(source, axes or {})
+        plot = f"\\addplot+ gnuplot[{','.join(gp_options)}] {{\n{script}\n}};"
     else:
         raise ValueError(f"unsupported data source type: {source_type}")
+
+    decorations = _series_path_decorations(series, annotations)
+    if decorations:
+        plot = plot.rstrip().removesuffix(";") + " " + " ".join(decorations) + ";"
 
     lines = [plot]
     if series.get("label"):
@@ -437,6 +522,65 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
                     lines.append(
                         f"\\draw[{','.join(arrow_options)}] ({node_name}.{arrow_anchor}) -- ({name});"
                     )
+        elif kind == "curve_probe":
+            name = annotation.get("name", f"funfigProbe{index}")
+            raw_style = annotation.get("style") or {}
+            if annotation.get("marker", True):
+                marker_options = []
+                if raw_style.get("fill"):
+                    marker_options.append(f"fill={raw_style['fill']}")
+                if raw_style.get("draw"):
+                    marker_options.append(f"draw={raw_style['draw']}")
+                elif raw_style.get("color"):
+                    marker_options.append(f"draw={raw_style['color']}")
+                if not marker_options:
+                    marker_options.extend(["fill=white", "draw=black"])
+                marker_options.append("line width=0.45pt")
+                lines.append(f"\\draw[{','.join(marker_options)}] ({name}) circle (0.75mm);")
+            if annotation.get("label", True):
+                anchor = annotation.get("anchor", "south west")
+                shift = annotation.get("shift", "(3pt,3pt)")
+                precision = int(annotation.get("precision", 2))
+                show = annotation.get("show", "xy")
+                formatter = {
+                    "x": "funfigcoordx",
+                    "y": "funfigcoordy",
+                    "xy": "funfigcoordxy",
+                }.get(show, "funfigcoordxy")
+                label = annotation.get("label")
+                if not isinstance(label, str):
+                    prefix = annotation.get("label_prefix", "")
+                    label = f"{prefix}\\{formatter}{{{name}}}{{{precision}}}"
+                node_options = [f"anchor={anchor}"]
+                if annotation.get("font"):
+                    node_options.append(f"font={annotation['font']}")
+                lines.append(
+                    f"\\node[{','.join(node_options)}] at ([shift={{{shift}}}]{name}) {{{label}}};"
+                )
+        elif kind == "coordinate_ref":
+            ref = annotation["ref"]
+            precision = int(annotation.get("precision", 2))
+            show = annotation.get("show", "xy")
+            formatter = {
+                "x": "funfigcoordx",
+                "y": "funfigcoordy",
+                "xy": "funfigcoordxy",
+            }.get(show, "funfigcoordxy")
+            label = annotation.get("label")
+            if not isinstance(label, str):
+                prefix = annotation.get("label_prefix", "")
+                label = f"{prefix}\\{formatter}{{{ref}}}{{{precision}}}"
+            anchor = annotation.get("anchor", "south west")
+            shift = annotation.get("shift", "(3pt,3pt)")
+            node_options = [f"anchor={anchor}"]
+            if annotation.get("font"):
+                node_options.append(f"font={annotation['font']}")
+            lines.append(
+                f"\\node[{','.join(node_options)}] at ([shift={{{shift}}}]{ref}) {{{label}}};"
+            )
+        elif kind == "curve_label":
+            # Rendered as part of the plot path so it tracks curve geometry.
+            continue
     return lines
 
 
@@ -451,6 +595,28 @@ def _document_preamble(spec: dict[str, Any], groupplots: bool = False) -> list[s
         "\\usetikzlibrary{calc,arrows.meta,positioning,intersections,fit,shapes.geometric}",
         "\\usepgfplotslibrary{fillbetween}",
     ]
+    needs_coordinate_helpers = any(
+        annotation.get("type") in {"curve_probe", "coordinate_ref"}
+        for annotation in spec.get("annotations", [])
+        if isinstance(annotation, dict)
+    )
+    if needs_coordinate_helpers:
+        lines.extend(
+            [
+                "\\newcommand{\\funfigcoordx}[2]{%",
+                "  \\pgfplotspointgetcoordinates{(#1)}%",
+                "  \\ensuremath{\\pgfmathprintnumber[fixed,precision=#2]{\\pgfkeysvalueof{/data point/x}}}%",
+                "}",
+                "\\newcommand{\\funfigcoordy}[2]{%",
+                "  \\pgfplotspointgetcoordinates{(#1)}%",
+                "  \\ensuremath{\\pgfmathprintnumber[fixed,precision=#2]{\\pgfkeysvalueof{/data point/y}}}%",
+                "}",
+                "\\newcommand{\\funfigcoordxy}[2]{%",
+                "  \\pgfplotspointgetcoordinates{(#1)}%",
+                "  \\ensuremath{(\\pgfmathprintnumber[fixed,precision=#2]{\\pgfkeysvalueof{/data point/x}},\\pgfmathprintnumber[fixed,precision=#2]{\\pgfkeysvalueof{/data point/y}})}%",
+                "}",
+            ]
+        )
     if groupplots:
         lines.append("\\usepgfplotslibrary{groupplots}")
     return lines
@@ -467,7 +633,14 @@ def render_pgfplots(spec: dict[str, Any]) -> str:
 
     lines.extend(_render_regions(spec, between=False))
     for series in spec.get("series", []):
-        lines.extend(_render_series(series, sources[series["source"]]))
+        lines.extend(
+            _render_series(
+                series,
+                sources[series["source"]],
+                spec.get("axes") or {},
+                spec.get("annotations") or [],
+            )
+        )
     lines.extend(_render_regions(spec, between=True))
     lines.extend(_render_annotations(spec))
     lines += ["\\end{axis}", "\\end{tikzpicture}", "\\end{document}", ""]
@@ -510,7 +683,14 @@ def render_groupplot(spec: dict[str, Any]) -> str:
         lines.append(f"\\nextgroupplot[{','.join(panel_options)}]")
         for series_id in panel.get("series", []):
             series = series_by_id[series_id]
-            lines.extend(_render_series(series, sources[series["source"]]))
+            lines.extend(
+                _render_series(
+                    series,
+                    sources[series["source"]],
+                    panel.get("axes") or spec.get("axes") or {},
+                    spec.get("annotations") or [],
+                )
+            )
 
     lines += ["\\end{groupplot}", "\\end{tikzpicture}", "\\end{document}", ""]
     return "\n".join(lines)
@@ -559,7 +739,7 @@ def render_diagram(spec: dict[str, Any]) -> str:
 def dependencies_for_spec(spec: dict[str, Any]) -> dict[str, Any]:
     source_types = {source.get("type") for source in spec.get("data_sources", [])}
     plot_kinds = {_plot_mode(series).get("kind") for series in spec.get("series", [])}
-    needs_gnuplot = bool(source_types & {"gnuplot", "raw_gnuplot"}) or "contour" in plot_kinds or (
+    needs_gnuplot = bool(source_types & {"gnuplot", "raw_gnuplot", "implicit"}) or "contour" in plot_kinds or (
         (spec.get("engine") or {}).get("compute") == "gnuplot"
     )
     return {

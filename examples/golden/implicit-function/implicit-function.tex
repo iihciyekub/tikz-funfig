@@ -1,0 +1,59 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames,svgnames,x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{calc,arrows.meta,positioning,intersections,fit,shapes.geometric}
+\usepgfplotslibrary{fillbetween}
+\newcommand{\funfigcoordx}[2]{%
+  \pgfplotspointgetcoordinates{(#1)}%
+  \ensuremath{\pgfmathprintnumber[fixed,precision=#2]{\pgfkeysvalueof{/data point/x}}}%
+}
+\newcommand{\funfigcoordy}[2]{%
+  \pgfplotspointgetcoordinates{(#1)}%
+  \ensuremath{\pgfmathprintnumber[fixed,precision=#2]{\pgfkeysvalueof{/data point/y}}}%
+}
+\newcommand{\funfigcoordxy}[2]{%
+  \pgfplotspointgetcoordinates{(#1)}%
+  \ensuremath{(\pgfmathprintnumber[fixed,precision=#2]{\pgfkeysvalueof{/data point/x}},\pgfmathprintnumber[fixed,precision=#2]{\pgfkeysvalueof{/data point/y}})}%
+}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+  width=8.6cm,
+  height=7.2cm,
+  axis line shift=6.5pt,
+  grid=major,
+  grid style={gray!25,line width=0.2pt},
+  xlabel={$x$},
+  xmin=-1.4,
+  xmax=1.4,
+  ylabel={$y$},
+  ymin=-1.4,
+  ymax=1.4,
+  legend pos=north east,
+  legend style={draw=none,fill=none,cells={anchor=west}},
+]
+\addplot+ gnuplot[raw gnuplot,empty line=jump,MidnightBlue,line width=1pt,mark=none,name path=circle-path] {
+set xrange [-1.4:1.4];
+set yrange [-1.4:1.4];
+set contour;
+unset surface;
+set view map;
+set cntrparam levels discrete 0;
+set isosamples 100;
+set samples 100;
+splot (x**2 + y**2)-(1);
+} coordinate[pos=0.12] (P);
+\addlegendentry{$x^2+y^2=1$}
+\addplot+ [Maroon,dashed,line width=0.8pt,mark=none,name path=diagonal-path,domain=-1.2:1.2,samples=80] {x} node[pos=0.72,sloped,font=\scriptsize] {$y=x$};
+\addlegendentry{$y=x$}
+\draw[fill=Dandelion,draw=black!70,line width=0.45pt] (P) circle (0.75mm);
+\node[anchor=south west,font=\scriptsize] at ([shift={(6pt,8pt)}]P) {$P=$\funfigcoordxy{P}{2}};
+\path[name intersections={of=circle-path and diagonal-path,by=I}];
+\draw[fill=OrangeRed,draw=black!70,line width=0.45pt] (I) circle (0.7mm);
+\node[anchor=south west,font=\scriptsize] at ([shift={(7pt,-12pt)}]I) {$I=$\funfigcoordxy{I}{3}};
+\end{axis}
+\end{tikzpicture}
+\end{document}

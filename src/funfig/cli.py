@@ -15,6 +15,7 @@ from .schema import load_and_validate
 
 
 PUBLICATION_OFFSET_RECIPES = {
+    "implicit-function",
     "function-plot",
     "data-series",
     "error-bar",
@@ -145,6 +146,46 @@ def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
             )
             base["annotations"] = [
                 {"type": "intersection", "path_a": "A", "path_b": "B", "name": "I", "label": "$I$"}
+            ]
+        elif recipe_id == "implicit-function":
+            base["engine"]["compute"] = "gnuplot"
+            base["axes"].update(
+                {
+                    "x": {"label": "$x$", "min": -1.5, "max": 1.5},
+                    "y": {"label": "$y$", "min": -1.5, "max": 1.5},
+                    "grid": "major",
+                }
+            )
+            base["data_sources"] = [
+                {
+                    "id": "implicit",
+                    "type": "implicit",
+                    "equation": "x^2 + y^2 = 1",
+                    "level": 0,
+                    "samples": 100,
+                    "isosamples": 100,
+                }
+            ]
+            base["series"] = [
+                {
+                    "id": "implicit",
+                    "source": "implicit",
+                    "name_path": "implicit-curve",
+                    "label": "$x^2+y^2=1$",
+                    "style": {"color": "MidnightBlue", "line_width": "0.9pt"},
+                }
+            ]
+            base["annotations"] = [
+                {
+                    "type": "curve_probe",
+                    "series": "implicit",
+                    "position": 0.15,
+                    "name": "P",
+                    "show": "xy",
+                    "precision": 2,
+                    "label_prefix": "$P=$",
+                    "shift": "(5pt,6pt)",
+                }
             ]
         elif recipe_id == "error-bar":
             base["data_sources"] = [

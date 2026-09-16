@@ -1,6 +1,7 @@
 {
   "schema_version": "1.0",
   "recipes": [
+    "implicit-function",
     "function-plot",
     "data-series",
     "error-bar",

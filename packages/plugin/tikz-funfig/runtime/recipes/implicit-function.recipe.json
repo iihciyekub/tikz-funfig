@@ -1,0 +1,15 @@
+{
+  "id": "implicit-function",
+  "version": "1.0",
+  "kind": "pgfplots",
+  "renderer": "pgfplots",
+  "description": "Implicit equations rendered as managed zero/level contours through PGFPlots and gnuplot.",
+  "required": ["axes", "data_sources", "series"],
+  "capabilities": ["implicit", "gnuplot", "name-path", "curve-probe", "curve-label", "coordinate-ref"],
+  "external_tools": ["latexmk", "gnuplot"],
+  "reference_examples": [
+    "references/legacy/tikz-memo/iitikz.sty",
+    "references/legacy/pgfplots-memo/icommand.tex",
+    "references/legacy/pgfplots-memo/隐函数.tex"
+  ]
+}

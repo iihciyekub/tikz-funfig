@@ -1,0 +1,64 @@
+{
+  "catalog_version": "1.0",
+  "purpose": "Map historically useful custom LaTeX/TikZ helpers to stable TIKZ-FunFig semantic methods.",
+  "methods": [
+    {
+      "legacy_macros": ["\\iiplot", "\\iipolt", "\\fun"],
+      "sources": [
+        "references/legacy/tikz-memo/iitikz.sty",
+        "references/legacy/pgfplots-memo/icommand.tex",
+        "references/legacy/pgfplots-memo/隐函数.tex"
+      ],
+      "semantic_method": "implicit-contour",
+      "figure_spec": "data_sources[].type=implicit",
+      "status": "promoted",
+      "notes": "Uses axis bounds, gnuplot contour level computation, unset surface, view map, managed samples/isosamples, and optional name_path."
+    },
+    {
+      "legacy_macros": ["\\calxy", "\\calx", "\\caly", "\\getX", "\\getY", "\\getXY"],
+      "sources": [
+        "references/legacy/tikz-memo/iitikz.sty",
+        "references/legacy/pgfplots-memo/icommand.tex",
+        "references/legacy/publication-sustainability-1485080/fig4/fig4.tex"
+      ],
+      "semantic_method": "coordinate-value",
+      "figure_spec": "annotations[].type=coordinate_ref or curve_probe",
+      "status": "promoted",
+      "notes": "Reads a named PGFPlots coordinate and formats x, y, or (x,y) with explicit precision."
+    },
+    {
+      "legacy_macros": ["\\addpoint"],
+      "sources": ["references/legacy/tikz-memo/iitikz.sty"],
+      "semantic_method": "curve-probe",
+      "figure_spec": "annotations[].type=curve_probe",
+      "status": "promoted",
+      "notes": "Binds a named coordinate to a relative position on a series, then optionally renders a marker and formatted coordinate label."
+    },
+    {
+      "legacy_macros": ["\\addsymbol"],
+      "sources": ["references/legacy/tikz-memo/iitikz.sty"],
+      "semantic_method": "curve-label",
+      "figure_spec": "annotations[].type=curve_label",
+      "status": "promoted",
+      "notes": "Attaches text to a relative position on a plot path so the label follows geometry changes."
+    },
+    {
+      "legacy_macros": ["name path", "name intersections"],
+      "semantic_method": "named-intersection",
+      "figure_spec": "series[].name_path + annotations[].type=intersection",
+      "status": "promoted"
+    },
+    {
+      "legacy_macros": ["fill between", "soft clip"],
+      "semantic_method": "fill-between",
+      "figure_spec": "regions[].type=between",
+      "status": "promoted"
+    },
+    {
+      "legacy_macros": ["\\fz"],
+      "semantic_method": "font-style",
+      "status": "absorbed",
+      "notes": "The historical helper itself is not carried forward; its purpose is represented by structured font/style fields."
+    }
+  ]
+}

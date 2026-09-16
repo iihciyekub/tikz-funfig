@@ -4,6 +4,11 @@
 
 TIKZ-FunFig separates declarative intent from generated TeX. A user edits a `FigureSpec`; a recipe interprets it; a renderer generates deterministic source; the build layer produces the PDF and manifest.
 
+Between FigureSpec and rendering, the **Method layer** captures reusable semantic primitives
+distilled from proven legacy helpers: implicit contours, curve probes, curve-relative labels,
+coordinate formatting, named intersections, and fill-between regions. Methods preserve the
+behavior of the old macros without making new figures depend on those macro files.
+
 This makes small later changes — a range, a color, an annotation, a series, a panel — local edits to structured data rather than full rewrites of hand-generated TikZ.
 
 ## Pipeline
@@ -58,14 +63,15 @@ Recipes may require only a subset of these.
 
 A recipe is metadata plus a renderer family and capability contract. Recipe files live in `recipes/` and are registered in `recipes/index.json`.
 
-Initial recipes:
+Core recipe families include:
 
-1. `function-plot` — analytic 2D functions.
-2. `data-series` — file/coordinate driven scientific series.
-3. `threshold-region` — curves plus highlighted intervals/rectangles.
-4. `intersection-curves` — named curves and semantic intersections.
-5. `groupplot` — aligned multi-panel PGFPlots.
-6. `mechanism-diagram` — TikZ nodes and directed edges.
+1. `implicit-function` — managed gnuplot contours for implicit equations.
+2. `function-plot` / `data-series` — analytic and data-driven 2D series.
+3. `error-bar` / `scatter-plot` / `confidence-band` — scientific uncertainty and metadata plots.
+4. `surface-plot` / `contour-plot` / `heatmap` / `quiver-field` — advanced field/3D views.
+5. `threshold-region` / `intersection-curves` / `publication-threshold` — semantic regions, intersections, and publication callouts.
+6. `groupplot` — aligned multi-panel PGFPlots.
+7. `mechanism-diagram` — TikZ nodes and directed edges.
 
 Recipes point back to local legacy examples so design knowledge can be promoted gradually instead of copied blindly.
 

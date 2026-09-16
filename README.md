@@ -2,6 +2,12 @@
 
 TIKZ-FunFig is a schema-driven figure generation system for reproducible TikZ and PGFPlots figures.
 
+Version 0.7 promotes the most reusable historical custom TikZ helpers into structured methods.
+Implicit equations no longer require hand-written `raw gnuplot`: use the `implicit-function`
+recipe and `data_sources[].type = "implicit"`. Curve-relative probes and labels replace the
+historical `\addpoint` / `\addsymbol` pattern, while `coordinate_ref` replaces ad-hoc
+`\calxy` / `\getX` / `\getY` helpers.
+
 The repository has two roles:
 
 1. **Source project** — schemas, recipes, renderers, tests, documentation, and packaging live here.

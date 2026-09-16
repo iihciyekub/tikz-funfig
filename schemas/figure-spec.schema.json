@@ -143,8 +143,9 @@
       "required": ["id", "type"],
       "properties": {
         "id": {"type": "string", "minLength": 1},
-        "type": {"enum": ["function", "file", "coordinates", "gnuplot", "raw_gnuplot"]},
+        "type": {"enum": ["function", "file", "coordinates", "gnuplot", "raw_gnuplot", "implicit"]},
         "expression": {"type": "string"},
+        "equation": {"type": "string"},
         "path": {"type": "string"},
         "x": {"type": "string"},
         "y": {"type": "string"},
@@ -159,9 +160,11 @@
           }
         },
         "script": {"type": "string"},
+        "level": {"type": "number", "default": 0},
         "domain": {"type": "string"},
         "y_domain": {"type": "string"},
-        "samples": {"type": "integer", "minimum": 2}
+        "samples": {"type": "integer", "minimum": 2},
+        "isosamples": {"type": "integer", "minimum": 2}
       }
     },
     "series": {
@@ -259,7 +262,7 @@
       "additionalProperties": false,
       "required": ["type"],
       "properties": {
-        "type": {"enum": ["point", "label", "vline", "hline", "intersection"]},
+        "type": {"enum": ["point", "label", "vline", "hline", "intersection", "curve_probe", "curve_label", "coordinate_ref"]},
         "at": {
           "type": "array",
           "minItems": 2,
@@ -271,7 +274,15 @@
         "y": {"type": "number"},
         "path_a": {"type": "string"},
         "path_b": {"type": "string"},
+        "series": {"type": "string"},
+        "position": {"type": "number", "minimum": 0, "maximum": 1},
+        "ref": {"type": "string"},
         "name": {"type": "string"},
+        "show": {"enum": ["x", "y", "xy"]},
+        "precision": {"type": "integer", "minimum": 0, "maximum": 12},
+        "marker": {"type": "boolean"},
+        "sloped": {"type": "boolean"},
+        "label_prefix": {"type": "string"},
         "anchor": {"type": "string"},
         "shift": {"type": "string"},
         "font": {"type": "string"},
