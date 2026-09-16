@@ -136,6 +136,24 @@ runs the full regression suite, creates the release commit and annotated Git
 tag, pushes `main` and the tag, then refreshes the local Codex installation
 when the Codex CLI is available.
 
+## Development and governance
+
+Repository rules are intentionally documented outside this README so future
+contributors and coding agents do not depend on chat history:
+
+- `AGENTS.md` — mandatory repository rules and source-of-truth map;
+- `CONTRIBUTING.md` — contribution checklist;
+- `docs/DEVELOPMENT.md` — development architecture and capability workflow;
+- `docs/GIT_WORKFLOW.md` — commit, branch, and push rules;
+- `docs/RELEASE.md` — semantic versioning and release procedure;
+- `docs/INSTALL_UPDATE.md` — Codex install, update, status, and rollback;
+- `docs/PLUGIN_DISTRIBUTION.md` — source → portable Plugin → Codex cache contract;
+- `CHANGELOG.md` — release history and pending changes.
+
+GitHub CI is defined in `.github/workflows/ci.yml` and runs the portable-bundle
+consistency check plus the full TeX/gnuplot regression suite on pushes to
+`main` and on pull requests.
+
 ## Publication golden cases
 
 `examples/golden/fig1`, `fig4`, and `fig11` are schema-managed reconstructions
