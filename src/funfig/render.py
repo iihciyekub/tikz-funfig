@@ -106,6 +106,12 @@ def _series_map(spec: dict[str, Any]) -> dict[str, dict[str, Any]]:
 
 def _render_series(series: dict[str, Any], source: dict[str, Any]) -> list[str]:
     options = _style_options(series.get("style"))
+    # Do not inherit PGFPlots' cycle-list marker by accident. A FunFig series
+    # is a line by default; markers are opt-in through style.mark. This keeps
+    # rendering deterministic across cycle-list/theme changes and matches the
+    # publication figures in the local knowledge base.
+    if not any(option.startswith("mark=") for option in options):
+        options.append("mark=none")
     options.extend(series.get("options", []) or [])
     if series.get("name_path"):
         options.append(f"name path={series['name_path']}")

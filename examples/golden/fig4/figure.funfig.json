@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0",
+  "id": "sustainability-fig4-golden",
+  "recipe": "publication-threshold",
+  "kind": "pgfplots",
+  "canvas": {"width": "10cm", "height": "7.2cm", "border": "2pt"},
+  "engine": {"latex": "pdflatex", "compute": "none"},
+  "axes": {
+    "title": "$p=10, c=4, s=3, w=6, B=100, r=0.05$\\\\$\\theta=0.8, b=3, \\mu=100, \\sigma=100$",
+    "axis_line_shift": "6.5pt",
+    "tick_precision": 4,
+    "x": {
+      "label": "Acceptable Bankruptcy Risk: $\\alpha$",
+      "min": 0,
+      "max": 1,
+      "ticks": [0, 0.11, 0.203333, 0.5, 1]
+    },
+    "y": {
+      "label": "Retailer's \\& Manufacturer's Profit: $\\pi_r,\\pi_s$",
+      "min": -100,
+      "max": 403.5,
+      "ticks": [-100, 0, 33.424, 203.82894030661, 403.05]
+    },
+    "grid": "major",
+    "legend": {
+      "at": "(0.02,0.98)",
+      "anchor": "north west",
+      "columns": 1,
+      "font": "\\footnotesize",
+      "cell_anchor": "west"
+    }
+  },
+  "data_sources": [
+    {"id": "pir-base", "type": "file", "path": "data/pir.tsv"},
+    {"id": "pir-increasing", "type": "file", "path": "data/pir-increasing.tsv"},
+    {"id": "pir-flat", "type": "coordinates", "points": [[0.204, 33.448885], [1, 33.448885]]},
+    {"id": "pis-base", "type": "file", "path": "data/pis.tsv"},
+    {"id": "pis-increasing", "type": "file", "path": "data/pis-increasing.tsv"},
+    {"id": "pis-flat", "type": "coordinates", "points": [[0.204, 203.828940306612], [1, 203.828940306612]]}
+  ],
+  "series": [
+    {
+      "id": "pir-base",
+      "source": "pir-base",
+      "label": "$\\pi_r=q(\\theta p-w)-(p\\theta-b)\\int_0^qF(x)\\,dx-(wq-B)^+r$",
+      "name_path": "A",
+      "style": {"color": "blue!80!red", "opacity": 0.45, "line_width": "0.57pt", "line": "dash dot"}
+    },
+    {"id": "pir-increasing", "source": "pir-increasing", "style": {"color": "blue!80!red", "line_width": "1.15pt"}},
+    {"id": "pir-flat", "source": "pir-flat", "style": {"color": "blue!80!red", "line_width": "1pt"}},
+    {
+      "id": "pis-base",
+      "source": "pis-base",
+      "label": "$\\pi_s=q[(1-\\theta)p+w-c]-[(1-\\theta)p-s+b]\\int_0^qF(x)\\,dx$",
+      "name_path": "C",
+      "style": {"color": "DarkSeaGreen", "opacity": 0.4, "line_width": "0.57pt", "line": "dash dot"}
+    },
+    {"id": "pis-increasing", "source": "pis-increasing", "style": {"color": "DarkSeaGreen", "line_width": "1.15pt"}},
+    {"id": "pis-flat", "source": "pis-flat", "style": {"color": "DarkSeaGreen", "line_width": "1pt"}}
+  ],
+  "regions": [
+    {
+      "id": "retailer-increasing",
+      "type": "rectangle",
+      "x1": 0.11,
+      "x2": 0.203333,
+      "y1": 0,
+      "y2": 33.424,
+      "style": {"fill": "DarkTurquoise", "fill_opacity": 0.38}
+    },
+    {
+      "id": "manufacturer-increasing",
+      "type": "rectangle",
+      "x1": 0.11,
+      "x2": 0.203333,
+      "y1": 0,
+      "y2": 203.82894030661,
+      "style": {"fill": "Aquamarine", "fill_opacity": 0.138}
+    }
+  ],
+  "annotations": [
+    {"type": "label", "at": [0.16, 10], "label": "$\\pi_r$ increasing area", "font": "\\scriptsize"},
+    {"type": "label", "at": [0.134, 170], "label": "$\\pi_s$ increasing area", "font": "\\scriptsize", "rotate": 90},
+    {
+      "type": "point",
+      "at": [0.203333, 33.448885],
+      "label": "$(\\alpha,q^\\star,\\pi_r)=(0.203,58,33.424)$",
+      "anchor": "west",
+      "shift": "(30pt,24pt)",
+      "font": "\\scriptsize",
+      "arrow": true,
+      "arrow_anchor": "west",
+      "style": {"fill": "OrangeRed", "draw": "black!70", "mark_size": "1.8pt"}
+    },
+    {
+      "type": "point",
+      "at": [0.203, 203.82894030661],
+      "label": "$(\\alpha,q^\\star,\\pi_s)=(0.203,58,203.828)$",
+      "anchor": "west",
+      "shift": "(28pt,-22pt)",
+      "font": "\\scriptsize",
+      "arrow": true,
+      "arrow_anchor": "west",
+      "style": {"fill": "Plum", "draw": "black!70", "mark_size": "1.8pt"}
+    },
+    {
+      "type": "intersection",
+      "path_a": "A",
+      "path_b": "C",
+      "name": "profit-zero",
+      "label": "$(\\alpha,q^\\star,\\pi_r,\\pi_s)=(0.113,0,0,0)$",
+      "anchor": "north west",
+      "shift": "(14pt,-18pt)",
+      "font": "\\scriptsize",
+      "arrow": true,
+      "arrow_anchor": "west",
+      "style": {"fill": "BurntOrange", "draw": "black!70"}
+    }
+  ],
+  "outputs": {"basename": "fig4", "keep_build": false},
+  "metadata": {
+    "golden": true,
+    "provenance": "sustainability-1485080-data-main/fig4/fig4.tex",
+    "purpose": "Regression case for two highlighted regimes, piecewise profit curves, named-path intersection, and semantic callouts."
+  }
+}

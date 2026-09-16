@@ -1,0 +1,56 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames,svgnames,x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{calc,arrows.meta,positioning,intersections,fit,shapes.geometric}
+\usepgfplotslibrary{fillbetween}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+  width=10cm,
+  height=7.2cm,
+  grid=major,
+  grid style={gray!25,line width=0.2pt},
+  title={$p=10, c=4, s=3, w=6, B=100, r=0.05$\\$\mu=100, \sigma=100$},
+  title style={align=left},
+  axis line shift=6.5pt,
+  ticklabel style={/pgf/number format/precision=4},
+  xlabel={Acceptable Bankruptcy Risk: $\alpha$},
+  xmin=0,
+  xmax=1,
+  xtick={0,0.124,0.397,0.5,0.814,1},
+  ylabel={Order Quantity Set: $q^c \in \{q_t,q_s\}$},
+  ymin=-360,
+  ymax=803.05,
+  ytick={-360,0,100,189,803.05},
+  legend style={draw=none,fill=none,cells={anchor=west},at={(0.02,0.98)},anchor=north west,legend columns=1,font=\footnotesize},
+]
+\fill [fill=MistyRose,fill opacity=0.38] (axis cs:0.124,0) rectangle (axis cs:0.397,189);
+\addplot+ [black,line width=0.5pt,opacity=0.2,mark=none] table {data/inverse-cdf.tsv};
+\addlegendentry{$F^{-1}(\alpha)$}
+\addplot+ [blue!80!red,dash dot,line width=0.7pt,opacity=0.45,mark=none] table {data/qt.tsv};
+\addlegendentry{$q_t=\frac{(p-s)F^{-1}(\alpha)+B(1+r)}{w(1+r)-s}$}
+\addplot+ [blue!80!red,line width=1.35pt,mark=none] table {data/qt-effective.tsv};
+\addplot+ [red,dash dot,line width=0.7pt,opacity=0.45,mark=none] coordinates {(0,189) (0.397,189)};
+\addplot+ [red,line width=1.35pt,mark=none] coordinates {(0.397,189) (1,189)};
+\addlegendentry{$q_s=F^{-1}\!\left(\frac{p-c-wr}{p-s}\right)$}
+\node[anchor=center,font=\scriptsize] at (axis cs:0.28,25) {$q^c$ increasing area};
+\addplot+[mark size=1.8pt,draw=black!70,fill=SeaGreen,only marks,mark=*] coordinates {(0.397,189)};
+\node[anchor=west,font=\scriptsize] (funfigCallout2) at ([shift={(-95pt,34pt)}]axis cs:0.397,189) {$(\alpha,q_s,q_t)=(0.397,189,189)$};
+\draw[-{Stealth[length=4pt,width=3pt]},shorten >=1pt] (funfigCallout2.center) -- (axis cs:0.397,189);
+\addplot+[mark size=1.8pt,draw=black!70,fill=CarnationPink,only marks,mark=*] coordinates {(0.124,0)};
+\node[anchor=north west,font=\scriptsize] (funfigCallout3) at ([shift={(5pt,-20pt)}]axis cs:0.124,0) {$(\alpha,q_t)=(0.124,0)$};
+\draw[-{Stealth[length=4pt,width=3pt]},shorten >=1pt] (funfigCallout3.center) -- (axis cs:0.124,0);
+\addplot+[mark size=1.8pt,draw=black!70,fill=Dandelion,only marks,mark=*] coordinates {(0.814,189)};
+\node[anchor=north east,font=\scriptsize] (funfigCallout4) at ([shift={(-4pt,-20pt)}]axis cs:0.814,189) {$(\alpha,q_s)=(0.814,189)$};
+\draw[-{Stealth[length=4pt,width=3pt]},shorten >=1pt] (funfigCallout4.center) -- (axis cs:0.814,189);
+\addplot+[mark size=1.8pt,draw=black!70,fill=GreenYellow,only marks,mark=*] coordinates {(0.814,-360)};
+\node[anchor=south east,font=\scriptsize] (funfigCallout5) at ([shift={(-4pt,18pt)}]axis cs:0.814,-360) {$\frac{p-c-wr}{p-s}=0.814$};
+\draw[-{Stealth[length=4pt,width=3pt]},shorten >=1pt] (funfigCallout5.center) -- (axis cs:0.814,-360);
+\addplot+[mark size=1.8pt,draw=black!70,fill=OrangeRed,only marks,mark=*] coordinates {(0.5,100)};
+\node[anchor=south,font=\scriptsize] (funfigCallout6) at ([shift={(0pt,5pt)}]axis cs:0.5,100) {$M$};
+\end{axis}
+\end{tikzpicture}
+\end{document}

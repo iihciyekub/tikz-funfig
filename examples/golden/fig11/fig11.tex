@@ -1,0 +1,57 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames,svgnames,x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{calc,arrows.meta,positioning,intersections,fit,shapes.geometric}
+\usepgfplotslibrary{fillbetween}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+  width=10cm,
+  height=7.2cm,
+  grid=major,
+  grid style={gray!25,line width=0.2pt},
+  title={$p=10, c=4, s=3, w=6, B=100, r=0.05$\\$\mu=100, \sigma=100$},
+  title style={align=left},
+  axis line shift=6.5pt,
+  ticklabel style={/pgf/number format/precision=4},
+  xlabel={Acceptable Bankruptcy Risk: $\alpha$},
+  xmin=0,
+  xmax=1,
+  xtick={0,0.123,0.29,0.5,0.7,0.85,1},
+  ylabel={Revenue Share: $(p\theta^\star,p\tilde{\theta}^\star)$ \& Buy-Back Price: $(b^\star,\tilde b^\star)$},
+  ymin=0,
+  ymax=20.001,
+  ytick={0,1.05,6.01,7.22,8.89,16,20.001},
+  legend style={draw=none,fill=none,cells={anchor=west},at={(0.98,0.98)},anchor=north east,legend columns=1,font=\footnotesize},
+]
+\addplot+ [MediumBlue,dash dot,line width=0.457pt,opacity=0.454,mark=none] table {data/b-left.tsv};
+\addlegendentry{$b^\star$}
+\addplot+ [MediumBlue,dash dot,line width=0.457pt,opacity=0.454,mark=none] table {data/b-right.tsv};
+\addplot+ [MediumBlue,line width=0.8pt,mark=none] table {data/b-effective.tsv};
+\addlegendentry{$\tilde b^\star$}
+\addplot+ [Maroon,dash dot,line width=0.457pt,opacity=0.454,mark=none] table {data/thetap-left.tsv};
+\addlegendentry{$p\theta^\star$}
+\addplot+ [Maroon,dash dot,line width=0.457pt,opacity=0.454,mark=none] table {data/thetap-right.tsv};
+\addplot+ [Crimson,line width=0.8pt,mark=none] table {data/thetap-effective.tsv};
+\addlegendentry{$p\tilde{\theta}^\star$}
+\addplot+[mark size=1.8pt,draw=black!70,fill=DarkOrange,only marks,mark=*] coordinates {(0.09,5.59)};
+\node[anchor=north west,font=\scriptsize] (funfigCallout1) at ([shift={(5pt,-18pt)}]axis cs:0.09,5.59) {$(0.09,5.59)$};
+\draw[-{Stealth[length=4pt,width=3pt]},shorten >=1pt] (funfigCallout1.center) -- (axis cs:0.09,5.59);
+\addplot+[mark size=1.8pt,draw=black!70,fill=LawnGreen,only marks,mark=*] coordinates {(0.125,6)};
+\node[anchor=west,font=\scriptsize] (funfigCallout2) at ([shift={(15pt,-4pt)}]axis cs:0.125,6) {$\{\alpha,\tilde b^\star,p\tilde{\theta}^\star\}=\{0.125,6,6\}$};
+\draw[-{Stealth[length=4pt,width=3pt]},shorten >=1pt] (funfigCallout2.center) -- (axis cs:0.125,6);
+\addplot+[mark size=1.8pt,draw=black!70,fill=Chocolate,only marks,mark=*] coordinates {(0.073,8.87)};
+\node[anchor=south west,font=\scriptsize] (funfigCallout3) at ([shift={(14pt,16pt)}]axis cs:0.073,8.87) {$(0.07,8.89)$};
+\draw[-{Stealth[length=4pt,width=3pt]},shorten >=1pt] (funfigCallout3.center) -- (axis cs:0.073,8.87);
+\addplot+[mark size=1.8pt,draw=black!70,fill=Brown,only marks,mark=*] coordinates {(0.295,7.22)};
+\node[anchor=south west,font=\scriptsize] (funfigCallout4) at ([shift={(9pt,24pt)}]axis cs:0.295,7.22) {$(0.295,7.22)$};
+\draw[-{Stealth[length=4pt,width=3pt]},shorten >=1pt] (funfigCallout4.center) -- (axis cs:0.295,7.22);
+\addplot+[mark size=1.8pt,draw=black!70,fill=OldLace,only marks,mark=*] coordinates {(0.264,1.05)};
+\node[anchor=south west,font=\scriptsize] (funfigCallout5) at ([shift={(9pt,10pt)}]axis cs:0.264,1.05) {$(0.264,1.05)$};
+\draw[-{Stealth[length=4pt,width=3pt]},shorten >=1pt] (funfigCallout5.center) -- (axis cs:0.264,1.05);
+\end{axis}
+\end{tikzpicture}
+\end{document}

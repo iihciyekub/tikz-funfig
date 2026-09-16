@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0",
+  "id": "sustainability-fig1-golden",
+  "recipe": "publication-threshold",
+  "kind": "pgfplots",
+  "canvas": {"width": "10cm", "height": "7.2cm", "border": "2pt"},
+  "engine": {"latex": "pdflatex", "compute": "none"},
+  "axes": {
+    "title": "$p=10, c=4, s=3, w=6, B=100, r=0.05$\\\\$\\mu=100, \\sigma=100$",
+    "axis_line_shift": "6.5pt",
+    "tick_precision": 4,
+    "x": {
+      "label": "Acceptable Bankruptcy Risk: $\\alpha$",
+      "min": 0,
+      "max": 1,
+      "ticks": [0, 0.124, 0.397, 0.5, 0.814, 1]
+    },
+    "y": {
+      "label": "Order Quantity Set: $q^c \\in \\{q_t,q_s\\}$",
+      "min": -360,
+      "max": 803.05,
+      "ticks": [-360, 0, 100, 189, 803.05]
+    },
+    "grid": "major",
+    "legend": {
+      "at": "(0.02,0.98)",
+      "anchor": "north west",
+      "columns": 1,
+      "font": "\\footnotesize",
+      "cell_anchor": "west"
+    }
+  },
+  "data_sources": [
+    {"id": "inverse-cdf", "type": "file", "path": "data/inverse-cdf.tsv"},
+    {"id": "qt-base", "type": "file", "path": "data/qt.tsv"},
+    {"id": "qt-effective", "type": "file", "path": "data/qt-effective.tsv"},
+    {"id": "qs-left", "type": "coordinates", "points": [[0, 189], [0.397, 189]]},
+    {"id": "qs-right", "type": "coordinates", "points": [[0.397, 189], [1, 189]]}
+  ],
+  "series": [
+    {
+      "id": "inverse-cdf",
+      "source": "inverse-cdf",
+      "label": "$F^{-1}(\\alpha)$",
+      "style": {"color": "black", "opacity": 0.2, "line_width": "0.5pt"}
+    },
+    {
+      "id": "qt-base",
+      "source": "qt-base",
+      "label": "$q_t=\\frac{(p-s)F^{-1}(\\alpha)+B(1+r)}{w(1+r)-s}$",
+      "style": {"color": "blue!80!red", "opacity": 0.45, "line_width": "0.7pt", "line": "dash dot"}
+    },
+    {
+      "id": "qt-effective",
+      "source": "qt-effective",
+      "style": {"color": "blue!80!red", "line_width": "1.35pt"}
+    },
+    {
+      "id": "qs-left",
+      "source": "qs-left",
+      "style": {"color": "red", "opacity": 0.45, "line_width": "0.7pt", "line": "dash dot"}
+    },
+    {
+      "id": "qs-right",
+      "source": "qs-right",
+      "label": "$q_s=F^{-1}\\!\\left(\\frac{p-c-wr}{p-s}\\right)$",
+      "style": {"color": "red", "line_width": "1.35pt"}
+    }
+  ],
+  "regions": [
+    {
+      "id": "qc-increasing",
+      "type": "rectangle",
+      "x1": 0.124,
+      "x2": 0.397,
+      "y1": 0,
+      "y2": 189,
+      "style": {"fill": "MistyRose", "fill_opacity": 0.38}
+    }
+  ],
+  "annotations": [
+    {"type": "label", "at": [0.28, 25], "label": "$q^c$ increasing area", "font": "\\scriptsize"},
+    {
+      "type": "point",
+      "at": [0.397, 189],
+      "label": "$(\\alpha,q_s,q_t)=(0.397,189,189)$",
+      "anchor": "west",
+      "shift": "(-95pt,34pt)",
+      "font": "\\scriptsize",
+      "arrow": true,
+      "style": {"fill": "SeaGreen", "draw": "black!70", "mark_size": "1.8pt"}
+    },
+    {
+      "type": "point",
+      "at": [0.124, 0],
+      "label": "$(\\alpha,q_t)=(0.124,0)$",
+      "anchor": "north west",
+      "shift": "(5pt,-20pt)",
+      "font": "\\scriptsize",
+      "arrow": true,
+      "style": {"fill": "CarnationPink", "draw": "black!70", "mark_size": "1.8pt"}
+    },
+    {
+      "type": "point",
+      "at": [0.814, 189],
+      "label": "$(\\alpha,q_s)=(0.814,189)$",
+      "anchor": "north east",
+      "shift": "(-4pt,-20pt)",
+      "font": "\\scriptsize",
+      "arrow": true,
+      "style": {"fill": "Dandelion", "draw": "black!70", "mark_size": "1.8pt"}
+    },
+    {
+      "type": "point",
+      "at": [0.814, -360],
+      "label": "$\\frac{p-c-wr}{p-s}=0.814$",
+      "anchor": "south east",
+      "shift": "(-4pt,18pt)",
+      "font": "\\scriptsize",
+      "arrow": true,
+      "style": {"fill": "GreenYellow", "draw": "black!70", "mark_size": "1.8pt"}
+    },
+    {
+      "type": "point",
+      "at": [0.5, 100],
+      "label": "$M$",
+      "anchor": "south",
+      "shift": "(0pt,5pt)",
+      "font": "\\scriptsize",
+      "style": {"fill": "OrangeRed", "draw": "black!70", "mark_size": "1.8pt"}
+    }
+  ],
+  "outputs": {"basename": "fig1", "keep_build": false},
+  "metadata": {
+    "golden": true,
+    "provenance": "sustainability-1485080-data-main/fig1/fig1.tex",
+    "purpose": "Regression case for threshold region, piecewise curves, scientific ticks, and point callouts."
+  }
+}

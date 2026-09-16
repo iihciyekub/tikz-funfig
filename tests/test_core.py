@@ -15,6 +15,9 @@ from funfig.render import render_spec
 from funfig.schema import validate_spec
 
 
+GOLDEN_CASES = ("fig1", "fig4", "fig11")
+
+
 class FunFigCoreTests(unittest.TestCase):
     def test_recipe_registry(self) -> None:
         self.assertEqual(
@@ -41,6 +44,38 @@ class FunFigCoreTests(unittest.TestCase):
         spec = load_json(path)
         result = validate_spec(spec, path)
         self.assertTrue(result.ok, result.errors)
+
+    def test_publication_goldens_validate(self) -> None:
+        for case in GOLDEN_CASES:
+            with self.subTest(case=case):
+                path = PROJECT_ROOT / f"examples/golden/{case}/figure.funfig.json"
+                spec = load_json(path)
+                result = validate_spec(spec, path)
+                self.assertTrue(result.ok, result.errors)
+                self.assertTrue(spec["metadata"]["golden"])
+
+    def test_publication_goldens_match_committed_tex(self) -> None:
+        for case in GOLDEN_CASES:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temp:
+                source_dir = PROJECT_ROOT / f"examples/golden/{case}"
+                work_dir = Path(temp) / case
+                shutil.copytree(
+                    source_dir,
+                    work_dir,
+                    ignore=shutil.ignore_patterns("*.pdf", ".funfig"),
+                )
+                spec_path = work_dir / "figure.funfig.json"
+                spec = load_json(spec_path)
+                tex_path, _ = render_spec(spec, spec_path)
+                expected_tex = source_dir / f"{case}.tex"
+                self.assertEqual(
+                    tex_path.read_text(encoding="utf-8"),
+                    expected_tex.read_text(encoding="utf-8"),
+                )
+                tex = tex_path.read_text(encoding="utf-8")
+                self.assertIn("mark=none", tex)
+                if case == "fig4":
+                    self.assertIn("name intersections={of=A and C,by=profit-zero}", tex)
 
     def test_fig4_legacy_migration_produces_valid_draft(self) -> None:
         source = PROJECT_ROOT / "sustainability-1485080-data-main/fig4/fig4.tex"
@@ -118,6 +153,27 @@ class FunFigCoreTests(unittest.TestCase):
             tex = (root / "figure.tex").read_text(encoding="utf-8")
             self.assertIn("name intersections={of=A and B,by=I}", tex)
             self.assertIn("funfigIntersectionCallout", tex)
+
+    @unittest.skipUnless(
+        shutil.which("latexmk") and shutil.which("pdflatex"),
+        "TeX toolchain unavailable",
+    )
+    def test_publication_goldens_build_from_self_contained_data(self) -> None:
+        for case in GOLDEN_CASES:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temp:
+                source_dir = PROJECT_ROOT / f"examples/golden/{case}"
+                work_dir = Path(temp) / case
+                shutil.copytree(
+                    source_dir,
+                    work_dir,
+                    ignore=shutil.ignore_patterns("*.pdf", ".funfig"),
+                )
+                spec_path = work_dir / "figure.funfig.json"
+                spec = load_json(spec_path)
+                pdf_path = build_spec(spec, spec_path)
+                self.assertTrue(pdf_path.exists())
+                self.assertGreater(pdf_path.stat().st_size, 10_000)
+                self.assertFalse((work_dir / ".funfig/build").exists())
 
     @unittest.skipUnless(
         shutil.which("latexmk") and shutil.which("pdflatex") and shutil.which("gnuplot"),
