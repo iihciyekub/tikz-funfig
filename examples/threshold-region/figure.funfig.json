@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "id": "threshold-region",
+  "recipe": "threshold-region",
+  "kind": "pgfplots",
+  "axes": {
+    "x": {"label": "$\\alpha$", "min": 0, "max": 1},
+    "y": {"label": "$q$", "min": 0, "max": 1},
+    "grid": "major"
+  },
+  "data_sources": [
+    {"id": "curve", "type": "function", "expression": "x^2", "domain": "0:1", "samples": 100}
+  ],
+  "series": [
+    {"id": "curve", "source": "curve", "label": "$q(\\alpha)$", "style": {"line_width": "0.9pt"}}
+  ],
+  "regions": [
+    {
+      "id": "increasing-region",
+      "type": "rectangle",
+      "x1": 0.2,
+      "x2": 0.5,
+      "y1": 0,
+      "y2": 0.25,
+      "style": {"fill": "gray!40", "fill_opacity": 0.3}
+    }
+  ],
+  "annotations": [
+    {"type": "label", "at": [0.35, 0.1], "label": "increasing area"}
+  ],
+  "panels": [],
+  "outputs": {"basename": "figure", "keep_build": false}
+}
+

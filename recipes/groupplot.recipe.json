@@ -1,0 +1,15 @@
+{
+  "id": "groupplot",
+  "version": "1.0",
+  "kind": "pgfplots",
+  "renderer": "groupplot",
+  "description": "Aligned multi-panel PGFPlots figure.",
+  "required": ["data_sources", "series", "panels"],
+  "capabilities": ["multi-panel", "shared-style", "panel-series-binding"],
+  "external_tools": ["latexmk"],
+  "reference_examples": [
+    "TikZ_memo_v_0_6_0623/02_pgfplots/groupplots.tex",
+    "TikZ_memo_v_0_6_0623/02_pgfplots/table/08_误差棒.tex"
+  ]
+}
+

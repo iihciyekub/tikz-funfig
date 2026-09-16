@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "recipes": [
+    "function-plot",
+    "data-series",
+    "threshold-region",
+    "intersection-curves",
+    "groupplot",
+    "mechanism-diagram"
+  ]
+}
+

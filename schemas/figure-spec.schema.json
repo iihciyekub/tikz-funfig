@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wosaide.local/tikz-funfig/figure-spec.schema.json",
+  "title": "TIKZ-FunFig FigureSpec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "recipe", "kind"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"},
+    "recipe": {"type": "string", "minLength": 1},
+    "kind": {"enum": ["pgfplots", "tikz"]},
+    "title": {"type": "string"},
+    "canvas": {"$ref": "#/$defs/canvas"},
+    "engine": {"$ref": "#/$defs/engine"},
+    "axes": {"$ref": "#/$defs/axes"},
+    "data_sources": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/dataSource"},
+      "default": []
+    },
+    "series": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/series"},
+      "default": []
+    },
+    "regions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/region"},
+      "default": []
+    },
+    "annotations": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/annotation"},
+      "default": []
+    },
+    "panels": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/panel"},
+      "default": []
+    },
+    "diagram": {"$ref": "#/$defs/diagram"},
+    "outputs": {"$ref": "#/$defs/outputs"},
+    "metadata": {"type": "object", "additionalProperties": true}
+  },
+  "$defs": {
+    "canvas": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "width": {"type": "string", "default": "10cm"},
+        "height": {"type": "string", "default": "7cm"},
+        "border": {"type": "string", "default": "2pt"}
+      }
+    },
+    "engine": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "latex": {"enum": ["auto", "pdflatex", "xelatex", "lualatex"], "default": "auto"},
+        "compute": {"enum": ["none", "gnuplot", "python"], "default": "none"}
+      }
+    },
+    "axis": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "label": {"type": "string"},
+        "min": {"type": "number"},
+        "max": {"type": "number"},
+        "ticks": {"type": "array", "items": {"type": ["number", "string"]}},
+        "tick_labels": {"type": "array", "items": {"type": "string"}},
+        "dir": {"enum": ["normal", "reverse"]}
+      }
+    },
+    "axes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "x": {"$ref": "#/$defs/axis"},
+        "y": {"$ref": "#/$defs/axis"},
+        "z": {"$ref": "#/$defs/axis"},
+        "grid": {"enum": ["none", "major", "minor", "both"], "default": "major"},
+        "legend_position": {"type": "string"}
+      }
+    },
+    "style": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "color": {"type": "string"},
+        "line": {"enum": ["solid", "dashed", "dotted", "dash dot", "densely dashed", "densely dotted"]},
+        "line_width": {"type": "string"},
+        "opacity": {"type": "number", "minimum": 0, "maximum": 1},
+        "mark": {"type": "string"},
+        "fill": {"type": "string"},
+        "fill_opacity": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "dataSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "type": {"enum": ["function", "file", "coordinates", "gnuplot", "raw_gnuplot"]},
+        "expression": {"type": "string"},
+        "path": {"type": "string"},
+        "x": {"type": "string"},
+        "y": {"type": "string"},
+        "z": {"type": "string"},
+        "points": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 3,
+            "items": {"type": ["number", "string"]}
+          }
+        },
+        "script": {"type": "string"},
+        "domain": {"type": "string"},
+        "samples": {"type": "integer", "minimum": 2}
+      }
+    },
+    "series": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "source"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "label": {"type": "string"},
+        "name_path": {"type": "string"},
+        "style": {"$ref": "#/$defs/style"},
+        "options": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "region": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type"],
+      "properties": {
+        "id": {"type": "string"},
+        "type": {"enum": ["rectangle", "between"]},
+        "x1": {"type": "number"},
+        "x2": {"type": "number"},
+        "y1": {"type": "number"},
+        "y2": {"type": "number"},
+        "path_a": {"type": "string"},
+        "path_b": {"type": "string"},
+        "domain": {"type": "string"},
+        "style": {"$ref": "#/$defs/style"}
+      }
+    },
+    "annotation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {"enum": ["point", "label", "vline", "hline", "intersection"]},
+        "at": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {"type": ["number", "string"]}
+        },
+        "label": {"type": "string"},
+        "x": {"type": "number"},
+        "y": {"type": "number"},
+        "path_a": {"type": "string"},
+        "path_b": {"type": "string"},
+        "name": {"type": "string"},
+        "anchor": {"type": "string"},
+        "shift": {"type": "string"},
+        "style": {"$ref": "#/$defs/style"}
+      }
+    },
+    "panel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": {"type": "string"},
+        "title": {"type": "string"},
+        "axes": {"$ref": "#/$defs/axes"},
+        "series": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "diagramNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label"],
+      "properties": {
+        "id": {"type": "string"},
+        "label": {"type": "string"},
+        "at": {"type": "string"},
+        "right_of": {"type": "string"},
+        "below_of": {"type": "string"},
+        "style": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "diagramEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": {"type": "string"},
+        "to": {"type": "string"},
+        "label": {"type": "string"},
+        "style": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "diagram": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nodes": {"type": "array", "items": {"$ref": "#/$defs/diagramNode"}},
+        "edges": {"type": "array", "items": {"$ref": "#/$defs/diagramEdge"}}
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "basename": {"type": "string", "minLength": 1, "default": "figure"},
+        "keep_build": {"type": "boolean", "default": false}
+      }
+    }
+  }
+}
+
