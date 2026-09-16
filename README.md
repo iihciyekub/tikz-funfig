@@ -2,7 +2,7 @@
 
 TIKZ-FunFig is a schema-driven figure generation system for reproducible TikZ and PGFPlots figures.
 
-Version 0.8.1 extends the promoted method layer and the legacy migration path. Implicit equations
+Version 0.8.2 extends the promoted method layer and the legacy migration path. Implicit equations
 no longer require hand-written `raw gnuplot`; curve-relative probes/labels replace the old
 `\addpoint` / `\addsymbol` pattern; named intersections can preserve multiple crossings;
 coordinate templates embed live x/y values in publication labels; and TikZ spy/detail lenses
