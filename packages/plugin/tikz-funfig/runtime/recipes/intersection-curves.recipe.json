@@ -8,8 +8,8 @@
   "capabilities": ["name-path", "intersection", "point-callout"],
   "external_tools": ["latexmk"],
   "reference_examples": [
-    "sustainability-1485080-data-main/fig4/fig4.tex",
-    "TikZ_memo_v_0_6_0623/01_tikz_基础/3.>>算子/路径相交点.tex"
+    "references/legacy/publication-sustainability-1485080/fig4/fig4.tex",
+    "references/legacy/tikz-memo/01_tikz_基础/3.>>算子/路径相交点.tex"
   ]
 }
 

@@ -2,9 +2,9 @@
 
 `publication-threshold` is the first recipe distilled directly from the mature publication figures in:
 
-- `sustainability-1485080-data-main/fig1/fig1.tex`
-- `sustainability-1485080-data-main/fig4/fig4.tex`
-- `sustainability-1485080-data-main/fig11/fig11.tex`
+- `references/legacy/publication-sustainability-1485080/fig1/fig1.tex`
+- `references/legacy/publication-sustainability-1485080/fig4/fig4.tex`
+- `references/legacy/publication-sustainability-1485080/fig11/fig11.tex`
 
 It captures the repeated semantic structure rather than copying one figure's hard-coded coordinates.
 

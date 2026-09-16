@@ -109,11 +109,13 @@ toolchain version.
 
 ## Legacy/local knowledge
 
-The existing directories are intentionally preserved:
+Historical source material is intentionally isolated from the runtime under `references/legacy/`:
 
-- `TikZ_memo_v_0_6_0623/`
-- `pgfplots_memo_v0_0_0_1/`
-- `sustainability-1485080-data-main/`
+- `references/legacy/tikz-memo/`
+- `references/legacy/pgfplots-memo/`
+- `references/legacy/publication-sustainability-1485080/`
 
-They are reference material. New stable behavior should be implemented in `schemas/`, `recipes/`, `src/`, and `packages/skill/`, then validated with tests.
+They are development reference material, not Plugin runtime dependencies. Rendered binaries, font copies, notebook containers/checkpoints, and build state are intentionally excluded. Historical notebook computation cells are preserved as plain `generate_data_legacy.py` sources where relevant.
+
+See `references/README.md` for the promotion/retention policy. New stable behavior should be implemented in `schemas/`, `recipes/`, `src/`, and `packages/skill/`, then validated with golden cases and tests.
 

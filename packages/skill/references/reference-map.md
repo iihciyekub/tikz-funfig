@@ -15,9 +15,9 @@ All paths are relative to the workspace root.
 
 Directory:
 
-`tikz-funfig/sustainability-1485080-data-main/`
+`tikz-funfig/references/legacy/publication-sustainability-1485080/`
 
-This is the strongest reference for the visual style and structure of research figures in this workspace. It contains 11 figure folders with `.tex`, `.pdf`, `.svg`, source data, and data-generation notebooks.
+This is the strongest historical reference for the visual style and structure of research figures in this workspace. It contains 11 figure folders with original `.tex`, lightweight source data, notes, and `generate_data_legacy.py` files extracted from the historical notebooks. Rendered PDF/SVG copies and notebook containers are intentionally excluded from the maintained repository.
 
 Useful examples:
 
@@ -56,7 +56,7 @@ above to understand original intent and provenance.
 
 Directory:
 
-`tikz-funfig/pgfplots_memo_v0_0_0_1/`
+`tikz-funfig/references/legacy/pgfplots-memo/`
 
 Key paths:
 
@@ -82,7 +82,7 @@ Use this directory for syntax lookup and compact plot recipes.
 
 Directory:
 
-`tikz-funfig/TikZ_memo_v_0_6_0623/`
+`tikz-funfig/references/legacy/tikz-memo/`
 
 ### TikZ structure and geometry
 
@@ -135,9 +135,9 @@ Prefer XeLaTeX for new figures containing Chinese text.
 
 ## 4. Local helper styles
 
-- `tikz-funfig/TikZ_memo_v_0_6_0623/iitikz.sty` — broader helper setup, custom `\iiplot`, coordinate extraction, annotation helpers.
-- `tikz-funfig/pgfplots_memo_v0_0_0_1/itikz.sty` — package/library bundle and basic plotting defaults.
-- `tikz-funfig/pgfplots_memo_v0_0_0_1/icommand.tex` — custom commands used by the memo package.
+- `tikz-funfig/references/legacy/tikz-memo/iitikz.sty` — broader helper setup, custom `\iiplot`, coordinate extraction, annotation helpers.
+- `tikz-funfig/references/legacy/pgfplots-memo/itikz.sty` — package/library bundle and basic plotting defaults.
+- `tikz-funfig/references/legacy/pgfplots-memo/icommand.tex` — custom commands used by the memo package.
 
 Do not blindly import these helper files into new work. Read the relevant definitions and copy only the minimal, valid abstractions needed by the new figure.
 

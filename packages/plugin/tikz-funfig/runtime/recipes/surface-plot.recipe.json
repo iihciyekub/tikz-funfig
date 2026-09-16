@@ -8,7 +8,7 @@
   "capabilities": ["3d", "surface", "mesh", "shader", "colorbar"],
   "external_tools": ["latexmk"],
   "reference_examples": [
-    "pgfplots_memo_v0_0_0_1/01_plot/02.3_table_3D.tex",
-    "TikZ_memo_v_0_6_0623/02_pgfplots/基本设置/08.2colorbar.tex"
+    "references/legacy/pgfplots-memo/01_plot/02.3_table_3D.tex",
+    "references/legacy/tikz-memo/02_pgfplots/基本设置/08.2colorbar.tex"
   ]
 }

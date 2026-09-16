@@ -130,7 +130,7 @@
   "outputs": {"basename": "fig11", "keep_build": false},
   "metadata": {
     "golden": true,
-    "provenance": "sustainability-1485080-data-main/fig11/fig11.tex",
+    "provenance": "references/legacy/publication-sustainability-1485080/fig11/fig11.tex",
     "purpose": "Regression case for paired piecewise contract curves and several annotated threshold points."
   }
 }

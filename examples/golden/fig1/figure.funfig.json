@@ -133,7 +133,7 @@
   "outputs": {"basename": "fig1", "keep_build": false},
   "metadata": {
     "golden": true,
-    "provenance": "sustainability-1485080-data-main/fig1/fig1.tex",
+    "provenance": "references/legacy/publication-sustainability-1485080/fig1/fig1.tex",
     "purpose": "Regression case for threshold region, piecewise curves, scientific ticks, and point callouts."
   }
 }

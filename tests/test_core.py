@@ -85,6 +85,32 @@ class FunFigCoreTests(unittest.TestCase):
             ],
         )
 
+    def test_recipe_reference_examples_resolve(self) -> None:
+        for recipe_id in recipe_ids():
+            recipe = load_json(PROJECT_ROOT / "recipes" / f"{recipe_id}.recipe.json")
+            for reference in recipe.get("reference_examples", []):
+                with self.subTest(recipe=recipe_id, reference=reference):
+                    self.assertTrue(
+                        (PROJECT_ROOT / reference).exists(),
+                        f"missing recipe reference: {reference}",
+                    )
+
+    def test_legacy_reference_policy_excludes_generated_artifacts(self) -> None:
+        legacy = PROJECT_ROOT / "references/legacy"
+        publication = legacy / "publication-sustainability-1485080"
+        self.assertTrue((legacy / "tikz-memo").is_dir())
+        self.assertTrue((legacy / "pgfplots-memo").is_dir())
+        self.assertTrue(publication.is_dir())
+        self.assertEqual(len(list(publication.glob("fig*/generate_data_legacy.py"))), 11)
+        forbidden = ("*.ipynb", "*.pdf", "*.svg", "*.ttf", "*.otf")
+        for pattern in forbidden:
+            self.assertFalse(list(legacy.rglob(pattern)), f"legacy artifact returned: {pattern}")
+
+    def test_portable_plugin_excludes_legacy_knowledge_base(self) -> None:
+        plugin = PROJECT_ROOT / "packages/plugin/tikz-funfig"
+        self.assertFalse((plugin / "references").exists())
+        self.assertFalse((plugin / "runtime/references").exists())
+
     def test_basic_example_validates(self) -> None:
         path = PROJECT_ROOT / "examples/basic-function/figure.funfig.json"
         spec = load_json(path)
@@ -248,7 +274,7 @@ class FunFigCoreTests(unittest.TestCase):
                     self.assertIn(fragment, actual)
 
     def test_fig4_legacy_migration_produces_valid_draft(self) -> None:
-        source = PROJECT_ROOT / "sustainability-1485080-data-main/fig4/fig4.tex"
+        source = PROJECT_ROOT / "references/legacy/publication-sustainability-1485080/fig4/fig4.tex"
         with tempfile.TemporaryDirectory() as temp:
             result = migrate_legacy_tex(source, temp)
             spec = load_json(result.spec_path)

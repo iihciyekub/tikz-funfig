@@ -8,8 +8,8 @@
   "capabilities": ["file", "coordinates", "annotations", "error-ready"],
   "external_tools": ["latexmk"],
   "reference_examples": [
-    "TikZ_memo_v_0_6_0623/02_pgfplots/table/01_按列名读取.tex",
-    "pgfplots_memo_v0_0_0_1/01_plot/02.4_table_error.tex"
+    "references/legacy/tikz-memo/02_pgfplots/table/01_按列名读取.tex",
+    "references/legacy/pgfplots-memo/01_plot/02.4_table_error.tex"
   ]
 }
 

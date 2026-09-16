@@ -8,8 +8,8 @@
   "capabilities": ["function", "coordinates", "gnuplot", "raw_gnuplot", "annotations"],
   "external_tools": ["latexmk"],
   "reference_examples": [
-    "pgfplots_memo_v0_0_0_1/00_基本算子参数/00_base.tex",
-    "TikZ_memo_v_0_6_0623/02_pgfplots/基本设置/04坐标轴.tex"
+    "references/legacy/pgfplots-memo/00_基本算子参数/00_base.tex",
+    "references/legacy/tikz-memo/02_pgfplots/基本设置/04坐标轴.tex"
   ]
 }
 

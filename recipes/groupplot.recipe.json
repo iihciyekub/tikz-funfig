@@ -8,8 +8,8 @@
   "capabilities": ["multi-panel", "shared-style", "panel-series-binding", "structured-group-layout", "edge-label-control"],
   "external_tools": ["latexmk"],
   "reference_examples": [
-    "TikZ_memo_v_0_6_0623/02_pgfplots/groupplots.tex",
-    "TikZ_memo_v_0_6_0623/02_pgfplots/table/08_误差棒.tex"
+    "references/legacy/tikz-memo/02_pgfplots/groupplots.tex",
+    "references/legacy/tikz-memo/02_pgfplots/table/08_误差棒.tex"
   ]
 }
 

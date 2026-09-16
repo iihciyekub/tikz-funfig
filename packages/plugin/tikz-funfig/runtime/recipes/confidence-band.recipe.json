@@ -8,7 +8,7 @@
   "capabilities": ["name-path", "fill-between", "soft-clip", "confidence-band"],
   "external_tools": ["latexmk"],
   "reference_examples": [
-    "pgfplots_memo_v0_0_0_1/01_plot/04_fillbetween.tex",
-    "TikZ_memo_v_0_6_0623/02_pgfplots/fill between/02_软切割填充.tex"
+    "references/legacy/pgfplots-memo/01_plot/04_fillbetween.tex",
+    "references/legacy/tikz-memo/02_pgfplots/fill between/02_软切割填充.tex"
   ]
 }

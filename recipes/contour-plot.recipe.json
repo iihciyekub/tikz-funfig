@@ -8,7 +8,7 @@
   "capabilities": ["contour", "levels", "colorbar", "gnuplot"],
   "external_tools": ["latexmk", "gnuplot"],
   "reference_examples": [
-    "pgfplots_memo_v0_0_0_1/隐函数.tex",
-    "pgfplots_memo_v0_0_0_1/name.tex"
+    "references/legacy/pgfplots-memo/隐函数.tex",
+    "references/legacy/pgfplots-memo/name.tex"
   ]
 }

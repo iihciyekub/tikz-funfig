@@ -8,6 +8,6 @@
   "capabilities": ["3d", "quiver", "vector-field", "analytic-components"],
   "external_tools": ["latexmk"],
   "reference_examples": [
-    "pgfplots_memo_v0_0_0_1/01_plot/03_quiver.tex"
+    "references/legacy/pgfplots-memo/01_plot/03_quiver.tex"
   ]
 }

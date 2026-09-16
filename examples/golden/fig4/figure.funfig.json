@@ -120,7 +120,7 @@
   "outputs": {"basename": "fig4", "keep_build": false},
   "metadata": {
     "golden": true,
-    "provenance": "sustainability-1485080-data-main/fig4/fig4.tex",
+    "provenance": "references/legacy/publication-sustainability-1485080/fig4/fig4.tex",
     "purpose": "Regression case for two highlighted regimes, piecewise profit curves, named-path intersection, and semantic callouts."
   }
 }

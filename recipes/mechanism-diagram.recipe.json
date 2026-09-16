@@ -8,8 +8,8 @@
   "capabilities": ["nodes", "directed-edges", "relative-positioning"],
   "external_tools": ["latexmk"],
   "reference_examples": [
-    "TikZ_memo_v_0_6_0623/01_tikz_基础/4.>>算子-选项/arrows.tex",
-    "TikZ_memo_v_0_6_0623/01_tikz_基础/4.>>算子-选项/allset.tex"
+    "references/legacy/tikz-memo/01_tikz_基础/4.>>算子-选项/arrows.tex",
+    "references/legacy/tikz-memo/01_tikz_基础/4.>>算子-选项/allset.tex"
   ]
 }
 

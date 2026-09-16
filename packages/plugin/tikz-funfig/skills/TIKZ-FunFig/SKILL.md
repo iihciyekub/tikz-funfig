@@ -300,9 +300,10 @@ Do not claim successful compilation unless it was actually run successfully.
 
 ## Local knowledge base rules
 
-- `tikz-funfig/TikZ_memo_v_0_6_0623/` contains TikZ/PGFPlots/LaTeX technique notes and examples.
-- `tikz-funfig/pgfplots_memo_v0_0_0_1/` contains compact PGFPlots examples and parameter experiments.
-- `tikz-funfig/sustainability-1485080-data-main/` contains publication-style figures with `.tex`, `.pdf`, `.svg`, data files, and Python notebooks.
+- `tikz-funfig/references/legacy/tikz-memo/` contains TikZ/PGFPlots/LaTeX technique notes and examples.
+- `tikz-funfig/references/legacy/pgfplots-memo/` contains compact PGFPlots examples and parameter experiments.
+- `tikz-funfig/references/legacy/publication-sustainability-1485080/` contains historical publication `.tex`, lightweight data, notes, and Python source extracted from the original notebooks. Rendered binaries and notebook containers are deliberately excluded.
+- `tikz-funfig/references/README.md` defines the promotion rule from legacy knowledge to stable Recipe/Schema behavior and golden regression cases.
 - Prefer `compat=1.18` for newly created PGFPlots sources unless an existing paper requires another compatibility level.
 - Some old notes are exploratory snippets rather than canonical best practice. Validate syntax before reusing it.
 
