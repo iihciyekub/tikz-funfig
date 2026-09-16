@@ -1,0 +1,13 @@
+{
+  "id": "heatmap",
+  "version": "1.0",
+  "kind": "pgfplots",
+  "renderer": "pgfplots",
+  "description": "Matrix-style heatmap with explicit cell metadata and structured colorbar.",
+  "required": ["axes", "data_sources", "series"],
+  "capabilities": ["matrix-plot", "heatmap", "point-meta", "colorbar"],
+  "external_tools": ["latexmk"],
+  "reference_examples": [
+    "TikZ_memo_v_0_6_0623/02_pgfplots/coordinate/03_矩阵图.tex"
+  ]
+}

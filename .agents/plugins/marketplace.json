@@ -1,0 +1,20 @@
+{
+  "name": "tikz-funfig-local",
+  "interface": {
+    "displayName": "TIKZ-FunFig"
+  },
+  "plugins": [
+    {
+      "name": "tikz-funfig",
+      "source": {
+        "source": "local",
+        "path": "./packages/plugin/tikz-funfig"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

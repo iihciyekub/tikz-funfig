@@ -1,0 +1,15 @@
+{
+  "id": "mechanism-diagram",
+  "version": "1.0",
+  "kind": "tikz",
+  "renderer": "diagram",
+  "description": "Academic mechanism/workflow diagram using named nodes and edges.",
+  "required": ["diagram"],
+  "capabilities": ["nodes", "directed-edges", "relative-positioning"],
+  "external_tools": ["latexmk"],
+  "reference_examples": [
+    "TikZ_memo_v_0_6_0623/01_tikz_基础/4.>>算子-选项/arrows.tex",
+    "TikZ_memo_v_0_6_0623/01_tikz_基础/4.>>算子-选项/allset.tex"
+  ]
+}
+

@@ -46,6 +46,8 @@ examples/**/figure.tex
 *.pgf-plot.table
 *.gnuplot
 *.table
+*_contourtmp*.dat
+*_contourtmp*.script
 
 # Rendered/reference binaries are reproducible or source-adjacent assets,
 # but are not part of the code repository by default.
@@ -64,4 +66,18 @@ examples/**/figure.tex
 
 # Workspace/application caches
 .mcp-cache/
+
+# IconKitchen is a multi-platform export bundle. Keep only the canonical
+# source sizes used to build the Codex Plugin; the plugin assets are tracked
+# separately under packages/plugin/tikz-funfig/assets/.
+IconKitchen/**
+!IconKitchen/
+!IconKitchen/macos/
+!IconKitchen/macos/AppIcon128.png
+!IconKitchen/macos/AppIcon512.png
+!IconKitchen/README.md
+
+# Plugin visual assets intentionally override the repository-wide image rule.
+!packages/plugin/tikz-funfig/assets/
+!packages/plugin/tikz-funfig/assets/*.png
 

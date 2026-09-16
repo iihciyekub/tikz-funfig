@@ -1,0 +1,24 @@
+{
+  "id": "publication-threshold",
+  "version": "1.0",
+  "kind": "pgfplots",
+  "renderer": "pgfplots",
+  "description": "Publication-style threshold/regime plot with piecewise curves, semantic intersections, highlighted regions, and arrow callouts.",
+  "required": ["axes", "data_sources", "series"],
+  "capabilities": [
+    "publication-axis",
+    "piecewise-series",
+    "rectangle-regions",
+    "fill-between",
+    "name-path",
+    "intersection",
+    "point-callout",
+    "structured-legend"
+  ],
+  "external_tools": ["latexmk"],
+  "reference_examples": [
+    "sustainability-1485080-data-main/fig1/fig1.tex",
+    "sustainability-1485080-data-main/fig4/fig4.tex",
+    "sustainability-1485080-data-main/fig11/fig11.tex"
+  ]
+}

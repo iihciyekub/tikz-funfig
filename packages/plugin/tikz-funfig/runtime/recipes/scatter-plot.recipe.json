@@ -1,0 +1,14 @@
+{
+  "id": "scatter-plot",
+  "version": "1.0",
+  "kind": "pgfplots",
+  "renderer": "pgfplots",
+  "description": "Scientific scatter plot with structured point metadata and optional labels.",
+  "required": ["axes", "data_sources", "series"],
+  "capabilities": ["scatter", "point-meta", "explicit-meta", "nodes-near-coords", "table-data"],
+  "external_tools": ["latexmk"],
+  "reference_examples": [
+    "pgfplots_memo_v0_0_0_1/02_scatter plots/2_[scatter].tex",
+    "TikZ_memo_v_0_6_0623/02_pgfplots/table/07_meta.scatter数据.tex"
+  ]
+}

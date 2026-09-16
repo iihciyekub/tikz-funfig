@@ -1,0 +1,14 @@
+{
+  "id": "error-bar",
+  "version": "1.0",
+  "kind": "pgfplots",
+  "renderer": "pgfplots",
+  "description": "Scientific series with explicit, relative, fixed, or asymmetric error bars.",
+  "required": ["axes", "data_sources", "series"],
+  "capabilities": ["x-error", "y-error", "asymmetric-error", "relative-error", "table-data"],
+  "external_tools": ["latexmk"],
+  "reference_examples": [
+    "TikZ_memo_v_0_6_0623/02_pgfplots/table/08_误差棒.tex",
+    "pgfplots_memo_v0_0_0_1/01_plot/02.4_table_error.tex"
+  ]
+}

@@ -7,7 +7,7 @@ The repository has two roles:
 1. **Source project** — schemas, recipes, renderers, tests, documentation, and packaging live here.
 2. **Knowledge base** — the existing TikZ/PGFPlots notes and publication examples remain available as local references and are gradually promoted into stable recipes.
 
-The repository is the source of truth. Workspace/system Skills or future Plugins are installation targets generated or synchronized from this project; they should not become independent forks.
+The repository is the source of truth. Workspace/system Skills and the portable Codex/OpenAI Plugin are installation targets generated or synchronized from this project; they should not become independent forks.
 
 ## Stable figure contract
 
@@ -67,6 +67,20 @@ See `docs/recipes/publication-threshold.md` for the first publication-derived re
 See `docs/recipes/scientific-series.md` for the structured error-bar, scatter,
 confidence-band, and groupplot family. Golden examples for all four live under
 `examples/golden/` and are compiled in the regression suite.
+
+See `docs/recipes/advanced-plots.md` for the structured surface, contour,
+heatmap, and quiver family. Contour generation uses the managed gnuplot path;
+the other three remain pure PGFPlots/TeX.
+
+## Portable Plugin
+
+`packages/plugin/tikz-funfig/` is a portable Agent Plugins package containing
+the TIKZ-FunFig Skill, bundled runtime, Schema/Recipe registry, and visual
+assets. `IconKitchen/macos/AppIcon128.png` and `AppIcon512.png` are the canonical
+composer icon/logo sources. Run `scripts/sync_plugin_package.sh` after changing
+the Skill, runtime, schemas, recipes, or icons.
+
+The repo-local Codex marketplace manifest is `.agents/plugins/marketplace.json`.
 
 ## Publication golden cases
 

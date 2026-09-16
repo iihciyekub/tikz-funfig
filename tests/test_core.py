@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from funfig import __version__
 from funfig.build import build_spec, clean_spec
 from funfig.io import load_json, write_json_atomic
 from funfig.legacy import migrate_legacy_tex
@@ -17,9 +18,51 @@ from funfig.schema import validate_spec
 
 GOLDEN_CASES = ("fig1", "fig4", "fig11")
 SCIENTIFIC_GOLDEN_CASES = ("error-bar", "scatter-plot", "confidence-band", "groupplot")
+ADVANCED_GOLDEN_CASES = ("surface-plot", "contour-plot", "heatmap", "quiver-field")
 
 
 class FunFigCoreTests(unittest.TestCase):
+    def test_portable_plugin_bundle_matches_source(self) -> None:
+        plugin = PROJECT_ROOT / "packages/plugin/tikz-funfig"
+        manifest = load_json(plugin / "plugin.json")
+        self.assertEqual(manifest["version"], __version__)
+
+        self.assertEqual(
+            (PROJECT_ROOT / "packages/skill/SKILL.md").read_text(encoding="utf-8"),
+            (plugin / "skills/TIKZ-FunFig/SKILL.md").read_text(encoding="utf-8"),
+        )
+        self.assertEqual(
+            (PROJECT_ROOT / "schemas/figure-spec.schema.json").read_text(encoding="utf-8"),
+            (plugin / "runtime/schemas/figure-spec.schema.json").read_text(encoding="utf-8"),
+        )
+
+        source_recipes = sorted(path.name for path in (PROJECT_ROOT / "recipes").glob("*.json"))
+        plugin_recipes = sorted(path.name for path in (plugin / "runtime/recipes").glob("*.json"))
+        self.assertEqual(source_recipes, plugin_recipes)
+        for name in source_recipes:
+            self.assertEqual(
+                (PROJECT_ROOT / "recipes" / name).read_text(encoding="utf-8"),
+                (plugin / "runtime/recipes" / name).read_text(encoding="utf-8"),
+            )
+
+        source_modules = sorted(path.name for path in (PROJECT_ROOT / "src/funfig").glob("*.py"))
+        plugin_modules = sorted(path.name for path in (plugin / "runtime/src/funfig").glob("*.py"))
+        self.assertEqual(source_modules, plugin_modules)
+        for name in source_modules:
+            self.assertEqual(
+                (PROJECT_ROOT / "src/funfig" / name).read_text(encoding="utf-8"),
+                (plugin / "runtime/src/funfig" / name).read_text(encoding="utf-8"),
+            )
+
+        self.assertEqual(
+            (PROJECT_ROOT / "IconKitchen/macos/AppIcon128.png").read_bytes(),
+            (plugin / "assets/icon.png").read_bytes(),
+        )
+        self.assertEqual(
+            (PROJECT_ROOT / "IconKitchen/macos/AppIcon512.png").read_bytes(),
+            (plugin / "assets/logo.png").read_bytes(),
+        )
+
     def test_recipe_registry(self) -> None:
         self.assertEqual(
             recipe_ids(),
@@ -29,6 +72,10 @@ class FunFigCoreTests(unittest.TestCase):
                 "error-bar",
                 "scatter-plot",
                 "confidence-band",
+                "surface-plot",
+                "contour-plot",
+                "heatmap",
+                "quiver-field",
                 "threshold-region",
                 "intersection-curves",
                 "publication-threshold",
@@ -98,6 +145,41 @@ class FunFigCoreTests(unittest.TestCase):
             "groupplot": ("group size=2 by 2", "xlabels at={edge bottom}", "ylabels at={edge left}"),
         }
         for case in SCIENTIFIC_GOLDEN_CASES:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temp:
+                source_dir = PROJECT_ROOT / f"examples/golden/{case}"
+                expected_tex = source_dir / f"{case}.tex"
+                expected = expected_tex.read_text(encoding="utf-8")
+                work_dir = Path(temp) / case
+                shutil.copytree(
+                    source_dir,
+                    work_dir,
+                    ignore=shutil.ignore_patterns("*.pdf", ".funfig", f"{case}.tex"),
+                )
+                spec_path = work_dir / "figure.funfig.json"
+                spec = load_json(spec_path)
+                tex_path, _ = render_spec(spec, spec_path)
+                actual = tex_path.read_text(encoding="utf-8")
+                self.assertEqual(actual, expected)
+                for fragment in required_fragments[case]:
+                    self.assertIn(fragment, actual)
+
+    def test_advanced_goldens_validate(self) -> None:
+        for case in ADVANCED_GOLDEN_CASES:
+            with self.subTest(case=case):
+                path = PROJECT_ROOT / f"examples/golden/{case}/figure.funfig.json"
+                spec = load_json(path)
+                result = validate_spec(spec, path)
+                self.assertTrue(result.ok, result.errors)
+                self.assertTrue(spec["metadata"]["golden"])
+
+    def test_advanced_goldens_match_committed_tex(self) -> None:
+        required_fragments = {
+            "surface-plot": ("surf", "shader=interp", "view={45}{30}"),
+            "contour-plot": ("contour gnuplot", "levels={0.5,1,2,3}"),
+            "heatmap": ("matrix plot*", "point meta=explicit", "mesh/rows=3"),
+            "quiver-field": ("quiver={", "u={-y}", "v={x}"),
+        }
+        for case in ADVANCED_GOLDEN_CASES:
             with self.subTest(case=case), tempfile.TemporaryDirectory() as temp:
                 source_dir = PROJECT_ROOT / f"examples/golden/{case}"
                 expected_tex = source_dir / f"{case}.tex"
@@ -257,6 +339,28 @@ class FunFigCoreTests(unittest.TestCase):
                 self.assertTrue(pdf_path.exists())
                 self.assertGreater(pdf_path.stat().st_size, 5_000)
                 self.assertFalse((work_dir / ".funfig/build").exists())
+
+    @unittest.skipUnless(
+        shutil.which("latexmk") and shutil.which("pdflatex") and shutil.which("gnuplot"),
+        "advanced TeX/gnuplot toolchain unavailable",
+    )
+    def test_advanced_goldens_build(self) -> None:
+        for case in ADVANCED_GOLDEN_CASES:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temp:
+                source_dir = PROJECT_ROOT / f"examples/golden/{case}"
+                work_dir = Path(temp) / case
+                shutil.copytree(
+                    source_dir,
+                    work_dir,
+                    ignore=shutil.ignore_patterns("*.pdf", ".funfig"),
+                )
+                spec_path = work_dir / "figure.funfig.json"
+                spec = load_json(spec_path)
+                pdf_path = build_spec(spec, spec_path)
+                self.assertTrue(pdf_path.exists())
+                self.assertGreater(pdf_path.stat().st_size, 5_000)
+                self.assertFalse((work_dir / ".funfig/build").exists())
+                self.assertFalse(list(work_dir.glob("*_contourtmp*")))
 
     @unittest.skipUnless(
         shutil.which("latexmk") and shutil.which("pdflatex") and shutil.which("gnuplot"),

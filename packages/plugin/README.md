@@ -1,8 +1,16 @@
-# Plugin package boundary
+# Plugin distribution
 
-This directory is reserved for a future TIKZ-FunFig Plugin adapter.
+`packages/plugin/tikz-funfig/` is the portable Codex/OpenAI Plugin package.
 
-The Plugin must consume the canonical `schemas/` and `recipes/` contracts from this repository. It must not define an independent FigureSpec dialect or fork renderer behavior.
+It contains the same TIKZ-FunFig Skill plus a bundled, dependency-light
+runtime snapshot (`runtime/src/funfig`, `runtime/schemas`, `runtime/recipes`).
+It does **not** define a second FigureSpec dialect or renderer.
 
-Until a concrete Plugin runtime contract is chosen, the maintained distribution target is `packages/skill/`.
+The package is refreshed from repository sources with:
+
+```bash
+./scripts/sync_plugin_package.sh
+```
+
+The repo-local marketplace is `.agents/plugins/marketplace.json`.
 
