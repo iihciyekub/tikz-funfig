@@ -19,15 +19,22 @@ The canonical JSON Schema lives in the source repository at:
 - `axes` — axis labels, ranges, ticks, grid, legend position.
 - `data_sources` — named function/file/coordinate/gnuplot sources.
 - `series` — visual series bound to a named data source.
+- `series.scatter` — scatter semantics (`scatter src`, metadata binding, optional labels).
+- `series.error_bars` — structured x/y uncertainty with explicit, relative, fixed, or asymmetric bindings.
 - `regions` — highlighted rectangles or fill-between regions.
 - `annotations` — points, labels, guide lines, intersections.
 - `panels` — multi-panel series bindings.
+- `group` — structured groupplot columns, spacing, and edge-only tick/label placement.
 - `diagram` — named nodes and edges for TikZ diagrams.
 - `outputs` — stable artifact basename and intermediate retention policy.
 
 ## Data binding
 
 A series must refer to a `data_sources[].id`, never to an implicit positional data source. Panels refer to stable `series[].id` values. Diagram edges refer to stable node IDs. Intersection annotations refer to named series paths.
+
+Fill-between regions bind to stable `series[].name_path` values. Explicit error
+bars bind column names through `series.error_bars`; scatter metadata binds through
+`series.scatter.meta`. These relationships are validated before rendering.
 
 This binding rule is what makes later small edits stable: data, style, annotation, and layout remain separate concerns.
 

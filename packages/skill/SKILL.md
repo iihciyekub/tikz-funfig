@@ -77,16 +77,21 @@ Initial stable recipes are:
 
 - `function-plot`
 - `data-series`
+- `error-bar`
+- `scatter-plot`
+- `confidence-band`
 - `threshold-region`
 - `intersection-curves`
 - `publication-threshold`
 - `groupplot`
 - `mechanism-diagram`
 
-The repository also contains three publication-grade golden cases under
-`examples/golden/fig1`, `fig4`, and `fig11`. Use them as the strongest regression
-references for threshold/regime scientific plots. They are full FigureSpecs,
-not legacy snippets or migration drafts.
+The repository also contains publication-grade and scientific golden cases under
+`examples/golden/`. The paper-derived `fig1`, `fig4`, and `fig11` cases are the
+strongest references for threshold/regime figures; `error-bar`, `scatter-plot`,
+`confidence-band`, and `groupplot` are the canonical regression references for
+the second scientific recipe family. They are full FigureSpecs, not legacy
+snippets or migration drafts.
 
 ## Required toolchain
 
@@ -125,10 +130,13 @@ Choose the simplest suitable mode:
 - **TikZ diagram** — `mechanism-diagram` for conceptual models, workflows, mechanisms, arrows, and named nodes.
 - **PGFPlots analytic plot** — `function-plot` for explicit or gnuplot-backed functions.
 - **PGFPlots data plot** — `data-series` for CSV/DAT/table/coordinate-driven figures.
+- **Error-bar plot** — `error-bar` for explicit/asymmetric, relative, or fixed x/y uncertainty.
+- **Scatter plot** — `scatter-plot` for metadata-driven scientific points, including structured colorbar output.
+- **Confidence/interval band** — `confidence-band` for two named bounds and a semantic fill-between region.
 - **Threshold/regime plot** — `threshold-region` for shaded regimes, threshold bands, and callouts.
 - **Curve intersection plot** — `intersection-curves` for named paths and semantic intersections.
 - **Publication threshold plot** — `publication-threshold` for the mature paper pattern combining parameter titles, selected threshold ticks, piecewise curves, shaded regimes, key points, intersections, and arrow callouts. This recipe is distilled from the local `fig1`, `fig4`, and `fig11` sources.
-- **Multi-panel** — `groupplot` when panels should share a coherent figure system.
+- **Multi-panel** — `groupplot` when panels should share a coherent figure system; use structured `group` layout fields instead of raw groupplot option strings.
 
 Read `references/reference-map.md` before searching the knowledge base broadly.
 

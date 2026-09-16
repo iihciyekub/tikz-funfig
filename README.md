@@ -64,6 +64,10 @@ See `docs/architecture.md` for details.
 
 See `docs/recipes/publication-threshold.md` for the first publication-derived recipe and the conservative legacy migration workflow.
 
+See `docs/recipes/scientific-series.md` for the structured error-bar, scatter,
+confidence-band, and groupplot family. Golden examples for all four live under
+`examples/golden/` and are compiled in the regression suite.
+
 ## Publication golden cases
 
 `examples/golden/fig1`, `fig4`, and `fig11` are schema-managed reconstructions

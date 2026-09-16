@@ -29,6 +29,15 @@ Use these when the user asks for a paper-ready economics/operations-management s
 
 These three examples are the primary sources for the structured `publication-threshold` recipe. Use that recipe before rebuilding their recurring threshold/regime/callout structure manually.
 
+Scientific golden cases derived from the memo material live under:
+
+- `tikz-funfig/examples/golden/error-bar/` — asymmetric explicit x/y error columns.
+- `tikz-funfig/examples/golden/scatter-plot/` — table metadata mapped to scatter color plus colorbar.
+- `tikz-funfig/examples/golden/confidence-band/` — named upper/lower paths with fill-between.
+- `tikz-funfig/examples/golden/groupplot/` — 2×2 group layout with edge-only labels/ticks.
+
+Use these golden cases before copying raw memo snippets for the same figure class.
+
 Schema-managed golden reconstructions live at:
 
 - `tikz-funfig/examples/golden/fig1/`
