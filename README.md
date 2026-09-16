@@ -64,6 +64,20 @@ See `docs/architecture.md` for details.
 
 See `docs/recipes/publication-threshold.md` for the first publication-derived recipe and the conservative legacy migration workflow.
 
+## Publication golden cases
+
+`examples/golden/fig1`, `fig4`, and `fig11` are schema-managed reconstructions
+of three real publication figures from the local sustainability reference set.
+Each case is self-contained: its FigureSpec binds to copied source data under
+`data/`, records provenance back to the legacy source, and includes the
+deterministic generated `.tex` as a regression snapshot.
+
+Tests re-render each golden case in a temporary directory and compare the
+generated TeX byte-for-byte with the committed snapshot. They also compile all
+three figures with the local TeX toolchain. PDFs are verified as build outputs
+but are not binary-hashed or committed because TeX/PDF metadata may vary by
+toolchain version.
+
 ## Legacy/local knowledge
 
 The existing directories are intentionally preserved:

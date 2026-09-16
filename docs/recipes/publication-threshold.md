@@ -38,3 +38,16 @@ funfig migrate-legacy old-figure.tex new-figure/
 The migration is intentionally conservative. It currently recognizes common local patterns for numeric axis bounds/ticks, table and coordinate plots, `name path` bindings, and rectangular regions.
 
 Complex manual nodes, macro-generated labels, legends, and intersection callouts are reported as migration warnings and must be reviewed. The resulting `metadata.migration.status` remains `draft` until that review is complete.
+
+## Golden publication cases
+
+The recipe is regression-tested against three real figures:
+
+- `examples/golden/fig1` — threshold region, inverse-CDF curve, piecewise order-quantity curves, and five semantic point annotations;
+- `examples/golden/fig4` — two profit series, two highlighted increasing regions, named-path intersection, and arrow callouts;
+- `examples/golden/fig11` — paired piecewise contract curves and five threshold-point callouts.
+
+These are not migration drafts. They are manually reviewed FigureSpecs whose
+generated TeX is committed as a golden snapshot. When renderer behavior changes
+intentionally, visually inspect the rebuilt PDFs first, then update the golden
+TeX snapshots together with the renderer change.

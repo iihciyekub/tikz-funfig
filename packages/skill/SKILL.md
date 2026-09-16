@@ -83,6 +83,11 @@ Initial stable recipes are:
 - `groupplot`
 - `mechanism-diagram`
 
+The repository also contains three publication-grade golden cases under
+`examples/golden/fig1`, `fig4`, and `fig11`. Use them as the strongest regression
+references for threshold/regime scientific plots. They are full FigureSpecs,
+not legacy snippets or migration drafts.
+
 ## Required toolchain
 
 For the full TIKZ-FunFig workflow, treat the following as required local dependencies:

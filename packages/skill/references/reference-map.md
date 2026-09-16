@@ -29,6 +29,16 @@ Use these when the user asks for a paper-ready economics/operations-management s
 
 These three examples are the primary sources for the structured `publication-threshold` recipe. Use that recipe before rebuilding their recurring threshold/regime/callout structure manually.
 
+Schema-managed golden reconstructions live at:
+
+- `tikz-funfig/examples/golden/fig1/`
+- `tikz-funfig/examples/golden/fig4/`
+- `tikz-funfig/examples/golden/fig11/`
+
+Prefer these golden cases when changing the current renderer/Schema because
+they are compiled and regression-tested. Use the legacy publication sources
+above to understand original intent and provenance.
+
 ## 2. PGFPlots fundamentals and parameter recipes
 
 Directory:
