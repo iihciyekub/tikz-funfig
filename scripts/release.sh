@@ -22,6 +22,10 @@ if git rev-parse "v$version" >/dev/null 2>&1; then
   echo "error: tag v$version already exists" >&2
   exit 1
 fi
+if ! grep -Eq "^## \\[$version\\]( |$)" CHANGELOG.md; then
+  echo "error: CHANGELOG.md must contain a release section for [$version] before release" >&2
+  exit 1
+fi
 
 python3 - "$version" <<'PY'
 from pathlib import Path
@@ -50,7 +54,7 @@ PY
 ./scripts/check.sh
 git diff --check
 
-git add README.md pyproject.toml src/funfig/__init__.py packages/plugin/tikz-funfig
+git add README.md CHANGELOG.md pyproject.toml src/funfig/__init__.py packages/plugin/tikz-funfig
 git commit -m "release: v$version"
 git tag -a "v$version" -m "TIKZ-FunFig v$version"
 git push origin main

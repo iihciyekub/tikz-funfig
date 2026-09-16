@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install TeX and gnuplot toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk \
+            gnuplot-nox \
+            texlive-latex-base \
+            texlive-latex-extra \
+            texlive-pictures \
+            texlive-fonts-recommended \
+            texlive-xetex
+
+      - name: Validate shell scripts
+        run: |
+          bash -n scripts/*.sh
+          bash -n scripts/tff
+
+      - name: Verify portable Plugin is synchronized
+        run: |
+          ./scripts/sync_plugin_package.sh
+          git diff --exit-code -- packages/plugin/tikz-funfig
+
+      - name: Full regression suite
+        run: ./scripts/check.sh
+
+      - name: Repository diff hygiene
+        run: git diff --check
+
