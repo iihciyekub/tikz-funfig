@@ -54,7 +54,7 @@
       "name": "P",
       "show": "xy",
       "precision": 2,
-      "label_prefix": "$P=$",
+      "template": "$P=({x},{y})$",
       "shift": "(6pt,8pt)",
       "font": "\\scriptsize",
       "style": {"fill": "Dandelion", "draw": "black!70"}
@@ -71,17 +71,36 @@
       "type": "intersection",
       "path_a": "circle-path",
       "path_b": "diagonal-path",
-      "name": "I",
+      "names": ["I1", "I2"],
       "style": {"fill": "OrangeRed", "draw": "black!70"}
     },
     {
       "type": "coordinate_ref",
-      "ref": "I",
+      "ref": "I1",
       "show": "xy",
       "precision": 3,
-      "label_prefix": "$I=$",
+      "template": "$I_1=({x},{y})$",
       "shift": "(7pt,-12pt)",
       "font": "\\scriptsize"
+    },
+    {
+      "type": "coordinate_ref",
+      "ref": "I2",
+      "show": "xy",
+      "precision": 3,
+      "template": "$I_2=({x},{y})$",
+      "shift": "(-74pt,10pt)",
+      "font": "\\scriptsize"
+    },
+    {
+      "type": "spy",
+      "at": [0.707, 0.707],
+      "in": [0.82, -0.82],
+      "shape": "circle",
+      "magnification": 3.2,
+      "size": "1.4cm",
+      "connect": true,
+      "style": {"color": "black!55", "line_width": "0.45pt"}
     }
   ],
   "panels": [],
@@ -89,6 +108,6 @@
   "metadata": {
     "golden": true,
     "provenance": "references/legacy/tikz-memo/iitikz.sty",
-    "purpose": "Regression case for promoted iiplot/calxy/addpoint/addsymbol semantics."
+    "purpose": "Regression case for promoted iiplot/calxy/addpoint/addsymbol, multi-intersection, template formatting, and spy semantics."
   }
 }

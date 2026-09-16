@@ -5,6 +5,7 @@
 \pgfplotsset{compat=1.18}
 \usetikzlibrary{calc,arrows.meta,positioning,intersections,fit,shapes.geometric}
 \usepgfplotslibrary{fillbetween}
+\usetikzlibrary{spy}
 \newcommand{\funfigcoordx}[2]{%
   \pgfplotspointgetcoordinates{(#1)}%
   \ensuremath{\pgfmathprintnumber[fixed,precision=#2]{\pgfkeysvalueof{/data point/x}}}%
@@ -19,7 +20,7 @@
 }
 
 \begin{document}
-\begin{tikzpicture}
+\begin{tikzpicture}[spy using outlines={rectangle,magnification=4,size=2cm}]
 \begin{axis}[
   width=8.6cm,
   height=7.2cm,
@@ -50,10 +51,15 @@ splot (x**2 + y**2)-(1);
 \addplot+ [Maroon,dashed,line width=0.8pt,mark=none,name path=diagonal-path,domain=-1.2:1.2,samples=80] {x} node[pos=0.72,sloped,font=\scriptsize] {$y=x$};
 \addlegendentry{$y=x$}
 \draw[fill=Dandelion,draw=black!70,line width=0.45pt] (P) circle (0.75mm);
-\node[anchor=south west,font=\scriptsize] at ([shift={(6pt,8pt)}]P) {$P=$\funfigcoordxy{P}{2}};
-\path[name intersections={of=circle-path and diagonal-path,by=I}];
-\draw[fill=OrangeRed,draw=black!70,line width=0.45pt] (I) circle (0.7mm);
-\node[anchor=south west,font=\scriptsize] at ([shift={(7pt,-12pt)}]I) {$I=$\funfigcoordxy{I}{3}};
+\node[anchor=south west,font=\scriptsize] at ([shift={(6pt,8pt)}]P) {$P=(\funfigcoordx{P}{2},\funfigcoordy{P}{2})$};
+\path[name intersections={of=circle-path and diagonal-path,by={I1,I2}}];
+\draw[fill=OrangeRed,draw=black!70,line width=0.45pt] (I1) circle (0.7mm);
+\draw[fill=OrangeRed,draw=black!70,line width=0.45pt] (I2) circle (0.7mm);
+\node[anchor=south west,font=\scriptsize] at ([shift={(7pt,-12pt)}]I1) {$I_1=(\funfigcoordx{I1}{3},\funfigcoordy{I1}{3})$};
+\node[anchor=south west,font=\scriptsize] at ([shift={(-74pt,10pt)}]I2) {$I_2=(\funfigcoordx{I2}{3},\funfigcoordy{I2}{3})$};
+\coordinate (funfigSpyOn6) at (axis cs:0.707,0.707);
+\coordinate (funfigSpyIn6) at (axis cs:0.82,-0.82);
+\spy[circle,magnification=3.2,size=1.4cm,connect spies,black!55,line width=0.45pt] on (funfigSpyOn6) in node at (funfigSpyIn6);
 \end{axis}
 \end{tikzpicture}
 \end{document}

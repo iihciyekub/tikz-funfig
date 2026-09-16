@@ -116,7 +116,10 @@ class FunFigCoreTests(unittest.TestCase):
                 "curve-probe",
                 "curve-label",
                 "named-intersection",
+                "multi-intersection",
                 "fill-between",
+                "coordinate-template",
+                "spy-detail",
             }.issubset(promoted)
         )
 
@@ -137,9 +140,16 @@ class FunFigCoreTests(unittest.TestCase):
             self.assertIn("splot (x**2 + y**2)-(1);", tex)
             self.assertIn("coordinate[pos=0.12] (P)", tex)
             self.assertIn("node[pos=0.72,sloped,font=\\scriptsize] {$y=x$}", tex)
-            self.assertIn("\\funfigcoordxy{P}{2}", tex)
-            self.assertIn("name intersections={of=circle-path and diagonal-path,by=I}", tex)
-            self.assertIn("\\funfigcoordxy{I}{3}", tex)
+            self.assertIn("\\funfigcoordx{P}{2}", tex)
+            self.assertIn("\\funfigcoordy{P}{2}", tex)
+            self.assertIn(
+                "name intersections={of=circle-path and diagonal-path,by={I1,I2}}",
+                tex,
+            )
+            self.assertIn("\\funfigcoordx{I1}{3}", tex)
+            self.assertIn("\\funfigcoordy{I2}{3}", tex)
+            self.assertIn("\\usetikzlibrary{spy}", tex)
+            self.assertIn("\\spy[circle,magnification=3.2,size=1.4cm,connect spies", tex)
             self.assertTrue(manifest["dependencies"]["gnuplot"])
             self.assertTrue(manifest["dependencies"]["shell_escape"])
 
@@ -328,9 +338,13 @@ class FunFigCoreTests(unittest.TestCase):
                 "set cntrparam levels discrete 0;",
                 "coordinate[pos=0.12] (P)",
                 "node[pos=0.72,sloped,font=\\scriptsize] {$y=x$}",
-                "\\funfigcoordxy{P}{2}",
-                "name intersections={of=circle-path and diagonal-path,by=I}",
-                "\\funfigcoordxy{I}{3}",
+                "\\funfigcoordx{P}{2}",
+                "\\funfigcoordy{P}{2}",
+                "name intersections={of=circle-path and diagonal-path,by={I1,I2}}",
+                "\\funfigcoordx{I1}{3}",
+                "\\funfigcoordy{I2}{3}",
+                "\\usetikzlibrary{spy}",
+                "\\spy[circle,magnification=3.2,size=1.4cm,connect spies",
             )
         }
         for case in METHOD_GOLDEN_CASES:
@@ -365,6 +379,59 @@ class FunFigCoreTests(unittest.TestCase):
             self.assertEqual(result.detected["regions"], 2)
             self.assertEqual(result.detected["name_paths"], 2)
             self.assertEqual(spec["metadata"]["migration"]["status"], "draft")
+
+    def test_legacy_method_migration_promotes_implicit_and_annotations(self) -> None:
+        source_text = r"""
+\begin{axis}[xmin=-2,xmax=2,ymin=-2,ymax=2]
+\iipolt[a]{splot y-x} [node[pos=0.25,above] {$L$}];
+\iiplot[b]{splot x+y-1} \addpoint{0.3}{45} \addsymbol{0.6}{$B$};
+\draw[name intersections={of=a and b,by={c}}] node at(c) {$\calxy{c}$};
+\end{axis}
+"""
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "legacy-methods.tex"
+            source.write_text(source_text, encoding="utf-8")
+            result = migrate_legacy_tex(source, root / "migrated")
+            spec = load_json(result.spec_path)
+            validation = validate_spec(spec, result.spec_path)
+            self.assertTrue(validation.ok, validation.errors)
+            self.assertEqual(spec["recipe"], "implicit-function")
+            self.assertEqual(spec["engine"]["compute"], "gnuplot")
+            self.assertEqual(result.detected["implicit_series"], 2)
+            self.assertEqual(result.detected["method_annotations"], 3)
+            self.assertEqual(result.detected["intersections"], 1)
+            self.assertEqual(result.detected["coordinate_refs"], 1)
+            annotation_types = [item["type"] for item in spec["annotations"]]
+            self.assertIn("curve_probe", annotation_types)
+            self.assertIn("curve_label", annotation_types)
+            self.assertIn("intersection", annotation_types)
+            self.assertIn("coordinate_ref", annotation_types)
+            probe = next(item for item in spec["annotations"] if item["type"] == "curve_probe")
+            self.assertEqual(probe["position"], 0.3)
+            self.assertEqual(probe["pin_angle"], 45.0)
+
+    def test_real_legacy_iiplot_intersection_is_promoted(self) -> None:
+        source = PROJECT_ROOT / "references/legacy/tikz-memo/01.tex"
+        with tempfile.TemporaryDirectory() as temp:
+            result = migrate_legacy_tex(source, temp)
+            spec = load_json(result.spec_path)
+            self.assertEqual(result.detected["gnuplot_series"], 2)
+            self.assertEqual(result.detected["intersections"], 1)
+            self.assertEqual(result.detected["coordinate_refs"], 1)
+            self.assertEqual(spec["engine"]["compute"], "gnuplot")
+            self.assertEqual(
+                [item.get("name_path") for item in spec["series"]],
+                ["a", "b"],
+            )
+
+    def test_non_ascii_legacy_filename_gets_safe_figure_id(self) -> None:
+        source = PROJECT_ROOT / "references/legacy/pgfplots-memo/隐函数.tex"
+        with tempfile.TemporaryDirectory() as temp:
+            result = migrate_legacy_tex(source, temp)
+            spec = load_json(result.spec_path)
+            self.assertEqual(spec["id"], "legacy-figure-migrated")
+            self.assertGreaterEqual(result.detected["implicit_series"], 1)
 
     def test_unknown_data_binding_is_rejected(self) -> None:
         spec = {

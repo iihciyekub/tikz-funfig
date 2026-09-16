@@ -46,7 +46,16 @@
       "legacy_macros": ["name path", "name intersections"],
       "semantic_method": "named-intersection",
       "figure_spec": "series[].name_path + annotations[].type=intersection",
-      "status": "promoted"
+      "status": "promoted",
+      "notes": "Supports one or multiple named intersection coordinates through name or names."
+    },
+    {
+      "legacy_macros": ["name intersections ... by={a,b}"],
+      "sources": ["references/legacy/tikz-memo/01_tikz_基础/3.>>算子/路径相交点.tex"],
+      "semantic_method": "multi-intersection",
+      "figure_spec": "annotations[].type=intersection + annotations[].names",
+      "status": "promoted",
+      "notes": "Preserves explicit multi-intersection naming so later coordinate_ref annotations can target each point independently."
     },
     {
       "legacy_macros": ["fill between", "soft clip"],
@@ -59,6 +68,21 @@
       "semantic_method": "font-style",
       "status": "absorbed",
       "notes": "The historical helper itself is not carried forward; its purpose is represented by structured font/style fields."
+    },
+    {
+      "legacy_macros": ["\\calxy", "\\calx", "\\caly"],
+      "semantic_method": "coordinate-template",
+      "figure_spec": "annotations[].template with {x}, {y}, {xy}, and {ref}",
+      "status": "promoted",
+      "notes": "Allows dynamic coordinate values to be embedded inside stable publication labels instead of only using a fixed prefix."
+    },
+    {
+      "legacy_macros": ["\\spy", "spy using outlines"],
+      "sources": ["references/legacy/tikz-memo/01_tikz_基础/3.>>算子/spy.tex"],
+      "semantic_method": "spy-detail",
+      "figure_spec": "annotations[].type=spy",
+      "status": "promoted",
+      "notes": "Creates a magnified detail lens with a stable source/target coordinate pair, optional connector, shape, and size."
     }
   ]
 }

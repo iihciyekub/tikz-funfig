@@ -181,7 +181,7 @@ Use the reference map to read only the most relevant `.tex` examples. Reuse idea
 
 When an existing figure in the user's paper is being revised, inspect that source first and preserve its semantic variables, labels, and data interfaces unless asked to redesign them.
 
-For a legacy PGFPlots `.tex`, use `migrate-legacy` as the first pass. The migration is deliberately conservative: reliably detected axes, table/coordinate series, name paths, and rectangular regimes are converted; complex hand-positioned nodes, legends, macros, and intersections remain explicit migration warnings until reviewed. Never claim a legacy migration is complete merely because the draft compiles.
+For a legacy PGFPlots `.tex`, use `migrate-legacy` as the first pass. The migration is deliberately conservative: reliably detected axes, table/coordinate series, name paths, rectangular regimes, common `\iiplot` / `\iipolt` calls, simple named intersections, `\calxy` references, and `\addpoint` / `\addsymbol` tails are promoted when their semantics are unambiguous. Multi-command gnuplot bodies, TeX-macro-dependent scripts, and complex hand-positioned nodes/legends remain explicit migration warnings until reviewed. Never claim a legacy migration is complete merely because the draft compiles.
 
 ### 3. Create/update FigureSpec, then generate standalone source
 
@@ -286,6 +286,12 @@ FigureSpec forms:
 - `annotations[].type: curve_label` replaces `\addsymbol` and follows the series geometry;
 - `annotations[].type: coordinate_ref` replaces `\calxy`, `\calx`, `\caly`, `\getX`,
   `\getY`, and `\getXY` for named coordinates/intersections.
+- `annotations[].names` on an `intersection` preserves multiple named crossings of the same
+  two paths (`by={a,b,...}`), and each point can then be referenced independently.
+- `annotations[].template` embeds dynamic `{x}`, `{y}`, `{xy}`, or `{ref}` values inside a
+  stable mathematical label instead of relying on ad-hoc TeX macros.
+- `annotations[].type: spy` promotes the TikZ spy/detail-lens pattern with structured source
+  and target coordinates, magnification, shape/size, and connector settings.
 
 Read `references/methods.md` for the compact method contract used by the portable Skill.
 

@@ -199,6 +199,21 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                     errors.append(
                         f"annotations[{index}].{field} references unknown name_path: {path_name!r}"
                     )
+            names = annotation.get("names")
+            if names is not None:
+                if not isinstance(names, list) or not names or not all(
+                    isinstance(name, str) and name for name in names
+                ):
+                    errors.append(
+                        f"annotations[{index}].names must be a non-empty array of coordinate names"
+                    )
+                elif len(set(names)) != len(names):
+                    errors.append(f"annotations[{index}].names must be unique")
+                labels = annotation.get("labels")
+                if isinstance(labels, list) and len(labels) > len(names):
+                    errors.append(
+                        f"annotations[{index}].labels cannot contain more entries than names"
+                    )
         if annotation_type in {"curve_probe", "curve_label"}:
             series_id = annotation.get("series")
             if series_id not in series_ids:
@@ -212,6 +227,20 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                 )
         if annotation_type == "coordinate_ref" and not annotation.get("ref"):
             errors.append(f"annotations[{index}] type=coordinate_ref requires ref")
+        if annotation_type == "spy":
+            for field in ("at", "in"):
+                value = annotation.get(field)
+                if not isinstance(value, list) or len(value) != 2:
+                    errors.append(
+                        f"annotations[{index}] type=spy requires {field}=[x,y]"
+                    )
+            magnification = annotation.get("magnification")
+            if magnification is not None and (
+                not isinstance(magnification, (int, float)) or magnification <= 0
+            ):
+                errors.append(
+                    f"annotations[{index}].magnification must be a positive number"
+                )
 
     diagram = spec.get("diagram")
     if diagram is not None:

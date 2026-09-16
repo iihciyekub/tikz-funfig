@@ -6,8 +6,14 @@ TIKZ-FunFig separates declarative intent from generated TeX. A user edits a `Fig
 
 Between FigureSpec and rendering, the **Method layer** captures reusable semantic primitives
 distilled from proven legacy helpers: implicit contours, curve probes, curve-relative labels,
-coordinate formatting, named intersections, and fill-between regions. Methods preserve the
-behavior of the old macros without making new figures depend on those macro files.
+coordinate formatting/templates, single or multiple named intersections, fill-between regions,
+and spy/detail lenses. Methods preserve the behavior of the old macros without making new
+figures depend on those macro files.
+
+The migration layer is intentionally asymmetric: portable legacy idioms are promoted into
+these methods, while ambiguous gnuplot programs or TeX-macro-dependent scripts remain explicit
+warnings. Migration is therefore a semantic extraction pass, not a claim to be a complete TeX
+parser.
 
 This makes small later changes — a range, a color, an annotation, a series, a panel — local edits to structured data rather than full rewrites of hand-generated TikZ.
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "tikz-funfig",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Schema-driven publication-quality TikZ and PGFPlots figure generation.",
   "author": {
     "name": "TIKZ-FunFig"
@@ -28,8 +28,8 @@
         "defaultPrompt": [
           "Create a publication-quality scientific figure from my description.",
           "Convert this existing TikZ or PGFPlots figure into a stable FigureSpec.",
-          "Build a surface, contour, heatmap, or vector-field figure from my data.",
-          "Plot this implicit equation with gnuplot and label points or intersections directly on the curve."
+          "Plot this implicit equation with managed gnuplot, multiple named intersections, and dynamic coordinate labels.",
+          "Migrate this legacy iiplot/PGFPlots source into promoted TIKZ-FunFig methods."
         ],
         "brandColor": "#000000",
         "composerIcon": "./assets/icon.png",

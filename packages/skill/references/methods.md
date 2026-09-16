@@ -28,6 +28,31 @@ the text sloped with the path. It replaces `\addsymbol`.
 coordinate, including a semantic intersection. It replaces `\calxy`, `\calx`, `\caly`,
 `\getX`, `\getY`, and `\getXY`.
 
+Use `template` when the coordinate values belong inside a larger label. Supported placeholders
+are `{x}`, `{y}`, `{xy}`, and `{ref}`. For example, `$I=({x},{y})$` keeps the mathematical
+label stable while the intersection itself moves.
+
+## Multiple intersections
+
+An `intersection` annotation can use `names: ["I1", "I2", ...]` when the same two named
+paths cross more than once. Each named point becomes available to later `coordinate_ref`
+annotations. This promotes the historical `name intersections={...,by={a,b}}` pattern.
+
+## Spy/detail lens
+
+Use `annotations[].type: "spy"` with `at`, `in`, `magnification`, shape/size, and optional
+connector settings to create a stable magnified detail view. The renderer first materializes
+PGFPlots axis positions as named TikZ coordinates before invoking the spy library so the
+deferred spy operation does not lose the axis coordinate system.
+
+## Legacy method migration
+
+`migrate-legacy` recognizes common `\iiplot` / `\iipolt` calls. A single portable `splot`
+becomes an `implicit` source; a simple gnuplot `plot` body becomes managed `raw_gnuplot`;
+`\addpoint` / `\addsymbol` tails become `curve_probe` / `curve_label`; simple named
+intersections and `\calxy{...}` references are promoted to semantic annotations. Complex
+gnuplot bodies remain migration warnings instead of being silently rewritten.
+
 ## Already promoted methods
 
 `series[].name_path` + `intersection` annotations preserve named-path intersections, and

@@ -238,6 +238,38 @@ def _series_path_decorations(
     return result
 
 
+def _coordinate_formatter(ref: str, show: str, precision: int) -> str:
+    formatter = {
+        "x": "funfigcoordx",
+        "y": "funfigcoordy",
+        "xy": "funfigcoordxy",
+    }.get(show, "funfigcoordxy")
+    return f"\\{formatter}{{{ref}}}{{{precision}}}"
+
+
+def _coordinate_label(annotation: dict[str, Any], ref: str) -> str:
+    precision = int(annotation.get("precision", 2))
+    show = annotation.get("show", "xy")
+    explicit = annotation.get("label")
+    if isinstance(explicit, str):
+        return explicit
+
+    template = annotation.get("template")
+    if isinstance(template, str):
+        result = template
+        replacements = {
+            "{x}": _coordinate_formatter(ref, "x", precision),
+            "{y}": _coordinate_formatter(ref, "y", precision),
+            "{xy}": _coordinate_formatter(ref, "xy", precision),
+            "{ref}": ref,
+        }
+        for token, replacement in replacements.items():
+            result = result.replace(token, replacement)
+        return result
+
+    return annotation.get("label_prefix", "") + _coordinate_formatter(ref, show, precision)
+
+
 def _error_bar_options(error_bars: dict[str, Any] | None) -> tuple[list[str], list[str]]:
     if not error_bars:
         return [], []
@@ -489,9 +521,15 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
                 f"(axis cs:\\pgfkeysvalueof{{/pgfplots/xmax}},{_fmt(y)});"
             )
         elif kind == "intersection":
-            name = annotation.get("name", f"intersection{index}")
+            names = annotation.get("names")
+            if isinstance(names, list) and names:
+                intersection_names = [str(name) for name in names]
+                by_value = "{" + ",".join(intersection_names) + "}"
+            else:
+                intersection_names = [annotation.get("name", f"intersection{index}")]
+                by_value = intersection_names[0]
             lines.append(
-                f"\\path[name intersections={{of={annotation['path_a']} and {annotation['path_b']},by={name}}}];"
+                f"\\path[name intersections={{of={annotation['path_a']} and {annotation['path_b']},by={by_value}}}];"
             )
             raw_style = annotation.get("style") or {}
             marker_draw = []
@@ -504,17 +542,27 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
             if raw_style.get("opacity") is not None:
                 marker_draw.append(f"opacity={_fmt(raw_style['opacity'])}")
             marker_draw.append("line width=0.45pt")
-            lines.append(f"\\draw[{','.join(marker_draw)}] ({name}) circle (0.7mm);")
-            if annotation.get("label"):
+            labels = annotation.get("labels") if isinstance(annotation.get("labels"), list) else []
+            for name_index, name in enumerate(intersection_names):
+                lines.append(f"\\draw[{','.join(marker_draw)}] ({name}) circle (0.7mm);")
+                label = labels[name_index] if name_index < len(labels) else (
+                    annotation.get("label") if name_index == 0 else None
+                )
+                if not label:
+                    continue
                 anchor = annotation.get("anchor", "south west")
                 shift = annotation.get("shift", "(2pt,2pt)")
-                node_name = f"funfigIntersectionCallout{index}"
+                node_name = (
+                    f"funfigIntersectionCallout{index}"
+                    if len(intersection_names) == 1
+                    else f"funfigIntersectionCallout{index}_{name_index + 1}"
+                )
                 node_options = [f"anchor={anchor}"]
                 if annotation.get("font"):
                     node_options.append(f"font={annotation['font']}")
                 lines.append(
                     f"\\node[{','.join(node_options)}] ({node_name}) at "
-                    f"([shift={{{shift}}}]{name}) {{{annotation['label']}}};"
+                    f"([shift={{{shift}}}]{name}) {{{label}}};"
                 )
                 if annotation.get("arrow"):
                     arrow_options = annotation.get("arrow_style") or ["-{Stealth[length=4pt,width=3pt]}", "shorten >=1pt"]
@@ -538,19 +586,19 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
                 marker_options.append("line width=0.45pt")
                 lines.append(f"\\draw[{','.join(marker_options)}] ({name}) circle (0.75mm);")
             if annotation.get("label", True):
+                label = _coordinate_label(annotation, name)
+                pin_angle = annotation.get("pin_angle")
+                if pin_angle is not None:
+                    pin_options = []
+                    if annotation.get("font"):
+                        pin_options.append(f"font={annotation['font']}")
+                    pin_style = f"[{','.join(pin_options)}]" if pin_options else ""
+                    lines.append(
+                        f"\\node[inner sep=0pt,pin={{{pin_style}{_fmt(pin_angle)}:{{{label}}}}}] at ({name}) {{}};"
+                    )
+                    continue
                 anchor = annotation.get("anchor", "south west")
                 shift = annotation.get("shift", "(3pt,3pt)")
-                precision = int(annotation.get("precision", 2))
-                show = annotation.get("show", "xy")
-                formatter = {
-                    "x": "funfigcoordx",
-                    "y": "funfigcoordy",
-                    "xy": "funfigcoordxy",
-                }.get(show, "funfigcoordxy")
-                label = annotation.get("label")
-                if not isinstance(label, str):
-                    prefix = annotation.get("label_prefix", "")
-                    label = f"{prefix}\\{formatter}{{{name}}}{{{precision}}}"
                 node_options = [f"anchor={anchor}"]
                 if annotation.get("font"):
                     node_options.append(f"font={annotation['font']}")
@@ -559,17 +607,7 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
                 )
         elif kind == "coordinate_ref":
             ref = annotation["ref"]
-            precision = int(annotation.get("precision", 2))
-            show = annotation.get("show", "xy")
-            formatter = {
-                "x": "funfigcoordx",
-                "y": "funfigcoordy",
-                "xy": "funfigcoordxy",
-            }.get(show, "funfigcoordxy")
-            label = annotation.get("label")
-            if not isinstance(label, str):
-                prefix = annotation.get("label_prefix", "")
-                label = f"{prefix}\\{formatter}{{{ref}}}{{{precision}}}"
+            label = _coordinate_label(annotation, ref)
             anchor = annotation.get("anchor", "south west")
             shift = annotation.get("shift", "(3pt,3pt)")
             node_options = [f"anchor={anchor}"]
@@ -581,6 +619,32 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
         elif kind == "curve_label":
             # Rendered as part of the plot path so it tracks curve geometry.
             continue
+        elif kind == "spy":
+            x, y = annotation["at"]
+            in_x, in_y = annotation["in"]
+            on_name = f"funfigSpyOn{index}"
+            in_name = f"funfigSpyIn{index}"
+            lines.append(
+                f"\\coordinate ({on_name}) at (axis cs:{_fmt(x)},{_fmt(y)});"
+            )
+            lines.append(
+                f"\\coordinate ({in_name}) at (axis cs:{_fmt(in_x)},{_fmt(in_y)});"
+            )
+            spy_options = [annotation.get("shape", "rectangle")]
+            spy_options.append(f"magnification={_fmt(annotation.get('magnification', 4))}")
+            if annotation.get("size"):
+                spy_options.append(f"size={annotation['size']}")
+            else:
+                if annotation.get("width"):
+                    spy_options.append(f"width={annotation['width']}")
+                if annotation.get("height"):
+                    spy_options.append(f"height={annotation['height']}")
+            if annotation.get("connect", True):
+                spy_options.append("connect spies")
+            spy_options.extend(style)
+            lines.append(
+                f"\\spy[{','.join(spy_options)}] on ({on_name}) in node at ({in_name});"
+            )
     return lines
 
 
@@ -595,6 +659,12 @@ def _document_preamble(spec: dict[str, Any], groupplots: bool = False) -> list[s
         "\\usetikzlibrary{calc,arrows.meta,positioning,intersections,fit,shapes.geometric}",
         "\\usepgfplotslibrary{fillbetween}",
     ]
+    if any(
+        annotation.get("type") == "spy"
+        for annotation in spec.get("annotations", [])
+        if isinstance(annotation, dict)
+    ):
+        lines.append("\\usetikzlibrary{spy}")
     needs_coordinate_helpers = any(
         annotation.get("type") in {"curve_probe", "coordinate_ref"}
         for annotation in spec.get("annotations", [])
@@ -625,7 +695,17 @@ def _document_preamble(spec: dict[str, Any], groupplots: bool = False) -> list[s
 def render_pgfplots(spec: dict[str, Any]) -> str:
     sources = _source_map(spec)
     lines = _document_preamble(spec)
-    lines += ["", "\\begin{document}", "\\begin{tikzpicture}"]
+    has_spy = any(
+        annotation.get("type") == "spy"
+        for annotation in spec.get("annotations", [])
+        if isinstance(annotation, dict)
+    )
+    tikzpicture = (
+        "\\begin{tikzpicture}[spy using outlines={rectangle,magnification=4,size=2cm}]"
+        if has_spy
+        else "\\begin{tikzpicture}"
+    )
+    lines += ["", "\\begin{document}", tikzpicture]
     axis_options = _axis_options(spec)
     lines.append("\\begin{axis}[")
     lines.extend(f"  {option}," for option in axis_options)
