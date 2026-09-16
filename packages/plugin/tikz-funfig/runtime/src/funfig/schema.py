@@ -79,6 +79,12 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
             if field not in spec:
                 errors.append(f"recipe {recipe_id!r} requires field: {field}")
 
+    axes = spec.get("axes")
+    if isinstance(axes, dict):
+        preset = axes.get("preset")
+        if preset is not None and preset not in {"publication-offset", "standard"}:
+            errors.append("axes.preset must be 'publication-offset' or 'standard'")
+
     source_ids = _unique_ids(spec.get("data_sources", []), "data_sources", errors)
     series_ids = _unique_ids(spec.get("series", []), "series", errors)
 

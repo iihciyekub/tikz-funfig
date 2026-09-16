@@ -1,12 +1,18 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "tikz-funfig",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Schema-driven publication-quality TikZ and PGFPlots figure generation.",
   "author": {
     "name": "TIKZ-FunFig"
   },
-  "keywords": ["tikz", "pgfplots", "latex", "scientific-figures", "research"],
+  "keywords": [
+    "tikz",
+    "pgfplots",
+    "latex",
+    "scientific-figures",
+    "research"
+  ],
   "extensions": {
     "com.openai": {
       "interface": {
@@ -15,7 +21,10 @@
         "longDescription": "Create, migrate, validate, render, and compile scientific figures from stable FigureSpec recipes using TikZ, PGFPlots, LaTeX, and gnuplot.",
         "developerName": "TIKZ-FunFig",
         "category": "Productivity",
-        "capabilities": ["Read", "Write"],
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
         "defaultPrompt": [
           "Create a publication-quality scientific figure from my description.",
           "Convert this existing TikZ or PGFPlots figure into a stable FigureSpec.",

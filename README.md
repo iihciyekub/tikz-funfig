@@ -26,6 +26,11 @@ my-figure/
 
 Only `figure.funfig.json`, explicit source data, generated `figure.tex`, and the final PDF are user-facing artifacts. LaTeX/PGFPlots temporary files belong under `.funfig/build/` and may be removed safely.
 
+Figure directories belong to the active user project, not to the installed
+Plugin cache. An explicit requested directory takes precedence. Without one,
+new figures use `<project-root>/figures/<figure-id>/`; existing managed figures
+are revised in place.
+
 ## CLI
 
 No third-party Python dependency is required for the v0.1 core.
@@ -37,7 +42,13 @@ PYTHONPATH=src python3 -m funfig render examples/basic-function/figure.funfig.js
 PYTHONPATH=src python3 -m funfig build examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig clean examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig migrate-legacy path/to/legacy.tex path/to/new-figure
+PYTHONPATH=src python3 -m funfig init --project-root path/to/paper --id fig1 --recipe publication-threshold
 ```
+
+Ordinary 2D paper/scientific recipes default to the `publication-offset` axes
+preset (6.5pt axis-line shift). Set `axes.preset` to `standard` to opt out, or
+set `axes.axis_line_shift` to choose another offset. Advanced 3D/contour/
+heatmap/quiver recipes retain the standard axes preset by default.
 
 For publication figures with thresholds, piecewise curves, highlighted regimes, intersections, and arrow callouts, use the `publication-threshold` recipe. It is distilled from the mature `fig1`, `fig4`, and `fig11` examples in the local knowledge base.
 

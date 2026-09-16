@@ -8,6 +8,7 @@ from pathlib import Path
 
 from funfig import __version__
 from funfig.build import build_spec, clean_spec
+from funfig.cli import main as cli_main
 from funfig.io import load_json, write_json_atomic
 from funfig.legacy import migrate_legacy_tex
 from funfig.paths import PROJECT_ROOT
@@ -89,6 +90,54 @@ class FunFigCoreTests(unittest.TestCase):
         spec = load_json(path)
         result = validate_spec(spec, path)
         self.assertTrue(result.ok, result.errors)
+
+    def test_publication_offset_is_default_for_ordinary_2d_recipes(self) -> None:
+        source_path = PROJECT_ROOT / "examples/basic-function/figure.funfig.json"
+        source = load_json(source_path)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            spec_path = root / "figure.funfig.json"
+            write_json_atomic(spec_path, source)
+            tex_path, _ = render_spec(source, spec_path)
+            self.assertIn("axis line shift=6.5pt", tex_path.read_text(encoding="utf-8"))
+
+            source["axes"]["preset"] = "standard"
+            write_json_atomic(spec_path, source)
+            tex_path, _ = render_spec(source, spec_path)
+            self.assertNotIn("axis line shift=", tex_path.read_text(encoding="utf-8"))
+
+            source["axes"]["axis_line_shift"] = "9pt"
+            write_json_atomic(spec_path, source)
+            tex_path, _ = render_spec(source, spec_path)
+            self.assertIn("axis line shift=9pt", tex_path.read_text(encoding="utf-8"))
+
+    def test_project_root_init_uses_figures_directory(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            project_root = Path(temp) / "paper"
+            result = cli_main(
+                [
+                    "init",
+                    "--project-root",
+                    str(project_root),
+                    "--id",
+                    "fig-demand",
+                    "--recipe",
+                    "publication-threshold",
+                ]
+            )
+            self.assertEqual(result, 0)
+            spec_path = project_root / "figures" / "fig-demand" / "figure.funfig.json"
+            self.assertTrue(spec_path.exists())
+            spec = load_json(spec_path)
+            self.assertEqual(spec["axes"]["preset"], "publication-offset")
+
+    def test_invalid_axis_preset_is_rejected(self) -> None:
+        source_path = PROJECT_ROOT / "examples/basic-function/figure.funfig.json"
+        source = load_json(source_path)
+        source["axes"]["preset"] = "mystery"
+        result = validate_spec(source, source_path)
+        self.assertFalse(result.ok)
+        self.assertTrue(any("axes.preset" in error for error in result.errors))
 
     def test_publication_threshold_example_validates(self) -> None:
         path = PROJECT_ROOT / "examples/publication-threshold/figure.funfig.json"

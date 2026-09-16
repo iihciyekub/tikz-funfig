@@ -12,6 +12,13 @@ These are defaults, not rigid rules. Preserve an existing manuscript's house sty
 
 ## Axes and ticks
 
+- The default for ordinary 2D paper recipes is the `publication-offset` axis
+  preset. It offsets the PGFPlots axis lines by 6.5pt, matching the spatial
+  separation used by the publication golden cases.
+- Use `axes.preset: standard` for figures where an offset box is undesirable.
+  A custom `axes.axis_line_shift` overrides the preset's default amount.
+- Surface, contour, heatmap, and quiver recipes keep `standard` as their
+  default because their 3D/view/colorbar geometry has different layout needs.
 - Prefer explicit `xmin/xmax/ymin/ymax` when the scientific range is semantically meaningful.
 - Use hand-picked ticks for thresholds, optima, breakpoints, or values discussed in the manuscript.
 - Avoid excessive decimal digits. Format numbers deliberately with PGF number formatting.

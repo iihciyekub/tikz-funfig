@@ -10,6 +10,20 @@ from .recipes import load_recipe
 from .schema import validate_spec
 
 
+PUBLICATION_OFFSET_RECIPES = {
+    "function-plot",
+    "data-series",
+    "error-bar",
+    "scatter-plot",
+    "confidence-band",
+    "threshold-region",
+    "intersection-curves",
+    "publication-threshold",
+    "groupplot",
+}
+DEFAULT_PUBLICATION_AXIS_SHIFT = "6.5pt"
+
+
 def _fmt(value: Any) -> str:
     if isinstance(value, float):
         return f"{value:.12g}"
@@ -44,6 +58,22 @@ def _axis_options(spec: dict[str, Any], axes: dict[str, Any] | None = None) -> l
         f"width={canvas.get('width', '10cm')}",
         f"height={canvas.get('height', '7cm')}",
     ]
+    preset = axes.get("preset")
+    if preset is None:
+        preset = (
+            "publication-offset"
+            if spec.get("recipe") in PUBLICATION_OFFSET_RECIPES
+            else "standard"
+        )
+    if preset == "publication-offset":
+        options.append(
+            f"axis line shift={axes.get('axis_line_shift', DEFAULT_PUBLICATION_AXIS_SHIFT)}"
+        )
+    elif axes.get("axis_line_shift"):
+        # Explicit shift remains a supported low-level override even when the
+        # standard preset is selected.
+        options.append(f"axis line shift={axes['axis_line_shift']}")
+
     grid = axes.get("grid", "major")
     if grid != "none":
         options.append(f"grid={grid}")
@@ -52,8 +82,6 @@ def _axis_options(spec: dict[str, Any], axes: dict[str, Any] | None = None) -> l
     if axes.get("title"):
         options.append(f"title={{{axes['title']}}}")
         options.append("title style={align=left}")
-    if axes.get("axis_line_shift"):
-        options.append(f"axis line shift={axes['axis_line_shift']}")
     if axes.get("tick_precision") is not None:
         options.append(
             "ticklabel style={/pgf/number format/precision="

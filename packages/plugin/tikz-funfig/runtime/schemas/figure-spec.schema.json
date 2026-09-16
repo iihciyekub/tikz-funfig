@@ -78,6 +78,7 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "preset": {"enum": ["publication-offset", "standard"]},
         "title": {"type": "string"},
         "x": {"$ref": "#/$defs/axis"},
         "y": {"$ref": "#/$defs/axis"},

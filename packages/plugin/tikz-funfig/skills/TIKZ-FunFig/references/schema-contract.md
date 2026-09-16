@@ -16,7 +16,10 @@ The canonical JSON Schema lives in the source repository at:
 - `kind` — `pgfplots` or `tikz`.
 - `canvas` — physical figure dimensions and border.
 - `engine` — LaTeX and external compute engine preference.
-- `axes` — axis labels, ranges, ticks, grid, legend position.
+- `axes` — axis labels, ranges, ticks, grid, legend position, and the axis presentation preset.
+- `axes.preset` — `publication-offset` or `standard`. Supported ordinary 2D
+  paper recipes default to `publication-offset` when omitted; advanced
+  surface/contour/heatmap/quiver recipes default to `standard`.
 - `axes.view`, `axes.box3d`, `axes.colormap`, `axes.colorbar` — structured 3D/categorical-color presentation.
 - `data_sources` — named function/file/coordinate/gnuplot sources.
 - `series` — visual series bound to a named data source.
@@ -66,11 +69,25 @@ For advanced PGFPlots figures, keep geometry/compute semantics structured:
 
 The build system may remove disposable artifacts after a successful build. It must not remove FigureSpec, source data, generated TeX, or the final PDF.
 
+## Project output location
+
+The Plugin runtime is an engine, not a storage destination. Stable figure
+artifacts must be written under the user's active project. Resolution order is:
+
+1. explicit user-specified directory;
+2. an existing managed figure directory for an update;
+3. `<project-root>/figures/<figure-id>/` for a new figure when no directory was specified.
+
+`funfig init --project-root <root> --id <id> --recipe <recipe>` implements the
+third rule. Never create user figure artifacts under `~/.codex/plugins/cache/`
+or another Plugin installation directory.
+
 ## Publication-oriented structured fields
 
 The `publication-threshold` recipe adds structured semantics for recurring patterns found in the local publication figures. Prefer these fields over opaque raw TikZ options when they apply:
 
 - `axes.title`
+- `axes.preset`
 - `axes.axis_line_shift`
 - `axes.tick_precision`
 - `axes.legend.{position,at,anchor,columns,font,cell_anchor}`

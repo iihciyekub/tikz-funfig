@@ -48,6 +48,21 @@ figure-directory/
     └── build/             # disposable intermediates; normally cleaned after success
 ```
 
+### Project output policy
+
+Figure artifacts belong to the user's active project, never to the Plugin or
+Skill installation/cache directory. Resolve the target in this order:
+
+1. an explicit directory requested by the user;
+2. an existing managed figure directory containing `figure.funfig.json` when
+   the user is revising that figure;
+3. otherwise `<active-project>/figures/<figure-id>/`.
+
+When an existing managed figure is found, edit its FigureSpec and rebuild in
+place instead of creating a duplicate elsewhere. Do not use the Codex Plugin
+cache as an implicit output directory. Read `references/output-policy.md` for
+the full rule.
+
 For supported properties — axis ranges, labels, styles, data bindings, series, regions, annotations, panels, nodes, edges — update the FigureSpec and regenerate. Do not patch generated TeX as the long-term source of truth.
 
 If the requested behavior is not expressible by the current schema/recipe, it is acceptable to extend the project schema/recipe/renderer first. Avoid one-off generator logic when the capability is reusable.
@@ -72,6 +87,16 @@ To initialize a new figure:
 ```bash
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh init path/to/new-figure --recipe function-plot
 ```
+
+When no explicit figure directory was requested, the CLI can apply the default
+project layout directly:
+
+```bash
+.agents/skills/TIKZ-FunFig/scripts/funfig.sh init \
+  --project-root path/to/paper --id fig-demand --recipe publication-threshold
+```
+
+This creates `path/to/paper/figures/fig-demand/`.
 
 Initial stable recipes are:
 
@@ -188,6 +213,10 @@ Follow `references/style-guide.md`.
 
 In particular:
 
+- ordinary 2D scientific/paper recipes default to `axes.preset: publication-offset`,
+  which uses a 6.5pt axis-line offset distilled from the publication golden cases;
+- use `axes.preset: standard` when the offset is not appropriate, and use
+  `axes.axis_line_shift` only when a figure needs a deliberate custom offset;
 - use vector geometry and text;
 - avoid decorative effects that do not communicate information;
 - keep line weights, marker sizes, and fonts consistent;

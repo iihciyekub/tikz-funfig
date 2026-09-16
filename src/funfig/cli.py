@@ -14,6 +14,19 @@ from .render import render_spec
 from .schema import load_and_validate
 
 
+PUBLICATION_OFFSET_RECIPES = {
+    "function-plot",
+    "data-series",
+    "error-bar",
+    "scatter-plot",
+    "confidence-band",
+    "threshold-region",
+    "intersection-curves",
+    "publication-threshold",
+    "groupplot",
+}
+
+
 def _load_valid(path: str) -> tuple[Path, dict[str, Any]]:
     spec_path = Path(path).resolve()
     spec, result = load_and_validate(spec_path)
@@ -37,6 +50,11 @@ def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
         base.update(
             {
                 "axes": {
+                    "preset": (
+                        "publication-offset"
+                        if recipe_id in PUBLICATION_OFFSET_RECIPES
+                        else "standard"
+                    ),
                     "x": {"label": "$x$", "min": 0, "max": 1},
                     "y": {"label": "$y$", "min": 0, "max": 1},
                     "grid": "major",
@@ -79,7 +97,6 @@ def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
                 base["axes"].update(
                     {
                         "title": "$p=10, c=4$\\\\$B=100$",
-                        "axis_line_shift": "4pt",
                         "tick_precision": 3,
                         "legend": {
                             "at": "(0.02,0.98)",
@@ -299,7 +316,14 @@ def cmd_doctor(args: argparse.Namespace) -> int:
 
 
 def cmd_init(args: argparse.Namespace) -> int:
-    target = Path(args.directory).resolve()
+    if args.directory:
+        target = Path(args.directory).resolve()
+    elif args.project_root:
+        if not args.id:
+            raise ValueError("--id is required when init uses --project-root")
+        target = Path(args.project_root).resolve() / "figures" / args.id
+    else:
+        raise ValueError("provide an output directory or --project-root with --id")
     target.mkdir(parents=True, exist_ok=True)
     spec_path = target / "figure.funfig.json"
     if spec_path.exists() and not args.force:
@@ -348,7 +372,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.set_defaults(func=cmd_doctor)
 
     p = sub.add_parser("init", help="create a starter FigureSpec directory")
-    p.add_argument("directory")
+    p.add_argument("directory", nargs="?")
+    p.add_argument(
+        "--project-root",
+        help="when directory is omitted, create <project-root>/figures/<id>",
+    )
     p.add_argument("--recipe", default="function-plot")
     p.add_argument("--id")
     p.add_argument("--force", action="store_true")
