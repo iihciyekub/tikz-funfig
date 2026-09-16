@@ -134,7 +134,11 @@
         "mark_size": {"type": "string"},
         "draw": {"type": "string"},
         "fill": {"type": "string"},
-        "fill_opacity": {"type": "number", "minimum": 0, "maximum": 1}
+        "fill_opacity": {"type": "number", "minimum": 0, "maximum": 1},
+        "text_opacity": {"type": "number", "minimum": 0, "maximum": 1},
+        "rounded_corners": {"type": "string"},
+        "inner_xsep": {"type": "string"},
+        "inner_ysep": {"type": "string"}
       }
     },
     "dataSource": {

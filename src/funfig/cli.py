@@ -26,6 +26,7 @@ PUBLICATION_OFFSET_RECIPES = {
     "publication-threshold",
     "groupplot",
 }
+DEFAULT_PUBLICATION_AXIS_SHIFT = "6.5pt"
 
 
 def _load_valid(path: str) -> tuple[Path, dict[str, Any]]:
@@ -47,6 +48,8 @@ def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
         "engine": {"latex": "auto", "compute": "none"},
         "outputs": {"basename": "figure", "keep_build": False},
     }
+    if recipe_id in PUBLICATION_OFFSET_RECIPES:
+        base["canvas"] = {"width": "10.4cm", "height": "7.3cm", "border": "2pt"}
     if recipe["kind"] == "pgfplots":
         base.update(
             {
@@ -56,8 +59,18 @@ def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
                         if recipe_id in PUBLICATION_OFFSET_RECIPES
                         else "standard"
                     ),
-                    "x": {"label": "$x$", "min": 0, "max": 1},
-                    "y": {"label": "$y$", "min": 0, "max": 1},
+                    "x": {
+                        "label": "$x$",
+                        "min": 0,
+                        "max": 1,
+                        "ticks": [0, 0.25, 0.5, 0.75, 1],
+                    },
+                    "y": {
+                        "label": "$y$",
+                        "min": 0,
+                        "max": 1,
+                        "ticks": [0, 0.25, 0.5, 0.75, 1],
+                    },
                     "grid": "major",
                 },
                 "data_sources": [
@@ -82,6 +95,8 @@ def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
                 "panels": [],
             }
         )
+        if recipe_id in PUBLICATION_OFFSET_RECIPES:
+            base["axes"]["axis_line_shift"] = DEFAULT_PUBLICATION_AXIS_SHIFT
         if recipe_id in {"threshold-region", "publication-threshold"}:
             base["regions"] = [
                 {

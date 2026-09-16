@@ -15,8 +15,20 @@ These are defaults, not rigid rules. Preserve an existing manuscript's house sty
 - The default for ordinary 2D paper recipes is the `publication-offset` axis
   preset. It offsets the PGFPlots axis lines by 6.5pt, matching the spatial
   separation used by the publication golden cases.
+- Publication ticks point inward, axis strokes stay thin, and declared axis
+  endpoints remain visually aligned with endpoint tick marks.
+- Publication annotation/callout text uses a subtle translucent white backing
+  by default (`fill opacity` about 0.68) so dense text remains readable without
+  competing with the plotted curves.
+- For text-heavy multi-panel figures, enlarge the panel canvas before shrinking
+  fonts; widths around 8.8--9.2cm and heights around 6.6--7.0cm per panel are a
+  useful starting range.
 - Use `axes.preset: standard` for figures where an offset box is undesirable.
   A custom `axes.axis_line_shift` overrides the preset's default amount.
+- The publication preset also uses inward ticks, thin academic axis/tick strokes,
+  disables automatic limit enlargement, and guarantees a tick mark at both axis
+  limits. Prefer making the first and last *labelled* major ticks equal to the
+  declared min/max whenever those endpoint values are meaningful.
 - Surface, contour, heatmap, and quiver recipes keep `standard` as their
   default because their 3D/view/colorbar geometry has different layout needs.
 - Prefer explicit `xmin/xmax/ymin/ymax` when the scientific range is semantically meaningful.

@@ -23,6 +23,15 @@ PUBLICATION_OFFSET_RECIPES = {
     "groupplot",
 }
 DEFAULT_PUBLICATION_AXIS_SHIFT = "6.5pt"
+DEFAULT_PUBLICATION_ANNOTATION_OPTIONS = [
+    "fill=white",
+    "fill opacity=0.68",
+    "text opacity=1",
+    "rounded corners=1pt",
+    "inner xsep=1.5pt",
+    "inner ysep=1.0pt",
+    "draw=none",
+]
 
 
 def _fmt(value: Any) -> str:
@@ -45,10 +54,42 @@ def _style_options(style: dict[str, Any] | None) -> list[str]:
         "draw": lambda value: f"draw={value}",
         "fill": lambda value: f"fill={value}",
         "fill_opacity": lambda value: f"fill opacity={_fmt(value)}",
+        "text_opacity": lambda value: f"text opacity={_fmt(value)}",
+        "rounded_corners": lambda value: f"rounded corners={value}",
+        "inner_xsep": lambda value: f"inner xsep={value}",
+        "inner_ysep": lambda value: f"inner ysep={value}",
     }
     for key, formatter in mapping.items():
         if key in style:
             result.append(formatter(style[key]))
+    return result
+
+
+def _uses_publication_offset(spec: dict[str, Any], axes: dict[str, Any] | None = None) -> bool:
+    axes = axes or spec.get("axes", {}) or {}
+    preset = axes.get("preset")
+    if preset is None:
+        preset = (
+            "publication-offset"
+            if spec.get("recipe") in PUBLICATION_OFFSET_RECIPES
+            else "standard"
+        )
+    return preset == "publication-offset"
+
+
+def _annotation_node_options(publication: bool) -> list[str]:
+    return list(DEFAULT_PUBLICATION_ANNOTATION_OPTIONS) if publication else []
+
+
+def _node_style_options(style: dict[str, Any] | None) -> list[str]:
+    if not style:
+        return []
+    node_style = dict(style)
+    color = node_style.pop("color", None)
+    result: list[str] = []
+    if color is not None:
+        result.append(f"text={color}")
+    result.extend(_style_options(node_style))
     return result
 
 
@@ -59,16 +100,18 @@ def _axis_options(spec: dict[str, Any], axes: dict[str, Any] | None = None) -> l
         f"width={canvas.get('width', '10cm')}",
         f"height={canvas.get('height', '7cm')}",
     ]
-    preset = axes.get("preset")
-    if preset is None:
-        preset = (
-            "publication-offset"
-            if spec.get("recipe") in PUBLICATION_OFFSET_RECIPES
-            else "standard"
-        )
+    preset = "publication-offset" if _uses_publication_offset(spec, axes) else "standard"
     if preset == "publication-offset":
-        options.append(
-            f"axis line shift={axes.get('axis_line_shift', DEFAULT_PUBLICATION_AXIS_SHIFT)}"
+        options.extend(
+            [
+                f"axis line shift={axes.get('axis_line_shift', DEFAULT_PUBLICATION_AXIS_SHIFT)}",
+                "tick align=inside",
+                "major tick length=2.2pt",
+                "axis line style={line width=0.45pt}",
+                "tick style={black,line width=0.4pt}",
+                "scaled ticks=false",
+                "enlargelimits=false",
+            ]
         )
     elif axes.get("axis_line_shift"):
         # Explicit shift remains a supported low-level override even when the
@@ -126,6 +169,21 @@ def _axis_options(spec: dict[str, Any], axes: dict[str, Any] | None = None) -> l
         tick_labels = axis.get("tick_labels")
         if isinstance(tick_labels, list) and tick_labels:
             options.append(f"{key}ticklabels={{{','.join(tick_labels)}}}")
+        if preset == "publication-offset" and key in {"x", "y"}:
+            explicit_ticks = {_fmt(value) for value in ticks} if isinstance(ticks, list) else set()
+            endpoint_ticks: list[Any] = []
+            for endpoint in (axis.get("min"), axis.get("max")):
+                if endpoint is None or _fmt(endpoint) in explicit_ticks:
+                    continue
+                if _fmt(endpoint) not in {_fmt(value) for value in endpoint_ticks}:
+                    endpoint_ticks.append(endpoint)
+            if endpoint_ticks:
+                options.append(
+                    f"extra {key} ticks={{{','.join(_fmt(value) for value in endpoint_ticks)}}}"
+                )
+                options.append(
+                    f"extra {key} tick style={{grid=none,tick label style={{opacity=0}}}}"
+                )
         if axis.get("dir") == "reverse":
             options.append(f"{key} dir=reverse")
 
@@ -212,7 +270,9 @@ def _implicit_gnuplot_script(source: dict[str, Any], axes: dict[str, Any]) -> st
 
 
 def _series_path_decorations(
-    series: dict[str, Any], annotations: list[dict[str, Any]] | None
+    series: dict[str, Any],
+    annotations: list[dict[str, Any]] | None,
+    publication_annotations: bool = False,
 ) -> list[str]:
     result: list[str] = []
     for index, annotation in enumerate(annotations or [], start=1):
@@ -225,13 +285,14 @@ def _series_path_decorations(
             result.append(f"coordinate[pos={_fmt(position)}] ({name})")
         elif kind == "curve_label":
             node_options = [f"pos={_fmt(position)}"]
+            node_options.extend(_annotation_node_options(publication_annotations))
             if annotation.get("sloped", True):
                 node_options.append("sloped")
             if annotation.get("anchor"):
                 node_options.append(f"anchor={annotation['anchor']}")
             if annotation.get("font"):
                 node_options.append(f"font={annotation['font']}")
-            node_options.extend(_style_options(annotation.get("style")))
+            node_options.extend(_node_style_options(annotation.get("style")))
             result.append(
                 f"node[{','.join(node_options)}] {{{annotation.get('label', '')}}}"
             )
@@ -310,6 +371,7 @@ def _render_series(
     source: dict[str, Any],
     axes: dict[str, Any] | None = None,
     annotations: list[dict[str, Any]] | None = None,
+    publication_annotations: bool = False,
 ) -> list[str]:
     options = _style_options(series.get("style"))
     plot_mode = _plot_mode(series)
@@ -423,7 +485,7 @@ def _render_series(
     else:
         raise ValueError(f"unsupported data source type: {source_type}")
 
-    decorations = _series_path_decorations(series, annotations)
+    decorations = _series_path_decorations(series, annotations, publication_annotations)
     if decorations:
         plot = plot.rstrip().removesuffix(";") + " " + " ".join(decorations) + ";"
 
@@ -458,6 +520,7 @@ def _render_regions(spec: dict[str, Any], between: bool) -> list[str]:
 
 def _render_annotations(spec: dict[str, Any]) -> list[str]:
     lines: list[str] = []
+    publication_annotations = _uses_publication_offset(spec)
     for index, annotation in enumerate(spec.get("annotations", []), start=1):
         kind = annotation.get("type")
         style = _style_options(annotation.get("style"))
@@ -479,7 +542,9 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
                 anchor = annotation.get("anchor", "south west")
                 shift = annotation.get("shift", "(2pt,2pt)")
                 node_name = f"funfigCallout{index}"
-                node_options = [f"anchor={anchor}"]
+                node_options = _annotation_node_options(publication_annotations)
+                node_options.append(f"anchor={anchor}")
+                node_options.extend(_node_style_options(annotation.get("style")))
                 if annotation.get("font"):
                     node_options.append(f"font={annotation['font']}")
                 if annotation.get("rotate") is not None:
@@ -498,8 +563,9 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
         elif kind == "label":
             x, y = annotation["at"]
             anchor = annotation.get("anchor", "center")
-            node_options = [f"anchor={anchor}"]
-            node_options.extend(style)
+            node_options = _annotation_node_options(publication_annotations)
+            node_options.append(f"anchor={anchor}")
+            node_options.extend(_node_style_options(annotation.get("style")))
             if annotation.get("font"):
                 node_options.append(f"font={annotation['font']}")
             if annotation.get("rotate") is not None:
@@ -557,7 +623,9 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
                     if len(intersection_names) == 1
                     else f"funfigIntersectionCallout{index}_{name_index + 1}"
                 )
-                node_options = [f"anchor={anchor}"]
+                node_options = _annotation_node_options(publication_annotations)
+                node_options.append(f"anchor={anchor}")
+                node_options.extend(_node_style_options(annotation.get("style")))
                 if annotation.get("font"):
                     node_options.append(f"font={annotation['font']}")
                 lines.append(
@@ -599,7 +667,9 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
                     continue
                 anchor = annotation.get("anchor", "south west")
                 shift = annotation.get("shift", "(3pt,3pt)")
-                node_options = [f"anchor={anchor}"]
+                node_options = _annotation_node_options(publication_annotations)
+                node_options.append(f"anchor={anchor}")
+                node_options.extend(_node_style_options(annotation.get("style")))
                 if annotation.get("font"):
                     node_options.append(f"font={annotation['font']}")
                 lines.append(
@@ -610,7 +680,9 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
             label = _coordinate_label(annotation, ref)
             anchor = annotation.get("anchor", "south west")
             shift = annotation.get("shift", "(3pt,3pt)")
-            node_options = [f"anchor={anchor}"]
+            node_options = _annotation_node_options(publication_annotations)
+            node_options.append(f"anchor={anchor}")
+            node_options.extend(_node_style_options(annotation.get("style")))
             if annotation.get("font"):
                 node_options.append(f"font={annotation['font']}")
             lines.append(
@@ -719,6 +791,7 @@ def render_pgfplots(spec: dict[str, Any]) -> str:
                 sources[series["source"]],
                 spec.get("axes") or {},
                 spec.get("annotations") or [],
+                _uses_publication_offset(spec),
             )
         )
     lines.extend(_render_regions(spec, between=True))
@@ -769,6 +842,7 @@ def render_groupplot(spec: dict[str, Any]) -> str:
                     sources[series["source"]],
                     panel.get("axes") or spec.get("axes") or {},
                     spec.get("annotations") or [],
+                    _uses_publication_offset(spec, panel.get("axes") or spec.get("axes") or {}),
                 )
             )
 

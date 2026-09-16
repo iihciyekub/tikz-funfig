@@ -2,12 +2,11 @@
 
 TIKZ-FunFig is a schema-driven figure generation system for reproducible TikZ and PGFPlots figures.
 
-Version 0.8.3 extends the promoted method layer and the legacy migration path. Implicit equations
-no longer require hand-written `raw gnuplot`; curve-relative probes/labels replace the old
-`\addpoint` / `\addsymbol` pattern; named intersections can preserve multiple crossings;
-coordinate templates embed live x/y values in publication labels; and TikZ spy/detail lenses
-are represented as structured annotations. `migrate-legacy` now recognizes common
-`\iiplot` / `\iipolt`, simple intersection, `\calxy`, `\addpoint`, and `\addsymbol` idioms.
+Version 0.8.3 refines the default publication figure language: inward ticks, aligned endpoint
+ticks, slightly roomier starter canvases, and subtle translucent backing for annotation text.
+The promoted method layer and legacy migration path remain available, including implicit
+gnuplot contours, curve-relative labels/probes, named intersections, coordinate templates,
+and structured spy/detail annotations.
 
 The repository has two roles:
 
@@ -53,9 +52,11 @@ PYTHONPATH=src python3 -m funfig init --project-root path/to/paper --id fig1 --r
 ```
 
 Ordinary 2D paper/scientific recipes default to the `publication-offset` axes
-preset (6.5pt axis-line shift). Set `axes.preset` to `standard` to opt out, or
-set `axes.axis_line_shift` to choose another offset. Advanced 3D/contour/
-heatmap/quiver recipes retain the standard axes preset by default.
+preset (6.5pt axis-line shift), inward major ticks, thin publication strokes,
+endpoint tick marks at both declared axis limits, and low-contrast translucent
+annotation backing. Set `axes.preset` to
+`standard` to opt out, or set `axes.axis_line_shift` to choose another offset.
+Advanced 3D/contour/heatmap/quiver recipes retain the standard axes preset by default.
 
 For publication figures with thresholds, piecewise curves, highlighted regimes, intersections, and arrow callouts, use the `publication-threshold` recipe. It is distilled from the mature `fig1`, `fig4`, and `fig11` examples in the local knowledge base.
 

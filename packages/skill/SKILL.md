@@ -216,6 +216,11 @@ In particular:
 
 - ordinary 2D scientific/paper recipes default to `axes.preset: publication-offset`,
   which uses a 6.5pt axis-line offset distilled from the publication golden cases;
+- publication axes use inward ticks and aligned endpoint tick marks, while
+  annotation/callout text gets a low-contrast translucent white backing by default;
+- enlarge text-heavy multi-panel canvases before reducing annotation font size;
+- for that preset, keep ticks pointing inward into the plotting area and align the axis
+  endpoints with endpoint ticks; when practical, use min/max as the first/last labelled ticks;
 - use `axes.preset: standard` when the offset is not appropriate, and use
   `axes.axis_line_shift` only when a figure needs a deliberate custom offset;
 - use vector geometry and text;

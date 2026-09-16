@@ -4,6 +4,16 @@ All notable changes to TIKZ-FunFig are recorded here. The project follows semant
 
 ## [Unreleased]
 
+## [0.8.4] - 2026-09-17
+
+### Changed
+
+- Refined `publication-offset` with inward major ticks while preserving thin
+  publication strokes and endpoint tick alignment.
+- Added subtle translucent white backing to publication annotation/callout text.
+- Increased starter canvas dimensions slightly for ordinary 2D publication recipes.
+- Updated the figure style guide to prefer larger canvases for text-heavy multi-panel figures.
+
 ## [0.8.3] - 2026-09-17
 
 ### Added

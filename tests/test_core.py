@@ -139,7 +139,11 @@ class FunFigCoreTests(unittest.TestCase):
             self.assertIn("set cntrparam levels discrete 0;", tex)
             self.assertIn("splot (x**2 + y**2)-(1);", tex)
             self.assertIn("coordinate[pos=0.12] (P)", tex)
-            self.assertIn("node[pos=0.72,sloped,font=\\scriptsize] {$y=x$}", tex)
+            self.assertIn("node[pos=0.72,fill=white", tex)
+            self.assertIn("fill opacity=0.68", tex)
+            self.assertIn("text opacity=1", tex)
+            self.assertIn("rounded corners=1pt", tex)
+            self.assertIn("sloped,font=\\scriptsize] {$y=x$}", tex)
             self.assertIn("\\funfigcoordx{P}{2}", tex)
             self.assertIn("\\funfigcoordy{P}{2}", tex)
             self.assertIn(
@@ -183,7 +187,25 @@ class FunFigCoreTests(unittest.TestCase):
             spec_path = root / "figure.funfig.json"
             write_json_atomic(spec_path, source)
             tex_path, _ = render_spec(source, spec_path)
-            self.assertIn("axis line shift=6.5pt", tex_path.read_text(encoding="utf-8"))
+            rendered = tex_path.read_text(encoding="utf-8")
+            self.assertIn("axis line shift=6.5pt", rendered)
+            self.assertIn("tick align=inside", rendered)
+            self.assertIn("major tick length=2.2pt", rendered)
+            self.assertIn("axis line style={line width=0.45pt}", rendered)
+            self.assertIn("tick style={black,line width=0.4pt}", rendered)
+            self.assertIn("enlargelimits=false", rendered)
+            self.assertIn("extra y ticks={0,1}", rendered)
+
+            source["annotations"] = [
+                {"type": "label", "at": [0.5, 0.5], "label": "note"}
+            ]
+            write_json_atomic(spec_path, source)
+            tex_path, _ = render_spec(source, spec_path)
+            rendered = tex_path.read_text(encoding="utf-8")
+            self.assertIn("fill=white", rendered)
+            self.assertIn("fill opacity=0.68", rendered)
+            self.assertIn("text opacity=1", rendered)
+            self.assertIn("rounded corners=1pt", rendered)
 
             source["axes"]["preset"] = "standard"
             write_json_atomic(spec_path, source)
@@ -214,6 +236,13 @@ class FunFigCoreTests(unittest.TestCase):
             self.assertTrue(spec_path.exists())
             spec = load_json(spec_path)
             self.assertEqual(spec["axes"]["preset"], "publication-offset")
+            self.assertEqual(spec["axes"]["axis_line_shift"], "6.5pt")
+            self.assertEqual(spec["canvas"]["width"], "10.4cm")
+            self.assertEqual(spec["canvas"]["height"], "7.3cm")
+            self.assertEqual(spec["axes"]["x"]["ticks"][0], spec["axes"]["x"]["min"])
+            self.assertEqual(spec["axes"]["x"]["ticks"][-1], spec["axes"]["x"]["max"])
+            self.assertEqual(spec["axes"]["y"]["ticks"][0], spec["axes"]["y"]["min"])
+            self.assertEqual(spec["axes"]["y"]["ticks"][-1], spec["axes"]["y"]["max"])
 
     def test_invalid_axis_preset_is_rejected(self) -> None:
         source_path = PROJECT_ROOT / "examples/basic-function/figure.funfig.json"
@@ -337,7 +366,9 @@ class FunFigCoreTests(unittest.TestCase):
                 "raw gnuplot",
                 "set cntrparam levels discrete 0;",
                 "coordinate[pos=0.12] (P)",
-                "node[pos=0.72,sloped,font=\\scriptsize] {$y=x$}",
+                "node[pos=0.72,fill=white",
+                "rounded corners=1pt",
+                "sloped,font=\\scriptsize] {$y=x$}",
                 "\\funfigcoordx{P}{2}",
                 "\\funfigcoordy{P}{2}",
                 "name intersections={of=circle-path and diagonal-path,by={I1,I2}}",
