@@ -300,6 +300,7 @@ Do not claim successful compilation unless it was actually run successfully.
 
 ## Local knowledge base rules
 
+- The portable Codex Plugin intentionally does **not** bundle `references/legacy/`. These paths are development/provenance material available only when the source repository checkout is present. Normal installed-Plugin operation must use the bundled Schema/Recipes/runtime and must not fail because a legacy reference path is absent.
 - `tikz-funfig/references/legacy/tikz-memo/` contains TikZ/PGFPlots/LaTeX technique notes and examples.
 - `tikz-funfig/references/legacy/pgfplots-memo/` contains compact PGFPlots examples and parameter experiments.
 - `tikz-funfig/references/legacy/publication-sustainability-1485080/` contains historical publication `.tex`, lightweight data, notes, and Python source extracted from the original notebooks. Rendered binaries and notebook containers are deliberately excluded.

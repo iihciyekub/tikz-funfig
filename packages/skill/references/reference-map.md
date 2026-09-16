@@ -2,6 +2,8 @@
 
 Use this map to find the smallest relevant local reference set before creating a figure.
 
+The legacy paths in this map are **source-repository development references**. They are intentionally excluded from the portable Plugin package. If the source checkout is unavailable, use the bundled Recipe/Schema behavior; do not treat a missing legacy path as a runtime dependency failure.
+
 All paths are relative to the workspace root.
 
 ## Toolchain and installation
