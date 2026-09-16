@@ -77,11 +77,27 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "title": {"type": "string"},
         "x": {"$ref": "#/$defs/axis"},
         "y": {"$ref": "#/$defs/axis"},
         "z": {"$ref": "#/$defs/axis"},
         "grid": {"enum": ["none", "major", "minor", "both"], "default": "major"},
-        "legend_position": {"type": "string"}
+        "axis_line_shift": {"type": "string"},
+        "tick_precision": {"type": "integer", "minimum": 0, "maximum": 12},
+        "legend_position": {"type": "string"},
+        "legend": {"$ref": "#/$defs/legend"}
+      }
+    },
+    "legend": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {"type": "string"},
+        "at": {"type": "string"},
+        "anchor": {"type": "string"},
+        "columns": {"type": "integer", "minimum": 1},
+        "font": {"type": "string"},
+        "cell_anchor": {"type": "string"}
       }
     },
     "style": {
@@ -93,6 +109,8 @@
         "line_width": {"type": "string"},
         "opacity": {"type": "number", "minimum": 0, "maximum": 1},
         "mark": {"type": "string"},
+        "mark_size": {"type": "string"},
+        "draw": {"type": "string"},
         "fill": {"type": "string"},
         "fill_opacity": {"type": "number", "minimum": 0, "maximum": 1}
       }
@@ -173,6 +191,11 @@
         "name": {"type": "string"},
         "anchor": {"type": "string"},
         "shift": {"type": "string"},
+        "font": {"type": "string"},
+        "rotate": {"type": "number"},
+        "arrow": {"type": "boolean"},
+        "arrow_anchor": {"type": "string"},
+        "arrow_style": {"type": "array", "items": {"type": "string"}},
         "style": {"$ref": "#/$defs/style"}
       }
     },

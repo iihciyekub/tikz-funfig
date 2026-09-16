@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0",
+  "id": "publication-threshold-demo",
+  "recipe": "publication-threshold",
+  "kind": "pgfplots",
+  "canvas": {"width": "10cm", "height": "7cm", "border": "2pt"},
+  "engine": {"latex": "pdflatex", "compute": "none"},
+  "axes": {
+    "title": "$p=10, c=4, w=6$\\\\$B=100, r=0.05$",
+    "axis_line_shift": "4pt",
+    "tick_precision": 3,
+    "x": {
+      "label": "Acceptable Risk: $\\alpha$",
+      "min": 0,
+      "max": 1,
+      "ticks": [0, 0.2, 0.5, 0.8, 1]
+    },
+    "y": {
+      "label": "Outcome: $q$",
+      "min": 0,
+      "max": 1.1,
+      "ticks": [0, 0.25, 0.5, 0.75, 1]
+    },
+    "grid": "major",
+    "legend": {
+      "at": "(0.02,0.98)",
+      "anchor": "north west",
+      "columns": 1,
+      "font": "\\footnotesize",
+      "cell_anchor": "west"
+    }
+  },
+  "data_sources": [
+    {"id": "rising", "type": "function", "expression": "x", "domain": "0:1", "samples": 120},
+    {"id": "falling", "type": "function", "expression": "1-x", "domain": "0:1", "samples": 120}
+  ],
+  "series": [
+    {
+      "id": "rising",
+      "source": "rising",
+      "label": "$q_t(\\alpha)$",
+      "name_path": "A",
+      "style": {"color": "MidnightBlue", "line_width": "1.05pt"}
+    },
+    {
+      "id": "falling",
+      "source": "falling",
+      "label": "$q_s(\\alpha)$",
+      "name_path": "B",
+      "style": {"color": "Maroon", "line_width": "0.9pt", "line": "dash dot", "opacity": 0.7}
+    }
+  ],
+  "regions": [
+    {
+      "id": "increasing-regime",
+      "type": "rectangle",
+      "x1": 0.2,
+      "x2": 0.5,
+      "y1": 0,
+      "y2": 0.5,
+      "style": {"fill": "MistyRose", "fill_opacity": 0.32}
+    }
+  ],
+  "annotations": [
+    {
+      "type": "label",
+      "at": [0.34, 0.12],
+      "label": "increasing regime",
+      "font": "\\scriptsize",
+      "rotate": 0
+    },
+    {
+      "type": "point",
+      "at": [0.2, 0.2],
+      "label": "$(\\alpha,q)=(0.2,0.2)$",
+      "anchor": "south west",
+      "shift": "(7pt,8pt)",
+      "font": "\\scriptsize",
+      "arrow": true,
+      "style": {"fill": "CarnationPink", "draw": "black!70", "mark_size": "1.8pt"}
+    },
+    {
+      "type": "intersection",
+      "path_a": "A",
+      "path_b": "B",
+      "name": "I",
+      "label": "$q_t=q_s$",
+      "anchor": "south west",
+      "shift": "(8pt,10pt)",
+      "font": "\\scriptsize",
+      "arrow": true,
+      "style": {"fill": "SeaGreen", "draw": "black!70"}
+    }
+  ],
+  "outputs": {"basename": "figure", "keep_build": false},
+  "metadata": {
+    "derived_from": ["sustainability fig1", "sustainability fig4", "sustainability fig11"]
+  }
+}

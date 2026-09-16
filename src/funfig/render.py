@@ -26,6 +26,8 @@ def _style_options(style: dict[str, Any] | None) -> list[str]:
         "line_width": lambda value: f"line width={value}",
         "opacity": lambda value: f"opacity={_fmt(value)}",
         "mark": lambda value: f"mark={value}",
+        "mark_size": lambda value: f"mark size={value}",
+        "draw": lambda value: f"draw={value}",
         "fill": lambda value: f"fill={value}",
         "fill_opacity": lambda value: f"fill opacity={_fmt(value)}",
     }
@@ -47,6 +49,17 @@ def _axis_options(spec: dict[str, Any], axes: dict[str, Any] | None = None) -> l
         options.append(f"grid={grid}")
         options.append("grid style={gray!25,line width=0.2pt}")
 
+    if axes.get("title"):
+        options.append(f"title={{{axes['title']}}}")
+        options.append("title style={align=left}")
+    if axes.get("axis_line_shift"):
+        options.append(f"axis line shift={axes['axis_line_shift']}")
+    if axes.get("tick_precision") is not None:
+        options.append(
+            "ticklabel style={/pgf/number format/precision="
+            f"{int(axes['tick_precision'])}" + "}"
+        )
+
     for key in ("x", "y", "z"):
         axis = axes.get(key) or {}
         if axis.get("label") is not None:
@@ -64,9 +77,22 @@ def _axis_options(spec: dict[str, Any], axes: dict[str, Any] | None = None) -> l
         if axis.get("dir") == "reverse":
             options.append(f"{key} dir=reverse")
 
-    if axes.get("legend_position"):
-        options.append(f"legend pos={axes['legend_position']}")
-    options.append("legend style={draw=none,fill=none,cells={anchor=west}}")
+    legend = axes.get("legend") or {}
+    legend_position = legend.get("position") or axes.get("legend_position")
+    if legend_position:
+        options.append(f"legend pos={legend_position}")
+    legend_style = ["draw=none", "fill=none"]
+    cell_anchor = legend.get("cell_anchor", "west")
+    legend_style.append(f"cells={{anchor={cell_anchor}}}")
+    if legend.get("at"):
+        legend_style.append(f"at={{{legend['at']}}}")
+    if legend.get("anchor"):
+        legend_style.append(f"anchor={legend['anchor']}")
+    if legend.get("columns"):
+        legend_style.append(f"legend columns={int(legend['columns'])}")
+    if legend.get("font"):
+        legend_style.append(f"font={legend['font']}")
+    options.append(f"legend style={{{','.join(legend_style)}}}")
     return options
 
 
@@ -155,22 +181,47 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
         extra = f",{style_text}" if style_text else ""
         if kind == "point":
             x, y = annotation["at"]
+            marker_style = list(style)
+            marker_style.extend(["only marks"])
+            if not any(option.startswith("mark=") for option in marker_style):
+                marker_style.append("mark=*")
+            if not any(option.startswith("mark size=") for option in marker_style):
+                marker_style.append("mark size=1.6pt")
             lines.append(
-                f"\\addplot+[only marks,mark=*,mark size=1.6pt{extra}] coordinates "
+                f"\\addplot+[{','.join(marker_style)}] coordinates "
                 f"{{({_fmt(x)},{_fmt(y)})}};"
             )
             if annotation.get("label"):
                 anchor = annotation.get("anchor", "south west")
                 shift = annotation.get("shift", "(2pt,2pt)")
+                node_name = f"funfigCallout{index}"
+                node_options = [f"anchor={anchor}"]
+                if annotation.get("font"):
+                    node_options.append(f"font={annotation['font']}")
+                if annotation.get("rotate") is not None:
+                    node_options.append(f"rotate={_fmt(annotation['rotate'])}")
                 lines.append(
-                    f"\\node[anchor={anchor}] at "
+                    f"\\node[{','.join(node_options)}] ({node_name}) at "
                     f"([shift={{{shift}}}]axis cs:{_fmt(x)},{_fmt(y)}) {{{annotation['label']}}};"
                 )
+                if annotation.get("arrow"):
+                    arrow_options = annotation.get("arrow_style") or ["-{Stealth[length=4pt,width=3pt]}", "shorten >=1pt"]
+                    arrow_anchor = annotation.get("arrow_anchor", "center")
+                    lines.append(
+                        f"\\draw[{','.join(arrow_options)}] ({node_name}.{arrow_anchor}) -- "
+                        f"(axis cs:{_fmt(x)},{_fmt(y)});"
+                    )
         elif kind == "label":
             x, y = annotation["at"]
             anchor = annotation.get("anchor", "center")
+            node_options = [f"anchor={anchor}"]
+            node_options.extend(style)
+            if annotation.get("font"):
+                node_options.append(f"font={annotation['font']}")
+            if annotation.get("rotate") is not None:
+                node_options.append(f"rotate={_fmt(annotation['rotate'])}")
             lines.append(
-                f"\\node[anchor={anchor}{extra}] at (axis cs:{_fmt(x)},{_fmt(y)}) "
+                f"\\node[{','.join(node_options)}] at (axis cs:{_fmt(x)},{_fmt(y)}) "
                 f"{{{annotation.get('label', '')}}};"
             )
         elif kind == "vline":
@@ -190,12 +241,35 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
             lines.append(
                 f"\\path[name intersections={{of={annotation['path_a']} and {annotation['path_b']},by={name}}}];"
             )
-            lines.append(f"\\fill ({name}) circle (1.5pt);")
+            raw_style = annotation.get("style") or {}
+            marker_draw = []
+            if raw_style.get("fill"):
+                marker_draw.append(f"fill={raw_style['fill']}")
+            if raw_style.get("draw"):
+                marker_draw.append(f"draw={raw_style['draw']}")
+            elif raw_style.get("color"):
+                marker_draw.append(f"draw={raw_style['color']}")
+            if raw_style.get("opacity") is not None:
+                marker_draw.append(f"opacity={_fmt(raw_style['opacity'])}")
+            marker_draw.append("line width=0.45pt")
+            lines.append(f"\\draw[{','.join(marker_draw)}] ({name}) circle (0.7mm);")
             if annotation.get("label"):
                 anchor = annotation.get("anchor", "south west")
+                shift = annotation.get("shift", "(2pt,2pt)")
+                node_name = f"funfigIntersectionCallout{index}"
+                node_options = [f"anchor={anchor}"]
+                if annotation.get("font"):
+                    node_options.append(f"font={annotation['font']}")
                 lines.append(
-                    f"\\node[anchor={anchor}] at ({name}) {{{annotation['label']}}};"
+                    f"\\node[{','.join(node_options)}] ({node_name}) at "
+                    f"([shift={{{shift}}}]{name}) {{{annotation['label']}}};"
                 )
+                if annotation.get("arrow"):
+                    arrow_options = annotation.get("arrow_style") or ["-{Stealth[length=4pt,width=3pt]}", "shorten >=1pt"]
+                    arrow_anchor = annotation.get("arrow_anchor", "center")
+                    lines.append(
+                        f"\\draw[{','.join(arrow_options)}] ({node_name}.{arrow_anchor}) -- ({name});"
+                    )
     return lines
 
 

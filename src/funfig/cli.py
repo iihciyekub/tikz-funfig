@@ -8,6 +8,7 @@ from typing import Any
 
 from .build import BuildError, build_spec, clean_spec, doctor
 from .io import load_json, write_json_atomic
+from .legacy import migrate_legacy_tex
 from .recipes import list_recipes, load_recipe
 from .render import render_spec
 from .schema import load_and_validate
@@ -62,7 +63,7 @@ def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
                 "panels": [],
             }
         )
-        if recipe_id == "threshold-region":
+        if recipe_id in {"threshold-region", "publication-threshold"}:
             base["regions"] = [
                 {
                     "id": "regime-a",
@@ -74,6 +75,49 @@ def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
                     "style": {"fill": "gray!30", "fill_opacity": 0.35},
                 }
             ]
+            if recipe_id == "publication-threshold":
+                base["axes"].update(
+                    {
+                        "title": "$p=10, c=4$\\\\$B=100$",
+                        "axis_line_shift": "4pt",
+                        "tick_precision": 3,
+                        "legend": {
+                            "at": "(0.02,0.98)",
+                            "anchor": "north west",
+                            "font": "\\footnotesize",
+                        },
+                    }
+                )
+                base["series"][0]["name_path"] = "A"
+                base["data_sources"].append(
+                    {
+                        "id": "other",
+                        "type": "function",
+                        "expression": "1-x",
+                        "domain": "0:1",
+                        "samples": 100,
+                    }
+                )
+                base["series"].append(
+                    {
+                        "id": "other",
+                        "source": "other",
+                        "label": "$y=1-x$",
+                        "name_path": "B",
+                        "style": {"line": "dash dot", "opacity": 0.7},
+                    }
+                )
+                base["annotations"] = [
+                    {
+                        "type": "intersection",
+                        "path_a": "A",
+                        "path_b": "B",
+                        "name": "I",
+                        "label": "$A=B$",
+                        "shift": "(7pt,8pt)",
+                        "arrow": True,
+                    }
+                ]
         elif recipe_id == "intersection-curves":
             base["series"][0]["name_path"] = "A"
             base["data_sources"].append(
@@ -164,6 +208,15 @@ def cmd_init(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_migrate_legacy(args: argparse.Namespace) -> int:
+    result = migrate_legacy_tex(args.source, args.directory, args.recipe)
+    print(f"ok: {result.spec_path}")
+    print("detected: " + ", ".join(f"{key}={value}" for key, value in result.detected.items()))
+    for warning in result.warnings:
+        print(f"warning: {warning}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="funfig", description="TIKZ-FunFig figure recipe system")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -197,6 +250,15 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--id")
     p.add_argument("--force", action="store_true")
     p.set_defaults(func=cmd_init)
+
+    p = sub.add_parser(
+        "migrate-legacy",
+        help="create a conservative FigureSpec draft from a legacy PGFPlots .tex",
+    )
+    p.add_argument("source")
+    p.add_argument("directory")
+    p.add_argument("--recipe")
+    p.set_defaults(func=cmd_migrate_legacy)
     return parser
 
 

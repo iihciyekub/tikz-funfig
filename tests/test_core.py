@@ -8,6 +8,7 @@ from pathlib import Path
 
 from funfig.build import build_spec, clean_spec
 from funfig.io import load_json, write_json_atomic
+from funfig.legacy import migrate_legacy_tex
 from funfig.paths import PROJECT_ROOT
 from funfig.recipes import recipe_ids
 from funfig.render import render_spec
@@ -23,6 +24,7 @@ class FunFigCoreTests(unittest.TestCase):
                 "data-series",
                 "threshold-region",
                 "intersection-curves",
+                "publication-threshold",
                 "groupplot",
                 "mechanism-diagram",
             ],
@@ -33,6 +35,26 @@ class FunFigCoreTests(unittest.TestCase):
         spec = load_json(path)
         result = validate_spec(spec, path)
         self.assertTrue(result.ok, result.errors)
+
+    def test_publication_threshold_example_validates(self) -> None:
+        path = PROJECT_ROOT / "examples/publication-threshold/figure.funfig.json"
+        spec = load_json(path)
+        result = validate_spec(spec, path)
+        self.assertTrue(result.ok, result.errors)
+
+    def test_fig4_legacy_migration_produces_valid_draft(self) -> None:
+        source = PROJECT_ROOT / "sustainability-1485080-data-main/fig4/fig4.tex"
+        with tempfile.TemporaryDirectory() as temp:
+            result = migrate_legacy_tex(source, temp)
+            spec = load_json(result.spec_path)
+            validation = validate_spec(spec, result.spec_path)
+            self.assertTrue(validation.ok, validation.errors)
+            self.assertEqual(spec["recipe"], "publication-threshold")
+            self.assertEqual(result.detected["table_series"], 4)
+            self.assertEqual(result.detected["coordinate_series"], 2)
+            self.assertEqual(result.detected["regions"], 2)
+            self.assertEqual(result.detected["name_paths"], 2)
+            self.assertEqual(spec["metadata"]["migration"]["status"], "draft")
 
     def test_unknown_data_binding_is_rejected(self) -> None:
         spec = {
@@ -79,6 +101,23 @@ class FunFigCoreTests(unittest.TestCase):
             removed = clean_spec(source, spec_path)
             self.assertEqual(removed, [])
             self.assertTrue(pdf_path.exists())
+
+    @unittest.skipUnless(
+        shutil.which("latexmk") and shutil.which("pdflatex"),
+        "TeX toolchain unavailable",
+    )
+    def test_publication_threshold_builds(self) -> None:
+        source_path = PROJECT_ROOT / "examples/publication-threshold/figure.funfig.json"
+        source = load_json(source_path)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            spec_path = root / "figure.funfig.json"
+            write_json_atomic(spec_path, source)
+            pdf_path = build_spec(source, spec_path)
+            self.assertTrue(pdf_path.exists())
+            tex = (root / "figure.tex").read_text(encoding="utf-8")
+            self.assertIn("name intersections={of=A and B,by=I}", tex)
+            self.assertIn("funfigIntersectionCallout", tex)
 
     @unittest.skipUnless(
         shutil.which("latexmk") and shutil.which("pdflatex") and shutil.which("gnuplot"),
