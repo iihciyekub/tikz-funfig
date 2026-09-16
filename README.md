@@ -100,6 +100,42 @@ the Skill, runtime, schemas, recipes, or icons.
 
 The repo-local Codex marketplace manifest is `.agents/plugins/marketplace.json`.
 
+## GitHub / Codex installation
+
+The canonical Codex marketplace name is `tikz-funfig`. The Git source is the
+private repository `git@github.com:iihciyekub/tikz-funfig.git`; a machine must
+therefore have GitHub SSH access before installing it.
+
+Native Codex installation does not require cloning the repository:
+
+```bash
+codex plugin marketplace add git@github.com:iihciyekub/tikz-funfig.git --ref main \
+  && codex plugin add tikz-funfig@tikz-funfig
+```
+
+When this repository is available locally, `scripts/install_codex.sh` also
+installs the small `tff` helper into `~/.local/bin`. After that the normal
+update workflow is simply:
+
+```bash
+tff update
+```
+
+Useful companion commands are `tff status` and `tff doctor`. Repository
+maintainers can remove reproducible local build/noise files with
+`scripts/clean_repo.sh`.
+
+Releases use a clean working tree and one command:
+
+```bash
+./scripts/release.sh 0.9.0
+```
+
+The release command updates the package version, rebuilds the portable Plugin,
+runs the full regression suite, creates the release commit and annotated Git
+tag, pushes `main` and the tag, then refreshes the local Codex installation
+when the Codex CLI is available.
+
 ## Publication golden cases
 
 `examples/golden/fig1`, `fig4`, and `fig11` are schema-managed reconstructions

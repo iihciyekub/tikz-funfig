@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+marketplace="${TFF_MARKETPLACE:-tikz-funfig}"
+plugin="${TFF_PLUGIN:-tikz-funfig}"
+source="${TFF_MARKETPLACE_SOURCE:-git@github.com:iihciyekub/tikz-funfig.git}"
+ref="${TFF_MARKETPLACE_REF:-main}"
+legacy_marketplace="tikz-funfig-local"
+
+usage() {
+  cat <<'EOF'
+Usage: tff <command>
+
+Commands:
+  install   Configure the Git marketplace and install/enable TIKZ-FunFig.
+  update    Refresh the Git marketplace and install the newest plugin version.
+  doctor    Run the installed TIKZ-FunFig dependency doctor.
+  status    Show Codex marketplace/plugin state and the installed cache version.
+EOF
+}
+
+require_codex() {
+  if ! command -v codex >/dev/null 2>&1; then
+    echo "error: codex CLI is not available on PATH" >&2
+    exit 1
+  fi
+}
+
+marketplace_exists() {
+  codex plugin marketplace list 2>/dev/null | awk 'NR > 1 {print $1}' | grep -Fxq "$marketplace"
+}
+
+installed_root() {
+  local root="$HOME/.codex/plugins/cache/$marketplace/$plugin"
+  [ -d "$root" ] || return 1
+  find "$root" -mindepth 1 -maxdepth 1 -type d -print 2>/dev/null \
+    | sort -V \
+    | tail -1
+}
+
+install_or_update() {
+  require_codex
+  if [ "$marketplace" != "$legacy_marketplace" ] \
+    && codex plugin marketplace list 2>/dev/null | awk 'NR > 1 {print $1}' | grep -Fxq "$legacy_marketplace"; then
+    codex plugin remove "$plugin@$legacy_marketplace" >/dev/null 2>&1 || true
+    codex plugin marketplace remove "$legacy_marketplace" --json >/dev/null 2>&1 || true
+  fi
+  if marketplace_exists; then
+    codex plugin marketplace upgrade "$marketplace" --json >/dev/null
+  else
+    codex plugin marketplace add "$source" --ref "$ref" --json >/dev/null
+  fi
+
+  local result
+  result="$(codex plugin add "$plugin@$marketplace" --json)"
+  printf '%s\n' "$result"
+
+  local root
+  root="$(installed_root || true)"
+  if [ -n "$root" ] && [ -x "$root/skills/TIKZ-FunFig/scripts/funfig.sh" ]; then
+    "$root/skills/TIKZ-FunFig/scripts/funfig.sh" doctor
+  fi
+}
+
+case "${1:-}" in
+  install)
+    install_or_update
+    ;;
+  update)
+    install_or_update
+    ;;
+  doctor)
+    require_codex
+    root="$(installed_root || true)"
+    if [ -z "$root" ]; then
+      echo "error: TIKZ-FunFig is not installed from marketplace '$marketplace'" >&2
+      exit 1
+    fi
+    "$root/skills/TIKZ-FunFig/scripts/funfig.sh" doctor
+    ;;
+  status)
+    require_codex
+    echo "-- marketplace --"
+    codex plugin marketplace list | awk -v name="$marketplace" 'NR == 1 || $1 == name'
+    echo "-- plugin --"
+    codex plugin list | awk -v id="$plugin@$marketplace" 'index($0,id) {print}'
+    root="$(installed_root || true)"
+    if [ -n "$root" ]; then
+      echo "-- installed cache --"
+      echo "$root"
+    fi
+    ;;
+  -h|--help|help|"")
+    usage
+    ;;
+  *)
+    echo "error: unknown command: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac
