@@ -49,6 +49,25 @@ This binding rule is what makes later small edits stable: data, style, annotatio
 
 The build system may remove disposable artifacts after a successful build. It must not remove FigureSpec, source data, generated TeX, or the final PDF.
 
+## Publication-oriented structured fields
+
+The `publication-threshold` recipe adds structured semantics for recurring patterns found in the local publication figures. Prefer these fields over opaque raw TikZ options when they apply:
+
+- `axes.title`
+- `axes.axis_line_shift`
+- `axes.tick_precision`
+- `axes.legend.{position,at,anchor,columns,font,cell_anchor}`
+- annotation `font`, `rotate`, `arrow`, `arrow_anchor`, and `arrow_style`
+- annotation style `fill`, `draw`, `mark_size`, `opacity`
+
+An intersection callout should remain bound to `path_a` and `path_b`, rather than being converted into a hard-coded coordinate unless the scientific meaning is explicitly a fixed coordinate.
+
+## Legacy migration state
+
+`funfig migrate-legacy` produces a draft FigureSpec. Migration provenance belongs under `metadata.migration` and should include the legacy source path, detected feature counts, and warnings for semantics that were not safely inferred. Keep `status: "draft"` until those warnings have been reviewed.
+
+A compiling migration draft is not automatically a completed migration.
+
 ## Change rule
 
 When a user asks for a supported change, edit the FigureSpec and regenerate. Only edit generated `.tex` directly when diagnosing the renderer or when handling a legacy figure not yet represented by a recipe.

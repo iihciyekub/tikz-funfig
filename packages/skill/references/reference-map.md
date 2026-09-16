@@ -27,6 +27,8 @@ Useful examples:
 
 Use these when the user asks for a paper-ready economics/operations-management style plot.
 
+These three examples are the primary sources for the structured `publication-threshold` recipe. Use that recipe before rebuilding their recurring threshold/regime/callout structure manually.
+
 ## 2. PGFPlots fundamentals and parameter recipes
 
 Directory:
@@ -114,5 +116,5 @@ Prefer XeLaTeX for new figures containing Chinese text.
 
 Do not blindly import these helper files into new work. Read the relevant definitions and copy only the minimal, valid abstractions needed by the new figure.
 
-The `\iiplot` helper depends on `raw gnuplot`; gnuplot is not currently present in the workspace execution environment.
+The `\iiplot` helper depends on `raw gnuplot`. The current workspace toolchain includes gnuplot; still run the dependency check when moving the skill to another machine.
 

@@ -36,7 +36,10 @@ PYTHONPATH=src python3 -m funfig validate examples/basic-function/figure.funfig.
 PYTHONPATH=src python3 -m funfig render examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig build examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig clean examples/basic-function/figure.funfig.json
+PYTHONPATH=src python3 -m funfig migrate-legacy path/to/legacy.tex path/to/new-figure
 ```
+
+For publication figures with thresholds, piecewise curves, highlighted regimes, intersections, and arrow callouts, use the `publication-threshold` recipe. It is distilled from the mature `fig1`, `fig4`, and `fig11` examples in the local knowledge base.
 
 For a local editable command:
 
@@ -58,6 +61,8 @@ The main concepts are intentionally separate:
 - **Cleanup Policy** — which intermediate files are disposable.
 
 See `docs/architecture.md` for details.
+
+See `docs/recipes/publication-threshold.md` for the first publication-derived recipe and the conservative legacy migration workflow.
 
 ## Legacy/local knowledge
 

@@ -64,6 +64,7 @@ The installed Skill includes a wrapper that calls the source project:
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh render path/to/figure.funfig.json
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh build path/to/figure.funfig.json
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh clean path/to/figure.funfig.json
+.agents/skills/TIKZ-FunFig/scripts/funfig.sh migrate-legacy old-figure.tex path/to/new-figure
 ```
 
 To initialize a new figure:
@@ -78,6 +79,7 @@ Initial stable recipes are:
 - `data-series`
 - `threshold-region`
 - `intersection-curves`
+- `publication-threshold`
 - `groupplot`
 - `mechanism-diagram`
 
@@ -120,6 +122,7 @@ Choose the simplest suitable mode:
 - **PGFPlots data plot** — `data-series` for CSV/DAT/table/coordinate-driven figures.
 - **Threshold/regime plot** — `threshold-region` for shaded regimes, threshold bands, and callouts.
 - **Curve intersection plot** — `intersection-curves` for named paths and semantic intersections.
+- **Publication threshold plot** — `publication-threshold` for the mature paper pattern combining parameter titles, selected threshold ticks, piecewise curves, shaded regimes, key points, intersections, and arrow callouts. This recipe is distilled from the local `fig1`, `fig4`, and `fig11` sources.
 - **Multi-panel** — `groupplot` when panels should share a coherent figure system.
 
 Read `references/reference-map.md` before searching the knowledge base broadly.
@@ -129,6 +132,8 @@ Read `references/reference-map.md` before searching the knowledge base broadly.
 Use the reference map to read only the most relevant `.tex` examples. Reuse ideas and idioms, not accidental hard-coded coordinates or obsolete compatibility settings.
 
 When an existing figure in the user's paper is being revised, inspect that source first and preserve its semantic variables, labels, and data interfaces unless asked to redesign them.
+
+For a legacy PGFPlots `.tex`, use `migrate-legacy` as the first pass. The migration is deliberately conservative: reliably detected axes, table/coordinate series, name paths, and rectangular regimes are converted; complex hand-positioned nodes, legends, macros, and intersections remain explicit migration warnings until reviewed. Never claim a legacy migration is complete merely because the draft compiles.
 
 ### 3. Create/update FigureSpec, then generate standalone source
 

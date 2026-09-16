@@ -20,8 +20,12 @@ build/
 .funfig/build/
 .funfig/cache/
 .funfig/tmp/
+.funfig/manifest.json
 .smoke/
 *.manifest.tmp.json
+
+# Generated artifacts inside repository examples. The FigureSpec is the source.
+examples/**/figure.tex
 
 # LaTeX / PGFPlots generated files
 *.aux
