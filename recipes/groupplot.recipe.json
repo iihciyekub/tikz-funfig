@@ -1,11 +1,11 @@
 {
   "id": "groupplot",
-  "version": "1.0",
+  "version": "1.1",
   "kind": "pgfplots",
   "renderer": "groupplot",
   "description": "Aligned multi-panel PGFPlots figure.",
   "required": ["data_sources", "series", "panels"],
-  "capabilities": ["multi-panel", "shared-style", "panel-series-binding"],
+  "capabilities": ["multi-panel", "shared-style", "panel-series-binding", "structured-group-layout", "edge-label-control"],
   "external_tools": ["latexmk"],
   "reference_examples": [
     "TikZ_memo_v_0_6_0623/02_pgfplots/groupplots.tex",

@@ -1,0 +1,33 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames,svgnames,x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{calc,arrows.meta,positioning,intersections,fit,shapes.geometric}
+\usepgfplotslibrary{fillbetween}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+  width=9cm,
+  height=6.5cm,
+  grid=major,
+  grid style={gray!25,line width=0.2pt},
+  title={Asymmetric measurement uncertainty},
+  title style={align=left},
+  xlabel={$x$},
+  xmin=0,
+  xmax=1,
+  xtick={0,0.25,0.5,0.75,1},
+  ylabel={$y$},
+  ymin=0,
+  ymax=1.05,
+  ytick={0,0.25,0.5,0.75,1},
+  legend pos=north west,
+  legend style={draw=none,fill=none,cells={anchor=west},font=\footnotesize},
+]
+\addplot+ [MidnightBlue,mark=*,mark size=1.8pt,only marks,error bars/.cd,x dir=both,x explicit,y dir=both,y explicit,error mark=none,error bar style={line width=0.6pt,opacity=0.75}] table[x=x,y=y,x error plus=xerr_plus,x error minus=xerr_minus,y error plus=yerr_plus,y error minus=yerr_minus] {data/observations.tsv};
+\addlegendentry{observations}
+\end{axis}
+\end{tikzpicture}
+\end{document}

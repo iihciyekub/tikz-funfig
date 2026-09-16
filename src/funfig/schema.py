@@ -116,6 +116,42 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                 errors.append(f"duplicate series name_path: {name_path}")
             name_paths.add(name_path)
 
+        scatter = series.get("scatter")
+        if scatter is not None and not isinstance(scatter, dict):
+            errors.append(f"series[{index}].scatter must be an object")
+
+        error_bars = series.get("error_bars")
+        if error_bars is not None:
+            if not isinstance(error_bars, dict):
+                errors.append(f"series[{index}].error_bars must be an object")
+            else:
+                for axis in ("x", "y"):
+                    config = error_bars.get(axis)
+                    if not config:
+                        continue
+                    mode = config.get("mode")
+                    if mode in {"fixed", "fixed_relative"} and config.get("value") is None:
+                        errors.append(
+                            f"series[{index}].error_bars.{axis} mode={mode} requires value"
+                        )
+                    if mode in {"explicit", "explicit_relative"} and not any(
+                        config.get(field) for field in ("column", "plus", "minus", "expr")
+                    ):
+                        errors.append(
+                            f"series[{index}].error_bars.{axis} mode={mode} requires a column/plus/minus/expr binding"
+                        )
+
+    for index, region in enumerate(spec.get("regions", [])):
+        if not isinstance(region, dict):
+            continue
+        if region.get("type") == "between":
+            for field in ("path_a", "path_b"):
+                path_name = region.get(field)
+                if path_name not in name_paths:
+                    errors.append(
+                        f"regions[{index}].{field} references unknown name_path: {path_name!r}"
+                    )
+
     for index, panel in enumerate(spec.get("panels", [])):
         if not isinstance(panel, dict):
             continue

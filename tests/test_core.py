@@ -16,6 +16,7 @@ from funfig.schema import validate_spec
 
 
 GOLDEN_CASES = ("fig1", "fig4", "fig11")
+SCIENTIFIC_GOLDEN_CASES = ("error-bar", "scatter-plot", "confidence-band", "groupplot")
 
 
 class FunFigCoreTests(unittest.TestCase):
@@ -25,6 +26,9 @@ class FunFigCoreTests(unittest.TestCase):
             [
                 "function-plot",
                 "data-series",
+                "error-bar",
+                "scatter-plot",
+                "confidence-band",
                 "threshold-region",
                 "intersection-curves",
                 "publication-threshold",
@@ -77,6 +81,41 @@ class FunFigCoreTests(unittest.TestCase):
                 if case == "fig4":
                     self.assertIn("name intersections={of=A and C,by=profit-zero}", tex)
 
+    def test_scientific_goldens_validate(self) -> None:
+        for case in SCIENTIFIC_GOLDEN_CASES:
+            with self.subTest(case=case):
+                path = PROJECT_ROOT / f"examples/golden/{case}/figure.funfig.json"
+                spec = load_json(path)
+                result = validate_spec(spec, path)
+                self.assertTrue(result.ok, result.errors)
+                self.assertTrue(spec["metadata"]["golden"])
+
+    def test_scientific_goldens_match_committed_tex(self) -> None:
+        required_fragments = {
+            "error-bar": ("error bars/.cd", "x error plus=xerr_plus", "y error minus=yerr_minus"),
+            "scatter-plot": ("scatter src=explicit", "meta=score", "colorbar style={ylabel={score}}"),
+            "confidence-band": ("name path=upper", "fill between [of=upper and lower]"),
+            "groupplot": ("group size=2 by 2", "xlabels at={edge bottom}", "ylabels at={edge left}"),
+        }
+        for case in SCIENTIFIC_GOLDEN_CASES:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temp:
+                source_dir = PROJECT_ROOT / f"examples/golden/{case}"
+                expected_tex = source_dir / f"{case}.tex"
+                expected = expected_tex.read_text(encoding="utf-8")
+                work_dir = Path(temp) / case
+                shutil.copytree(
+                    source_dir,
+                    work_dir,
+                    ignore=shutil.ignore_patterns("*.pdf", ".funfig", f"{case}.tex"),
+                )
+                spec_path = work_dir / "figure.funfig.json"
+                spec = load_json(spec_path)
+                tex_path, _ = render_spec(spec, spec_path)
+                actual = tex_path.read_text(encoding="utf-8")
+                self.assertEqual(actual, expected)
+                for fragment in required_fragments[case]:
+                    self.assertIn(fragment, actual)
+
     def test_fig4_legacy_migration_produces_valid_draft(self) -> None:
         source = PROJECT_ROOT / "sustainability-1485080-data-main/fig4/fig4.tex"
         with tempfile.TemporaryDirectory() as temp:
@@ -104,6 +143,29 @@ class FunFigCoreTests(unittest.TestCase):
         result = validate_spec(spec)
         self.assertFalse(result.ok)
         self.assertTrue(any("unknown source" in error for error in result.errors))
+
+    def test_invalid_between_and_error_bindings_are_rejected(self) -> None:
+        spec = {
+            "schema_version": "1.0",
+            "id": "bad-scientific-bindings",
+            "recipe": "confidence-band",
+            "kind": "pgfplots",
+            "axes": {},
+            "data_sources": [{"id": "a", "type": "function", "expression": "x"}],
+            "series": [
+                {
+                    "id": "a",
+                    "source": "a",
+                    "name_path": "A",
+                    "error_bars": {"y": {"dir": "both", "mode": "fixed"}},
+                }
+            ],
+            "regions": [{"id": "band", "type": "between", "path_a": "A", "path_b": "missing"}],
+        }
+        result = validate_spec(spec)
+        self.assertFalse(result.ok)
+        self.assertTrue(any("requires value" in error for error in result.errors))
+        self.assertTrue(any("unknown name_path" in error for error in result.errors))
 
     def test_render_is_deterministic_and_manifested(self) -> None:
         source_path = PROJECT_ROOT / "examples/basic-function/figure.funfig.json"
@@ -173,6 +235,27 @@ class FunFigCoreTests(unittest.TestCase):
                 pdf_path = build_spec(spec, spec_path)
                 self.assertTrue(pdf_path.exists())
                 self.assertGreater(pdf_path.stat().st_size, 10_000)
+                self.assertFalse((work_dir / ".funfig/build").exists())
+
+    @unittest.skipUnless(
+        shutil.which("latexmk") and shutil.which("pdflatex"),
+        "TeX toolchain unavailable",
+    )
+    def test_scientific_goldens_build_from_self_contained_data(self) -> None:
+        for case in SCIENTIFIC_GOLDEN_CASES:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temp:
+                source_dir = PROJECT_ROOT / f"examples/golden/{case}"
+                work_dir = Path(temp) / case
+                shutil.copytree(
+                    source_dir,
+                    work_dir,
+                    ignore=shutil.ignore_patterns("*.pdf", ".funfig"),
+                )
+                spec_path = work_dir / "figure.funfig.json"
+                spec = load_json(spec_path)
+                pdf_path = build_spec(spec, spec_path)
+                self.assertTrue(pdf_path.exists())
+                self.assertGreater(pdf_path.stat().st_size, 5_000)
                 self.assertFalse((work_dir / ".funfig/build").exists())
 
     @unittest.skipUnless(

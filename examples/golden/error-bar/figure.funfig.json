@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "id": "golden-error-bar",
+  "recipe": "error-bar",
+  "kind": "pgfplots",
+  "canvas": {"width": "9cm", "height": "6.5cm", "border": "2pt"},
+  "engine": {"latex": "pdflatex", "compute": "none"},
+  "axes": {
+    "title": "Asymmetric measurement uncertainty",
+    "x": {"label": "$x$", "min": 0, "max": 1, "ticks": [0, 0.25, 0.5, 0.75, 1]},
+    "y": {"label": "$y$", "min": 0, "max": 1.05, "ticks": [0, 0.25, 0.5, 0.75, 1]},
+    "grid": "major",
+    "legend": {"position": "north west", "font": "\\footnotesize"}
+  },
+  "data_sources": [
+    {"id": "observations", "type": "file", "path": "data/observations.tsv", "x": "x", "y": "y"}
+  ],
+  "series": [
+    {
+      "id": "observations",
+      "source": "observations",
+      "label": "observations",
+      "style": {"color": "MidnightBlue", "mark": "*", "mark_size": "1.8pt"},
+      "options": ["only marks"],
+      "error_bars": {
+        "x": {"dir": "both", "mode": "explicit", "plus": "xerr_plus", "minus": "xerr_minus"},
+        "y": {"dir": "both", "mode": "explicit", "plus": "yerr_plus", "minus": "yerr_minus"},
+        "mark": "none",
+        "style": ["line width=0.6pt", "opacity=0.75"]
+      }
+    }
+  ],
+  "regions": [],
+  "annotations": [],
+  "outputs": {"basename": "error-bar", "keep_build": false},
+  "metadata": {"golden": true, "reference": "TikZ memo table/08_误差棒.tex"}
+}

@@ -1,0 +1,34 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames,svgnames,x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{calc,arrows.meta,positioning,intersections,fit,shapes.geometric}
+\usepgfplotslibrary{fillbetween}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+  width=9cm,
+  height=6.5cm,
+  grid=major,
+  grid style={gray!25,line width=0.2pt},
+  title={Mean curve with confidence band},
+  title style={align=left},
+  xlabel={$x$},
+  xmin=0,
+  xmax=1,
+  ylabel={$f(x)$},
+  ymin=-0.05,
+  ymax=1.25,
+  legend pos=north west,
+  legend style={draw=none,fill=none,cells={anchor=west},font=\footnotesize},
+]
+\addplot+ [SteelBlue,dashed,opacity=0.65,mark=none,name path=upper,domain=0:1,samples=160] {x^2+0.12+0.04*sin(deg(4*pi*x))};
+\addplot+ [SteelBlue,dashed,opacity=0.65,mark=none,name path=lower,domain=0:1,samples=160] {x^2-0.12-0.04*sin(deg(4*pi*x))};
+\addplot+ [MidnightBlue,line width=1.0pt,mark=none,domain=0:1,samples=160] {x^2};
+\addlegendentry{mean}
+\addplot [fill=LightSkyBlue,fill opacity=0.32] fill between [of=upper and lower];
+\end{axis}
+\end{tikzpicture}
+\end{document}

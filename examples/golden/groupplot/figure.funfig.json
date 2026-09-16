@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "id": "golden-groupplot",
+  "recipe": "groupplot",
+  "kind": "pgfplots",
+  "canvas": {"width": "5.8cm", "height": "4.6cm", "border": "2pt"},
+  "engine": {"latex": "pdflatex", "compute": "none"},
+  "axes": {
+    "x": {"label": "$x$", "min": 0, "max": 1},
+    "y": {"label": "$y$", "min": 0, "max": 1.1},
+    "grid": "major"
+  },
+  "group": {
+    "columns": 2,
+    "horizontal_sep": "1.1cm",
+    "vertical_sep": "1.0cm",
+    "xticklabels_at": "edge bottom",
+    "yticklabels_at": "edge left",
+    "xlabels_at": "edge bottom",
+    "ylabels_at": "edge left"
+  },
+  "data_sources": [
+    {"id": "linear", "type": "function", "expression": "x", "domain": "0:1", "samples": 80},
+    {"id": "quadratic", "type": "function", "expression": "x^2", "domain": "0:1", "samples": 80},
+    {"id": "sqrt", "type": "function", "expression": "sqrt(x)", "domain": "0:1", "samples": 80}
+  ],
+  "series": [
+    {"id": "linear", "source": "linear", "style": {"color": "black", "line_width": "0.8pt"}},
+    {"id": "quadratic", "source": "quadratic", "style": {"color": "MidnightBlue", "line_width": "0.8pt"}},
+    {"id": "sqrt", "source": "sqrt", "style": {"color": "Maroon", "line_width": "0.8pt"}}
+  ],
+  "regions": [],
+  "annotations": [],
+  "panels": [
+    {"id": "a", "title": "(a) linear", "series": ["linear"]},
+    {"id": "b", "title": "(b) quadratic", "series": ["quadratic"]},
+    {"id": "c", "title": "(c) square root", "series": ["sqrt"]},
+    {"id": "d", "title": "(d) comparison", "series": ["linear", "quadratic", "sqrt"]}
+  ],
+  "outputs": {"basename": "groupplot", "keep_build": false},
+  "metadata": {"golden": true, "reference": "TikZ memo groupplots.tex"}
+}

@@ -39,6 +39,7 @@
       "items": {"$ref": "#/$defs/panel"},
       "default": []
     },
+    "group": {"$ref": "#/$defs/group"},
     "diagram": {"$ref": "#/$defs/diagram"},
     "outputs": {"$ref": "#/$defs/outputs"},
     "metadata": {"type": "object", "additionalProperties": true}
@@ -85,7 +86,16 @@
         "axis_line_shift": {"type": "string"},
         "tick_precision": {"type": "integer", "minimum": 0, "maximum": 12},
         "legend_position": {"type": "string"},
-        "legend": {"$ref": "#/$defs/legend"}
+        "legend": {"$ref": "#/$defs/legend"},
+        "colorbar": {"$ref": "#/$defs/colorbar"}
+      }
+    },
+    "colorbar": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {"enum": ["right", "left", "horizontal"]},
+        "label": {"type": "string"}
       }
     },
     "legend": {
@@ -150,8 +160,45 @@
         "source": {"type": "string", "minLength": 1},
         "label": {"type": "string"},
         "name_path": {"type": "string"},
+        "plot": {"enum": ["line", "scatter"]},
+        "scatter": {"$ref": "#/$defs/scatter"},
+        "error_bars": {"$ref": "#/$defs/errorBars"},
         "style": {"$ref": "#/$defs/style"},
         "options": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "scatter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {"enum": ["none", "x", "y", "z", "f(x)", "explicit", "explicit symbolic"]},
+        "meta": {"type": "string"},
+        "point_meta": {"type": "string"},
+        "nodes_near_coords": {"type": "boolean"}
+      }
+    },
+    "errorAxis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dir", "mode"],
+      "properties": {
+        "dir": {"enum": ["none", "plus", "minus", "both"]},
+        "mode": {"enum": ["explicit", "explicit_relative", "fixed", "fixed_relative"]},
+        "column": {"type": "string"},
+        "plus": {"type": "string"},
+        "minus": {"type": "string"},
+        "expr": {"type": "string"},
+        "value": {"type": "number"}
+      }
+    },
+    "errorBars": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "x": {"$ref": "#/$defs/errorAxis"},
+        "y": {"$ref": "#/$defs/errorAxis"},
+        "mark": {"type": "string"},
+        "style": {"type": "array", "items": {"type": "string"}}
       }
     },
     "region": {
@@ -208,6 +255,19 @@
         "title": {"type": "string"},
         "axes": {"$ref": "#/$defs/axes"},
         "series": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "group": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "columns": {"type": "integer", "minimum": 1},
+        "horizontal_sep": {"type": "string"},
+        "vertical_sep": {"type": "string"},
+        "xticklabels_at": {"enum": ["all", "edge top", "edge bottom"]},
+        "yticklabels_at": {"enum": ["all", "edge left", "edge right"]},
+        "xlabels_at": {"enum": ["all", "edge top", "edge bottom"]},
+        "ylabels_at": {"enum": ["all", "edge left", "edge right"]}
       }
     },
     "diagramNode": {

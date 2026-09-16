@@ -129,7 +129,59 @@ def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
             base["annotations"] = [
                 {"type": "intersection", "path_a": "A", "path_b": "B", "name": "I", "label": "$I$"}
             ]
+        elif recipe_id == "error-bar":
+            base["data_sources"] = [
+                {
+                    "id": "observations",
+                    "type": "coordinates",
+                    "points": [[0.1, 0.2], [0.3, 0.45], [0.5, 0.4], [0.7, 0.75], [0.9, 0.82]],
+                }
+            ]
+            base["series"] = [
+                {
+                    "id": "observations",
+                    "source": "observations",
+                    "label": "observations",
+                    "style": {"mark": "*", "color": "black"},
+                    "error_bars": {
+                        "y": {"dir": "both", "mode": "fixed", "value": 0.08}
+                    },
+                }
+            ]
+        elif recipe_id == "scatter-plot":
+            base["series"][0].update(
+                {
+                    "plot": "scatter",
+                    "scatter": {"source": "y"},
+                    "style": {"mark": "*", "mark_size": "1.8pt"},
+                }
+            )
+        elif recipe_id == "confidence-band":
+            base["data_sources"] = [
+                {"id": "upper", "type": "function", "expression": "x^2+0.12", "domain": "0:1", "samples": 100},
+                {"id": "lower", "type": "function", "expression": "x^2-0.12", "domain": "0:1", "samples": 100},
+                {"id": "mean", "type": "function", "expression": "x^2", "domain": "0:1", "samples": 100},
+            ]
+            base["series"] = [
+                {"id": "upper", "source": "upper", "name_path": "upper", "style": {"color": "gray", "line": "dashed"}},
+                {"id": "lower", "source": "lower", "name_path": "lower", "style": {"color": "gray", "line": "dashed"}},
+                {"id": "mean", "source": "mean", "label": "mean", "style": {"color": "black", "line_width": "0.9pt"}},
+            ]
+            base["regions"] = [
+                {
+                    "id": "band",
+                    "type": "between",
+                    "path_a": "upper",
+                    "path_b": "lower",
+                    "style": {"fill": "gray!35", "fill_opacity": 0.4},
+                }
+            ]
         elif recipe_id == "groupplot":
+            base["group"] = {
+                "columns": 2,
+                "horizontal_sep": "1.4cm",
+                "vertical_sep": "1.2cm",
+            }
             base["panels"] = [
                 {"id": "a", "title": "(a)", "series": ["main"]},
                 {"id": "b", "title": "(b)", "series": ["main"]},

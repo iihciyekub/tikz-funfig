@@ -60,6 +60,19 @@ def _axis_options(spec: dict[str, Any], axes: dict[str, Any] | None = None) -> l
             f"{int(axes['tick_precision'])}" + "}"
         )
 
+    colorbar = axes.get("colorbar") or {}
+    if colorbar:
+        position = colorbar.get("position", "right")
+        if position == "left":
+            options.append("colorbar left")
+        elif position == "horizontal":
+            options.append("colorbar horizontal")
+        else:
+            options.append("colorbar")
+        if colorbar.get("label"):
+            label_key = "xlabel" if position == "horizontal" else "ylabel"
+            options.append(f"colorbar style={{{label_key}={{{colorbar['label']}}}}}")
+
     for key in ("x", "y", "z"):
         axis = axes.get(key) or {}
         if axis.get("label") is not None:
@@ -104,17 +117,63 @@ def _series_map(spec: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {series["id"]: series for series in spec.get("series", [])}
 
 
+def _error_bar_options(error_bars: dict[str, Any] | None) -> tuple[list[str], list[str]]:
+    if not error_bars:
+        return [], []
+    plot_options = ["error bars/.cd"]
+    table_options: list[str] = []
+    for axis in ("x", "y"):
+        config = error_bars.get(axis)
+        if not config:
+            continue
+        mode = config.get("mode", "explicit")
+        plot_options.append(f"{axis} dir={config.get('dir', 'none')}")
+        if mode == "explicit":
+            plot_options.append(f"{axis} explicit")
+        elif mode == "explicit_relative":
+            plot_options.append(f"{axis} explicit relative")
+        elif mode == "fixed":
+            plot_options.append(f"{axis} fixed={_fmt(config['value'])}")
+        elif mode == "fixed_relative":
+            plot_options.append(f"{axis} fixed relative={_fmt(config['value'])}")
+
+        if config.get("column"):
+            table_options.append(f"{axis} error={config['column']}")
+        if config.get("plus"):
+            table_options.append(f"{axis} error plus={config['plus']}")
+        if config.get("minus"):
+            table_options.append(f"{axis} error minus={config['minus']}")
+        if config.get("expr"):
+            table_options.append(f"{axis} error expr={config['expr']}")
+    if error_bars.get("mark"):
+        plot_options.append(f"error mark={error_bars['mark']}")
+    if error_bars.get("style"):
+        plot_options.append(f"error bar style={{{','.join(error_bars['style'])}}}")
+    return plot_options, table_options
+
+
 def _render_series(series: dict[str, Any], source: dict[str, Any]) -> list[str]:
     options = _style_options(series.get("style"))
-    # Do not inherit PGFPlots' cycle-list marker by accident. A FunFig series
-    # is a line by default; markers are opt-in through style.mark. This keeps
-    # rendering deterministic across cycle-list/theme changes and matches the
-    # publication figures in the local knowledge base.
-    if not any(option.startswith("mark=") for option in options):
-        options.append("mark=none")
+    scatter = series.get("scatter") or {}
+    is_scatter = series.get("plot") == "scatter" or bool(scatter)
+    if is_scatter:
+        options.extend(["scatter", "only marks"])
+        if scatter.get("source"):
+            options.append(f"scatter src={scatter['source']}")
+        if scatter.get("point_meta"):
+            options.append(f"point meta={scatter['point_meta']}")
+        if scatter.get("nodes_near_coords"):
+            options.append("nodes near coords")
+    else:
+        # Do not inherit PGFPlots' cycle-list marker by accident. A FunFig
+        # series is a line by default; markers are opt-in through style.mark.
+        if not any(option.startswith("mark=") for option in options):
+            options.append("mark=none")
     options.extend(series.get("options", []) or [])
     if series.get("name_path"):
         options.append(f"name path={series['name_path']}")
+    error_options, error_table_options = _error_bar_options(series.get("error_bars"))
+    options.extend(error_options)
 
     source_type = source["type"]
     if source.get("domain"):
@@ -130,6 +189,9 @@ def _render_series(series: dict[str, Any], source: dict[str, Any]) -> list[str]:
         for key in ("x", "y", "z"):
             if source.get(key):
                 columns.append(f"{key}={source[key]}")
+        if is_scatter and scatter.get("meta"):
+            columns.append(f"meta={scatter['meta']}")
+        columns.extend(error_table_options)
         table_options = f"[{','.join(columns)}]" if columns else ""
         command = "\\addplot3" if source.get("z") else "\\addplot+"
         plot = f"{command} {bracket} table{table_options} {{{source['path']}}};"
@@ -317,14 +379,21 @@ def render_groupplot(spec: dict[str, Any]) -> str:
     sources = _source_map(spec)
     series_by_id = _series_map(spec)
     panels = spec.get("panels", [])
-    columns = int((spec.get("metadata") or {}).get("group_columns", min(2, max(1, len(panels)))))
+    group = spec.get("group") or {}
+    columns = int(group.get("columns", (spec.get("metadata") or {}).get("group_columns", min(2, max(1, len(panels))))))
     rows = max(1, math.ceil(len(panels) / columns))
     lines = _document_preamble(spec, groupplots=True)
     lines += ["", "\\begin{document}", "\\begin{tikzpicture}"]
     lines.append("\\begin{groupplot}[")
-    lines.append(
-        f"  group style={{group size={columns} by {rows},horizontal sep=1.5cm,vertical sep=1.2cm}},"
-    )
+    group_style = [
+        f"group size={columns} by {rows}",
+        f"horizontal sep={group.get('horizontal_sep', '1.5cm')}",
+        f"vertical sep={group.get('vertical_sep', '1.2cm')}",
+    ]
+    for key in ("xticklabels_at", "yticklabels_at", "xlabels_at", "ylabels_at"):
+        if group.get(key):
+            group_style.append(f"{key.replace('_', ' ')}={{{group[key]}}}")
+    lines.append(f"  group style={{{','.join(group_style)}}},")
     for option in _axis_options(spec):
         lines.append(f"  {option},")
     lines.append("]")
@@ -333,7 +402,12 @@ def render_groupplot(spec: dict[str, Any]) -> str:
         panel_options = []
         if panel.get("title"):
             panel_options.append(f"title={{{panel['title']}}}")
-        panel_options.extend(_axis_options(spec, panel.get("axes")))
+        # Global axis settings already live on the groupplot container. Do not
+        # copy them into every panel, otherwise PGFPlots' edge-only label/tick
+        # rules are defeated. Only emit panel axes when the panel explicitly
+        # declares an override.
+        if panel.get("axes"):
+            panel_options.extend(_axis_options(spec, panel["axes"]))
         lines.append(f"\\nextgroupplot[{','.join(panel_options)}]")
         for series_id in panel.get("series", []):
             series = series_by_id[series_id]

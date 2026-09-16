@@ -3,6 +3,9 @@
   "recipes": [
     "function-plot",
     "data-series",
+    "error-bar",
+    "scatter-plot",
+    "confidence-band",
     "threshold-region",
     "intersection-curves",
     "publication-threshold",
