@@ -17,10 +17,10 @@ dist/
 build/
 
 # FunFig runtime/build artifacts
-.funfig/build/
-.funfig/cache/
-.funfig/tmp/
-.funfig/manifest.json
+**/.funfig/build/
+**/.funfig/cache/
+**/.funfig/tmp/
+**/.funfig/manifest.json
 .smoke/
 *.manifest.tmp.json
 
