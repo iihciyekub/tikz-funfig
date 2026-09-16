@@ -2,7 +2,7 @@
 
 TIKZ-FunFig is a schema-driven figure generation system for reproducible TikZ and PGFPlots figures.
 
-Version 0.8.3 refines the default publication figure language: inward ticks, aligned endpoint
+Version 0.8.4 refines the default publication figure language: inward ticks, aligned endpoint
 ticks, slightly roomier starter canvases, and subtle translucent backing for annotation text.
 The promoted method layer and legacy migration path remain available, including implicit
 gnuplot contours, curve-relative labels/probes, named intersections, coordinate templates,

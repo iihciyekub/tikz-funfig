@@ -1,4 +1,4 @@
 """TIKZ-FunFig schema-driven figure generation."""
 
-__version__ = "0.8.3"
+__version__ = "0.8.4"
 
