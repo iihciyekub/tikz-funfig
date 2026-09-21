@@ -4,6 +4,15 @@ All notable changes to TIKZ-FunFig are recorded here. The project follows semant
 
 ## [Unreleased]
 
+### Added
+
+- Added a runtime-enforced project output contract: explicit destinations win,
+  existing managed figures stay in place, and new figures default to
+  `<active-project>/figures/<figure-id>/` via `--project-root`,
+  `FUNFIG_PROJECT_ROOT`, or the current project working directory.
+- Added `outputs.formats` with canonical PDF plus optional SVG export through
+  Poppler `pdftocairo`, including manifest hashes and dependency checks.
+
 ## [0.9.0] - 2026-09-22
 
 ### Added

@@ -86,11 +86,14 @@ Recipes point back to local legacy examples so design knowledge can be promoted 
 For an input spec `figure.funfig.json`, defaults are:
 
 - generated source: `figure.tex`
-- final output: `figure.pdf`
+- canonical output: `figure.pdf`
+- optional derived vector output: `figure.svg`
 - build state: `.funfig/build/`
 - manifest: `.funfig/manifest.json`
 
-The `outputs.basename` field changes both stable generated names together.
+The `outputs.basename` field changes the stable generated names together.
+`outputs.formats` defaults to `["pdf"]`; `["pdf", "svg"]` additionally derives
+SVG from the successful PDF using `pdftocairo`.
 
 ## Manifest
 
@@ -108,7 +111,7 @@ The manifest is machine state, but it is intentionally human-readable.
 
 ## Cleanup
 
-`funfig clean` removes only `.funfig/build/` and recognized transient PGFPlots/LaTeX files. It never removes the FigureSpec, user data, generated `.tex`, or final `.pdf`.
+`funfig clean` removes only `.funfig/build/` and recognized transient PGFPlots/LaTeX files. It never removes the FigureSpec, user data, generated `.tex`, final `.pdf`, or requested `.svg`.
 
 ## Distribution
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-required=(latexmk pdflatex xelatex gnuplot)
+required=(latexmk pdflatex xelatex gnuplot pdftocairo)
 missing=0
 
 echo "TIKZ-FunFig dependency check"
@@ -20,6 +20,9 @@ for cmd in "${required[@]}"; do
       pdflatex|xelatex)
         version="$($cmd --version 2>/dev/null | head -n 1 || true)"
         ;;
+      pdftocairo)
+        version="$(pdftocairo -v 2>&1 | head -n 1 || true)"
+        ;;
     esac
     printf 'ok      %-10s %s\n' "$cmd" "$path"
     [[ -n "$version" ]] && printf '        %s\n' "$version"
@@ -36,6 +39,9 @@ else
   echo "error: one or more TIKZ-FunFig dependencies are missing" >&2
   if ! command -v gnuplot >/dev/null 2>&1; then
     echo "hint: on macOS install gnuplot with: brew install gnuplot" >&2
+  fi
+  if ! command -v pdftocairo >/dev/null 2>&1; then
+    echo "hint: on macOS install SVG export support with: brew install poppler" >&2
   fi
   exit 69
 fi

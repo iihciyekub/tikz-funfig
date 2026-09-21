@@ -1214,6 +1214,13 @@ def render_diagram(spec: dict[str, Any]) -> str:
     return _render_diagram_legacy(spec)
 
 
+def output_formats_for_spec(spec: dict[str, Any]) -> list[str]:
+    formats = (spec.get("outputs") or {}).get("formats")
+    if not formats:
+        return ["pdf"]
+    return list(formats)
+
+
 def dependencies_for_spec(spec: dict[str, Any]) -> dict[str, Any]:
     source_types = {source.get("type") for source in spec.get("data_sources", [])}
     plot_kinds = {_plot_mode(series).get("kind") for series in spec.get("series", [])}
@@ -1224,6 +1231,7 @@ def dependencies_for_spec(spec: dict[str, Any]) -> dict[str, Any]:
         "latexmk": True,
         "gnuplot": needs_gnuplot,
         "shell_escape": needs_gnuplot,
+        "pdftocairo": "svg" in output_formats_for_spec(spec),
     }
 
 
@@ -1245,6 +1253,7 @@ def render_spec(spec: dict[str, Any], spec_path: Path) -> tuple[Path, dict[str, 
 
     figure_dir = spec_path.parent
     basename = (spec.get("outputs") or {}).get("basename", "figure")
+    output_formats = output_formats_for_spec(spec)
     tex_path = figure_dir / f"{basename}.tex"
     write_text_atomic(tex_path, text)
 
@@ -1277,9 +1286,17 @@ def render_spec(spec: dict[str, Any], spec_path: Path) -> tuple[Path, dict[str, 
                 f"{basename}.pgf-plot.table",
                 f"{basename}_contourtmp*",
             ],
-            "preserve": [spec_path.name, tex_path.name, f"{basename}.pdf", "data/"],
+            "preserve": [
+                spec_path.name,
+                tex_path.name,
+                f"{basename}.pdf",
+                *([f"{basename}.svg"] if "svg" in output_formats else []),
+                "data/",
+            ],
         },
     }
+    if "svg" in output_formats:
+        manifest["artifacts"]["svg"] = f"{basename}.svg"
     if spec.get("schema_version") == "1.1":
         theme, profile = _structured_theme_profile(spec)
         manifest["theme"] = {"id": theme["id"], "version": theme.get("version", "1.0")}

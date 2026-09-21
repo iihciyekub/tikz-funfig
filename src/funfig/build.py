@@ -8,7 +8,7 @@ from typing import Any
 
 from .io import load_json
 from .manifest import manifest_path, sha256_file, utc_now, write_manifest
-from .render import dependencies_for_spec, render_spec
+from .render import dependencies_for_spec, output_formats_for_spec, render_spec
 
 
 class BuildError(RuntimeError):
@@ -29,6 +29,8 @@ def doctor(spec: dict[str, Any] | None = None) -> tuple[bool, list[str]]:
     required = ["latexmk", "pdflatex", "xelatex"]
     if spec is not None and dependencies_for_spec(spec)["gnuplot"]:
         required.append("gnuplot")
+    if spec is not None and dependencies_for_spec(spec)["pdftocairo"]:
+        required.append("pdftocairo")
     messages: list[str] = []
     ok = True
     for command in required:
@@ -84,7 +86,9 @@ def build_spec(spec: dict[str, Any], spec_path: Path) -> Path:
     tex_path, manifest = render_spec(spec, spec_path)
     figure_dir = spec_path.parent
     basename = (spec.get("outputs") or {}).get("basename", "figure")
+    output_formats = output_formats_for_spec(spec)
     final_pdf = figure_dir / f"{basename}.pdf"
+    final_svg = figure_dir / f"{basename}.svg"
     build_dir = figure_dir / ".funfig" / "build"
     build_dir.mkdir(parents=True, exist_ok=True)
 
@@ -158,6 +162,42 @@ def build_spec(spec: dict[str, Any], spec_path: Path) -> Path:
         }
     )
     manifest["hashes"]["pdf_sha256"] = sha256_file(final_pdf)
+
+    if "svg" in output_formats:
+        staged_svg = build_dir / f"{basename}.svg"
+        svg_command = [
+            "pdftocairo",
+            "-svg",
+            str(final_pdf),
+            str(staged_svg),
+        ]
+        svg_process = subprocess.run(
+            svg_command,
+            cwd=figure_dir,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            check=False,
+        )
+        (build_dir / "funfig-svg.log").write_text(svg_process.stdout, encoding="utf-8")
+        if svg_process.returncode != 0 or not staged_svg.is_file():
+            manifest.update(
+                {
+                    "status": "artifact_failed",
+                    "updated_at": utc_now(),
+                    "svg": {
+                        "command": svg_command,
+                        "returncode": svg_process.returncode,
+                        "log": ".funfig/build/funfig-svg.log",
+                    },
+                }
+            )
+            write_manifest(figure_dir, manifest)
+            tail = "\n".join(svg_process.stdout.splitlines()[-40:])
+            raise BuildError(f"PDF built but SVG export failed; see {build_dir / 'funfig-svg.log'}\n{tail}")
+        staged_svg.replace(final_svg)
+        manifest["hashes"]["svg_sha256"] = sha256_file(final_svg)
+        manifest["svg"] = {"command": svg_command, "returncode": 0}
 
     keep_build = bool((spec.get("outputs") or {}).get("keep_build", False))
     if not keep_build:

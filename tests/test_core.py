@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import tempfile
 import unittest
@@ -353,6 +354,90 @@ class FunFigCoreTests(unittest.TestCase):
             self.assertEqual(spec["axes"]["x"]["ticks"][-1], spec["axes"]["x"]["max"])
             self.assertEqual(spec["axes"]["y"]["ticks"][0], spec["axes"]["y"]["min"])
             self.assertEqual(spec["axes"]["y"]["ticks"][-1], spec["axes"]["y"]["max"])
+
+    def test_init_without_directory_uses_current_project_figures(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            project_root = Path(temp)
+            previous = Path.cwd()
+            try:
+                os.chdir(project_root)
+                result = cli_main(["init", "--id", "fig-auto", "--recipe", "function-plot"])
+            finally:
+                os.chdir(previous)
+            self.assertEqual(result, 0)
+            spec_path = project_root / "figures" / "fig-auto" / "figure.funfig.json"
+            self.assertTrue(spec_path.is_file())
+            self.assertEqual(load_json(spec_path)["outputs"]["formats"], ["pdf"])
+
+    def test_init_uses_funfig_project_root_when_provided(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            project_root = Path(temp) / "paper"
+            previous = os.environ.get("FUNFIG_PROJECT_ROOT")
+            os.environ["FUNFIG_PROJECT_ROOT"] = str(project_root)
+            try:
+                result = cli_main(["init", "--id", "fig-env"])
+            finally:
+                if previous is None:
+                    os.environ.pop("FUNFIG_PROJECT_ROOT", None)
+                else:
+                    os.environ["FUNFIG_PROJECT_ROOT"] = previous
+            self.assertEqual(result, 0)
+            self.assertTrue((project_root / "figures" / "fig-env" / "figure.funfig.json").is_file())
+
+    def test_init_refuses_plugin_or_skill_runtime_destination(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            target = Path(temp) / ".agents" / "skills" / "TIKZ-FunFig" / "figures" / "bad"
+            result = cli_main(["init", str(target), "--id", "bad"])
+            self.assertEqual(result, 2)
+            self.assertFalse((target / "figure.funfig.json").exists())
+
+    def test_explicit_init_directory_wins_over_project_root(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            explicit = root / "custom-figure"
+            project_root = root / "paper"
+            result = cli_main(
+                [
+                    "init",
+                    str(explicit),
+                    "--project-root",
+                    str(project_root),
+                    "--id",
+                    "fig-explicit",
+                ]
+            )
+            self.assertEqual(result, 0)
+            self.assertTrue((explicit / "figure.funfig.json").is_file())
+            self.assertFalse((project_root / "figures" / "fig-explicit").exists())
+
+    def test_svg_output_contract_requires_pdf_and_accepts_pdf_svg(self) -> None:
+        path = PROJECT_ROOT / "examples/basic-function/figure.funfig.json"
+        spec = load_json(path)
+        spec["outputs"] = {"basename": "figure", "formats": ["svg"], "keep_build": False}
+        invalid = validate_spec(spec, path)
+        self.assertFalse(invalid.ok)
+        self.assertTrue(any("must include pdf" in error for error in invalid.errors))
+
+        spec["outputs"]["formats"] = ["pdf", "svg"]
+        valid = validate_spec(spec, path)
+        self.assertTrue(valid.ok, valid.errors)
+
+    def test_svg_output_is_generated_and_recorded(self) -> None:
+        source = load_json(PROJECT_ROOT / "examples/basic-function/figure.funfig.json")
+        source["outputs"] = {"basename": "figure", "formats": ["pdf", "svg"], "keep_build": False}
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            spec_path = root / "figure.funfig.json"
+            write_json_atomic(spec_path, source)
+            pdf_path = build_spec(source, spec_path)
+            svg_path = root / "figure.svg"
+            self.assertTrue(pdf_path.is_file())
+            self.assertTrue(svg_path.is_file())
+            self.assertGreater(svg_path.stat().st_size, 100)
+            manifest = load_json(root / ".funfig/manifest.json")
+            self.assertEqual(manifest["artifacts"]["svg"], "figure.svg")
+            self.assertIn("svg_sha256", manifest["hashes"])
+            self.assertFalse((root / ".funfig/build").exists())
 
     def test_invalid_axis_preset_is_rejected(self) -> None:
         source_path = PROJECT_ROOT / "examples/basic-function/figure.funfig.json"

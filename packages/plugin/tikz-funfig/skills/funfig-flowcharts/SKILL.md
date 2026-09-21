@@ -7,6 +7,7 @@ description: Create and revise publication-quality academic flowcharts with TIKZ
 
 Model process meaning first, then layout. Do not infer missing decision outcomes or scientific causal meaning.
 Use the packaged `scripts/funfig.sh` wrapper for capability queries, knowledge search, validation, build, and inspection.
+Obey the shared TIKZ-FunFig output contract in `TIKZ-FunFig/references/output-policy.md`; do not choose a Plugin/Skill cache as an output directory.
 
 ## Workflow
 

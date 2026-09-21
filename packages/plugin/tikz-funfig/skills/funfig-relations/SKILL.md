@@ -7,6 +7,7 @@ description: Create and revise publication-quality concept/entity relationship d
 
 Preserve relation semantics explicitly: endpoints, direction, label, and route are independent fields.
 Use the packaged `scripts/funfig.sh` wrapper for capability queries, knowledge search, validation, build, and inspection.
+Obey the shared TIKZ-FunFig output contract in `TIKZ-FunFig/references/output-policy.md`; do not choose a Plugin/Skill cache as an output directory.
 
 ## Workflow
 

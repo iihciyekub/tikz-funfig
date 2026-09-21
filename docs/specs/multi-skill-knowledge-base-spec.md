@@ -556,13 +556,14 @@ Profile 使用机器可读 token 保存 target width、minimum text size、base 
   figure.funfig.json
   figure.tex
   figure.pdf
+  figure.svg              # outputs.formats 请求时生成
   data/                  # 如有
   .funfig/
     manifest.json
     build/               # 成功后按既有策略清理
 ```
 
-用户指定目录优先，其次原图目录，最后项目默认目录。不得输出到插件安装缓存。预览图片按需生成，开发回归预览不得提交 Git。
+用户指定目录优先，其次原图目录，再次显式 `--project-root`，最后使用 `FUNFIG_PROJECT_ROOT` 或当前活动 Project 工作目录下的 `figures/<figure-id>/`。不得输出到插件安装缓存。PDF 是 canonical artifact；`outputs.formats=["pdf","svg"]` 时由成功 PDF 派生 SVG。预览图片按需生成，开发回归预览不得提交 Git。
 
 Manifest 在既有字段基础上记录解析后的库集合、引擎、主题 ID/版本与内容哈希、布局 seed（如有）。知识来源以 recipe/card ID 可追溯；不要求把模型读取过的全部资料塞入用户 FigureSpec。
 

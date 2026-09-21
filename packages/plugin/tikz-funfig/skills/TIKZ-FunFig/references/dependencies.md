@@ -9,9 +9,10 @@ latexmk
 pdflatex
 xelatex
 gnuplot
+pdftocairo
 ```
 
-`pdflatex` handles most standalone TikZ/PGFPlots figures. `xelatex` is preferred when the figure contains Chinese text or requires system/OpenType fonts. `latexmk` manages repeat compilation. `gnuplot` is required for PGFPlots `gnuplot` and `raw gnuplot` handlers, including the implicit-function workflow used by the local `\iiplot` helper.
+`pdflatex` handles most standalone TikZ/PGFPlots figures. `xelatex` is preferred when the figure contains Chinese text or requires system/OpenType fonts. `latexmk` manages repeat compilation. `gnuplot` is required for PGFPlots `gnuplot` and `raw gnuplot` handlers, including implicit-function workflows. `pdftocairo` is required only when `outputs.formats` requests SVG; FunFig derives SVG from the successfully compiled canonical PDF.
 
 ## macOS installation
 
@@ -31,6 +32,16 @@ gnuplot --version
 ```
 
 On Apple Silicon with the default Homebrew prefix, the executable is normally reachable under `/opt/homebrew/bin/gnuplot`, but scripts should rely on `PATH` rather than hard-coding that location.
+
+### SVG export
+
+Install Poppler when SVG output is required:
+
+```bash
+brew install poppler
+```
+
+This provides `pdftocairo`. PDF remains the canonical compiled artifact; SVG is a derived vector artifact and is generated only when `outputs.formats` includes `svg`.
 
 ### TeX toolchain
 

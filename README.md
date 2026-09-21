@@ -23,19 +23,22 @@ A generated figure project uses this layout:
 my-figure/
 ├── figure.funfig.json      # editable FigureSpec; source of truth
 ├── figure.tex              # deterministic generated source
-├── figure.pdf              # stable compiled artifact
+├── figure.pdf              # canonical compiled artifact
+├── figure.svg              # optional derived vector artifact
 ├── data/                   # optional user/source data
 └── .funfig/
     ├── manifest.json       # recipe, dependencies, outputs, hashes/status
     └── build/              # disposable compiler/intermediate files
 ```
 
-Only `figure.funfig.json`, explicit source data, generated `figure.tex`, and the final PDF are user-facing artifacts. LaTeX/PGFPlots temporary files belong under `.funfig/build/` and may be removed safely.
+`figure.funfig.json`, explicit source data, generated `figure.tex`, the final PDF, and any requested SVG are user-facing artifacts. LaTeX/PGFPlots temporary files belong under `.funfig/build/` and may be removed safely.
 
 Figure directories belong to the active user project, not to the installed
 Plugin cache. An explicit requested directory takes precedence. Without one,
 new figures use `<project-root>/figures/<figure-id>/`; existing managed figures
-are revised in place.
+are revised in place. `funfig init --id <id>` uses the current project working
+directory by default; `--project-root` or `FUNFIG_PROJECT_ROOT` can override it.
+PDF is canonical; set `outputs.formats` to `["pdf", "svg"]` to derive SVG.
 
 ## CLI
 
@@ -53,6 +56,7 @@ PYTHONPATH=src python3 -m funfig build examples/basic-function/figure.funfig.jso
 PYTHONPATH=src python3 -m funfig inspect examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig clean examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig migrate-legacy path/to/legacy.tex path/to/new-figure
+PYTHONPATH=src python3 -m funfig init --id fig1 --recipe publication-threshold
 PYTHONPATH=src python3 -m funfig init --project-root path/to/paper --id fig1 --recipe publication-threshold
 ```
 

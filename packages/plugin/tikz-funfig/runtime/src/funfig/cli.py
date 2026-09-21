@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -39,6 +40,22 @@ STRUCTURED_DIAGRAM_RECIPES = {
 }
 
 
+def _looks_like_runtime_or_skill_path(path: Path) -> bool:
+    parts = path.resolve().parts
+    for index in range(len(parts) - 1):
+        if parts[index : index + 2] == (".agents", "skills"):
+            return True
+    for index in range(len(parts) - 2):
+        if parts[index : index + 3] == (".codex", "plugins", "cache"):
+            return True
+    return False
+
+
+def _assert_user_output_target(target: Path) -> None:
+    if _looks_like_runtime_or_skill_path(target):
+        raise ValueError(f"refusing to create user figure artifacts inside a Plugin/Skill runtime: {target}")
+
+
 def _load_valid(path: str) -> tuple[Path, dict[str, Any]]:
     spec_path = Path(path).resolve()
     spec, result = load_and_validate(spec_path)
@@ -57,7 +74,7 @@ def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
         "kind": recipe["kind"],
         "canvas": {"width": "10cm", "height": "7cm", "border": "2pt"},
         "engine": {"latex": "auto", "compute": "none"},
-        "outputs": {"basename": "figure", "keep_build": False},
+        "outputs": {"basename": "figure", "formats": ["pdf"], "keep_build": False},
     }
     if schema_version == "1.1":
         base["theme"] = {"id": "journal-muted"}
@@ -561,7 +578,11 @@ def cmd_init(args: argparse.Namespace) -> int:
             raise ValueError("--id is required when init uses --project-root")
         target = Path(args.project_root).resolve() / "figures" / args.id
     else:
-        raise ValueError("provide an output directory or --project-root with --id")
+        if not args.id:
+            raise ValueError("provide an output directory or --id")
+        project_root = Path(os.environ.get("FUNFIG_PROJECT_ROOT", str(Path.cwd()))).resolve()
+        target = project_root / "figures" / args.id
+    _assert_user_output_target(target)
     target.mkdir(parents=True, exist_ok=True)
     spec_path = target / "figure.funfig.json"
     if spec_path.exists() and not args.force:

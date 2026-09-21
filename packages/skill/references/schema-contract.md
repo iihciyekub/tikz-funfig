@@ -31,7 +31,9 @@ The canonical JSON Schema lives in the source repository at:
 - `panels` — multi-panel series bindings.
 - `group` — structured groupplot columns, spacing, and edge-only tick/label placement.
 - `diagram` — named nodes and edges for TikZ diagrams.
-- `outputs` — stable artifact basename and intermediate retention policy.
+- `outputs` — stable artifact basename, requested output formats, and intermediate retention policy.
+- `outputs.formats` — defaults to `["pdf"]`; may be `["pdf", "svg"]`. PDF is
+  always required as the canonical compiled artifact and SVG is derived from it.
 
 ## Data binding
 
@@ -59,6 +61,7 @@ For advanced PGFPlots figures, keep geometry/compute semantics structured:
 - explicit source data under `data/`
 - generated `figure.tex`
 - final `figure.pdf`
+- requested `figure.svg`
 - `.funfig/manifest.json`
 
 ### Disposable
@@ -67,7 +70,7 @@ For advanced PGFPlots figures, keep geometry/compute semantics structured:
 - `.aux`, `.log`, `.fls`, `.fdb_latexmk`, and similar TeX intermediates
 - PGFPlots `.gnuplot` and generated `.table` files
 
-The build system may remove disposable artifacts after a successful build. It must not remove FigureSpec, source data, generated TeX, or the final PDF.
+The build system may remove disposable artifacts after a successful build. It must not remove FigureSpec, source data, generated TeX, the final PDF, or a requested SVG.
 
 ## Project output location
 
@@ -76,10 +79,12 @@ artifacts must be written under the user's active project. Resolution order is:
 
 1. explicit user-specified directory;
 2. an existing managed figure directory for an update;
-3. `<project-root>/figures/<figure-id>/` for a new figure when no directory was specified.
+3. explicit `--project-root`, resolving to `<project-root>/figures/<figure-id>/`;
+4. `FUNFIG_PROJECT_ROOT` or the current active-project working directory,
+   resolving to `<active-project>/figures/<figure-id>/`.
 
-`funfig init --project-root <root> --id <id> --recipe <recipe>` implements the
-third rule. Never create user figure artifacts under `~/.codex/plugins/cache/`
+`funfig init --id <id> --recipe <recipe>` implements the current-project
+default; `--project-root` overrides it. Never create user figure artifacts under `~/.codex/plugins/cache/`
 or another Plugin installation directory.
 
 ## Publication-oriented structured fields

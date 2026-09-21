@@ -6,6 +6,7 @@ description: Create and revise publication-quality mathematical, data, statistic
 # FunFig Plots
 
 Use the shared TIKZ-FunFig runtime. The packaged Skill materializes `scripts/funfig.sh`; use it for `capabilities`, `kb`, `validate`, `build`, and `inspect`. Keep `figure.funfig.json` as the canonical source for stable plot recipes.
+Obey the shared TIKZ-FunFig output contract in `TIKZ-FunFig/references/output-policy.md`; do not choose a Plugin/Skill cache as an output directory.
 
 ## Workflow
 

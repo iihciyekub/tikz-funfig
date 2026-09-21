@@ -7,6 +7,7 @@ description: Create and revise publication-quality scientific schematics with TI
 
 Use Recipe `scientific-schematic` for stable component/annotation structures and Expert TikZ Mode for carefully sourced long-tail geometry or decoration features.
 Use the packaged `scripts/funfig.sh` wrapper for capability queries, knowledge search, validation, build, inspection, and sourced Expert Mode.
+Obey the shared TIKZ-FunFig output contract in `TIKZ-FunFig/references/output-policy.md`; do not choose a Plugin/Skill cache as an output directory.
 
 ## Workflow
 

@@ -447,6 +447,15 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
         basename = outputs.get("basename", "figure")
         if not isinstance(basename, str) or not ID_RE.match(basename):
             errors.append("outputs.basename must be a safe file basename")
+        formats = outputs.get("formats", ["pdf"])
+        if not isinstance(formats, list) or not formats:
+            errors.append("outputs.formats must be a non-empty array")
+        elif any(item not in {"pdf", "svg"} for item in formats):
+            errors.append("outputs.formats accepts only pdf and svg")
+        elif len(set(formats)) != len(formats):
+            errors.append("outputs.formats must not contain duplicates")
+        elif "pdf" not in formats:
+            errors.append("outputs.formats must include pdf as the canonical artifact")
 
     return ValidationResult(tuple(errors))
 

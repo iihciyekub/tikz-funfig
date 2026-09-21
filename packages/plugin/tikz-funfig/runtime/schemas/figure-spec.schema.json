@@ -493,6 +493,14 @@
       "additionalProperties": false,
       "properties": {
         "basename": {"type": "string", "minLength": 1, "default": "figure"},
+        "formats": {
+          "type": "array",
+          "items": {"enum": ["pdf", "svg"]},
+          "minItems": 1,
+          "uniqueItems": true,
+          "contains": {"const": "pdf"},
+          "default": ["pdf"]
+        },
         "keep_build": {"type": "boolean", "default": false}
       }
     }

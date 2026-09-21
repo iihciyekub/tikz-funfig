@@ -41,6 +41,7 @@ For a new figure or a figure already managed by TIKZ-FunFig, **do not start by f
 
 ```text
 FigureSpec -> Recipe -> Data Binding -> Renderer -> figure.tex -> Build -> figure.pdf
+                                                                    \-> figure.svg (optional)
                                                     \-> manifest.json
 ```
 
@@ -55,6 +56,7 @@ figure-directory/
 ├── figure.funfig.json
 ├── figure.tex
 ├── figure.pdf
+├── figure.svg             # optional derived vector output
 ├── data/                  # optional source data
 └── .funfig/
     ├── manifest.json
@@ -69,7 +71,9 @@ Skill installation/cache directory. Resolve the target in this order:
 1. an explicit directory requested by the user;
 2. an existing managed figure directory containing `figure.funfig.json` when
    the user is revising that figure;
-3. otherwise `<active-project>/figures/<figure-id>/`.
+3. an explicit `--project-root` when supplied;
+4. otherwise `FUNFIG_PROJECT_ROOT` or the current active-project working
+   directory, using `<active-project>/figures/<figure-id>/`.
 
 When an existing managed figure is found, edit its FigureSpec and rebuild in
 place instead of creating a duplicate elsewhere. Do not use the Codex Plugin
@@ -116,6 +120,17 @@ project layout directly:
 
 This creates `path/to/paper/figures/fig-demand/`.
 
+When already running from the active paper/project directory, prefer the shorter
+form:
+
+```bash
+.agents/skills/TIKZ-FunFig/scripts/funfig.sh init \
+  --id fig-demand --recipe publication-threshold
+```
+
+This creates `./figures/fig-demand/`. Set `outputs.formats` to
+`["pdf", "svg"]` when an SVG is also required; PDF remains canonical.
+
 Initial stable recipes are:
 
 - `function-plot`
@@ -152,6 +167,7 @@ For the full TIKZ-FunFig workflow, treat the following as required local depende
 - a TeX distribution with `pdflatex` and `xelatex`;
 - `latexmk`;
 - `gnuplot` for PGFPlots `gnuplot` / `raw gnuplot` plots, especially implicit-function figures.
+- `pdftocairo` (Poppler) when SVG output is requested.
 
 On macOS, the supported setup path is Homebrew. Run:
 
@@ -159,10 +175,10 @@ On macOS, the supported setup path is Homebrew. Run:
 .agents/skills/TIKZ-FunFig/scripts/setup_macos.sh
 ```
 
-or install gnuplot directly with:
+or install the Homebrew-managed dependencies directly with:
 
 ```bash
-brew install gnuplot
+brew install gnuplot poppler
 ```
 
 Verify the environment with:
