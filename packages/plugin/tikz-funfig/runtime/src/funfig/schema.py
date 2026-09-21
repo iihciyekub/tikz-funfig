@@ -123,6 +123,12 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
             errors.append(
                 f"recipe {recipe_id!r} requires kind={recipe.get('kind')!r}, got {kind!r}"
             )
+        allowed_schema_versions = recipe.get("schema_versions")
+        if isinstance(allowed_schema_versions, list) and schema_version not in allowed_schema_versions:
+            errors.append(
+                f"recipe {recipe_id!r} requires schema_version in {allowed_schema_versions!r}, "
+                f"got {schema_version!r}"
+            )
         for field in recipe.get("required", []):
             if field not in spec:
                 errors.append(f"recipe {recipe_id!r} requires field: {field}")
@@ -327,6 +333,14 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                 for index, node in enumerate(diagram.get("nodes", [])):
                     if not isinstance(node, dict):
                         continue
+                    allowed_roles = recipe.get("roles") if recipe is not None else None
+                    if isinstance(allowed_roles, list):
+                        role = node.get("role", "concept")
+                        if role not in allowed_roles:
+                            errors.append(
+                                f"diagram.nodes[{index}].role {role!r} is not allowed by "
+                                f"recipe {recipe_id!r}; allowed roles: {allowed_roles!r}"
+                            )
                     for legacy in ("at", "right_of", "below_of", "style"):
                         if legacy in node:
                             errors.append(

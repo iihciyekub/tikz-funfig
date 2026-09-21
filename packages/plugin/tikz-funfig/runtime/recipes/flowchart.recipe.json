@@ -2,6 +2,8 @@
   "id":"flowchart","version":"1.0","kind":"tikz","renderer":"diagram",
   "description":"Structured academic process/decision/feedback flowchart.",
   "required":["diagram"],
+  "schema_versions":["1.1"],
+  "roles":["process","decision","terminal","data","annotation"],
   "capabilities":["structured-nodes","relative-layout","grid-layout","decision-roles","edge-labels","feedback-curves","groups"],
   "status":"stable","defaults":{"edge_arrows":"forward"},
   "knowledge_ids":["relative-positioning","flowchart-shapes","paths-routing","curved-edges","diagram-layout-repair"],

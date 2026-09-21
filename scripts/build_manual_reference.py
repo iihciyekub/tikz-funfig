@@ -217,6 +217,8 @@ def verify_split_artifact(source_pdf: Path, output_pdf: Path, ranges: list[list[
 HEADING = re.compile(r"^\s*(\d+(?:\.\d+){0,3})\s+([^\n]{3,110})\s*$")
 COMMAND = re.compile(r"\\[A-Za-z@]+")
 KEY = re.compile(r"/(?:tikz|pgf|pgfplots)/[A-Za-z0-9 ._:/-]+")
+LIBRARY_DECL = re.compile(r"\\use(?:tikz|pgf)library\s*\{([^}]+)\}")
+CODE_HINT = re.compile(r"\\(?:begin\{tikzpicture\}|tikz\b|draw\b|path\b|node\b|coordinate\b)")
 
 
 def _page_heading(text: str) -> tuple[str | None, str | None]:
@@ -225,6 +227,26 @@ def _page_heading(text: str) -> tuple[str | None, str | None]:
         if match and not re.search(r"\.{3,}|\s\d{2,4}\s*$", raw):
             return match.group(1), match.group(2).strip()
     return None, None
+
+
+def _section_level(number: str | None) -> int:
+    return number.count(".") + 1 if number else 0
+
+
+def _parent_section(number: str | None) -> str | None:
+    if not number or "." not in number:
+        return None
+    return number.rsplit(".", 1)[0]
+
+
+def _declared_libraries(text: str) -> list[str]:
+    names: list[str] = []
+    for raw in LIBRARY_DECL.findall(text):
+        for name in raw.split(","):
+            cleaned = name.strip()
+            if cleaned:
+                names.append(cleaned)
+    return sorted(set(names))
 
 
 def build_corpus(source: dict, pdf: Path) -> Path:
@@ -258,11 +280,14 @@ def build_corpus(source: dict, pdf: Path) -> Path:
                 topic_ids.append(topic["id"])
                 aliases.extend(topic.get("aliases", []))
                 libraries.extend(topic.get("libraries", []))
+        libraries.extend(_declared_libraries(body))
         chunks.append({
             "id": f"{source['source_id']}-p{first:04d}-{last:04d}",
             "source_id": source["source_id"],
             "version": source["version"],
             "section": active_number,
+            "section_level": _section_level(active_number),
+            "parent_section": _parent_section(active_number),
             "title": active_title,
             "page_start": first,
             "page_end": last,
@@ -272,6 +297,8 @@ def build_corpus(source: dict, pdf: Path) -> Path:
             "libraries": sorted(set(libraries)),
             "commands": commands,
             "keys": keys,
+            "contains_code_example": bool(CODE_HINT.search(body)),
+            "contains_figure_hint": "figure" in body.casefold() or "illustration" in body.casefold(),
             # Keep the distributable corpus bounded while retaining commands and nearby prose.
             "text": body[:12000],
         })
@@ -287,6 +314,10 @@ def build_corpus(source: dict, pdf: Path) -> Path:
         bucket.append((page_no, page_text))
     flush()
 
+    for index, chunk in enumerate(chunks):
+        chunk["previous_id"] = chunks[index - 1]["id"] if index else None
+        chunk["next_id"] = chunks[index + 1]["id"] if index + 1 < len(chunks) else None
+
     destination = ROOT / "knowledge/manual-index" / f"{source['source_id']}.jsonl"
     destination.parent.mkdir(parents=True, exist_ok=True)
     temporary = destination.with_suffix(".jsonl.tmp")
@@ -294,6 +325,27 @@ def build_corpus(source: dict, pdf: Path) -> Path:
         for chunk in chunks:
             stream.write(json.dumps(chunk, ensure_ascii=False, sort_keys=True) + "\n")
     temporary.replace(destination)
+
+    library_index: dict[str, dict] = {}
+    for chunk in chunks:
+        if chunk["page_end"] < 564 or chunk["page_start"] > 852:
+            continue
+        for library in chunk.get("libraries", []):
+            record = library_index.setdefault(
+                library,
+                {"library": library, "source_id": source["source_id"], "chunk_ids": [], "pages": []},
+            )
+            record["chunk_ids"].append(chunk["id"])
+            record["pages"].append([chunk["page_start"], chunk["page_end"]])
+    library_path = destination.with_name(f"{source['source_id']}.libraries.json")
+    library_path.write_text(
+        json.dumps(
+            {"source_id": source["source_id"], "libraries": list(library_index.values())},
+            indent=2,
+            ensure_ascii=False,
+        ) + "\n",
+        encoding="utf-8",
+    )
     return destination
 
 

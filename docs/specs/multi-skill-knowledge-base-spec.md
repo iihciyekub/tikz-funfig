@@ -612,7 +612,7 @@ Manifest 在既有字段基础上记录解析后的库集合、引擎、主题 I
 - [x] 收敛统一入口，提取 plots Skill，新增 flowcharts/frameworks/relations/schematics 四类专项 Skill。
 - [x] 同步 portable 包和 workspace 安装路径；检查共享资源闭包。
 - [x] 在不包含原仓库/手册的临时目录运行共享知识检索，并通过专项 Skill wrapper 构建结构化流程图；各新增 Recipe 另有独立 golden 构建回归。
-- [ ] 在实际 Codex 宿主中验证显式选择、自然语言自动匹配与后续修订；此项需要安装包含本工作树改动的 Plugin 后做交互式验收，不能由源码单元测试替代。
+- [ ] 在实际 Codex 宿主中验证显式选择、自然语言自动匹配与后续修订。2026-09-22 已将当前 portable Plugin 以临时本地 marketplace `tikz-funfig-dev` 安装到 Codex，确认 6 个 Skill 均存在于启用的安装缓存，且每个专项 Skill wrapper 均可调用共享 capabilities/knowledge runtime；自然语言路由的新任务实测因当前 Codex workspace 返回 `workspace is out of credits` 而被阻塞，额度恢复后仍需完成该交互式验收，不能用源码测试或静态 Skill 描述替代。
 - [x] 运行仓库全检查并更新 CHANGELOG/分发文档；实际 release/tag/push 仍按仓库规则只在用户显式要求发布时执行。
 - 完成条件：一个插件安装后可发现 6 个可用 Skill；通过全部首期验收。
 

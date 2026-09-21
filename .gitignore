@@ -43,6 +43,7 @@ examples/**/figure.tex
 *.synctex.gz
 *.toc
 *.vrb
+*.xdv
 *.pgf-plot.gnuplot
 *.pgf-plot.table
 *.gnuplot
