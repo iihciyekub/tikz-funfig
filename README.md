@@ -2,13 +2,11 @@
 
 TIKZ-FunFig is a schema-driven figure generation system for reproducible TikZ and PGFPlots figures.
 
-Version 0.8.5 improves the `tff` Codex Plugin installer/updater with safer refreshes,
-installed-version reporting, and a bundled CLI that can update with the Plugin.
-The publication figure language includes inward ticks, aligned endpoint ticks,
-slightly roomier starter canvases, and translucent backing for annotation text.
-The promoted method layer and legacy migration path remain available, including implicit
-gnuplot contours, curve-relative labels/probes, named intersections, coordinate templates,
-and structured spy/detail annotations.
+Version 0.9.0 expands TIKZ-FunFig into a multi-Skill academic-figure Plugin with
+FigureSpec 1.1 structured diagrams, searchable PGF/TikZ knowledge, Publication
+Profiles, themes, visual QA, and a sourced Expert TikZ fallback for long-tail
+manual-backed features. Existing 1.0 managed figures and the promoted PGFPlots/
+legacy migration paths remain supported.
 
 The repository has two roles:
 

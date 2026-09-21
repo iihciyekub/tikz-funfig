@@ -4,6 +4,8 @@ All notable changes to TIKZ-FunFig are recorded here. The project follows semant
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-09-22
+
 ### Added
 
 - Added five specialized Skills (`funfig-plots`, `funfig-flowcharts`,

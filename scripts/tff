@@ -12,7 +12,7 @@ import subprocess
 import sys
 import tempfile
 
-VERSION = "0.8.5"
+VERSION = "0.9.0"
 DEFAULT_SOURCE = "git@github.com:iihciyekub/tikz-funfig.git"
 
 
