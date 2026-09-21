@@ -42,21 +42,26 @@
 \addplot+ [red,dash dot,line width=0.7pt,opacity=0.45,mark=none] coordinates {(0,189) (0.397,189)};
 \addplot+ [red,line width=1.35pt,mark=none] coordinates {(0.397,189) (1,189)};
 \addlegendentry{$q_s=F^{-1}\!\left(\frac{p-c-wr}{p-s}\right)$}
-\node[fill=white,fill opacity=0.68,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=center,font=\scriptsize] at (axis cs:0.28,25) {$q^c$ increasing area};
+\node[fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=center,font=\scriptsize] at (axis cs:0.28,25) {$q^c$ increasing area};
 \addplot+[mark size=1.8pt,draw=black!70,fill=SeaGreen,only marks,mark=*] coordinates {(0.397,189)};
-\node[fill=white,fill opacity=0.68,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=west,mark size=1.8pt,draw=black!70,fill=SeaGreen,font=\scriptsize] (funfigCallout2) at ([shift={(-95pt,34pt)}]axis cs:0.397,189) {$(\alpha,q_s,q_t)=(0.397,189,189)$};
-\draw[-{Stealth[length=4pt,width=3pt]},shorten >=1pt] (funfigCallout2.center) -- (axis cs:0.397,189);
+\coordinate (funfigCalloutPos2) at ([shift={(-95pt,34pt)}]axis cs:0.397,189);
+\draw[-{Stealth[length=4pt,width=3pt]},draw=gray!65,line width=0.5pt,shorten >=2pt] (funfigCalloutPos2) -- (axis cs:0.397,189);
+\node[fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=west,font=\scriptsize] (funfigCallout2) at (funfigCalloutPos2) {$(\alpha,q_s,q_t)=(0.397,189,189)$};
 \addplot+[mark size=1.8pt,draw=black!70,fill=CarnationPink,only marks,mark=*] coordinates {(0.124,0)};
-\node[fill=white,fill opacity=0.68,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=north west,mark size=1.8pt,draw=black!70,fill=CarnationPink,font=\scriptsize] (funfigCallout3) at ([shift={(5pt,-20pt)}]axis cs:0.124,0) {$(\alpha,q_t)=(0.124,0)$};
-\draw[-{Stealth[length=4pt,width=3pt]},shorten >=1pt] (funfigCallout3.center) -- (axis cs:0.124,0);
+\coordinate (funfigCalloutPos3) at ([shift={(5pt,-20pt)}]axis cs:0.124,0);
+\draw[-{Stealth[length=4pt,width=3pt]},draw=gray!65,line width=0.5pt,shorten >=2pt] (funfigCalloutPos3) -- (axis cs:0.124,0);
+\node[fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=north west,font=\scriptsize] (funfigCallout3) at (funfigCalloutPos3) {$(\alpha,q_t)=(0.124,0)$};
 \addplot+[mark size=1.8pt,draw=black!70,fill=Dandelion,only marks,mark=*] coordinates {(0.814,189)};
-\node[fill=white,fill opacity=0.68,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=north east,mark size=1.8pt,draw=black!70,fill=Dandelion,font=\scriptsize] (funfigCallout4) at ([shift={(-4pt,-20pt)}]axis cs:0.814,189) {$(\alpha,q_s)=(0.814,189)$};
-\draw[-{Stealth[length=4pt,width=3pt]},shorten >=1pt] (funfigCallout4.center) -- (axis cs:0.814,189);
+\coordinate (funfigCalloutPos4) at ([shift={(-4pt,-20pt)}]axis cs:0.814,189);
+\draw[-{Stealth[length=4pt,width=3pt]},draw=gray!65,line width=0.5pt,shorten >=2pt] (funfigCalloutPos4) -- (axis cs:0.814,189);
+\node[fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=north east,font=\scriptsize] (funfigCallout4) at (funfigCalloutPos4) {$(\alpha,q_s)=(0.814,189)$};
 \addplot+[mark size=1.8pt,draw=black!70,fill=GreenYellow,only marks,mark=*] coordinates {(0.814,-360)};
-\node[fill=white,fill opacity=0.68,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=south east,mark size=1.8pt,draw=black!70,fill=GreenYellow,font=\scriptsize] (funfigCallout5) at ([shift={(-4pt,18pt)}]axis cs:0.814,-360) {$\frac{p-c-wr}{p-s}=0.814$};
-\draw[-{Stealth[length=4pt,width=3pt]},shorten >=1pt] (funfigCallout5.center) -- (axis cs:0.814,-360);
+\coordinate (funfigCalloutPos5) at ([shift={(-4pt,18pt)}]axis cs:0.814,-360);
+\draw[-{Stealth[length=4pt,width=3pt]},draw=gray!65,line width=0.5pt,shorten >=2pt] (funfigCalloutPos5) -- (axis cs:0.814,-360);
+\node[fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=south east,font=\scriptsize] (funfigCallout5) at (funfigCalloutPos5) {$\frac{p-c-wr}{p-s}=0.814$};
 \addplot+[mark size=1.8pt,draw=black!70,fill=OrangeRed,only marks,mark=*] coordinates {(0.5,100)};
-\node[fill=white,fill opacity=0.68,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=south,mark size=1.8pt,draw=black!70,fill=OrangeRed,font=\scriptsize] (funfigCallout6) at ([shift={(0pt,5pt)}]axis cs:0.5,100) {$M$};
+\coordinate (funfigCalloutPos6) at ([shift={(0pt,5pt)}]axis cs:0.5,100);
+\node[fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=south,font=\scriptsize] (funfigCallout6) at (funfigCalloutPos6) {$M$};
 \end{axis}
 \end{tikzpicture}
 \end{document}

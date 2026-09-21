@@ -17,9 +17,12 @@ These are defaults, not rigid rules. Preserve an existing manuscript's house sty
   separation used by the publication golden cases.
 - Publication ticks point inward, axis strokes stay thin, and declared axis
   endpoints remain visually aligned with endpoint tick marks.
-- Publication annotation/callout text uses a subtle translucent white backing
-  by default (`fill opacity` about 0.68) so dense text remains readable without
+- Publication annotation/callout text uses a near-opaque white backing
+  by default (`fill opacity` 0.94) so dense text remains readable without
   competing with the plotted curves.
+- Point and intersection marker fills stay separate from their label backgrounds.
+  Use `label_style` to customize those labels; marker `style.color` supplies the
+  default label text color when `label_style` is omitted.
 - For text-heavy multi-panel figures, enlarge the panel canvas before shrinking
   fonts; widths around 8.8--9.2cm and heights around 6.6--7.0cm per panel are a
   useful starting range.
@@ -95,4 +98,3 @@ Avoid repeating the same style literal many times. Extract recurring properties 
 - `gnuplot` is part of the full TIKZ-FunFig toolchain and should be checked before implicit/raw-gnuplot figures are compiled.
 - Enable `-shell-escape` only for inspected/trusted source that actually requires external gnuplot execution.
 - Never embed a private/local font binary into a deliverable solely to make the figure compile; use an installed font or document the font requirement.
-

@@ -43,8 +43,7 @@
   ymax=1.4,
   extra y ticks={-1.4,1.4},
   extra y tick style={grid=none,tick label style={opacity=0}},
-  legend pos=north east,
-  legend style={draw=none,fill=none,cells={anchor=west}},
+  legend style={draw=none,fill=none,cells={anchor=west},at={(0.5,1.05)},anchor=south,legend columns=2},
 ]
 \addplot+ gnuplot[raw gnuplot,empty line=jump,MidnightBlue,line width=1pt,mark=none,name path=circle-path] {
 set xrange [-1.4:1.4];
@@ -58,15 +57,15 @@ set samples 100;
 splot (x**2 + y**2)-(1);
 } coordinate[pos=0.12] (P);
 \addlegendentry{$x^2+y^2=1$}
-\addplot+ [Maroon,dashed,line width=0.8pt,mark=none,name path=diagonal-path,domain=-1.2:1.2,samples=80] {x} node[pos=0.72,fill=white,fill opacity=0.68,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,sloped,font=\scriptsize] {$y=x$};
+\addplot+ [Maroon,dashed,line width=0.8pt,mark=none,name path=diagonal-path,domain=-1.2:1.2,samples=80] {x} node[pos=0.72,fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,sloped,font=\scriptsize] {$y=x$};
 \addlegendentry{$y=x$}
 \draw[fill=Dandelion,draw=black!70,line width=0.45pt] (P) circle (0.75mm);
-\node[fill=white,fill opacity=0.68,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=south west,draw=black!70,fill=Dandelion,font=\scriptsize] at ([shift={(6pt,8pt)}]P) {$P=(\funfigcoordx{P}{2},\funfigcoordy{P}{2})$};
+\node[fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=south west,draw=black!70,fill=Dandelion,font=\scriptsize] at ([shift={(6pt,8pt)}]P) {$P=(\funfigcoordx{P}{2},\funfigcoordy{P}{2})$};
 \path[name intersections={of=circle-path and diagonal-path,by={I1,I2}}];
 \draw[fill=OrangeRed,draw=black!70,line width=0.45pt] (I1) circle (0.7mm);
 \draw[fill=OrangeRed,draw=black!70,line width=0.45pt] (I2) circle (0.7mm);
-\node[fill=white,fill opacity=0.68,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=south west,font=\scriptsize] at ([shift={(7pt,-12pt)}]I1) {$I_1=(\funfigcoordx{I1}{3},\funfigcoordy{I1}{3})$};
-\node[fill=white,fill opacity=0.68,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=south west,font=\scriptsize] at ([shift={(-74pt,10pt)}]I2) {$I_2=(\funfigcoordx{I2}{3},\funfigcoordy{I2}{3})$};
+\node[fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=north west,font=\scriptsize] at ([shift={(-26pt,-10pt)}]I1) {$I_1=(\funfigcoordx{I1}{3},\funfigcoordy{I1}{3})$};
+\node[fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=south west,font=\scriptsize] at ([shift={(-74pt,10pt)}]I2) {$I_2=(\funfigcoordx{I2}{3},\funfigcoordy{I2}{3})$};
 \coordinate (funfigSpyOn6) at (axis cs:0.707,0.707);
 \coordinate (funfigSpyIn6) at (axis cs:0.82,-0.82);
 \spy[circle,magnification=3.2,size=1.4cm,connect spies,black!55,line width=0.45pt] on (funfigSpyOn6) in node at (funfigSpyIn6);

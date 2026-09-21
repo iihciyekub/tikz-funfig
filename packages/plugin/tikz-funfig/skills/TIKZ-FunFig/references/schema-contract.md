@@ -93,6 +93,18 @@ The `publication-threshold` recipe adds structured semantics for recurring patte
 - `axes.legend.{position,at,anchor,columns,font,cell_anchor}`
 - annotation `font`, `rotate`, `arrow`, `arrow_anchor`, and `arrow_style`
 - annotation style `fill`, `draw`, `mark_size`, `opacity`
+- `point`/`intersection` annotation `label_style` for an independent label style
+
+For point and intersection labels, `style` controls the marker. When `label_style`
+is omitted, only marker `style.color` carries over to label text; marker fills,
+borders, and opacity do not override the publication label backing. Set
+`label_style` explicitly to customize the label fill, border, text color, or
+opacity. Other annotation types continue to use `style` for their text.
+
+Point callout arrows without `arrow_anchor` are drawn before the label so its
+backing masks the line under the text. An explicit `arrow_anchor` binds the
+connector to that label node anchor. Intersection connectors default to the node
+boundary and also honor an explicit `arrow_anchor`.
 
 An intersection callout should remain bound to `path_a` and `path_b`, rather than being converted into a hard-coded coordinate unless the scientific meaning is explicitly a fixed coordinate.
 
@@ -105,4 +117,3 @@ A compiling migration draft is not automatically a completed migration.
 ## Change rule
 
 When a user asks for a supported change, edit the FigureSpec and regenerate. Only edit generated `.tex` directly when diagnosing the renderer or when handling a legacy figure not yet represented by a recipe.
-

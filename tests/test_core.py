@@ -140,7 +140,7 @@ class FunFigCoreTests(unittest.TestCase):
             self.assertIn("splot (x**2 + y**2)-(1);", tex)
             self.assertIn("coordinate[pos=0.12] (P)", tex)
             self.assertIn("node[pos=0.72,fill=white", tex)
-            self.assertIn("fill opacity=0.68", tex)
+            self.assertIn("fill opacity=0.94", tex)
             self.assertIn("text opacity=1", tex)
             self.assertIn("rounded corners=1pt", tex)
             self.assertIn("sloped,font=\\scriptsize] {$y=x$}", tex)
@@ -179,6 +179,68 @@ class FunFigCoreTests(unittest.TestCase):
         result = validate_spec(spec, path)
         self.assertTrue(result.ok, result.errors)
 
+    def test_callout_marker_and_label_styles_are_independent(self) -> None:
+        spec = load_json(PROJECT_ROOT / "examples/basic-function/figure.funfig.json")
+        spec["series"][0]["name_path"] = "A"
+        spec["data_sources"].append({"id": "line", "type": "function", "expression": "1-x"})
+        spec["series"].append({"id": "line", "source": "line", "name_path": "B"})
+        for kind in ("point", "intersection"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as temp:
+                annotation = {
+                    "type": kind, "label": "callout", "arrow": True,
+                    "style": {"fill": "red", "draw": "blue", "color": "green"},
+                }
+                annotation.update({"at": [0.5, 0.25]} if kind == "point" else {
+                    "path_a": "A", "path_b": "B", "name": "crossing",
+                })
+                spec["annotations"] = [annotation]
+                path = Path(temp) / "figure.funfig.json"
+                write_json_atomic(path, spec)
+                tex_path, _ = render_spec(spec, path)
+                tex = tex_path.read_text()
+                label = next(line for line in tex.splitlines() if line.startswith("\\node[") and "{callout}" in line)
+                self.assertIn("text=green", label)
+                self.assertIn("fill=white", label)
+                self.assertNotIn("fill=red", label)
+                self.assertNotIn("draw=blue", label)
+                self.assertIn("fill=red", tex)
+                annotation["label_style"] = {"fill": "yellow", "color": "black", "fill_opacity": 0.5}
+                annotation["arrow_anchor"] = "east"
+                write_json_atomic(path, spec)
+                tex_path, _ = render_spec(spec, path)
+                tex = tex_path.read_text()
+                label = next(line for line in tex.splitlines() if line.startswith("\\node[") and "{callout}" in line)
+                self.assertIn("fill=yellow", label)
+                self.assertIn("text=black", label)
+                self.assertIn("fill opacity=0.5", label)
+                self.assertNotIn("text=green", label)
+                connector = next(line for line in tex.splitlines() if ".east) --" in line)
+                self.assertLess(tex.index(label), tex.index(connector))
+                self.assertTrue(build_spec(spec, path).is_file())
+
+    def test_default_point_connector_is_behind_its_label(self) -> None:
+        spec = load_json(PROJECT_ROOT / "examples/basic-function/figure.funfig.json")
+        spec["annotations"][0]["arrow"] = True
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "figure.funfig.json"
+            write_json_atomic(path, spec)
+            tex_path, _ = render_spec(spec, path)
+            tex = tex_path.read_text()
+            arrow = next(line for line in tex.splitlines() if line.startswith("\\draw[") and " -- " in line)
+            label = next(line for line in tex.splitlines() if line.startswith("\\node["))
+            self.assertLess(tex.index(arrow), tex.index(label))
+            self.assertIn("draw=gray!65", arrow)
+            self.assertTrue(build_spec(spec, path).is_file())
+
+    def test_label_style_rejects_invalid_or_unsupported_input(self) -> None:
+        spec = load_json(PROJECT_ROOT / "examples/basic-function/figure.funfig.json")
+        for kind, style in (("point", "red"), ("label", {"color": "red"})):
+            with self.subTest(kind=kind):
+                spec["annotations"] = [{"type": kind, "at": [0, 0], "label": "x", "label_style": style}]
+                result = validate_spec(spec)
+                self.assertFalse(result.ok)
+                self.assertTrue(any("label_style" in message for message in result.errors))
+
     def test_publication_offset_is_default_for_ordinary_2d_recipes(self) -> None:
         source_path = PROJECT_ROOT / "examples/basic-function/figure.funfig.json"
         source = load_json(source_path)
@@ -203,7 +265,7 @@ class FunFigCoreTests(unittest.TestCase):
             tex_path, _ = render_spec(source, spec_path)
             rendered = tex_path.read_text(encoding="utf-8")
             self.assertIn("fill=white", rendered)
-            self.assertIn("fill opacity=0.68", rendered)
+            self.assertIn("fill opacity=0.94", rendered)
             self.assertIn("text opacity=1", rendered)
             self.assertIn("rounded corners=1pt", rendered)
 
@@ -675,4 +737,3 @@ class FunFigCoreTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

@@ -192,6 +192,13 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
         if not isinstance(annotation, dict):
             continue
         annotation_type = annotation.get("type")
+        if "label_style" in annotation:
+            if not isinstance(annotation["label_style"], dict):
+                errors.append(f"annotations[{index}].label_style must be an object")
+            if annotation_type not in {"point", "intersection"}:
+                errors.append(
+                    f"annotations[{index}].label_style is only supported for point/intersection labels"
+                )
         if annotation_type == "intersection":
             for field in ("path_a", "path_b"):
                 path_name = annotation.get(field)
@@ -273,4 +280,3 @@ def load_and_validate(path: str | Path) -> tuple[dict[str, Any], ValidationResul
     spec_path = Path(path).resolve()
     spec = load_json(spec_path)
     return spec, validate_spec(spec, spec_path)
-

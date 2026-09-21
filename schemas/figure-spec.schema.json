@@ -310,8 +310,15 @@
         "arrow": {"type": "boolean"},
         "arrow_anchor": {"type": "string"},
         "arrow_style": {"type": "array", "items": {"type": "string"}},
+        "label_style": {"$ref": "#/$defs/style", "description": "Independent point/intersection label styling; marker style remains separate."},
         "style": {"$ref": "#/$defs/style"}
-      }
+      },
+      "allOf": [
+        {
+          "if": {"required": ["label_style"]},
+          "then": {"properties": {"type": {"enum": ["point", "intersection"]}}}
+        }
+      ]
     },
     "panel": {
       "type": "object",
@@ -379,4 +386,3 @@
     }
   }
 }
-

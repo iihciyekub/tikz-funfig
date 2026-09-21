@@ -25,7 +25,7 @@ PUBLICATION_OFFSET_RECIPES = {
 DEFAULT_PUBLICATION_AXIS_SHIFT = "6.5pt"
 DEFAULT_PUBLICATION_ANNOTATION_OPTIONS = [
     "fill=white",
-    "fill opacity=0.68",
+    "fill opacity=0.94",
     "text opacity=1",
     "rounded corners=1pt",
     "inner xsep=1.5pt",
@@ -542,24 +542,48 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
                 anchor = annotation.get("anchor", "south west")
                 shift = annotation.get("shift", "(2pt,2pt)")
                 node_name = f"funfigCallout{index}"
+                pos_name = f"funfigCalloutPos{index}"
                 node_options = _annotation_node_options(publication_annotations)
                 node_options.append(f"anchor={anchor}")
-                node_options.extend(_node_style_options(annotation.get("style")))
+                label_style = annotation.get("label_style")
+                if label_style is not None:
+                    node_options.extend(_node_style_options(label_style))
+                else:
+                    marker_color = (annotation.get("style") or {}).get("color")
+                    if marker_color:
+                        node_options.append(f"text={marker_color}")
                 if annotation.get("font"):
                     node_options.append(f"font={annotation['font']}")
                 if annotation.get("rotate") is not None:
                     node_options.append(f"rotate={_fmt(annotation['rotate'])}")
                 lines.append(
-                    f"\\node[{','.join(node_options)}] ({node_name}) at "
-                    f"([shift={{{shift}}}]axis cs:{_fmt(x)},{_fmt(y)}) {{{annotation['label']}}};"
+                    f"\\coordinate ({pos_name}) at "
+                    f"([shift={{{shift}}}]axis cs:{_fmt(x)},{_fmt(y)});"
                 )
+                label_node = (
+                    f"\\node[{','.join(node_options)}] ({node_name}) at "
+                    f"({pos_name}) {{{annotation['label']}}};"
+                )
+                arrow_anchor = annotation.get("arrow_anchor")
+                if annotation.get("arrow") and arrow_anchor:
+                    # An explicit anchor needs the real label node to exist.
+                    lines.append(label_node)
                 if annotation.get("arrow"):
-                    arrow_options = annotation.get("arrow_style") or ["-{Stealth[length=4pt,width=3pt]}", "shorten >=1pt"]
-                    arrow_anchor = annotation.get("arrow_anchor", "center")
+                    arrow_options = annotation.get("arrow_style") or [
+                        "-{Stealth[length=4pt,width=3pt]}",
+                        "draw=gray!65",
+                        "line width=0.5pt",
+                        "shorten >=2pt",
+                    ]
+                    arrow_start = (
+                        f"({node_name}.{arrow_anchor})" if arrow_anchor else f"({pos_name})"
+                    )
                     lines.append(
-                        f"\\draw[{','.join(arrow_options)}] ({node_name}.{arrow_anchor}) -- "
+                        f"\\draw[{','.join(arrow_options)}] {arrow_start} -- "
                         f"(axis cs:{_fmt(x)},{_fmt(y)});"
                     )
+                if not (annotation.get("arrow") and arrow_anchor):
+                    lines.append(label_node)
         elif kind == "label":
             x, y = annotation["at"]
             anchor = annotation.get("anchor", "center")
@@ -625,7 +649,13 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
                 )
                 node_options = _annotation_node_options(publication_annotations)
                 node_options.append(f"anchor={anchor}")
-                node_options.extend(_node_style_options(annotation.get("style")))
+                label_style = annotation.get("label_style")
+                if label_style is not None:
+                    node_options.extend(_node_style_options(label_style))
+                else:
+                    marker_color = (annotation.get("style") or {}).get("color")
+                    if marker_color:
+                        node_options.append(f"text={marker_color}")
                 if annotation.get("font"):
                     node_options.append(f"font={annotation['font']}")
                 lines.append(
@@ -634,9 +664,14 @@ def _render_annotations(spec: dict[str, Any]) -> list[str]:
                 )
                 if annotation.get("arrow"):
                     arrow_options = annotation.get("arrow_style") or ["-{Stealth[length=4pt,width=3pt]}", "shorten >=1pt"]
-                    arrow_anchor = annotation.get("arrow_anchor", "center")
+                    arrow_anchor = annotation.get("arrow_anchor")
+                    node_ref = (
+                        f"({node_name}.{arrow_anchor})"
+                        if arrow_anchor
+                        else f"({node_name})"
+                    )
                     lines.append(
-                        f"\\draw[{','.join(arrow_options)}] ({node_name}.{arrow_anchor}) -- ({name});"
+                        f"\\draw[{','.join(arrow_options)}] {node_ref} -- ({name});"
                     )
         elif kind == "curve_probe":
             name = annotation.get("name", f"funfigProbe{index}")
@@ -956,4 +991,3 @@ def render_spec(spec: dict[str, Any], spec_path: Path) -> tuple[Path, dict[str, 
     }
     write_manifest(figure_dir, manifest)
     return tex_path, manifest
-

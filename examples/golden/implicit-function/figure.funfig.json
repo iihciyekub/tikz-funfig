@@ -10,7 +10,7 @@
     "x": {"label": "$x$", "min": -1.4, "max": 1.4},
     "y": {"label": "$y$", "min": -1.4, "max": 1.4},
     "grid": "major",
-    "legend": {"position": "north east"}
+    "legend": {"at": "(0.5,1.05)", "anchor": "south", "columns": 2}
   },
   "data_sources": [
     {
@@ -80,7 +80,8 @@
       "show": "xy",
       "precision": 3,
       "template": "$I_1=({x},{y})$",
-      "shift": "(7pt,-12pt)",
+      "anchor": "north west",
+      "shift": "(-26pt,-10pt)",
       "font": "\\scriptsize"
     },
     {
