@@ -26,10 +26,12 @@
           "Write"
         ],
         "defaultPrompt": [
-          "Create a publication-quality scientific figure from my description.",
-          "Convert this existing TikZ or PGFPlots figure into a stable FigureSpec.",
-          "Plot this implicit equation with managed gnuplot, multiple named intersections, and dynamic coordinate labels.",
-          "Migrate this legacy iiplot/PGFPlots source into promoted TIKZ-FunFig methods."
+          "Create a scientific plot.",
+          "Build a flowchart.",
+          "Design a research framework.",
+          "Create a relation diagram.",
+          "Build a scientific schematic.",
+          "Convert existing TikZ or PGFPlots."
         ],
         "brandColor": "#000000",
         "composerIcon": "./assets/icon.png",
