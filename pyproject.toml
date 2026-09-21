@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tikz-funfig"
-version = "0.8.4"
+version = "0.8.5"
 description = "Schema-driven reproducible TikZ/PGFPlots figure generation"
 requires-python = ">=3.10"
 dependencies = []
@@ -17,4 +17,3 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-

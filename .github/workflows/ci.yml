@@ -38,7 +38,7 @@ jobs:
       - name: Validate shell scripts
         run: |
           bash -n scripts/*.sh
-          bash -n scripts/tff
+          python3 -m py_compile scripts/tff
 
       - name: Verify portable Plugin is synchronized
         run: |
@@ -50,4 +50,3 @@ jobs:
 
       - name: Repository diff hygiene
         run: git diff --check
-

@@ -4,6 +4,25 @@ All notable changes to TIKZ-FunFig are recorded here. The project follows semant
 
 ## [Unreleased]
 
+## [0.8.5] - 2026-09-22
+
+### Changed
+
+- Improved the standalone `tff` installer/updater with an `upgrade` alias,
+  CLI version reporting, actual installed-version lookup, and optional dependency checks.
+- Marketplace refresh failures now stop without uninstalling the existing Plugin;
+  configured Git refs are preserved during ordinary updates.
+- Added helper-only setup and bundled the helper so successful Plugin updates can
+  refresh the installed CLI. Repository update scripts use the current helper.
+- Documented quick installation, update behavior, and the proposed multi-Skill
+  architecture. The multi-Skill expansion remains a specification, not a shipped capability.
+
+### Fixed
+
+- Improved publication callout readability with a 0.94-opacity white backing,
+  separate point/intersection label styling, and connectors that honor explicit
+  label anchors. Updated and visually checked publication golden cases.
+
 ## [0.8.4] - 2026-09-17
 
 ### Changed
@@ -54,4 +73,3 @@ All notable changes to TIKZ-FunFig are recorded here. The project follows semant
 
 - `publication-offset` as the default two-dimensional publication axis preset.
 - Project output policy for predictable `figures/<figure-id>/` placement.
-

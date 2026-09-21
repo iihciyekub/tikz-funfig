@@ -2,8 +2,10 @@
 
 TIKZ-FunFig is a schema-driven figure generation system for reproducible TikZ and PGFPlots figures.
 
-Version 0.8.4 refines the default publication figure language: inward ticks, aligned endpoint
-ticks, slightly roomier starter canvases, and subtle translucent backing for annotation text.
+Version 0.8.5 improves the `tff` Codex Plugin installer/updater with safer refreshes,
+installed-version reporting, and a bundled CLI that can update with the Plugin.
+The publication figure language includes inward ticks, aligned endpoint ticks,
+slightly roomier starter canvases, and translucent backing for annotation text.
 The promoted method layer and legacy migration path remain available, including implicit
 gnuplot contours, curve-relative labels/probes, named intersections, coordinate templates,
 and structured spy/detail annotations.
@@ -114,15 +116,29 @@ codex plugin marketplace add git@github.com:iihciyekub/tikz-funfig.git --ref mai
   && codex plugin add tikz-funfig@tikz-funfig
 ```
 
-When this repository is available locally, `scripts/install_codex.sh` also
-installs the small `tff` helper into `~/.local/bin`. After that the normal
-update workflow is simply:
+With this repository available locally, one command installs both the `tff` CLI
+and the Git-backed Codex Plugin:
 
 ```bash
-tff update
+./scripts/install_codex.sh
 ```
 
-Useful companion commands are `tff status` and `tff doctor`. Repository
+The CLI lives in `~/.local/bin` (Python 3 required). From any directory:
+
+```bash
+tff install
+tff update
+tff status
+```
+
+`tff upgrade` is an alias for `tff update`; `tff --version` shows the CLI version,
+while `tff status` shows the installed Plugin version. Updates preserve the
+configured Git ref and keep the existing installation if refreshing fails.
+Use `./scripts/install_codex.sh --cli-only` to install just the CLI. The installer
+fetches the configured Git source, not unpublished working-tree changes.
+See [installation details](docs/INSTALL_UPDATE.md) for a fresh-machine command.
+
+Useful companion commands include `tff doctor`. Repository
 maintainers can remove reproducible local build/noise files with
 `scripts/clean_repo.sh`.
 
@@ -150,6 +166,11 @@ contributors and coding agents do not depend on chat history:
 - `docs/INSTALL_UPDATE.md` — Codex install, update, status, and rollback;
 - `docs/PLUGIN_DISTRIBUTION.md` — source → portable Plugin → Codex cache contract;
 - `CHANGELOG.md` — release history and pending changes.
+
+The proposed official-manual knowledge base and multi-Skill Codex Plugin roadmap
+is specified in [TFF-SPEC-001](docs/specs/multi-skill-knowledge-base-spec.md).
+It describes planned capabilities and acceptance criteria, not features already
+available in the current release.
 
 GitHub CI is defined in `.github/workflows/ci.yml` and runs the portable-bundle
 consistency check plus the full TeX/gnuplot regression suite on pushes to
@@ -180,4 +201,3 @@ Historical source material is intentionally isolated from the runtime under `ref
 They are development reference material, not Plugin runtime dependencies. Rendered binaries, font copies, notebook containers/checkpoints, and build state are intentionally excluded. Historical notebook computation cells are preserved as plain `generate_data_legacy.py` sources where relevant.
 
 See `references/README.md` for the promotion/retention policy. New stable behavior should be implemented in `schemas/`, `recipes/`, `src/`, and `packages/skill/`, then validated with golden cases and tests.
-

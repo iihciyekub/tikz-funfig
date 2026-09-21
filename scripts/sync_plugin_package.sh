@@ -4,7 +4,7 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"
 plugin_root="$repo_root/packages/plugin/tikz-funfig"
 
-mkdir -p "$plugin_root/assets" "$plugin_root/skills" "$plugin_root/runtime/src"
+mkdir -p "$plugin_root/assets" "$plugin_root/skills" "$plugin_root/runtime/src" "$plugin_root/scripts"
 
 python3 - "$repo_root" "$plugin_root" <<'PY'
 from pathlib import Path
@@ -38,5 +38,7 @@ PY
 
 cp "$repo_root/IconKitchen/macos/AppIcon128.png" "$plugin_root/assets/icon.png"
 cp "$repo_root/IconKitchen/macos/AppIcon512.png" "$plugin_root/assets/logo.png"
+cp "$repo_root/scripts/tff" "$plugin_root/scripts/tff"
+chmod +x "$plugin_root/scripts/tff"
 
 echo "ok: synchronized portable plugin -> $plugin_root"

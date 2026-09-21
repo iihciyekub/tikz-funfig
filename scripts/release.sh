@@ -44,6 +44,11 @@ text = pyproject.read_text(encoding="utf-8")
 text = re.sub(r'(?m)^version\s*=\s*"[^"]+"$', f'version = "{version}"', text, count=1)
 pyproject.write_text(text, encoding="utf-8")
 
+helper = Path("scripts/tff")
+text = helper.read_text(encoding="utf-8")
+text = re.sub(r'(?m)^VERSION = "[^"]+"$', f'VERSION = "{version}"', text, count=1)
+helper.write_text(text, encoding="utf-8")
+
 readme = Path("README.md")
 text = readme.read_text(encoding="utf-8")
 text = re.sub(r'Version\s+\d+\.\d+(?:\.\d+)?', f'Version {version}', text, count=1)
@@ -54,8 +59,10 @@ PY
 ./scripts/check.sh
 git diff --check
 
-git add README.md CHANGELOG.md pyproject.toml src/funfig/__init__.py packages/plugin/tikz-funfig
-git commit -m "release: v$version"
+git add README.md CHANGELOG.md pyproject.toml src/funfig/__init__.py scripts/tff packages/plugin/tikz-funfig
+# Version files may already have been prepared and committed during development.
+# Still create the release marker commit before the immutable annotated tag.
+git commit --allow-empty -m "release: v$version"
 git tag -a "v$version" -m "TIKZ-FunFig v$version"
 git push origin main
 git push origin "v$version"

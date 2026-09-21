@@ -2,9 +2,6 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"
-
-if command -v tff >/dev/null 2>&1; then
-  exec tff update
-fi
-
-exec "$repo_root/scripts/tff" update
+# Use the current checkout's helper, not an older tff earlier on PATH.
+"$repo_root/scripts/install_codex.sh" --cli-only
+exec "${TFF_BIN_DIR:-$HOME/.local/bin}/tff" update "$@"
