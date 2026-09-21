@@ -13,7 +13,7 @@ and structured spy/detail annotations.
 The repository has two roles:
 
 1. **Source project** — schemas, recipes, renderers, tests, documentation, and packaging live here.
-2. **Knowledge base** — the existing TikZ/PGFPlots notes and publication examples remain available as local references and are gradually promoted into stable recipes.
+2. **Knowledge base** — compiled task cards and a section-level PGF/TikZ 3.1.11a corpus are directly searchable by the Plugin; legacy notes and the original manual remain provenance/development references.
 
 The repository is the source of truth. Workspace/system Skills and the portable Codex/OpenAI Plugin are installation targets generated or synchronized from this project; they should not become independent forks.
 
@@ -45,9 +45,14 @@ No third-party Python dependency is required for the v0.1 core.
 
 ```bash
 PYTHONPATH=src python3 -m funfig recipes
+PYTHONPATH=src python3 -m funfig capabilities
+PYTHONPATH=src python3 -m funfig kb search "relative positioning"
+PYTHONPATH=src python3 -m funfig themes
+PYTHONPATH=src python3 -m funfig profiles
 PYTHONPATH=src python3 -m funfig validate examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig render examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig build examples/basic-function/figure.funfig.json
+PYTHONPATH=src python3 -m funfig inspect examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig clean examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig migrate-legacy path/to/legacy.tex path/to/new-figure
 PYTHONPATH=src python3 -m funfig init --project-root path/to/paper --id fig1 --recipe publication-threshold
@@ -75,7 +80,10 @@ The main concepts are intentionally separate:
 
 - **FigureSpec Schema** — what the requested figure contains.
 - **Figure Recipe** — how a class of figures is interpreted and which renderer/tools it uses.
+- **Knowledge layer** — compiled task cards plus the searchable official-manual section corpus.
 - **Renderer** — deterministic conversion from FigureSpec to TikZ/PGFPlots source.
+- **Theme** — appearance tokens that never change graph/data semantics.
+- **Publication Profile** — target physical size and readability/QA constraints.
 - **Data Binding** — mapping from named data sources to series/panels/annotations.
 - **Artifact Contract** — stable file names and output layout.
 - **Manifest** — record of recipe, dependencies, source/output files, and build status.
@@ -96,10 +104,12 @@ the other three remain pure PGFPlots/TeX.
 ## Portable Plugin
 
 `packages/plugin/tikz-funfig/` is a portable Agent Plugins package containing
-the TIKZ-FunFig Skill, bundled runtime, Schema/Recipe registry, and visual
-assets. `IconKitchen/macos/AppIcon128.png` and `AppIcon512.png` are the canonical
+six Skills (general, plots, flowcharts, frameworks, relations, schematics), one
+shared searchable knowledge tree, the bundled runtime, Schema/Recipe registry,
+themes, Publication Profiles, and visual assets. The original `pgfmanual.pdf`
+is not a runtime dependency. `IconKitchen/macos/AppIcon128.png` and `AppIcon512.png` are the canonical
 composer icon/logo sources. Run `scripts/sync_plugin_package.sh` after changing
-the Skill, runtime, schemas, recipes, or icons.
+Skills, runtime, schemas, recipes, knowledge, themes/profiles, or icons.
 
 The repo-local Codex marketplace manifest is `.agents/plugins/marketplace.json`.
 
@@ -167,10 +177,10 @@ contributors and coding agents do not depend on chat history:
 - `docs/PLUGIN_DISTRIBUTION.md` — source → portable Plugin → Codex cache contract;
 - `CHANGELOG.md` — release history and pending changes.
 
-The proposed official-manual knowledge base and multi-Skill Codex Plugin roadmap
-is specified in [TFF-SPEC-001](docs/specs/multi-skill-knowledge-base-spec.md).
-It describes planned capabilities and acceptance criteria, not features already
-available in the current release.
+The confirmed official-manual knowledge base and multi-Skill implementation
+contract is specified in [TFF-SPEC-001](docs/specs/multi-skill-knowledge-base-spec.md).
+The Spec distinguishes currently implemented V1 work from later tree/state/ER/
+advanced-layout phases and is the acceptance baseline for this development cycle.
 
 GitHub CI is defined in `.github/workflows/ci.yml` and runs the portable-bundle
 consistency check plus the full TeX/gnuplot regression suite on pushes to
@@ -200,4 +210,4 @@ Historical source material is intentionally isolated from the runtime under `ref
 
 They are development reference material, not Plugin runtime dependencies. Rendered binaries, font copies, notebook containers/checkpoints, and build state are intentionally excluded. Historical notebook computation cells are preserved as plain `generate_data_legacy.py` sources where relevant.
 
-See `references/README.md` for the promotion/retention policy. New stable behavior should be implemented in `schemas/`, `recipes/`, `src/`, and `packages/skill/`, then validated with golden cases and tests.
+See `references/README.md` for the promotion/retention policy. New stable behavior should be implemented coherently in `knowledge/`, `schemas/`, `recipes/`, `themes/`/`profiles/` when relevant, `src/`, and canonical Skills, then validated with golden cases and tests.

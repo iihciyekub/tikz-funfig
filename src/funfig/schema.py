@@ -7,9 +7,11 @@ from typing import Any
 
 from .io import load_json
 from .recipes import load_recipe
+from .theme import load_profile, load_theme
 
 
 ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+LENGTH_RE = re.compile(r"^\s*\d+(?:\.\d+)?(?:pt|mm|cm|in|em|ex)\s*$")
 
 
 @dataclass(frozen=True)
@@ -42,6 +44,31 @@ def _unique_ids(items: Any, name: str, errors: list[str]) -> set[str]:
     return result
 
 
+def _has_cycle(graph: dict[str, set[str]]) -> bool:
+    visiting: set[str] = set()
+    visited: set[str] = set()
+
+    def visit(node: str) -> bool:
+        if node in visiting:
+            return True
+        if node in visited:
+            return False
+        visiting.add(node)
+        for target in graph.get(node, set()):
+            if visit(target):
+                return True
+        visiting.remove(node)
+        visited.add(node)
+        return False
+
+    return any(visit(node) for node in graph)
+
+
+def _validate_length(value: Any, path: str, errors: list[str]) -> None:
+    if value is not None and (not isinstance(value, str) or not LENGTH_RE.match(value)):
+        errors.append(f"{path} must be a positive TeX length such as 12mm or 8pt")
+
+
 def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> ValidationResult:
     errors: list[str] = []
 
@@ -49,8 +76,9 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
         if field not in spec:
             errors.append(f"missing required field: {field}")
 
-    if spec.get("schema_version") != "1.0":
-        errors.append("schema_version must be '1.0'")
+    schema_version = spec.get("schema_version")
+    if schema_version not in {"1.0", "1.1"}:
+        errors.append("schema_version must be '1.0' or '1.1'")
 
     figure_id = spec.get("id")
     if not isinstance(figure_id, str) or not ID_RE.match(figure_id):
@@ -59,6 +87,26 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
     kind = spec.get("kind")
     if kind not in {"pgfplots", "tikz"}:
         errors.append("kind must be 'pgfplots' or 'tikz'")
+
+    if schema_version == "1.0" and ("theme" in spec or "profile" in spec):
+        errors.append("theme/profile require schema_version '1.1'")
+    if schema_version == "1.1":
+        theme = spec.get("theme") or {"id": "journal-muted"}
+        profile = spec.get("profile") or {"id": "journal-single-column"}
+        if not isinstance(theme, dict) or not isinstance(theme.get("id"), str):
+            errors.append("theme.id is required for a structured theme")
+        else:
+            try:
+                load_theme(theme["id"])
+            except ValueError as exc:
+                errors.append(str(exc))
+        if not isinstance(profile, dict) or not isinstance(profile.get("id"), str):
+            errors.append("profile.id is required for a structured publication profile")
+        else:
+            try:
+                load_profile(profile["id"])
+            except ValueError as exc:
+                errors.append(str(exc))
 
     recipe: dict[str, Any] | None = None
     recipe_id = spec.get("recipe")
@@ -74,6 +122,12 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
         if recipe.get("kind") != kind:
             errors.append(
                 f"recipe {recipe_id!r} requires kind={recipe.get('kind')!r}, got {kind!r}"
+            )
+        allowed_schema_versions = recipe.get("schema_versions")
+        if isinstance(allowed_schema_versions, list) and schema_version not in allowed_schema_versions:
+            errors.append(
+                f"recipe {recipe_id!r} requires schema_version in {allowed_schema_versions!r}, "
+                f"got {schema_version!r}"
             )
         for field in recipe.get("required", []):
             if field not in spec:
@@ -255,6 +309,109 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
             errors.append("diagram must be an object")
         else:
             node_ids = _unique_ids(diagram.get("nodes", []), "diagram.nodes", errors)
+            group_ids = _unique_ids(diagram.get("groups", []), "diagram.groups", errors)
+            if node_ids & group_ids:
+                errors.append(
+                    "diagram node/group IDs share one namespace; duplicates: "
+                    + ", ".join(sorted(node_ids & group_ids))
+                )
+            if schema_version == "1.1":
+                _unique_ids(diagram.get("edges", []), "diagram.edges", errors)
+                layout = diagram.get("layout") or {"type": "relative"}
+                if not isinstance(layout, dict):
+                    errors.append("diagram.layout must be an object")
+                    layout = {"type": "relative"}
+                layout_type = layout.get("type")
+                if layout_type not in {"manual", "relative", "grid"}:
+                    errors.append("diagram.layout.type must be manual, relative, or grid")
+                _validate_length(layout.get("row_gap"), "diagram.layout.row_gap", errors)
+                _validate_length(layout.get("column_gap"), "diagram.layout.column_gap", errors)
+
+                relative_graph: dict[str, set[str]] = {node_id: set() for node_id in node_ids}
+                absolute_roots = 0
+                grid_cells: set[tuple[int, int]] = set()
+                for index, node in enumerate(diagram.get("nodes", [])):
+                    if not isinstance(node, dict):
+                        continue
+                    allowed_roles = recipe.get("roles") if recipe is not None else None
+                    if isinstance(allowed_roles, list):
+                        role = node.get("role", "concept")
+                        if role not in allowed_roles:
+                            errors.append(
+                                f"diagram.nodes[{index}].role {role!r} is not allowed by "
+                                f"recipe {recipe_id!r}; allowed roles: {allowed_roles!r}"
+                            )
+                    for legacy in ("at", "right_of", "below_of", "style"):
+                        if legacy in node:
+                            errors.append(
+                                f"diagram.nodes[{index}].{legacy} is legacy 1.0 syntax; use structured 1.1 fields"
+                            )
+                    position = node.get("position")
+                    if not isinstance(position, dict):
+                        errors.append(f"diagram.nodes[{index}].position is required in schema 1.1")
+                        continue
+                    position_type = position.get("type")
+                    if position_type == "absolute":
+                        absolute_roots += 1
+                        if layout_type == "grid":
+                            errors.append(f"diagram.nodes[{index}] grid layout requires grid position")
+                    elif position_type == "relative":
+                        target = position.get("of")
+                        if target not in node_ids:
+                            errors.append(
+                                f"diagram.nodes[{index}].position.of references unknown node: {target!r}"
+                            )
+                        else:
+                            relative_graph[node["id"]].add(target)
+                        _validate_length(position.get("gap"), f"diagram.nodes[{index}].position.gap", errors)
+                        if layout_type == "manual":
+                            errors.append(f"diagram.nodes[{index}] manual layout requires absolute position")
+                        if layout_type == "grid":
+                            errors.append(f"diagram.nodes[{index}] grid layout requires grid position")
+                    elif position_type == "grid":
+                        row, column = position.get("row"), position.get("column")
+                        if not isinstance(row, int) or row < 0 or not isinstance(column, int) or column < 0:
+                            errors.append(f"diagram.nodes[{index}] grid row/column must be non-negative integers")
+                        elif (row, column) in grid_cells:
+                            errors.append(f"diagram.nodes[{index}] duplicates grid cell ({row},{column})")
+                        else:
+                            grid_cells.add((row, column))
+                        if layout_type != "grid":
+                            errors.append(f"diagram.nodes[{index}] grid position requires diagram.layout.type=grid")
+                    else:
+                        errors.append(f"diagram.nodes[{index}].position.type is invalid: {position_type!r}")
+                    for field in ("text_width", "min_width", "min_height"):
+                        _validate_length(node.get(field), f"diagram.nodes[{index}].{field}", errors)
+
+                if layout_type == "relative" and node_ids and absolute_roots == 0:
+                    errors.append("relative layout requires at least one absolute root node")
+                if _has_cycle(relative_graph):
+                    errors.append("diagram relative-position dependencies must not contain a cycle")
+
+                group_graph: dict[str, set[str]] = {group_id: set() for group_id in group_ids}
+                parent_count: dict[str, int] = {}
+                valid_members = node_ids | group_ids
+                for index, group in enumerate(diagram.get("groups", [])):
+                    if not isinstance(group, dict):
+                        continue
+                    _validate_length(group.get("padding"), f"diagram.groups[{index}].padding", errors)
+                    for member in group.get("members", []):
+                        if member not in valid_members:
+                            errors.append(
+                                f"diagram.groups[{index}].members references unknown node/group: {member!r}"
+                            )
+                            continue
+                        if member == group.get("id"):
+                            errors.append(f"diagram.groups[{index}] cannot contain itself")
+                        parent_count[member] = parent_count.get(member, 0) + 1
+                        if member in group_ids:
+                            group_graph[group["id"]].add(member)
+                for member, count in parent_count.items():
+                    if count > 1:
+                        errors.append(f"diagram member {member!r} has more than one direct parent group")
+                if _has_cycle(group_graph):
+                    errors.append("diagram group containment must not contain a cycle")
+
             for index, edge in enumerate(diagram.get("edges", [])):
                 if not isinstance(edge, dict):
                     errors.append(f"diagram.edges[{index}] must be an object")
@@ -264,6 +421,24 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                         errors.append(
                             f"diagram.edges[{index}].{field} references unknown node: {edge.get(field)!r}"
                         )
+                if schema_version == "1.1":
+                    route = edge.get("route", "straight")
+                    routing = edge.get("routing") or {}
+                    if route == "loop" and edge.get("from") != edge.get("to"):
+                        errors.append(f"diagram.edges[{index}] route=loop requires from == to")
+                    if edge.get("from") == edge.get("to") and route != "loop":
+                        errors.append(f"diagram.edges[{index}] self-edge requires route=loop")
+                    if not isinstance(routing, dict):
+                        errors.append(f"diagram.edges[{index}].routing must be an object")
+                    else:
+                        if route == "orthogonal" and any(key in routing for key in ("bend", "side")):
+                            errors.append(f"diagram.edges[{index}] orthogonal routing accepts only order")
+                        if route == "curve" and any(key in routing for key in ("order", "side")):
+                            errors.append(f"diagram.edges[{index}] curve routing accepts only bend")
+                        if route == "loop" and any(key in routing for key in ("order", "bend")):
+                            errors.append(f"diagram.edges[{index}] loop routing accepts only side")
+                        if route == "straight" and routing:
+                            errors.append(f"diagram.edges[{index}] straight route does not accept routing options")
 
     outputs = spec.get("outputs", {})
     if outputs is not None and not isinstance(outputs, dict):

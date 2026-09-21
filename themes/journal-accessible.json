@@ -1,0 +1,5 @@
+{
+  "id":"journal-accessible","version":"1.0","description":"Accessible academic theme with stronger redundant cues",
+  "tokens":{"node_fill":"white","node_draw":"MidnightBlue","text_color":"black","edge_color":"MidnightBlue","group_fill":"SkyBlue!8","group_draw":"MidnightBlue!55","line_width":"0.65pt","group_line_width":"0.5pt","rounded_corners":"2pt"},
+  "roles":{"decision":{"fill":"Orange!14"},"terminal":{"fill":"ForestGreen!10"},"data":{"fill":"SkyBlue!12"},"concept":{"fill":"white"}}
+}

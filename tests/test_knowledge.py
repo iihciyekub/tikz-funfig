@@ -1,0 +1,117 @@
+from __future__ import annotations
+
+import json
+import shutil
+import subprocess
+import tempfile
+import unittest
+from pathlib import Path
+
+from funfig.knowledge import knowledge_root, search, status
+from funfig.paths import PROJECT_ROOT
+
+
+class KnowledgeTests(unittest.TestCase):
+    def test_knowledge_status_has_compiled_cards_and_manual_corpus(self) -> None:
+        payload = status()
+        self.assertEqual(Path(payload["root"]), knowledge_root())
+        self.assertEqual(payload["cards"], 24)
+        self.assertGreaterEqual(payload["manual_chunks"], 800)
+        self.assertEqual(payload["verification"]["compiled"], 24)
+        self.assertEqual(payload["verification"]["draft"], 0)
+
+    def test_alias_search_prefers_verified_card_then_official_source(self) -> None:
+        hits = search("相对定位", limit=6)
+        self.assertGreaterEqual(len(hits), 2)
+        self.assertEqual(hits[0].id, "relative-positioning")
+        self.assertEqual(hits[0].kind, "card")
+        self.assertEqual(hits[0].status, "compiled")
+        self.assertTrue(any(hit.kind == "manual" and "243" in hit.pages for hit in hits))
+
+    def test_exact_library_search_finds_official_fit_section(self) -> None:
+        hits = search("fit group", limit=8)
+        self.assertEqual(hits[0].id, "fit-groups")
+        self.assertTrue(
+            any(hit.kind == "manual" and hit.pages == "685-687" for hit in hits),
+            [hit.__dict__ for hit in hits],
+        )
+
+    def test_manual_source_manifest_matches_generated_corpus(self) -> None:
+        source = json.loads(
+            (
+                PROJECT_ROOT
+                / "references/manuals/pgfmanual-3.1.11a/source.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(source["version"], "3.1.11a")
+        self.assertEqual(source["page_count"], 1323)
+        corpus = PROJECT_ROOT / "knowledge/manual-index/pgfmanual-3.1.11a.jsonl"
+        lines = [line for line in corpus.read_text(encoding="utf-8").splitlines() if line.strip()]
+        self.assertGreaterEqual(len(lines), 800)
+        first = json.loads(lines[0])
+        last = json.loads(lines[-1])
+        self.assertEqual(first["source_id"], source["source_id"])
+        self.assertEqual(first["page_start"], 1)
+        self.assertEqual(last["page_end"], 1323)
+
+    @unittest.skipUnless(
+        shutil.which("pdftotext") and shutil.which("pdfinfo"),
+        "Poppler tools unavailable",
+    )
+    def test_manual_reference_verify_command(self) -> None:
+        result = subprocess.run(
+            ["python3", "scripts/build_manual_reference.py", "verify"],
+            cwd=PROJECT_ROOT,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("pages=1323", result.stdout)
+
+    @unittest.skipUnless(
+        shutil.which("latexmk") and shutil.which("pdflatex"),
+        "TeX toolchain unavailable",
+    )
+    def test_portable_plugin_runs_without_source_checkout(self) -> None:
+        plugin = PROJECT_ROOT / "packages/plugin/tikz-funfig"
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            portable = root / "tikz-funfig"
+            shutil.copytree(plugin, portable)
+            wrapper = portable / "skills/funfig-flowcharts/scripts/funfig.sh"
+            search_result = subprocess.run(
+                ["bash", str(wrapper), "kb", "search", "fit group", "--limit", "2"],
+                cwd=root,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+            self.assertEqual(search_result.returncode, 0, search_result.stdout)
+            self.assertIn("fit-groups", search_result.stdout)
+            figure = root / "figure"
+            init = subprocess.run(
+                ["bash", str(wrapper), "init", str(figure), "--recipe", "flowchart", "--id", "portable"],
+                cwd=root,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+            self.assertEqual(init.returncode, 0, init.stdout)
+            build = subprocess.run(
+                ["bash", str(wrapper), "build", str(figure / "figure.funfig.json")],
+                cwd=root,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+            self.assertEqual(build.returncode, 0, build.stdout)
+            self.assertTrue((figure / "figure.pdf").is_file())
+
+
+if __name__ == "__main__":
+    unittest.main()

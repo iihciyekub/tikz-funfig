@@ -1,0 +1,11 @@
+\documentclass[border=2pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{fit,backgrounds,positioning}
+\begin{document}
+\begin{tikzpicture}
+  \node[draw] (a) {A}; \node[draw,right=10mm of a] (b) {B};
+  \begin{scope}[on background layer]
+    \node[fit=(a)(b),fill=gray!10,draw,inner sep=5pt,label=above:Group] {};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

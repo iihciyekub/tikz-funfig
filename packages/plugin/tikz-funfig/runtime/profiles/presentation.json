@@ -1,0 +1,4 @@
+{
+  "id":"presentation","version":"1.0","description":"Presentation-sized figure",
+  "target_width_mm":240,"minimum_text_pt":11.0,"font":"\\normalsize","node_min_height":"10mm","node_inner_xsep":"9pt","node_inner_ysep":"6pt","default_row_gap":"20mm","default_column_gap":"30mm","qa":{"max_label_lines":5,"require_visual_review":true}
+}

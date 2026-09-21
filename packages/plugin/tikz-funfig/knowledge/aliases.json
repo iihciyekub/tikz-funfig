@@ -1,0 +1,17 @@
+{
+  "相对定位": "relative positioning positioning node distance right of below of",
+  "节点": "node nodes anchors",
+  "锚点": "anchors node",
+  "箭头": "arrows arrows.meta stealth",
+  "分组框": "fit groups backgrounds",
+  "流程图": "flowchart decision process shapes.geometric",
+  "关系图": "relations edge labels arrows routing",
+  "研究框架": "framework groups layers modules",
+  "矩阵布局": "matrix grid layout",
+  "曲线边": "bend left bend right curved edge",
+  "交点": "intersections named paths",
+  "坐标计算": "coordinates calc",
+  "黑白": "monochrome journal theme",
+  "色觉": "accessible color theme",
+  "中文": "CJK XeLaTeX LuaLaTeX fonts"
+}

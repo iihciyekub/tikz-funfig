@@ -21,6 +21,15 @@ GOLDEN_CASES = ("fig1", "fig4", "fig11")
 SCIENTIFIC_GOLDEN_CASES = ("error-bar", "scatter-plot", "confidence-band", "groupplot")
 ADVANCED_GOLDEN_CASES = ("surface-plot", "contour-plot", "heatmap", "quiver-field")
 METHOD_GOLDEN_CASES = ("implicit-function",)
+DIAGRAM_GOLDEN_CASES = (
+    "flowchart-decision",
+    "flowchart-feedback",
+    "framework-grouped",
+    "framework-layered",
+    "relations-labelled",
+    "schematic-scientific",
+    "diagram-longtext-cjk",
+)
 
 
 class FunFigCoreTests(unittest.TestCase):
@@ -60,6 +69,40 @@ class FunFigCoreTests(unittest.TestCase):
                 (plugin / "runtime/src/funfig" / name).read_text(encoding="utf-8"),
             )
 
+        for directory in ("themes", "profiles"):
+            source_files = sorted(path.name for path in (PROJECT_ROOT / directory).glob("*.json"))
+            plugin_files = sorted(path.name for path in (plugin / "runtime" / directory).glob("*.json"))
+            self.assertEqual(source_files, plugin_files)
+            for name in source_files:
+                self.assertEqual(
+                    (PROJECT_ROOT / directory / name).read_text(encoding="utf-8"),
+                    (plugin / "runtime" / directory / name).read_text(encoding="utf-8"),
+                )
+
+        skills_manifest = load_json(PROJECT_ROOT / "packages/skills/index.json")
+        expected_skills = {"TIKZ-FunFig", *(item["skill_id"] for item in skills_manifest["skills"])}
+        actual_skills = {
+            path.name for path in (plugin / "skills").iterdir()
+            if path.is_dir() and (path / "SKILL.md").is_file()
+        }
+        self.assertEqual(actual_skills, expected_skills)
+        for item in skills_manifest["skills"]:
+            source = PROJECT_ROOT / item["source_dir"] / "SKILL.md"
+            bundled = plugin / "skills" / item["skill_id"] / "SKILL.md"
+            self.assertEqual(source.read_text(encoding="utf-8"), bundled.read_text(encoding="utf-8"))
+            self.assertTrue((plugin / "skills" / item["skill_id"] / "scripts/funfig.sh").is_file())
+
+        for relative in (
+            "aliases.json",
+            "cards/index.json",
+            "examples/index.json",
+            "manual-index/pgfmanual-3.1.11a.jsonl",
+        ):
+            self.assertEqual(
+                (PROJECT_ROOT / "knowledge" / relative).read_text(encoding="utf-8"),
+                (plugin / "knowledge" / relative).read_text(encoding="utf-8"),
+            )
+
         self.assertEqual(
             (PROJECT_ROOT / "IconKitchen/macos/AppIcon128.png").read_bytes(),
             (plugin / "assets/icon.png").read_bytes(),
@@ -88,6 +131,10 @@ class FunFigCoreTests(unittest.TestCase):
                 "publication-threshold",
                 "groupplot",
                 "mechanism-diagram",
+                "flowchart",
+                "framework-diagram",
+                "relation-diagram",
+                "scientific-schematic",
             ],
         )
 
@@ -387,6 +434,95 @@ class FunFigCoreTests(unittest.TestCase):
                 for fragment in required_fragments[case]:
                     self.assertIn(fragment, actual)
 
+    def test_structured_diagram_goldens_validate(self) -> None:
+        for case in DIAGRAM_GOLDEN_CASES:
+            with self.subTest(case=case):
+                path = PROJECT_ROOT / f"examples/golden/{case}/figure.funfig.json"
+                spec = load_json(path)
+                result = validate_spec(spec, path)
+                self.assertTrue(result.ok, result.errors)
+                self.assertEqual(spec["schema_version"], "1.1")
+                self.assertTrue(spec["metadata"]["golden"])
+
+    def test_structured_diagram_goldens_match_committed_tex(self) -> None:
+        required_fragments = {
+            "flowchart-decision": ("diamond,aspect=2", "{yes}", "{no}"),
+            "flowchart-feedback": ("bend right=38", "(check.south)", "(collect.south)"),
+            "framework-grouped": ("on background layer", "fit=(x1)(x2)", "-|"),
+            "framework-layered": ("fit=(input)(process)(outcome)", "fit=(core)(moderator)"),
+            "relations-labelled": ("[<->", "bend left=22", "loop below"),
+            "schematic-scientific": ("Stimulus $S$", "fit=(system)(sensor)"),
+            "diagram-longtext-cjk": ("\\usepackage[UTF8]{ctex}", "参数 \\#1", "95\\%"),
+        }
+        for case in DIAGRAM_GOLDEN_CASES:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temp:
+                source_dir = PROJECT_ROOT / f"examples/golden/{case}"
+                expected_tex = source_dir / f"{case}.tex"
+                expected = expected_tex.read_text(encoding="utf-8")
+                work_dir = Path(temp) / case
+                shutil.copytree(
+                    source_dir,
+                    work_dir,
+                    ignore=shutil.ignore_patterns("*.pdf", ".funfig", f"{case}.tex"),
+                )
+                spec_path = work_dir / "figure.funfig.json"
+                spec = load_json(spec_path)
+                tex_path, manifest = render_spec(spec, spec_path)
+                actual = tex_path.read_text(encoding="utf-8")
+                self.assertEqual(actual, expected)
+                self.assertEqual(manifest["mode"], "structured")
+                self.assertEqual(manifest["qa"]["status"], "not_checked")
+                for fragment in required_fragments[case]:
+                    self.assertIn(fragment, actual)
+
+    def test_structured_diagram_rejects_position_and_group_cycles(self) -> None:
+        path = PROJECT_ROOT / "examples/golden/flowchart-feedback/figure.funfig.json"
+        spec = load_json(path)
+        spec["diagram"]["nodes"][0]["position"] = {
+            "type": "relative", "of": "check", "direction": "left", "gap": "18mm"
+        }
+        result = validate_spec(spec, path)
+        self.assertFalse(result.ok)
+        self.assertTrue(any("dependencies" in error or "absolute root" in error for error in result.errors))
+
+        grouped_path = PROJECT_ROOT / "examples/golden/framework-layered/figure.funfig.json"
+        grouped = load_json(grouped_path)
+        grouped["diagram"]["groups"][0]["members"] = ["system"]
+        result = validate_spec(grouped, grouped_path)
+        self.assertFalse(result.ok)
+        self.assertTrue(any("containment" in error for error in result.errors))
+
+    def test_structured_diagram_rejects_invalid_self_loop_and_duplicate_grid_cell(self) -> None:
+        path = PROJECT_ROOT / "examples/golden/relations-labelled/figure.funfig.json"
+        spec = load_json(path)
+        spec["diagram"]["edges"][3]["route"] = "straight"
+        result = validate_spec(spec, path)
+        self.assertFalse(result.ok)
+        self.assertTrue(any("self-edge" in error for error in result.errors))
+
+        grid_path = PROJECT_ROOT / "examples/golden/flowchart-decision/figure.funfig.json"
+        grid = load_json(grid_path)
+        grid["diagram"]["nodes"][1]["position"] = {"type": "grid", "row": 0, "column": 0}
+        result = validate_spec(grid, grid_path)
+        self.assertFalse(result.ok)
+        self.assertTrue(any("duplicates grid cell" in error for error in result.errors))
+
+    def test_structured_recipe_requires_schema_11_and_allowed_roles(self) -> None:
+        path = PROJECT_ROOT / "examples/golden/flowchart-decision/figure.funfig.json"
+        spec = load_json(path)
+        spec["schema_version"] = "1.0"
+        spec.pop("theme", None)
+        spec.pop("profile", None)
+        result = validate_spec(spec, path)
+        self.assertFalse(result.ok)
+        self.assertTrue(any("requires schema_version" in error for error in result.errors))
+
+        spec = load_json(path)
+        spec["diagram"]["nodes"][0]["role"] = "concept"
+        result = validate_spec(spec, path)
+        self.assertFalse(result.ok)
+        self.assertTrue(any("is not allowed by recipe" in error for error in result.errors))
+
     def test_advanced_goldens_validate(self) -> None:
         for case in ADVANCED_GOLDEN_CASES:
             with self.subTest(case=case):
@@ -653,6 +789,29 @@ class FunFigCoreTests(unittest.TestCase):
                 self.assertTrue(pdf_path.exists())
                 self.assertGreater(pdf_path.stat().st_size, 5_000)
                 self.assertFalse((work_dir / ".funfig/build").exists())
+
+    @unittest.skipUnless(
+        shutil.which("latexmk") and shutil.which("pdflatex") and shutil.which("xelatex"),
+        "diagram TeX toolchain unavailable",
+    )
+    def test_structured_diagram_goldens_build(self) -> None:
+        for case in DIAGRAM_GOLDEN_CASES:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temp:
+                source_dir = PROJECT_ROOT / f"examples/golden/{case}"
+                work_dir = Path(temp) / case
+                shutil.copytree(
+                    source_dir,
+                    work_dir,
+                    ignore=shutil.ignore_patterns("*.pdf", ".funfig"),
+                )
+                spec_path = work_dir / "figure.funfig.json"
+                spec = load_json(spec_path)
+                pdf_path = build_spec(spec, spec_path)
+                self.assertTrue(pdf_path.exists())
+                self.assertGreater(pdf_path.stat().st_size, 4_000)
+                manifest = load_json(work_dir / ".funfig/manifest.json")
+                self.assertEqual(manifest["mode"], "structured")
+                self.assertEqual(manifest["qa"]["status"], "not_checked")
 
     @unittest.skipUnless(
         shutil.which("latexmk") and shutil.which("pdflatex") and shutil.which("gnuplot"),

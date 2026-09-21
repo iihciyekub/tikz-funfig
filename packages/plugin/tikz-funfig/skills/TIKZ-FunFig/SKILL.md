@@ -1,6 +1,6 @@
 ---
 name: TIKZ-FunFig
-description: Create, revise, and validate publication-quality scientific figures with TikZ and PGFPlots, using the workspace's tikz-funfig knowledge base as the primary local reference.
+description: Route, create, revise, migrate, and validate publication-quality scientific figures with the TIKZ-FunFig plugin. Use as the compatibility/general entry when the figure type is ambiguous, mixed, already managed by FigureSpec, or needs migration/repair; prefer the specialized plots, flowcharts, frameworks, relations, or schematics Skill when the user's figure family is already clear.
 ---
 
 # TIKZ-FunFig
@@ -21,6 +21,19 @@ Treat that directory as **reference material**. Do not modify it unless the user
 4. Match the visual grammar already demonstrated in `tikz-funfig/`: restrained grids, clear mathematical labels, highlighted regimes/regions, compact callouts, vector annotations, and data-driven PGFPlots where appropriate.
 5. Validate the FigureSpec and compile the generated source locally when the toolchain is available.
 6. Keep figure code maintainable: data binding, visual semantics, generated source, build state, and final artifacts must have stable responsibilities.
+7. Treat compilation and visual quality as separate gates: build first, then inspect the rendered preview at the target Publication Profile size.
+
+## Route before drawing
+
+Use the narrowest specialized Skill when the request is clear:
+
+- `funfig-plots` — axes, functions, data, uncertainty, statistical/scientific plots, multi-panel PGFPlots;
+- `funfig-flowcharts` — process steps, decisions, branches, feedback and pipelines;
+- `funfig-frameworks` — research/conceptual frameworks, layered modules and visual groups;
+- `funfig-relations` — concept/entity relationships and labelled directed/undirected edges;
+- `funfig-schematics` — experimental/mechanism/component/coordinate scientific schematics.
+
+Stay in this general entry for ambiguous mixed requests, existing managed FigureSpecs, legacy migration, capability discovery, or repairs that cross figure families. Multiple Skills share one FigureSpec/runtime/knowledge system; they are not separate renderers or agents.
 
 ## Schema-first contract
 
@@ -65,7 +78,7 @@ the full rule.
 
 For supported properties — axis ranges, labels, styles, data bindings, series, regions, annotations, panels, nodes, edges — update the FigureSpec and regenerate. Do not patch generated TeX as the long-term source of truth.
 
-If the requested behavior is not expressible by the current schema/recipe, it is acceptable to extend the project schema/recipe/renderer first. Avoid one-off generator logic when the capability is reusable.
+For a normal installed-Plugin task, first query capabilities and knowledge instead of editing the Plugin. If a stable Recipe expresses the request, use Structured Mode. If a genuine long-tail TikZ/PGF feature is outside the current Schema, search the official manual corpus and use sourced Expert TikZ Mode; do not misrepresent that raw result as a stable Recipe. In repository-development tasks, reusable repeated behavior can be promoted through Schema -> Recipe/renderer -> knowledge/example -> golden tests.
 
 Read `references/schema-contract.md` for the field and artifact responsibilities.
 
@@ -75,9 +88,14 @@ The installed Skill includes a wrapper that calls the source project:
 
 ```bash
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh recipes
+.agents/skills/TIKZ-FunFig/scripts/funfig.sh capabilities
+.agents/skills/TIKZ-FunFig/scripts/funfig.sh kb search "relative positioning"
+.agents/skills/TIKZ-FunFig/scripts/funfig.sh themes
+.agents/skills/TIKZ-FunFig/scripts/funfig.sh profiles
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh validate path/to/figure.funfig.json
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh render path/to/figure.funfig.json
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh build path/to/figure.funfig.json
+.agents/skills/TIKZ-FunFig/scripts/funfig.sh inspect path/to/figure.funfig.json
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh clean path/to/figure.funfig.json
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh migrate-legacy old-figure.tex path/to/new-figure
 ```
@@ -114,6 +132,10 @@ Initial stable recipes are:
 - `publication-threshold`
 - `groupplot`
 - `mechanism-diagram`
+- `flowchart`
+- `framework-diagram`
+- `relation-diagram`
+- `scientific-schematic`
 
 The repository also contains publication-grade and scientific golden cases under
 `examples/golden/`. The paper-derived `fig1`, `fig4`, and `fig11` cases are the

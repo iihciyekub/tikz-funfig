@@ -1,0 +1,4 @@
+{
+  "id":"journal-double-column","version":"1.0","description":"Double-column journal figure",
+  "target_width_mm":178,"minimum_text_pt":8.0,"font":"\\small","node_min_height":"9mm","node_inner_xsep":"7pt","node_inner_ysep":"4.5pt","default_row_gap":"16mm","default_column_gap":"24mm","qa":{"max_label_lines":5,"require_visual_review":true}
+}

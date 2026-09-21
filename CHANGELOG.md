@@ -4,6 +4,29 @@ All notable changes to TIKZ-FunFig are recorded here. The project follows semant
 
 ## [Unreleased]
 
+### Added
+
+- Added five specialized Skills (`funfig-plots`, `funfig-flowcharts`,
+  `funfig-frameworks`, `funfig-relations`, and `funfig-schematics`) alongside
+  the compatibility/general `TIKZ-FunFig` entry, all sharing one runtime and knowledge layer.
+- Added the verified PGF/TikZ 3.1.11a manual pipeline: pinned source manifest,
+  complete split plan, topic map, section-level searchable corpus, 24 compiled
+  knowledge cards, and executable knowledge examples.
+- Added SQLite FTS5/BM25 knowledge search (`funfig kb`), capability discovery,
+  four structured diagram Recipes, FigureSpec 1.1, four themes, and three
+  Publication Profiles.
+- Added explicit post-build inspection/visual-QA state and sourced Expert TikZ
+  Mode for long-tail manual-backed capabilities outside stable FigureSpec coverage.
+
+### Changed
+
+- Portable Plugin packaging now distributes six Skills, shared lightweight
+  knowledge, themes, and Publication Profiles while keeping original/split PDFs
+  and legacy provenance outside the runtime package.
+- Structured diagram generation now validates layout/group cycles, node/edge
+  references, route-specific parameters, grid collisions, role/shape semantics,
+  plain-text escaping, grouping, and deterministic library resolution before TeX compilation.
+
 ## [0.8.5] - 2026-09-22
 
 ### Changed

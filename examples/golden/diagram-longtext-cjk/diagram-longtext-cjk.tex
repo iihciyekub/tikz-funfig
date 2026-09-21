@@ -1,0 +1,14 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames,svgnames,x11names]{xcolor}
+\usepackage{tikz}
+\usepackage[UTF8]{ctex}
+\usetikzlibrary{arrows.meta,positioning}
+\begin{document}
+\begin{tikzpicture}[font=\small,>=Stealth]
+\node[rectangle,rounded corners=2pt,fill=white,draw=MidnightBlue,text=black,line width=0.65pt,minimum height=9mm,inner xsep=7pt,inner ysep=4.5pt,align=center,text width=42mm] (input) at (0,0) {输入：数据质量、样本覆盖率与外部条件};
+\node[rectangle,rounded corners=2pt,fill=white,draw=MidnightBlue,text=black,line width=0.65pt,minimum height=9mm,inner xsep=7pt,inner ysep=4.5pt,align=center,text width=46mm,right=20mm of input] (model) {机制层：估计参数 \#1 与稳健性检验 95\%};
+\node[rectangle,rounded corners=2pt,fill=white,draw=MidnightBlue,text=black,line width=0.65pt,minimum height=9mm,inner xsep=7pt,inner ysep=4.5pt,align=center,text width=30mm,right=20mm of model] (result) {$E[Y\mid X]$ 与 $\beta_1$};
+\draw[->,draw=MidnightBlue,line width=0.65pt] (input) -- node[pos=0.5,above,fill=white,inner sep=1.2pt] {进入分析} (model);
+\draw[->,draw=MidnightBlue,line width=0.65pt] (model) -- node[pos=0.5,above,fill=white,inner sep=1.2pt] {得到} (result);
+\end{tikzpicture}
+\end{document}

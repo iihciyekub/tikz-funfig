@@ -15,7 +15,11 @@
     "intersection-curves",
     "publication-threshold",
     "groupplot",
-    "mechanism-diagram"
+    "mechanism-diagram",
+    "flowchart",
+    "framework-diagram",
+    "relation-diagram",
+    "scientific-schematic"
   ]
 }
 

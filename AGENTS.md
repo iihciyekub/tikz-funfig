@@ -8,10 +8,17 @@ Read this file before modifying the repository.
 - `schemas/` — FigureSpec contract.
 - `recipes/` — stable recipe registry.
 - `packages/skill/` — canonical Skill source.
+- `packages/skills/` — canonical specialized Skill sources and explicit package manifest.
+- `knowledge/` — canonical searchable knowledge cards, manual section index, and verified examples.
+- `themes/` — canonical machine-readable visual themes for structured diagrams.
+- `profiles/` — canonical publication/output profiles and QA thresholds.
 - `examples/golden/` — deterministic regression cases.
 - `references/legacy/` — read-only development/provenance knowledge.
+- `references/manuals/` — versioned source manifests and split plans for official manuals; original PDFs stay outside the portable Plugin.
 
 `packages/plugin/tikz-funfig/` is a generated portable distribution bundle. Do not maintain its runtime or Skill copies by hand. Change the source directories above, then run `./scripts/sync_plugin_package.sh`.
+
+The portable Plugin gets one shared copy of `knowledge/`, `themes/`, and `profiles/`. Do not duplicate canonical knowledge cards into every specialized Skill.
 
 ## Required development flow
 
@@ -22,10 +29,11 @@ For a new stable capability:
 3. add or update a golden case;
 4. add regression coverage;
 5. update the canonical Skill/documentation;
-6. synchronize the portable Plugin;
-7. run `./scripts/check.sh` and `git diff --check`.
+6. update relevant knowledge cards/examples and capability status when the feature changes what the agent may rely on;
+7. synchronize the portable Plugin;
+8. run `./scripts/check.sh` and `git diff --check`.
 
-Do not make the runtime depend on `references/legacy/`. Promote proven semantics into `src/`, `schemas/`, `recipes/`, and golden cases instead.
+Do not make the runtime depend on `references/legacy/` or the original manual PDF. Promote proven semantics into `knowledge/`, `src/`, `schemas/`, `recipes/`, themes/profiles, and golden cases instead.
 
 ## Git and release rules
 

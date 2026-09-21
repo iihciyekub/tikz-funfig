@@ -1,0 +1,5 @@
+{
+  "id":"presentation-color","version":"1.0","description":"Higher-contrast presentation theme",
+  "tokens":{"node_fill":"RoyalBlue!8","node_draw":"RoyalBlue!80!black","text_color":"black","edge_color":"RoyalBlue!80!black","group_fill":"RoyalBlue!4","group_draw":"RoyalBlue!55","line_width":"0.9pt","group_line_width":"0.7pt","rounded_corners":"3pt"},
+  "roles":{"decision":{"fill":"Orange!20"},"terminal":{"fill":"ForestGreen!14"},"data":{"fill":"Cyan!14"},"concept":{"fill":"white"}}
+}

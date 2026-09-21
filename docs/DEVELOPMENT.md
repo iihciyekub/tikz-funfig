@@ -10,12 +10,32 @@ TIKZ-FunFig separates authored source, regression evidence, historical reference
 | `schemas/` | Canonical FigureSpec schema | Yes |
 | `recipes/` | Recipe registry and capability contracts | Yes |
 | `packages/skill/` | Canonical Skill package | Yes |
+| `packages/skills/` | Canonical specialized Skills + explicit package manifest | Yes |
+| `knowledge/` | Shared compiled cards/examples and official-manual section corpus | Yes |
+| `themes/` | Structured-diagram appearance tokens | Yes |
+| `profiles/` | Publication/output size and QA constraints | Yes |
 | `examples/golden/` | Deterministic regression inputs/snapshots | Yes, deliberately |
 | `references/legacy/` | Historical/provenance knowledge | Normally no; preserve as reference |
+| `references/manuals/` | Versioned official-manual source manifests/split plans | Yes |
 | `references/methods/` | Mapping of promoted legacy semantics | Yes |
 | `packages/plugin/tikz-funfig/` | Portable generated Plugin bundle | No; synchronize it |
 
-The portable Plugin deliberately duplicates runtime/Skill files so an installed Plugin does not depend on a source checkout. That duplication is generated and checked for consistency.
+The portable Plugin deliberately materializes runtime/Skill files so an installed Plugin does not depend on a source checkout. Shared knowledge is distributed once at Plugin root rather than copied into every Skill. All generated distribution copies are checked for consistency.
+
+## Official manual development pipeline
+
+`references/pgfmanual.pdf` is pinned as PGF/TikZ 3.1.11a by SHA/page count. It is a development/provenance input, not a portable-Plugin runtime dependency.
+
+The searchable section corpus only needs Poppler (`pdfinfo`, `pdftotext`). Generating official PDF booklets additionally requires `qpdf` so pages are copied without re-rendering or re-encoding:
+
+```bash
+brew install qpdf
+python3 scripts/build_manual_reference.py verify
+python3 scripts/build_manual_reference.py corpus
+python3 scripts/build_manual_reference.py pdfs
+```
+
+The PDF build verifies page count/page boxes and representative source-vs-output text/render parity. `pdfseparate`/`pdfunite`, Ghostscript rewriting, and PDFKit page copies are intentionally not used for formal booklets because testing showed unacceptable resource duplication or text-mapping drift.
 
 ## Adding a capability
 
@@ -34,7 +54,7 @@ golden case
         ↓
 regression test
         ↓
-Skill/docs
+knowledge card/example + Skill/docs
         ↓
 portable Plugin sync
 ```

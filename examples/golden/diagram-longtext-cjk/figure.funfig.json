@@ -1,0 +1,15 @@
+{
+  "schema_version":"1.1","id":"diagram-longtext-cjk","recipe":"framework-diagram","kind":"tikz",
+  "theme":{"id":"journal-accessible"},"profile":{"id":"journal-double-column"},
+  "diagram":{"layout":{"type":"relative"},
+    "nodes":[
+      {"id":"input","label":"输入：数据质量、样本覆盖率与外部条件","role":"module","text_width":"42mm","position":{"type":"absolute","x":0,"y":0}},
+      {"id":"model","label":"机制层：估计参数 #1 与稳健性检验 95%","role":"module","text_width":"46mm","position":{"type":"relative","of":"input","direction":"right","gap":"20mm"}},
+      {"id":"result","label":"$E[Y\\mid X]$ 与 $\\beta_1$","label_format":"tex","role":"module","text_width":"30mm","position":{"type":"relative","of":"model","direction":"right","gap":"20mm"}}
+    ],
+    "edges":[
+      {"id":"e1","from":"input","to":"model","route":"straight","label":"进入分析"},
+      {"id":"e2","from":"model","to":"result","route":"straight","label":"得到"}
+    ],"groups":[]},
+  "outputs":{"basename":"diagram-longtext-cjk","keep_build":false},"metadata":{"golden":true}
+}

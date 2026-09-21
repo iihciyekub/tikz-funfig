@@ -1,0 +1,10 @@
+{
+  "source_id": "pgfmanual-3.1.11a",
+  "title": "The TikZ and PGF Packages Manual",
+  "version": "3.1.11a",
+  "source_path": "references/pgfmanual.pdf",
+  "sha256": "794c088249c4b3414b564b850a556c93787dff803e01af045bca7709919c9847",
+  "page_count": 1323,
+  "license_note": "Preserve the original manual and license pages; generated excerpts are local development references and are not bundled in the portable plugin.",
+  "verified": "2026-09-22"
+}

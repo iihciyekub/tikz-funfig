@@ -1,0 +1,10 @@
+\documentclass[border=2pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+\begin{document}
+\begin{tikzpicture}
+  \node[draw] (a) {Input};
+  \node[draw,right=14mm of a] (b) {Output};
+  \draw[-{Stealth}] (a.east) -- (b.west);
+\end{tikzpicture}
+\end{document}

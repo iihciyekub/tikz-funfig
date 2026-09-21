@@ -1,0 +1,8 @@
+{
+  "schema_version":"1.0",
+  "items":[
+    {"id":"journal-single-column","file":"journal-single-column.json"},
+    {"id":"journal-double-column","file":"journal-double-column.json"},
+    {"id":"presentation","file":"presentation.json"}
+  ]
+}

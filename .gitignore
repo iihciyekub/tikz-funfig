@@ -23,6 +23,7 @@ build/
 **/.funfig/manifest.json
 .smoke/
 *.manifest.tmp.json
+output/
 
 # Generated artifacts inside repository examples. The FigureSpec is the source.
 examples/**/figure.tex

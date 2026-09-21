@@ -1,0 +1,9 @@
+\documentclass[border=2pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,fit}
+\begin{document}
+\begin{tikzpicture}
+\node[draw] (a) {A}; \node[draw,right=of a] (b) {B};
+\draw[-{Stealth}] (a)--(b); \node[fit=(a)(b),draw,dashed,inner sep=4pt] {};
+\end{tikzpicture}
+\end{document}

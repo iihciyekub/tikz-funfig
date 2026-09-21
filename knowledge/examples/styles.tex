@@ -1,0 +1,9 @@
+\documentclass[border=2pt]{standalone}
+\usepackage{tikz}
+\tikzset{academic/.style={draw,rounded corners=2pt,inner sep=5pt}}
+\begin{document}
+\begin{tikzpicture}
+  \node[academic] (a) {Reusable style};
+  \begin{scope}[xshift=32mm]\node[academic] {Scoped placement};\end{scope}
+\end{tikzpicture}
+\end{document}

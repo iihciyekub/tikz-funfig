@@ -1,0 +1,34 @@
+{
+  "source_id": "pgfmanual-3.1.11a",
+  "parts": [
+    {"id":"00","filename":"00-frontmatter-introduction.pdf","source_ranges":[[1,29]]},
+    {"id":"01","filename":"01-tutorials-guidelines.pdf","source_ranges":[[30,101]]},
+    {"id":"02","filename":"02-installation-licenses-formats.pdf","source_ranges":[[102,122]]},
+    {"id":"03","filename":"03-core-syntax-paths-arrows.pdf","source_ranges":[[123,222]]},
+    {"id":"04","filename":"04-nodes-edges-pics.pdf","source_ranges":[[223,267]]},
+    {"id":"05","filename":"05-graphs-matrices-trees.pdf","source_ranges":[[268,341]]},
+    {"id":"06","filename":"06-plots-effects-transforms.pdf","source_ranges":[[342,380]]},
+    {"id":"07","filename":"07-animations.pdf","source_ranges":[[381,415]]},
+    {"id":"08","filename":"08-algorithmic-graph-drawing.pdf","source_ranges":[[416,563]]},
+    {"id":"09","filename":"09-libraries.pdf","source_ranges":[[564,852]]},
+    {"id":"10","filename":"10-data-visualization.pdf","source_ranges":[[853,974]]},
+    {"id":"11","filename":"11-utilities-math-engines.pdf","source_ranges":[[975,1071]]},
+    {"id":"12","filename":"12-pgf-basic-layer.pdf","source_ranges":[[1072,1232]]},
+    {"id":"13","filename":"13-pgf-system-layer.pdf","source_ranges":[[1233,1272]]},
+    {"id":"14","filename":"14-index.pdf","source_ranges":[[1273,1323]]}
+  ],
+  "focus_excerpts": [
+    {"id":"automata","filename":"library-automata.pdf","source_ranges":[[572,576]]},
+    {"id":"backgrounds","filename":"library-backgrounds.pdf","source_ranges":[[578,581]]},
+    {"id":"calc","filename":"library-calc.pdf","source_ranges":[[582,582],[148,152]]},
+    {"id":"chains","filename":"library-chains.pdf","source_ranges":[[601,607]]},
+    {"id":"er","filename":"library-er.pdf","source_ranges":[[668,669]]},
+    {"id":"fit","filename":"library-fit.pdf","source_ranges":[[685,687]]},
+    {"id":"matrix","filename":"library-matrix.pdf","source_ranges":[[710,713],[319,331]]},
+    {"id":"mindmap","filename":"library-mindmap.pdf","source_ranges":[[714,723]]},
+    {"id":"petri","filename":"library-petri.pdf","source_ranges":[[745,749]]},
+    {"id":"shapes","filename":"library-shapes.pdf","source_ranges":[[786,832]]},
+    {"id":"topaths","filename":"library-topaths.pdf","source_ranges":[[840,844]]},
+    {"id":"trees","filename":"library-trees.pdf","source_ranges":[[846,848]]}
+  ]
+}

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+import re
 from pathlib import Path
 from typing import Any
 
@@ -8,6 +9,7 @@ from .io import write_text_atomic
 from .manifest import sha256_file, utc_now, write_manifest
 from .recipes import load_recipe
 from .schema import validate_spec
+from .theme import load_profile, load_theme
 
 
 PUBLICATION_OFFSET_RECIPES = {
@@ -885,7 +887,7 @@ def render_groupplot(spec: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def render_diagram(spec: dict[str, Any]) -> str:
+def _render_diagram_legacy(spec: dict[str, Any]) -> str:
     border = (spec.get("canvas") or {}).get("border", "2pt")
     diagram = spec.get("diagram", {}) or {}
     lines = [
@@ -923,6 +925,293 @@ def render_diagram(spec: dict[str, Any]) -> str:
         )
     lines += ["\\end{tikzpicture}", "\\end{document}", ""]
     return "\n".join(lines)
+
+
+_PLAIN_TEX_ESCAPE = {
+    "#": r"\#",
+    "$": r"\$",
+    "%": r"\%",
+    "&": r"\&",
+    "_": r"\_",
+    "{": r"\{",
+    "}": r"\}",
+    "~": r"\textasciitilde{}",
+    "^": r"\textasciicircum{}",
+    "\\": r"\textbackslash{}",
+}
+
+
+def _diagram_text(value: Any, label_format: str | None = None) -> str:
+    text = str(value or "")
+    if label_format == "tex":
+        return text
+    lines = text.splitlines() or [""]
+    escaped = ["".join(_PLAIN_TEX_ESCAPE.get(char, char) for char in line) for line in lines]
+    return r"\\".join(escaped)
+
+
+def _appearance_options(appearance: dict[str, Any] | None) -> list[str]:
+    if not appearance:
+        return []
+    options: list[str] = []
+    if appearance.get("fill") is not None:
+        options.append(f"fill={appearance['fill']}")
+    if appearance.get("draw") is not None:
+        options.append(f"draw={appearance['draw']}")
+    if appearance.get("text_color") is not None:
+        options.append(f"text={appearance['text_color']}")
+    if appearance.get("line_width") is not None:
+        options.append(f"line width={appearance['line_width']}")
+    if appearance.get("dash") and appearance["dash"] != "solid":
+        options.append(str(appearance["dash"]))
+    return options
+
+
+def _structured_theme_profile(spec: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+    theme_config = spec.get("theme") or {"id": "journal-muted"}
+    theme = load_theme(theme_config.get("id", "journal-muted"))
+    overrides = theme_config.get("overrides") or {}
+    if overrides:
+        allowed = set(theme.get("tokens", {}))
+        unknown = set(overrides) - allowed
+        if unknown:
+            raise ValueError("unknown theme override token(s): " + ", ".join(sorted(unknown)))
+        theme = dict(theme)
+        theme["tokens"] = {**theme.get("tokens", {}), **overrides}
+    profile_config = spec.get("profile") or {"id": "journal-single-column"}
+    profile = load_profile(profile_config.get("id", "journal-single-column"))
+    return theme, profile
+
+
+def _shape_options(node: dict[str, Any], theme: dict[str, Any]) -> list[str]:
+    role = node.get("role", "concept")
+    default_shape = {
+        "process": "rounded-rectangle",
+        "module": "rounded-rectangle",
+        "component": "rounded-rectangle",
+        "decision": "diamond",
+        "terminal": "ellipse",
+        "data": "parallelogram",
+        "concept": "rectangle",
+        "annotation": "rectangle",
+    }.get(role, "rectangle")
+    shape = node.get("shape", default_shape)
+    if shape == "rounded-rectangle":
+        return ["rectangle", f"rounded corners={theme.get('tokens', {}).get('rounded_corners', '2pt')}"]
+    if shape == "diamond":
+        return ["diamond", "aspect=2"]
+    if shape == "ellipse":
+        return ["ellipse"]
+    if shape == "circle":
+        return ["circle"]
+    if shape == "parallelogram":
+        return ["trapezium", "trapezium left angle=70", "trapezium right angle=110"]
+    return ["rectangle"]
+
+
+def _node_appearance(node: dict[str, Any], theme: dict[str, Any]) -> dict[str, Any]:
+    tokens = theme.get("tokens", {})
+    appearance: dict[str, Any] = {
+        "fill": tokens.get("node_fill", "white"),
+        "draw": tokens.get("node_draw", "black"),
+        "text_color": tokens.get("text_color", "black"),
+        "line_width": tokens.get("line_width", "0.6pt"),
+    }
+    appearance.update(theme.get("roles", {}).get(node.get("role", "concept"), {}))
+    appearance.update(node.get("appearance") or {})
+    return appearance
+
+
+def _ordered_structured_nodes(nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    by_id = {node["id"]: node for node in nodes}
+    pending = list(nodes)
+    emitted: list[dict[str, Any]] = []
+    emitted_ids: set[str] = set()
+    while pending:
+        progress = False
+        for node in list(pending):
+            position = node.get("position") or {}
+            dependency = position.get("of") if position.get("type") == "relative" else None
+            if dependency is None or dependency in emitted_ids:
+                emitted.append(node)
+                emitted_ids.add(node["id"])
+                pending.remove(node)
+                progress = True
+        if not progress:
+            # Validation should already have caught the cycle; fail clearly if
+            # render_spec is ever called from another path.
+            missing = ", ".join(node["id"] for node in pending)
+            raise ValueError(f"cannot order relative-position nodes: {missing}")
+    return emitted
+
+
+def _ordered_groups(groups: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    group_ids = {group["id"] for group in groups}
+    pending = list(groups)
+    emitted: list[dict[str, Any]] = []
+    emitted_ids: set[str] = set()
+    while pending:
+        progress = False
+        for group in list(pending):
+            dependencies = {member for member in group.get("members", []) if member in group_ids}
+            if dependencies <= emitted_ids:
+                emitted.append(group)
+                emitted_ids.add(group["id"])
+                pending.remove(group)
+                progress = True
+        if not progress:
+            raise ValueError("cannot order nested diagram groups")
+    return emitted
+
+
+def _structured_libraries(spec: dict[str, Any]) -> list[str]:
+    diagram = spec.get("diagram") or {}
+    libraries = {"arrows.meta"}
+    layout = diagram.get("layout") or {"type": "relative"}
+    if layout.get("type") == "relative" or any(
+        (node.get("position") or {}).get("type") == "relative" for node in diagram.get("nodes", [])
+    ):
+        libraries.add("positioning")
+    if diagram.get("groups"):
+        libraries.update({"fit", "backgrounds"})
+    if any(
+        node.get("shape") in {"diamond", "parallelogram"}
+        or node.get("role") in {"decision", "data"}
+        for node in diagram.get("nodes", [])
+    ):
+        libraries.add("shapes.geometric")
+    return sorted(libraries)
+
+
+def _edge_arrow(edge: dict[str, Any], recipe: dict[str, Any]) -> str:
+    arrows = edge.get("arrows") or (recipe.get("defaults") or {}).get("edge_arrows", "forward")
+    return {"none": "-", "forward": "->", "backward": "<-", "both": "<->"}[arrows]
+
+
+def _endpoint(node_id: str, anchor: str | None) -> str:
+    return f"({node_id}.{anchor})" if anchor and anchor != "center" else f"({node_id})"
+
+
+def _edge_label(edge: dict[str, Any]) -> str:
+    if not edge.get("label"):
+        return ""
+    position = _fmt(edge.get("label_position", 0.5))
+    side = edge.get("label_side", "above")
+    text = _diagram_text(edge.get("label"), edge.get("label_format"))
+    return f" node[pos={position},{side},fill=white,inner sep=1.2pt] {{{text}}}"
+
+
+def _render_diagram_structured(spec: dict[str, Any]) -> str:
+    diagram = spec.get("diagram") or {}
+    recipe = load_recipe(spec["recipe"])
+    theme, profile = _structured_theme_profile(spec)
+    tokens = theme.get("tokens", {})
+    profile_font = profile.get("font", "\\small")
+    layout = diagram.get("layout") or {"type": "relative"}
+    border = (spec.get("canvas") or {}).get("border", "2pt")
+    libraries = _structured_libraries(spec)
+    labels = [str(node.get("label", "")) for node in diagram.get("nodes", [])]
+    labels += [str(edge.get("label", "")) for edge in diagram.get("edges", [])]
+    labels += [str(group.get("label", "")) for group in diagram.get("groups", [])]
+    has_unicode = any(any(ord(char) > 127 for char in label) for label in labels)
+
+    lines = [
+        f"\\documentclass[border={border}]{{standalone}}",
+        "\\usepackage[dvipsnames,svgnames,x11names]{xcolor}",
+        "\\usepackage{tikz}",
+    ]
+    if has_unicode:
+        lines.append("\\usepackage[UTF8]{ctex}")
+    if libraries:
+        lines.append(f"\\usetikzlibrary{{{','.join(libraries)}}}")
+    lines.extend(["\\begin{document}"])
+
+    picture_options = [f"font={profile_font}", ">=Stealth"]
+    if layout.get("type") == "grid":
+        row_gap = layout.get("row_gap") or profile.get("default_row_gap", "13mm")
+        column_gap = layout.get("column_gap") or profile.get("default_column_gap", "18mm")
+        picture_options.extend([f"x={column_gap}", f"y={row_gap}"])
+    lines.append(f"\\begin{{tikzpicture}}[{','.join(picture_options)}]")
+
+    for node in _ordered_structured_nodes(list(diagram.get("nodes", []))):
+        options = _shape_options(node, theme)
+        options += _appearance_options(_node_appearance(node, theme))
+        options += [
+            f"minimum height={node.get('min_height', profile.get('node_min_height', '8mm'))}",
+            f"inner xsep={profile.get('node_inner_xsep', '6pt')}",
+            f"inner ysep={profile.get('node_inner_ysep', '4pt')}",
+            f"align={node.get('align', 'center')}",
+        ]
+        if node.get("min_width"):
+            options.append(f"minimum width={node['min_width']}")
+        if node.get("text_width"):
+            options.append(f"text width={node['text_width']}")
+        position = node.get("position") or {}
+        position_type = position.get("type")
+        placement = ""
+        if position_type == "absolute":
+            placement = f" at ({_fmt(position['x'])},{_fmt(position['y'])})"
+        elif position_type == "relative":
+            gap = position.get("gap") or profile.get("default_column_gap", "18mm")
+            direction = position["direction"]
+            options.append(f"{direction}={gap} of {position['of']}")
+        elif position_type == "grid":
+            placement = f" at ({int(position['column'])},{-int(position['row'])})"
+        label = _diagram_text(node.get("label"), node.get("label_format"))
+        lines.append(f"\\node[{','.join(options)}] ({node['id']}){placement} {{{label}}};")
+
+    groups = _ordered_groups(list(diagram.get("groups", [])))
+    if groups:
+        lines.append("\\begin{scope}[on background layer]")
+        for group in groups:
+            members = "".join(f"({member})" for member in group.get("members", []))
+            appearance = {
+                "fill": tokens.get("group_fill", "black!3"),
+                "draw": tokens.get("group_draw", "black!35"),
+                "line_width": tokens.get("group_line_width", "0.45pt"),
+                **(group.get("appearance") or {}),
+            }
+            options = [f"fit={members}", f"inner sep={group.get('padding', '6pt')}"]
+            options += _appearance_options(appearance)
+            if group.get("label"):
+                label = _diagram_text(group["label"], group.get("label_format"))
+                options.append(f"label={{[font={profile_font}]above:{{{label}}}}}")
+            lines.append(f"\\node[{','.join(options)}] ({group['id']}) {{}};")
+        lines.append("\\end{scope}")
+
+    for edge in diagram.get("edges", []):
+        appearance = {
+            "draw": tokens.get("edge_color", "black!70"),
+            "line_width": tokens.get("line_width", "0.6pt"),
+            **(edge.get("appearance") or {}),
+        }
+        options = [_edge_arrow(edge, recipe)] + _appearance_options(appearance)
+        source = _endpoint(edge["from"], edge.get("from_anchor"))
+        target = _endpoint(edge["to"], edge.get("to_anchor"))
+        label = _edge_label(edge)
+        route = edge.get("route", "straight")
+        routing = edge.get("routing") or {}
+        if route == "straight":
+            lines.append(f"\\draw[{','.join(options)}] {source} --{label} {target};")
+        elif route == "orthogonal":
+            operator = "-|" if routing.get("order", "horizontal-first") == "horizontal-first" else "|-"
+            lines.append(f"\\draw[{','.join(options)}] {source} {operator}{label} {target};")
+        elif route == "curve":
+            bend = float(routing.get("bend", 25))
+            curve = f"bend left={_fmt(abs(bend))}" if bend >= 0 else f"bend right={_fmt(abs(bend))}"
+            lines.append(f"\\draw[{','.join(options)}] {source} to[{curve}]{label} {target};")
+        else:
+            side = routing.get("side", "above")
+            lines.append(f"\\draw[{','.join(options)}] {source} to[loop {side}]{label} {target};")
+
+    lines += ["\\end{tikzpicture}", "\\end{document}", ""]
+    return "\n".join(lines)
+
+
+def render_diagram(spec: dict[str, Any]) -> str:
+    if spec.get("schema_version") == "1.1":
+        return _render_diagram_structured(spec)
+    return _render_diagram_legacy(spec)
 
 
 def dependencies_for_spec(spec: dict[str, Any]) -> dict[str, Any]:
@@ -963,9 +1252,11 @@ def render_spec(spec: dict[str, Any], spec_path: Path) -> tuple[Path, dict[str, 
         "manifest_version": "1.0",
         "figure_id": spec["id"],
         "schema_version": spec["schema_version"],
+        "mode": "structured" if spec.get("schema_version") == "1.1" else "legacy-structured",
         "recipe": {"id": recipe["id"], "version": recipe["version"]},
         "renderer": renderer,
         "status": "rendered",
+        "qa": {"status": "not_checked"},
         "updated_at": utc_now(),
         "dependencies": dependencies_for_spec(spec),
         "artifacts": {
@@ -989,5 +1280,15 @@ def render_spec(spec: dict[str, Any], spec_path: Path) -> tuple[Path, dict[str, 
             "preserve": [spec_path.name, tex_path.name, f"{basename}.pdf", "data/"],
         },
     }
+    if spec.get("schema_version") == "1.1":
+        theme, profile = _structured_theme_profile(spec)
+        manifest["theme"] = {"id": theme["id"], "version": theme.get("version", "1.0")}
+        manifest["profile"] = {
+            "id": profile["id"],
+            "version": profile.get("version", "1.0"),
+            "target_width_mm": profile.get("target_width_mm"),
+            "minimum_text_pt": profile.get("minimum_text_pt"),
+        }
+        manifest["knowledge"] = {"card_ids": recipe.get("knowledge_ids", [])}
     write_manifest(figure_dir, manifest)
     return tex_path, manifest

@@ -1,0 +1,11 @@
+\documentclass[border=2pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\begin{document}
+\begin{tikzpicture}[node distance=12mm and 18mm]
+  \node[draw] (a) {A}; \node[draw,right=of a] (b) {B};
+  \node[draw,below=of b] (c) {C};
+  \draw[-{Stealth}] (a) -- (b);
+  \draw[-{Stealth}] (b) |- (c);
+\end{tikzpicture}
+\end{document}

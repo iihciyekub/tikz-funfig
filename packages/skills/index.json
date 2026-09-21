@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "skills": [
+    {
+      "skill_id": "funfig-plots",
+      "source_dir": "packages/skills/funfig-plots",
+      "phase": "v1",
+      "recipe_ids": ["implicit-function", "function-plot", "data-series", "error-bar", "scatter-plot", "confidence-band", "surface-plot", "contour-plot", "heatmap", "quiver-field", "threshold-region", "intersection-curves", "publication-threshold", "groupplot"],
+      "capability_ids": ["function", "file", "coordinates", "error-ready", "scatter", "confidence-band", "3d", "contour", "heatmap", "quiver", "rectangle-regions", "intersection", "publication-axis", "multi-panel"],
+      "knowledge_tags": ["plots", "axes", "data", "annotations"]
+    },
+    {
+      "skill_id": "funfig-flowcharts",
+      "source_dir": "packages/skills/funfig-flowcharts",
+      "phase": "v1",
+      "recipe_ids": ["flowchart"],
+      "capability_ids": ["structured-nodes", "relative-layout", "grid-layout", "decision-roles", "edge-labels", "feedback-curves", "groups"],
+      "knowledge_tags": ["flowchart", "routing", "relative-positioning", "qa"]
+    },
+    {
+      "skill_id": "funfig-frameworks",
+      "source_dir": "packages/skills/funfig-frameworks",
+      "phase": "v1",
+      "recipe_ids": ["framework-diagram"],
+      "capability_ids": ["structured-nodes", "relative-layout", "grid-layout", "groups", "labelled-edges", "orthogonal-routing"],
+      "knowledge_tags": ["framework", "groups", "grid", "qa"]
+    },
+    {
+      "skill_id": "funfig-relations",
+      "source_dir": "packages/skills/funfig-relations",
+      "phase": "v1",
+      "recipe_ids": ["relation-diagram"],
+      "capability_ids": ["structured-nodes", "labelled-edges", "directed-edges", "undirected-edges", "curved-edges", "self-loops", "groups"],
+      "knowledge_tags": ["relations", "edges", "labels", "routing"]
+    },
+    {
+      "skill_id": "funfig-schematics",
+      "source_dir": "packages/skills/funfig-schematics",
+      "phase": "v1",
+      "recipe_ids": ["scientific-schematic"],
+      "capability_ids": ["structured-nodes", "manual-layout", "relative-layout", "component-roles", "labelled-edges", "groups"],
+      "knowledge_tags": ["schematic", "coordinates", "components", "labels"]
+    }
+  ]
+}

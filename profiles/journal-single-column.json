@@ -1,0 +1,4 @@
+{
+  "id":"journal-single-column","version":"1.0","description":"Single-column journal figure",
+  "target_width_mm":88,"minimum_text_pt":7.5,"font":"\\small","node_min_height":"8mm","node_inner_xsep":"6pt","node_inner_ysep":"4pt","default_row_gap":"13mm","default_column_gap":"18mm","qa":{"max_label_lines":4,"require_visual_review":true}
+}

@@ -1,0 +1,5 @@
+{
+  "id":"journal-muted","version":"1.0","description":"Low-saturation default academic theme",
+  "tokens":{"node_fill":"blue!4","node_draw":"black!70","text_color":"black","edge_color":"black!70","group_fill":"blue!2","group_draw":"black!30","line_width":"0.6pt","group_line_width":"0.45pt","rounded_corners":"2pt"},
+  "roles":{"decision":{"fill":"Goldenrod!10"},"terminal":{"fill":"ForestGreen!7"},"data":{"fill":"Cerulean!7"},"concept":{"fill":"white"}}
+}

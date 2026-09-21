@@ -6,9 +6,13 @@ The repository is the source of truth. The installed Codex Plugin is generated f
 
 ```text
 packages/skill/               canonical Skill
+packages/skills/              canonical specialized Skills + package manifest
 src/funfig/                   canonical runtime
 schemas/                      canonical FigureSpec schema
 recipes/                      canonical Recipe registry
+themes/                       canonical structured-diagram themes
+profiles/                     canonical publication/output profiles
+knowledge/                    canonical cards, verified examples, manual section corpus
 IconKitchen canonical icons
         ↓ scripts/sync_plugin_package.sh
 packages/plugin/tikz-funfig/  portable Git marketplace Plugin
@@ -18,11 +22,28 @@ Codex marketplace snapshot
 ~/.codex/plugins/cache/...
 ```
 
-Do not manually maintain `packages/plugin/tikz-funfig/runtime/` or the bundled Skill. The consistency regression test verifies that distribution copies match canonical sources.
+Do not manually maintain `packages/plugin/tikz-funfig/runtime/`, `knowledge/`, or bundled Skills. `sync_plugin_package.sh` materializes one compatibility/general Skill plus the five specialized Skills declared in `packages/skills/index.json`. The consistency regression test verifies that distribution copies match canonical sources.
 
 ## What belongs in the Plugin
 
-The portable bundle contains only what an installed Plugin needs: Plugin manifest/interface assets, Skill, runtime, schemas, and recipes. It must not include `references/legacy/`, development notebooks, publication PDFs, fonts, or repository test/build state.
+The portable bundle contains only what an installed Plugin needs: Plugin manifest/interface assets, six Skills, runtime, schemas, recipes, themes, Publication Profiles, compiled knowledge cards/examples, and the lightweight section-level PGF/TikZ manual corpus. It must not include `references/legacy/`, the original/split manual PDFs, development notebooks, publication PDFs, fonts, or repository test/build state.
+
+The shared `knowledge/` directory is distributed **once at Plugin root**. Specialized Skills remain thin and use their materialized `scripts/funfig.sh` wrapper to call the shared runtime. Do not copy the same cards into every Skill.
+
+## Portable runtime contract
+
+An installed copy must work when the source checkout and `references/pgfmanual.pdf` are unavailable. The portable regression test copies the generated Plugin to a temporary standalone directory and verifies knowledge search plus a structured flowchart build through a specialized Skill wrapper.
+
+The ordinary installed Plugin may query:
+
+```text
+compiled knowledge cards
+section-level official manual corpus
+Recipe/capability registry
+themes and Publication Profiles
+```
+
+The original 1323-page PDF remains a development/provenance source, not a runtime dependency.
 
 ## Marketplace identity
 

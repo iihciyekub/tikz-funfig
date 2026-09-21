@@ -1,0 +1,3 @@
+interface:
+  display_name: "TIKZ-FunFig"
+  short_description: "Route and build reproducible journal-quality scientific figures"

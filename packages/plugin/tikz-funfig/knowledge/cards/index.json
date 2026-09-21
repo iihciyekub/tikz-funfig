@@ -1,0 +1,722 @@
+{
+  "schema_version": "1.0",
+  "cards": [
+    {
+      "id": "scopes-styles",
+      "title": "Scopes and reusable styles",
+      "file": "scopes-styles.md",
+      "summary": "Keep repeated TikZ appearance in named styles and use scopes for local transformations or overrides.",
+      "aliases": [
+        "scope",
+        "tikzset",
+        "styles",
+        "样式"
+      ],
+      "tags": [
+        "syntax",
+        "reuse"
+      ],
+      "commands": [
+        "\\tikzset",
+        "\\begin{scope}"
+      ],
+      "libraries": [],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        123,
+        222
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "style-scope"
+      ]
+    },
+    {
+      "id": "coordinates-calc",
+      "title": "Coordinates and calc",
+      "file": "coordinates-calc.md",
+      "summary": "Build named coordinates and derived positions without copying magic numbers.",
+      "aliases": [
+        "calc",
+        "coordinates",
+        "坐标计算"
+      ],
+      "tags": [
+        "geometry",
+        "layout"
+      ],
+      "commands": [
+        "\\coordinate"
+      ],
+      "libraries": [
+        "calc"
+      ],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        148,
+        152,
+        582
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "calc-coordinate"
+      ]
+    },
+    {
+      "id": "paths-routing",
+      "title": "Paths and deterministic routing",
+      "file": "paths-routing.md",
+      "summary": "Choose straight, orthogonal, or explicitly controlled path segments for stable academic diagrams.",
+      "aliases": [
+        "draw",
+        "path",
+        "orthogonal",
+        "路径",
+        "折线"
+      ],
+      "tags": [
+        "edges",
+        "routing"
+      ],
+      "commands": [
+        "\\draw",
+        "\\path"
+      ],
+      "libraries": [],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        123,
+        222
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "path-routing"
+      ]
+    },
+    {
+      "id": "arrows-meta",
+      "title": "Arrow tips with arrows.meta",
+      "file": "arrows-meta.md",
+      "summary": "Use modern arrow tips and keep direction semantics separate from line styling.",
+      "aliases": [
+        "Stealth",
+        "arrow tips",
+        "箭头"
+      ],
+      "tags": [
+        "edges",
+        "style"
+      ],
+      "commands": [
+        "\\draw"
+      ],
+      "libraries": [
+        "arrows.meta"
+      ],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        123,
+        222
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "arrow-meta"
+      ]
+    },
+    {
+      "id": "nodes-anchors",
+      "title": "Nodes and anchors",
+      "file": "nodes-anchors.md",
+      "summary": "Use named nodes, boundary anchors, and consistent padding instead of hard-coded edge coordinates.",
+      "aliases": [
+        "node anchors",
+        "节点",
+        "锚点"
+      ],
+      "tags": [
+        "nodes",
+        "layout"
+      ],
+      "commands": [
+        "\\node"
+      ],
+      "libraries": [],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        223,
+        267
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "node-anchors"
+      ]
+    },
+    {
+      "id": "text-labels",
+      "title": "Academic text and labels",
+      "file": "text-labels.md",
+      "summary": "Keep labels readable at final publication size and separate plain text from intentional TeX math.",
+      "aliases": [
+        "labels",
+        "text width",
+        "align",
+        "标签"
+      ],
+      "tags": [
+        "text",
+        "qa"
+      ],
+      "commands": [
+        "\\node"
+      ],
+      "libraries": [],
+      "sources": [
+        "pgfmanual-3.1.11a",
+        "project-experience"
+      ],
+      "pages": [
+        223,
+        267
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "text-label"
+      ]
+    },
+    {
+      "id": "relative-positioning",
+      "title": "Relative positioning",
+      "file": "relative-positioning.md",
+      "summary": "Place nodes relative to stable IDs with explicit gaps instead of fragile absolute coordinates.",
+      "aliases": [
+        "right of",
+        "below of",
+        "node distance",
+        "相对定位"
+      ],
+      "tags": [
+        "layout",
+        "nodes"
+      ],
+      "commands": [
+        "\\node"
+      ],
+      "libraries": [
+        "positioning"
+      ],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        223,
+        267
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "relative-positioning"
+      ]
+    },
+    {
+      "id": "matrix-layout",
+      "title": "Matrix and grid layout",
+      "file": "matrix-layout.md",
+      "summary": "Use matrix/grid semantics for regular rows and columns, not manual coordinate arithmetic.",
+      "aliases": [
+        "matrix",
+        "grid layout",
+        "矩阵布局"
+      ],
+      "tags": [
+        "layout",
+        "grid"
+      ],
+      "commands": [
+        "\\matrix"
+      ],
+      "libraries": [
+        "matrix"
+      ],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        319,
+        331,
+        710,
+        713
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "matrix-layout"
+      ]
+    },
+    {
+      "id": "chains-layout",
+      "title": "Chains for sequential layout",
+      "file": "chains-layout.md",
+      "summary": "Use chain semantics for genuinely sequential structures while keeping branching flows explicit.",
+      "aliases": [
+        "chains",
+        "chain layout",
+        "链式布局"
+      ],
+      "tags": [
+        "layout",
+        "flowchart"
+      ],
+      "commands": [],
+      "libraries": [
+        "chains"
+      ],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        601,
+        607
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "chains-layout"
+      ]
+    },
+    {
+      "id": "fit-groups",
+      "title": "Fit groups",
+      "file": "fit-groups.md",
+      "summary": "Draw visual group containers around named members without turning groups into graph endpoints.",
+      "aliases": [
+        "fit",
+        "group box",
+        "分组框"
+      ],
+      "tags": [
+        "groups",
+        "framework"
+      ],
+      "commands": [
+        "\\node"
+      ],
+      "libraries": [
+        "fit"
+      ],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        685,
+        687
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "fit-group"
+      ]
+    },
+    {
+      "id": "background-layers",
+      "title": "Background layers",
+      "file": "background-layers.md",
+      "summary": "Place grouping backgrounds behind content so frames never cover nodes, labels, or primary edges.",
+      "aliases": [
+        "backgrounds",
+        "layers",
+        "背景层"
+      ],
+      "tags": [
+        "groups",
+        "style"
+      ],
+      "commands": [],
+      "libraries": [
+        "backgrounds"
+      ],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        578,
+        581
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "background-layer"
+      ]
+    },
+    {
+      "id": "pics-components",
+      "title": "Pics for reusable components",
+      "file": "pics-components.md",
+      "summary": "Use pics only when a visual component repeats with a stable interface; do not hide scientific meaning in opaque macros.",
+      "aliases": [
+        "pics",
+        "components",
+        "复用组件"
+      ],
+      "tags": [
+        "reuse",
+        "schematic"
+      ],
+      "commands": [
+        "\\pic"
+      ],
+      "libraries": [],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        223,
+        267
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "pic-component"
+      ]
+    },
+    {
+      "id": "flowchart-shapes",
+      "title": "Flowchart node shapes",
+      "file": "flowchart-shapes.md",
+      "summary": "Map process, decision, terminal, and data roles to restrained academic shapes.",
+      "aliases": [
+        "diamond",
+        "decision",
+        "process",
+        "流程图形状"
+      ],
+      "tags": [
+        "flowchart",
+        "nodes"
+      ],
+      "commands": [
+        "\\node"
+      ],
+      "libraries": [
+        "shapes.geometric"
+      ],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        786,
+        832
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "flowchart-shapes"
+      ]
+    },
+    {
+      "id": "edge-labels-quotes",
+      "title": "Edge labels and quotes",
+      "file": "edge-labels-quotes.md",
+      "summary": "Place relationship labels deliberately and keep them independent of arrow direction and line geometry.",
+      "aliases": [
+        "edge labels",
+        "quotes",
+        "关系标签"
+      ],
+      "tags": [
+        "edges",
+        "relations"
+      ],
+      "commands": [
+        "\\draw"
+      ],
+      "libraries": [
+        "quotes"
+      ],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        223,
+        267
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "edge-label"
+      ]
+    },
+    {
+      "id": "curved-edges",
+      "title": "Curved edges",
+      "file": "curved-edges.md",
+      "summary": "Use explicit bends for feedback and parallel relationships; do not rely on arbitrary hand-shaped Bézier control points by default.",
+      "aliases": [
+        "bend left",
+        "bend right",
+        "曲线边"
+      ],
+      "tags": [
+        "routing",
+        "edges"
+      ],
+      "commands": [
+        "\\draw"
+      ],
+      "libraries": [
+        "topaths"
+      ],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        840,
+        844
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "curved-edge"
+      ]
+    },
+    {
+      "id": "self-loops",
+      "title": "Self loops",
+      "file": "self-loops.md",
+      "summary": "Represent self-relations with explicit loop sides so labels and arrowheads stay readable.",
+      "aliases": [
+        "loop above",
+        "self edge",
+        "自环"
+      ],
+      "tags": [
+        "routing",
+        "relations"
+      ],
+      "commands": [
+        "\\draw"
+      ],
+      "libraries": [
+        "topaths"
+      ],
+      "sources": [
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [
+        840,
+        844
+      ],
+      "verification": "compiled",
+      "example_ids": [
+        "self-loop"
+      ]
+    },
+    {
+      "id": "themes-monochrome",
+      "title": "Journal monochrome theme",
+      "file": "themes-monochrome.md",
+      "summary": "Use shape, line style, and spacing as primary encodings so grayscale output remains unambiguous.",
+      "aliases": [
+        "black and white",
+        "grayscale",
+        "黑白"
+      ],
+      "tags": [
+        "theme",
+        "journal"
+      ],
+      "commands": [],
+      "libraries": [],
+      "sources": [
+        "project-experience"
+      ],
+      "pages": [],
+      "verification": "compiled",
+      "example_ids": [
+        "theme-monochrome"
+      ]
+    },
+    {
+      "id": "themes-color",
+      "title": "Academic color themes",
+      "file": "themes-color.md",
+      "summary": "Use restrained or accessible color as a secondary channel and never make scientific meaning color-only.",
+      "aliases": [
+        "academic color",
+        "accessible",
+        "色觉"
+      ],
+      "tags": [
+        "theme",
+        "journal"
+      ],
+      "commands": [],
+      "libraries": [],
+      "sources": [
+        "project-experience"
+      ],
+      "pages": [],
+      "verification": "compiled",
+      "example_ids": [
+        "theme-color"
+      ]
+    },
+    {
+      "id": "plain-text-escaping",
+      "title": "Plain-text escaping",
+      "file": "plain-text-escaping.md",
+      "summary": "Escape TeX-special characters in plain labels while preserving explicitly declared TeX/math labels.",
+      "aliases": [
+        "escape",
+        "special characters",
+        "转义"
+      ],
+      "tags": [
+        "text",
+        "safety"
+      ],
+      "commands": [],
+      "libraries": [],
+      "sources": [
+        "project-experience"
+      ],
+      "pages": [],
+      "verification": "compiled",
+      "example_ids": [
+        "plain-text"
+      ]
+    },
+    {
+      "id": "cjk-fonts",
+      "title": "CJK text and fonts",
+      "file": "cjk-fonts.md",
+      "summary": "Choose XeLaTeX/LuaLaTeX and an available system CJK font without bundling proprietary font files.",
+      "aliases": [
+        "Chinese",
+        "CJK",
+        "中文",
+        "字体"
+      ],
+      "tags": [
+        "engine",
+        "text"
+      ],
+      "commands": [],
+      "libraries": [],
+      "sources": [
+        "project-experience"
+      ],
+      "pages": [],
+      "verification": "compiled",
+      "example_ids": [
+        "cjk-text"
+      ]
+    },
+    {
+      "id": "library-dependencies",
+      "title": "TikZ library dependencies",
+      "file": "library-dependencies.md",
+      "summary": "Load only libraries required by the chosen semantics and resolve them deterministically from the FigureSpec.",
+      "aliases": [
+        "usetikzlibrary",
+        "dependencies",
+        "库依赖"
+      ],
+      "tags": [
+        "build",
+        "libraries"
+      ],
+      "commands": [
+        "\\usetikzlibrary"
+      ],
+      "libraries": [],
+      "sources": [
+        "pgfmanual-3.1.11a",
+        "project-experience"
+      ],
+      "pages": [],
+      "verification": "compiled",
+      "example_ids": [
+        "library-deps"
+      ]
+    },
+    {
+      "id": "diagram-layout-repair",
+      "title": "Diagram layout repair",
+      "file": "diagram-layout-repair.md",
+      "summary": "Repair overlap and unreadable routing by adjusting structure, spacing, anchors, and text width before shrinking fonts.",
+      "aliases": [
+        "overlap",
+        "layout repair",
+        "重叠",
+        "布局修复"
+      ],
+      "tags": [
+        "qa",
+        "layout"
+      ],
+      "commands": [],
+      "libraries": [],
+      "sources": [
+        "project-experience"
+      ],
+      "pages": [],
+      "verification": "compiled",
+      "example_ids": [
+        "layout-repair"
+      ]
+    },
+    {
+      "id": "engine-selection",
+      "title": "TeX engine selection",
+      "file": "engine-selection.md",
+      "summary": "Choose pdfLaTeX, XeLaTeX, or LuaLaTeX from actual figure requirements; do not switch engines silently against an explicit user choice.",
+      "aliases": [
+        "pdflatex",
+        "xelatex",
+        "lualatex",
+        "引擎"
+      ],
+      "tags": [
+        "build",
+        "engine"
+      ],
+      "commands": [],
+      "libraries": [],
+      "sources": [
+        "project-experience",
+        "pgfmanual-3.1.11a"
+      ],
+      "pages": [],
+      "verification": "compiled",
+      "example_ids": [
+        "engine-selection"
+      ]
+    },
+    {
+      "id": "reusable-diagram-patterns",
+      "title": "Reusable academic diagram patterns",
+      "file": "reusable-diagram-patterns.md",
+      "summary": "Promote repeated, validated structures into Recipe/Theme/Profile capabilities instead of accumulating one-off TikZ generators.",
+      "aliases": [
+        "pattern",
+        "recipe",
+        "复用模式"
+      ],
+      "tags": [
+        "architecture",
+        "reuse"
+      ],
+      "commands": [],
+      "libraries": [],
+      "sources": [
+        "project-experience"
+      ],
+      "pages": [],
+      "verification": "compiled",
+      "example_ids": [
+        "reusable-pattern"
+      ]
+    }
+  ]
+}

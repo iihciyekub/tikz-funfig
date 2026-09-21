@@ -1,0 +1,17 @@
+{
+  "schema_version":"1.1","id":"schematic-scientific","recipe":"scientific-schematic","kind":"tikz",
+  "theme":{"id":"journal-muted"},"profile":{"id":"journal-single-column"},
+  "diagram":{"layout":{"type":"manual"},
+    "nodes":[
+      {"id":"source","label":"Stimulus $S$","label_format":"tex","role":"component","position":{"type":"absolute","x":0,"y":0}},
+      {"id":"system","label":"System","role":"component","min_width":"20mm","position":{"type":"absolute","x":3.0,"y":0}},
+      {"id":"sensor","label":"Sensor","role":"component","position":{"type":"absolute","x":6.0,"y":0}},
+      {"id":"readout","label":"Readout $y(t)$","label_format":"tex","role":"annotation","position":{"type":"absolute","x":6.0,"y":-1.7}}
+    ],
+    "edges":[
+      {"id":"e1","from":"source","to":"system","route":"straight","arrows":"forward","label":"input"},
+      {"id":"e2","from":"system","to":"sensor","route":"straight","arrows":"forward","label":"response"},
+      {"id":"e3","from":"sensor","to":"readout","route":"straight","arrows":"forward","label":"measure","label_side":"right"}
+    ],"groups":[{"id":"apparatus","members":["system","sensor"],"label":"Experimental system"}]},
+  "outputs":{"basename":"schematic-scientific","keep_build":false},"metadata":{"golden":true}
+}

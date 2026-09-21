@@ -1,0 +1,10 @@
+\documentclass[border=2pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\begin{document}
+\begin{tikzpicture}
+  \coordinate (a) at (0,0); \coordinate (b) at (4,0);
+  \coordinate (mid) at ($(a)!0.5!(b)$);
+  \draw (a) -- (b); \fill (mid) circle (1.5pt) node[above] {midpoint};
+\end{tikzpicture}
+\end{document}

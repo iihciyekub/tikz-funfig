@@ -1,0 +1,17 @@
+{
+  "source_id": "pgfmanual-3.1.11a",
+  "topics": [
+    {"id":"coordinates-calc","aliases":["coordinates","coordinate calculation","坐标计算","calc"],"libraries":["calc"],"source_ranges":[[148,152],[582,582]]},
+    {"id":"relative-positioning","aliases":["relative positioning","相对定位","right of","below of","node distance"],"libraries":["positioning"],"source_ranges":[[223,267]]},
+    {"id":"nodes-anchors","aliases":["nodes","anchors","节点","锚点"],"libraries":[],"source_ranges":[[223,267]]},
+    {"id":"paths-routing","aliases":["path","draw","orthogonal routing","路径","折线"],"libraries":[],"source_ranges":[[123,222]]},
+    {"id":"arrows-meta","aliases":["arrows","arrow tips","箭头"],"libraries":["arrows.meta"],"source_ranges":[[123,222]]},
+    {"id":"matrix-layout","aliases":["matrix","grid layout","矩阵布局"],"libraries":["matrix"],"source_ranges":[[319,331],[710,713]]},
+    {"id":"fit-groups","aliases":["fit","group box","分组框"],"libraries":["fit"],"source_ranges":[[685,687]]},
+    {"id":"background-layers","aliases":["backgrounds","layers","背景层"],"libraries":["backgrounds"],"source_ranges":[[578,581]]},
+    {"id":"intersections","aliases":["intersections","named paths","交点"],"libraries":["intersections"],"source_ranges":[[123,222]]},
+    {"id":"chains-layout","aliases":["chains","chain layout","链式布局"],"libraries":["chains"],"source_ranges":[[601,607]]},
+    {"id":"flowchart-shapes","aliases":["flowchart shapes","diamond","decision node","流程图形状"],"libraries":["shapes.geometric"],"source_ranges":[[786,832]]},
+    {"id":"curved-edges","aliases":["bend left","bend right","curve edge","曲线边"],"libraries":["topaths"],"source_ranges":[[840,844]]}
+  ]
+}

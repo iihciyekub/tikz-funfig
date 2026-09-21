@@ -1,0 +1,16 @@
+{
+  "schema_version":"1.1","id":"flowchart-feedback","recipe":"flowchart","kind":"tikz",
+  "theme":{"id":"journal-monochrome"},"profile":{"id":"journal-single-column"},
+  "diagram":{"layout":{"type":"relative"},
+    "nodes":[
+      {"id":"collect","label":"Acquire","role":"process","position":{"type":"absolute","x":0,"y":0}},
+      {"id":"check","label":"Pass QC?","role":"decision","position":{"type":"relative","of":"collect","direction":"right","gap":"18mm"}},
+      {"id":"model","label":"Model","role":"process","position":{"type":"relative","of":"check","direction":"right","gap":"18mm"}}
+    ],
+    "edges":[
+      {"id":"e1","from":"collect","to":"check","route":"straight","arrows":"forward"},
+      {"id":"e2","from":"check","to":"model","route":"straight","arrows":"forward","label":"yes"},
+      {"id":"e3","from":"check","to":"collect","from_anchor":"south","to_anchor":"south","route":"curve","routing":{"bend":-38},"arrows":"forward","label":"no","label_side":"below"}
+    ],"groups":[]},
+  "outputs":{"basename":"flowchart-feedback","keep_build":false},"metadata":{"golden":true}
+}

@@ -1,0 +1,9 @@
+{
+  "id":"framework-diagram","version":"1.0","kind":"tikz","renderer":"diagram",
+  "description":"Layered/grouped academic conceptual or research framework diagram.",
+  "required":["diagram"],
+  "capabilities":["structured-nodes","relative-layout","grid-layout","groups","labelled-edges","orthogonal-routing"],
+  "status":"stable","defaults":{"edge_arrows":"forward"},
+  "knowledge_ids":["fit-groups","background-layers","matrix-layout","nodes-anchors","diagram-layout-repair"],
+  "external_tools":["latexmk"]
+}

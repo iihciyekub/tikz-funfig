@@ -3,13 +3,13 @@
 | 项目 | 内容 |
 | --- | --- |
 | 文档编号 | TFF-SPEC-001 |
-| 文档版本 | 0.1 |
+| 文档版本 | 0.2 |
 | 日期 | 2026-09-22 |
-| 状态 | 待评审的实施规格；本文件不代表功能已经实现 |
+| 状态 | 已确认实施规格；作为本轮 M0-M4 实现与验收的唯一产品基线 |
 | 产品 | TIKZ-FunFig，插件标识 `tikz-funfig` |
-| 当前基线 | 仓库版本 0.8.4；HEAD `cd4fe7a`，另有既存未提交的 Schema/renderer 修改 |
-| 首期目标 | 官方知识库、多个可发现 Skill、流程图/框架图/文本关系图稳定生成 |
-| 后续目标 | 树与思维导图、状态模型、几何示意、自动布局 |
+| 当前基线 | 仓库版本 0.8.5；实施起点 HEAD `4e9a046`，工作区干净 |
+| 首期目标 | 官方知识检索、6 个可发现 Skill、流程/框架/关系/科学示意图稳定生成、期刊级 QA |
+| 后续目标 | 树与思维导图、状态模型、正式 ER、自动布局与更多专门科学示意能力 |
 
 ## 1. 产品决策
 
@@ -30,17 +30,20 @@
 | FigureSpec | 保存图形内容、关系、布局约束与样式意图 | 不以生成的 TeX 作为长期编辑入口 |
 | Recipe/Method | 定义图形类别及可复用语义 | 不为每次绘图创建一次性生成器 |
 | Theme | 统一颜色、字体、线宽、间距、节点外观 | 不决定业务关系与箭头含义 |
+| Publication Profile | 定义最终论文尺寸、可读性下限、线宽/标记尺度与密度约束 | 不承担配色或科学语义 |
 | Runtime | 校验、依赖解析、确定性生成、编译和产物管理 | 不依赖开发机上的手册绝对路径 |
+| QA | 编译后检查尺寸、文本可读性、重叠、标签、箭头、输出完整性 | 不以“编译成功”替代视觉质量结论 |
 
 ### 1.2 产品边界
 
 - 首要宿主为具备文件和命令执行能力的本地 Codex；沿用现有 Git marketplace 分发身份。
-- 初期使用 Skill + 本地 CLI 即可，不新增 MCP 服务、云端 API、向量数据库或账号体系。
+- 初期使用 Skill + 本地 CLI + 本地 SQLite FTS 即可，不新增 MCP 服务、云端 API、向量数据库或账号体系。
 - 输出以可编辑 FigureSpec、TeX、PDF 为主；预览图片按需生成。
 - 流程图、框架图、关系图均为视觉表达，不从排版自动推断科学因果、统计结论或模型有效性。
 - 动画、系统层开发、电路专用能力、交互式编辑器不属于首期。
 - PGF/TikZ 的 Data Visualization 与 PGFPlots 分开索引；本手册不能替代 PGFPlots 官方手册。
-- 不承诺所有 TikZ 语法都可由 FigureSpec 表达；已知但未实现的能力明确标记。
+- 不承诺所有 TikZ 语法都可由 FigureSpec 表达；成熟能力使用 Structured Mode，长尾能力允许受控 Expert TikZ Mode。
+- Expert TikZ Mode 必须编译并经过视觉 QA，且不能因为一次成功生成就把对应能力标记为 stable Recipe。
 
 ## 2. 基线与差距
 
@@ -50,12 +53,14 @@
 | --- | --- | --- |
 | `packages/skill/` | 单一 canonical Skill | 保留入口，新增专项 canonical 源 |
 | `scripts/sync_plugin_package.sh` | 同步一个 Skill、runtime、schemas、recipes | 多 Skill 清单和受控共享资源同步 |
+| 官方知识 | 只有整本 `references/pgfmanual.pdf` | 版本化来源清单、section-level corpus、知识卡、可编译示例、FTS 查询 |
 | `diagram.nodes` | `id/label/at/right_of/below_of/style` | 节点语义、四向定位、文本度量和统一布局 |
 | `diagram.edges` | 端点、标签、style；renderer 主要使用 `--` | 锚点、折线、曲线、自环、标签位置 |
 | `render_diagram` | 基础节点与箭头，固定加载一组库 | 分组、主题、按能力解析库依赖 |
 | `engine.latex` | Schema 与 build 已允许 `lualatex` | Graph Drawing 的能力检测、自动引擎选择及对应 doctor 检查 |
 | `src/funfig/schema.py` | 手写运行时校验，版本固定为 `1.0` | 与 JSON Schema 同步的新版本和语义校验 |
 | Plugin | 根 `plugin.json` 与 `extensions.com.openai` | 沿用 portable 格式，验证多 Skill 可发现性 |
+| 质量标准 | 以编译成功为主要技术检查 | Publication Profile + 编译 + 渲染 + 视觉/语义 QA |
 
 工作区在本次编写前已有 `schemas/figure-spec.schema.json` 和 `src/funfig/render.py` 修改。后续实现开始时重新检查并保留这些变更，不能将其当作本 Spec 已实现的能力，也不能覆盖或回退。
 
@@ -70,11 +75,9 @@
 | `funfig-flowcharts` | 步骤、判断、分支、合流、反馈流程 | 不宣称完整 BPMN/UML 标准支持 | 首期 |
 | `funfig-frameworks` | 研究框架、机制模型、系统模块、分层与嵌套分组 | 用户提供含义；不自动添加科学因果关系 | 首期 |
 | `funfig-relations` | 文本概念关系、标签网络、基础实体关系表达 | 精确 ER 记法待专项 Recipe 完成后开放 | 首期基础能力 |
-| `funfig-trees-mindmaps` | 分类树、组织结构、思维导图 | 优先树/径向结构，不默认力导向 | 第二期 |
-| `funfig-state-models` | 状态机、初始/终止状态、Petri 网 | 画图与模型验证明确区分 | 第二期 |
-| `funfig-geometry` | 几何关系、角度、投影、交点、3D 示意 | 不替代 CAD 或科学求解器 | 第三期 |
+| `funfig-schematics` | 实验/机制/坐标/科学概念示意及轻量几何构图 | 不替代 CAD、电路 EDA 或数值求解器 | 首期基础能力 |
 
-首期插件应包含 **5 个实际可用 Skill**：1 个统一入口、1 个现有科学绘图专项、3 个新增专项。长期规划为 8 个 Skill；不得提前分发空壳 Skill 或宣称后续能力可用。现有大写入口名称作为兼容例外保留，新 Skill 使用小写连字符名称。
+首期插件包含 **6 个实际可用 Skill**：1 个统一入口、1 个现有科学绘图专项、4 个结构/示意专项。树、思维导图、状态机、Petri 网、正式 ER 等先作为 Recipe/能力演进，不因为一种图形记法就机械新增 Skill。只有当用户目标、知识与工作流长期明显独立时才晋升为新 Skill。现有大写入口名称作为兼容例外保留，新 Skill 使用小写连字符名称。
 
 ### 3.2 路由规则
 
@@ -86,6 +89,8 @@
 6. 混合请求按内容拆为可独立维护的图；首期不承诺把 PGFPlots 与 TikZ 框架自动组合进一个新画布。
 7. 不为路由自动创建 Codex 任务或子代理；多个 Skill 是工作流组织方式，不是多代理架构。
 8. 明确的文本、节点、连线和布局足够时直接绘制；只对影响语义的缺失信息提问。
+9. 已有 stable Recipe 时优先复用；只有 stable/experimental 能力都不能表达且官方知识确认可行时，才进入 Expert TikZ Mode。
+10. 每次输出都选择 Publication Profile；没有用户指定时，论文用途默认 `journal-single-column`。
 
 ### 3.3 路由验收样例
 
@@ -95,6 +100,7 @@
 | 数据采集后判断质量，不通过则返回采集 | flowcharts | 判断节点、是/否标签、反馈路径 |
 | 画输入层、机制层、结果层的研究框架 | frameworks | 分层模块、分组标题、明确方向 |
 | A 与 B 相互关联，A 支持 C，用文字标在边上 | relations | 双向/有向边与关系标签 |
+| 画一个实验装置/机制示意，标出变量与作用方向 | schematics | 组件、空间关系、标注与方向箭头 |
 | 把当前图改成灰度期刊风格 | 当前专项 | 关系和数据不变，只改主题 |
 | 画一个模型图 | 统一入口 | 根据上下文消歧，不盲选函数图 |
 | 请写一份研究框架说明，不需要图 | 不激活绘图流程 | 不创建图形文件 |
@@ -103,9 +109,9 @@
 
 - 每个专项目录必须有 `SKILL.md`，frontmatter 包含与目录匹配的 `name` 和简洁、可区分的 `description`。
 - `description` 说明适用任务与容易混淆的边界，不能全部写成“绘制任意科学图”。正文说明语义提取、Recipe 选择、资源入口和输出验证。
-- 共享内容由第 6 节规则生成；专业领域说明留在本专项源目录。UI metadata 仅在有明确用途时增加 `agents/openai.yaml`。
+- 专业领域说明留在本专项源目录；共享知识不复制进每个 Skill，而由统一 `tff kb` 查询接口与 plugin `knowledge/` 目录提供。UI metadata 仅在有明确用途时增加 `agents/openai.yaml`。
 - 默认允许自然语言匹配；不将专项 Skill 全部设为只能显式调用。宿主匹配是模型选择行为，路由表用于指导和评测，不宣称是确定性调度器。
-- 每个 Skill 必须列出当前稳定 Recipe 与尚未支持的相关能力；新增 ER Recipe 后仍归 `funfig-relations`，无需增加第九个 Skill。
+- 每个 Skill 必须列出当前稳定 Recipe、experimental 能力、Expert Mode 触发边界；新增 ER Recipe 后仍归 `funfig-relations`，不自动增加 Skill。
 - 主入口保留生成、迁移、修复所需的共同约束，但将具体科学绘图细节移到 plots，避免同时维护两份完整教程。
 
 ## 4. 官方手册处理规范
@@ -172,7 +178,7 @@
 - 输入包括原 PDF 和版本化 `split-plan.json`。SHA、页数或预期章节标题不匹配时中止，不套用旧页码。
 - 输出到 `output/pdf/pgfmanual-3.1.11a/`；PDF 保持仓库忽略状态。
 - 原页面保持矢量、文本、页面框和图示；不以全页截图代替原 PDF。
-- 分册内书签和内部跳转重映射。跨分册引用记录回原书/索引；无法重映射的链接应报告或移除失效目标，不声称全部超链接保持可用。
+- V1 分册优先保证原页面文本、矢量、图示和页面框保真；保留原 annotation，但切分后跨册目标可能失效。构建 QA 必须统计并报告 `Illegal annotation destination` 数量，权威超链接/书签导航仍使用完整原手册。知识索引负责从任务词定位到原始页码，不声称分册中的全部链接可用。
 - 不在正文前插封面而改变源页映射；说明、版权来源及索引采用独立文件，原版权/许可页也有专门分册。
 - 使用临时输出目录验证成功后发布生成结果；既有输出只在来源和配置匹配时可重建，原 PDF 永不作为输出目标。
 - 同一输入及拆分计划应得到相同页面集合与清单内容；不要求含生成元数据的 PDF 字节完全相同。
@@ -192,6 +198,32 @@
 | `topics[]` | 中英文别名、库名、章节号、来源范围、知识卡片 ID |
 
 包含输出校验和、实际生成时间、QA 状态的构建报告放在 `output/`，不混入稳定配置。
+
+### 4.6 Section-level 官方手册语料库
+
+15 个 PDF 分册主要服务人工阅读和视觉复核，不能作为 Agent 的主要检索接口。构建脚本必须同时生成 **section-level corpus**：按目录标题、chapter、section、subsection、library 以及命令/PGF key 边界切分可搜索文本，而不是按固定 token 数机械切块。
+
+每个语料块至少记录：
+
+- 稳定 `id`、标题、层级和父级；
+- `source_id`、PGF/TikZ 版本、PDF 物理页范围和原页标签；
+- `libraries`、显式出现的控制序列/commands、PGF keys；
+- 中英文 `aliases` 与任务标签；
+- 原文抽取文本和相邻章节关系；
+- 是否存在图示、代码示例或跨页内容的提示。
+
+Canonical 语料保存到 `knowledge/manual-index/`，使用 JSON/JSONL 等可审查文本格式进入 Git；普通 Plugin 不分发原 PDF，但分发经过来源映射的轻量语料。原文抽取只用于检索和复核，不自动视为正式知识卡，也不把 PDF 示例未经校验直接标记为稳定能力。
+
+检索优先级必须保持：
+
+```text
+stable Recipe/capability
+    -> reviewed/compiled knowledge card
+    -> section-level manual corpus
+    -> 原始/分册 PDF 页面复核
+```
+
+用户问到冷门命令或当前 Card 尚未覆盖的能力时，允许从 section-level corpus 找到精确官方位置，再进入 Expert TikZ Mode 或后续知识晋升流程，避免重新全文翻阅 1323 页。
 
 ## 5. 可分发知识库
 
@@ -235,11 +267,13 @@
 
 ### 5.4 按需查阅
 
-- Skill 先读取任务索引，再读取匹配的卡片和最近示例；不默认加载完整分册或全部知识库。
-- 匹配优先使用稳定标签、中文别名、库名、能力 ID；首期采用文件与 JSON 索引即可。
+- Skill 先查询 capability/Recipe，再读取匹配的卡片和最近示例；不默认加载完整分册或全部知识库。
+- 匹配优先使用稳定标签、中文别名、库名、命令、PGF key、能力 ID；首期实现 SQLite FTS5/BM25 全文检索，并保留可审查的 JSON/Markdown canonical 源。
+- `tff kb search <query>` 是统一查询入口；runtime 可按需在内存或缓存中构建 FTS 索引，不要求提交不可审查的数据库二进制作为 canonical 源。
+- 查询先做轻量 alias/术语归一化，再在 title/aliases/tags/commands/libraries/summary/body/source 标题上检索；结果必须返回来源类型、验证状态和页码，不能把 manual chunk 与 compiled card 混为同一可信级别。
 - 常规任务目标为读取 1 个专项 Skill 和约 2–5 张卡片；复杂需求可增加，不能为了硬性数量限制遗漏必要知识。
 - `references/legacy/` 和 root `references/manuals/` 均不进入运行时查找链。
-- 暂不要求新的 `funfig search` 命令；只有文件检索确有不足时才新增 CLI。
+- 第一阶段不引入 embedding/vector DB。只有在建立真实查询集并证明 FTS Top-5 recall 对长尾语义检索不足后，才允许增加向量检索；向量层只能补充，不能替代来源/命令精确匹配。
 
 ## 6. Canonical 源与打包布局
 
@@ -251,29 +285,33 @@ packages/
     SKILL.md
     scripts/                     # 现有通用 wrapper / 编译工具
     references/
-      knowledge/                 # 新增：共享任务索引和知识卡片
       schema-contract.md
       style-guide.md
       ...
     templates/
-    assets/knowledge-examples/   # 新增：可分发最小 TeX 示例
   skills/                        # 新增：专项 Skill canonical 源
     index.json                   # 显式打包清单及资源选择
     funfig-plots/SKILL.md
     funfig-flowcharts/SKILL.md
     funfig-frameworks/SKILL.md
     funfig-relations/SKILL.md
-    ...                          # 仅在后续能力完成时加入
+    funfig-schematics/SKILL.md
   plugin/tikz-funfig/             # 生成目标，禁止手工维护副本
 references/manuals/              # 开发溯源清单；不分发
+knowledge/                       # 共享 canonical 知识源；只维护一份
+  source-manifests/
+  manual-index/
+  cards/
+  examples/
 schemas/
 recipes/
 themes/                          # 新增：机器可读主题 canonical 源
+profiles/                        # 新增：期刊/输出尺寸与可读性约束
 src/funfig/
 examples/golden/
 ```
 
-此目录扩展正式实施时，先更新 `AGENTS.md`、开发文档和打包契约，声明 `packages/skills/`、`themes/` 的职责。共享知识仍位于现有 `packages/skill/` 源范围内。
+此目录扩展正式实施时，先更新 `AGENTS.md`、开发文档和打包契约，声明 `packages/skills/`、`knowledge/`、`themes/`、`profiles/` 的职责。共享知识只维护一份 canonical 源，避免每个 Skill 内复制后产生漂移。
 
 ### 6.2 插件分发布局
 
@@ -286,25 +324,30 @@ tikz-funfig/
       SKILL.md
       references/
       scripts/
-      assets/knowledge-examples/
     funfig-plots/
       SKILL.md
-      references/shared/         # 自动物化所需共享资料
-      scripts/funfig.sh           # 自动复制同一个 canonical wrapper
-      assets/knowledge-examples/
     funfig-flowcharts/
     funfig-frameworks/
     funfig-relations/
+    funfig-schematics/
+  knowledge/
+    source-manifests/
+    manual-index/
+    cards/
+    examples/
   runtime/
     src/funfig/
     schemas/
     recipes/
     themes/
+    profiles/
+  scripts/
+    tff
 ```
 
-专项 Skill 自有的简短说明来自各自 canonical 目录；共享卡片、契约、wrapper 按清单生成到该 Skill 内，保持资源可发现和相对链接自包含。**分发副本允许重复，canonical 内容只维护一份。** 不使用依赖源码树的软链接，不要求另一个 Skill 先激活才能读取资源。
+专项 Skill 自有的简短说明来自各自 canonical 目录。共享知识通过 Plugin 根 `knowledge/` 和统一 runtime 查询接口提供，不复制进每个 Skill；通用 FigureSpec/构建契约仍可由统一入口 Skill 保留简短文档。所有 Skill 通过相同的 `tff`/`funfig` runtime 能力查询知识和构建图形，不要求另一个 Skill 先激活。
 
-`packages/skills/index.json` 至少定义 `skill_id`、`source_dir`、`phase`、`recipe_ids`、`knowledge_ids`、`shared_files` 和 `example_ids`。目标路径由打包规则统一决定；引用不存在或目标重名时构建失败。
+`packages/skills/index.json` 至少定义 `skill_id`、`source_dir`、`phase`、`recipe_ids`、`capability_ids` 和 `knowledge_tags`。目标路径由打包规则统一决定；引用不存在或目标重名时构建失败。
 
 ### 6.3 打包与兼容要求
 
@@ -316,7 +359,7 @@ tikz-funfig/
 - 保留根 `plugin.json` 的 portable 格式和 `extensions.com.openai`。目前不因旧 scaffold 偏好兼容格式而强行迁移现有 manifest。
 - `.codex-plugin/plugin.json` 只有真实兼容目标需要时才增加，不作为本次多 Skill 功能的前置条件。
 - 不新增空的 MCP/apps/hooks 配置；不改变 marketplace 或插件身份。
-- 普通安装包不含原手册、分册 PDF、完整抽取文本、开发测试状态、字体文件或绝对用户路径。
+- 普通安装包不含原手册、分册 PDF、未筛选的整本原始抽取文本、开发测试状态、字体文件或绝对用户路径；只包含 section-level 轻量索引、知识卡和验证示例。
 
 ## 7. FigureSpec 演进
 
@@ -330,6 +373,15 @@ tikz-funfig/
 - 同时更新 JSON Schema 和 `src/funfig/schema.py`；不能只改 Schema 文件。
 - Schema 版本与插件发布版本分开管理，不在本 Spec 中提前承诺某个发行版本号。
 
+### 7.1.1 Structured Mode 与 Expert TikZ Mode
+
+FigureSpec 只覆盖经过产品验证、值得长期维护的稳定语义，不追求复刻整个 TikZ/PGF API。
+
+- **Structured Mode**：stable/experimental Recipe 能表达的需求必须走 FigureSpec -> validator -> renderer；生成 TeX 是产物，不是长期编辑入口。
+- **Expert TikZ Mode**：当用户需求超出当前 Schema，但 section-level 官方知识确认 TikZ/PGF 可实现时，允许生成独立受控 TeX。该模式必须记录 `mode=raw-expert`、知识来源和所需库/引擎，实际编译并通过视觉 QA。
+- Expert Mode 不自动修改已安装 runtime，不自动晋升为 Recipe；只有重复需求、知识卡、示例、Schema/renderer 和 golden 都补齐后才能转 stable。
+- 能用现有 stable Recipe 表达的任务不得为了方便绕到 raw TeX；Expert Mode 是长尾逃生口，不是默认路径。
+
 ### 7.2 首期字段草案
 
 以下是实施目标契约，落地时需通过 Schema 和示例收敛；禁止将本节 JSON 当作当前 0.8.4 已支持输入。
@@ -337,6 +389,7 @@ tikz-funfig/
 | 对象 | 字段 | 行为 |
 | --- | --- | --- |
 | 根 | `theme.id`, `theme.overrides` | 选择主题并做有限 token 覆盖 |
+| 根 | `profile.id` | 选择论文/输出尺寸和可读性约束；论文默认 `journal-single-column` |
 | `diagram.layout` | `type: manual/relative/grid` | 选择明确的布局策略 |
 | `diagram.layout` | `row_gap`, `column_gap` | 正长度，如 `8mm`、`12mm` |
 | `diagram.nodes[]` | `id`, `label`, `label_format` | 1.1 默认 `plain`；显式 `tex` 才按 TeX 解释 |
@@ -365,7 +418,8 @@ tikz-funfig/
 
 | 项目 | 1.1 新建图默认/约定 |
 | --- | --- |
-| 主题 | `academic-muted` |
+| 主题 | `journal-muted` |
+| Publication Profile | `journal-single-column` |
 | 节点角色与形状 | process/module 为 rounded-rectangle，decision 为 diamond，terminal 为 ellipse，data 为 parallelogram，concept 为 rectangle |
 | 标签 | 节点及边默认 plain；align 默认为 center；换行符表示显式分行 |
 | 连线 | route 默认为 straight；arrows 由 Recipe 定义：flowchart/framework 为 forward，relation 为 none |
@@ -388,7 +442,8 @@ tikz-funfig/
   "id": "data-quality-flow",
   "recipe": "flowchart",
   "kind": "tikz",
-  "theme": {"id": "academic-muted"},
+  "theme": {"id": "journal-muted"},
+  "profile": {"id": "journal-single-column"},
   "diagram": {
     "layout": {"type": "relative"},
     "nodes": [
@@ -455,6 +510,7 @@ tikz-funfig/
 | 首期 | `flowchart` | 步骤/判断/分支/反馈 |
 | 首期 | `framework-diagram` | 层次模块、分组、带标签关系 |
 | 首期 | `relation-diagram` | 概念节点、多种连线与标签 |
+| 首期 | `scientific-schematic` | 科学组件、坐标/机制示意、方向箭头和标注 |
 | 第二期 | `tree-diagram`, `mindmap` | 树与径向层级 |
 | 第二期 | `state-machine`, `petri-net`, `entity-relationship` | 专项记法与角色 |
 | 第三期 | 几何类及自动布局 Recipe | 经案例验证后确定粒度 |
@@ -463,13 +519,25 @@ tikz-funfig/
 
 ### 8.2 主题
 
-首期提供 `journal-monochrome`、`academic-muted`、`presentation-color` 三个主题。紧凑排版作为后续 density 选项，不先扩展为独立 Skill。
+首期提供 `journal-monochrome`、`journal-muted`、`journal-accessible`、`presentation-color` 四个主题。紧凑排版作为后续 density 选项，不先扩展为独立 Skill。
 
 优先级为：显式元素 appearance > 显式主题 token 覆盖 > 主题 role 样式 > Recipe 默认 > 系统默认。切换主题不得增删节点、修改数据、改变箭头方向或关系标签。
 
 主题采用有限 token，如字体大小、节点内边距、基础线宽、边色、节点填充色和文本色。字体使用可用字体选择规则，不写死开发机绝对路径，不分发字体二进制。首期主题只覆盖新 diagram Recipe；现有 PGFPlots 风格保持，后续单独统一。
 
-### 8.3 库依赖与引擎
+### 8.3 Publication Profile
+
+Theme 负责视觉语言；Publication Profile 负责目标介质约束，两者必须分离。首期至少提供：
+
+| Profile | 目标 | 核心约束 |
+| --- | --- | --- |
+| `journal-single-column` | 单栏论文图 | 约 85–90 mm 目标宽度、最小正文可读字号、适中线宽/marker |
+| `journal-double-column` | 双栏跨栏图 | 约 170–180 mm 目标宽度、允许更复杂标签/多面板 |
+| `presentation` | 演示文稿 | 更大字号与线宽；不作为论文默认 |
+
+Profile 使用机器可读 token 保存 target width、minimum text size、base line width、marker scale、默认画布密度和 QA 阈值。显式用户尺寸优先，但 QA 仍以最终物理尺寸检查可读性。Profile 不改变数据、关系、箭头方向、节点角色或主题配色。
+
+### 8.4 库依赖与引擎
 
 - 从实际功能计算 `usetikzlibrary` 集合，稳定排序和去重。
 - 普通基础图可使用 pdfLaTeX；中文默认按现有规则使用 XeLaTeX，并增加真正可用的 CJK 字体配置。
@@ -498,6 +566,8 @@ tikz-funfig/
 
 Manifest 在既有字段基础上记录解析后的库集合、引擎、主题 ID/版本与内容哈希、布局 seed（如有）。知识来源以 recipe/card ID 可追溯；不要求把模型读取过的全部资料塞入用户 FigureSpec。
 
+对 Structured Mode，manifest 还记录 profile ID/版本与最终 canvas 尺寸；对 Expert TikZ Mode，记录 `mode=raw-expert`、所用知识卡/official section IDs、库集合和编译引擎。两种模式都必须区分“成功编译”和“通过视觉 QA”。
+
 错误分为输入语义错误、能力未支持、依赖缺失、TeX 编译错误和视觉质量问题。校验失败不覆盖上一次成功的 TeX/PDF；编译失败保留可诊断日志，明确新 PDF 未成功生成，不能把旧 PDF 当作本次成功结果。
 
 普通终端用户提出未支持能力时，可以查找现有可用表达方式或明确边界；不自动修改已安装插件代码。在本仓库开发任务中，才按能力开发流程扩展 Schema/Recipe/runtime。
@@ -506,42 +576,45 @@ Manifest 在既有字段基础上记录解析后的库集合、引擎、主题 I
 
 ### M0：契约与目录基础
 
-- [ ] 确认本 Spec，更新源目录责任文档，保留旧入口。
-- [ ] 增加多 Skill 打包清单规范与共享资源映射。
-- [ ] 定义 1.0/1.1 兼容策略和 capabilities 状态。
+- [x] 确认本 Spec v0.2，更新源目录责任文档，保留旧入口。
+- [x] 增加 6 Skill 打包清单、共享 knowledge/themes/profiles 规则。
+- [x] 定义 1.0/1.1 兼容策略、Structured/Expert 边界和 capabilities 状态。
 - 完成条件：目录与迁移责任明确，现有能力未被改写。
 
 ### M1：手册分册与溯源索引
 
-- [ ] 固定原 PDF SHA、页数、目录与页标签。
-- [ ] 实现拆分脚本、15 个一级分册、12 个重点库节选。
-- [ ] 建立完整 Part V 库索引和跨章节主题索引。
-- [ ] 校验每个分册首尾页、页数、书签和跨册链接报告。
+- [x] 固定原 PDF SHA、页数、目录与页标签。
+- [x] 实现拆分脚本、15 个一级分册、12 个重点库节选。
+- [x] 建立完整 Part V 库索引和跨章节主题索引。
+- [x] 生成 section-level manual corpus，提取标题/页码/library/command/key 元数据。
+- [x] 实现 `tff kb search` 的 SQLite FTS5/BM25 检索，返回来源和验证层级。
+- [x] 校验每个分册首尾页、页数、页面框与代表性渲染；annotation 目标异常计数写入 build report，权威导航保留在完整原手册。
 - 完成条件：读者和后续代理均能从任务词定位到准确原文。
 
 ### M2：首期知识与独立示例
 
-- [ ] 完成第 5.3 节的 24 张知识卡片。
-- [ ] 每张语法卡片有可编译示例；综合修复类卡片可引用共享案例。
-- [ ] 来源与验证状态分离，给出 card → source → example 映射。
+- [x] 完成第 5.3 节的 24 张知识卡片。
+- [x] 每张语法卡片有可编译示例；综合修复类卡片可引用共享案例。
+- [x] 来源与验证状态分离，给出 card → source → example 映射；当前 24 张均已通过本机编译验证并标记 `compiled`。
 - 完成条件：不存在只有转录文本、没有验证的“稳定知识”。
 
 ### M3：结构化图内核
 
-- [ ] 实现 1.1 Schema 和运行时校验，保留 1.0 处理分支。
-- [ ] 实现节点、相对/网格布局、连线路由与标签、分组、主题。
-- [ ] 实现库解析、引擎依赖和中文文本构建。
-- [ ] 新增三类首期 Recipe 和 golden 案例。
+- [x] 实现 1.1 Schema 和运行时校验，保留 1.0 处理分支。
+- [x] 实现节点、相对/网格布局、连线路由与标签、分组、主题。
+- [x] 实现 Publication Profile、库解析、引擎依赖和中文文本构建。
+- [x] 新增 flowchart/framework/relation/scientific-schematic 四类首期 Recipe 和 golden 案例。
+- [x] 实现 Expert TikZ Mode 元数据和 QA 契约，不让 raw TeX 绕过编译/检查。
 - 完成条件：脱离 Skill，自身 CLI 也能验证、生成并编译首期用例。
 
 ### M4：多 Skill 集成与首期可发布包
 
-- [ ] 收敛统一入口，提取 plots Skill，新增三类专项 Skill。
-- [ ] 同步 portable 包和 workspace 安装路径；检查共享资源闭包。
-- [ ] 在不包含原仓库/手册的临时目录构建每个专项案例。
-- [ ] 在 Codex 中验证显式选择、自然语言匹配与后续修订。
-- [ ] 运行仓库全检查，更新 CHANGELOG，再走既有发布流程。
-- 完成条件：一个插件安装后可发现 5 个可用 Skill；通过全部首期验收。
+- [x] 收敛统一入口，提取 plots Skill，新增 flowcharts/frameworks/relations/schematics 四类专项 Skill。
+- [x] 同步 portable 包和 workspace 安装路径；检查共享资源闭包。
+- [x] 在不包含原仓库/手册的临时目录运行共享知识检索，并通过专项 Skill wrapper 构建结构化流程图；各新增 Recipe 另有独立 golden 构建回归。
+- [ ] 在实际 Codex 宿主中验证显式选择、自然语言自动匹配与后续修订；此项需要安装包含本工作树改动的 Plugin 后做交互式验收，不能由源码单元测试替代。
+- [x] 运行仓库全检查并更新 CHANGELOG/分发文档；实际 release/tag/push 仍按仓库规则只在用户显式要求发布时执行。
+- 完成条件：一个插件安装后可发现 6 个可用 Skill；通过全部首期验收。
 
 ### M5：第二期图形家族
 
@@ -551,7 +624,7 @@ Manifest 在既有字段基础上记录解析后的库集合、引擎、主题 I
 
 评估自动分层/力导向布局、几何与投影、复杂连接避障；只有真实用例证明需要时才引入更复杂的布局机制。补充 PGFPlots 官方手册属于独立来源接入，复用 M1/M2 流程。
 
-依赖顺序：M0 → M1 → M2；M3 在相关知识示例验证后推进；M4 依赖 M2/M3。M5/M6 不阻塞首期交付。不在缺乏实际试点数据时承诺工期。
+依赖顺序：M0 → M1 → M2；M3 在相关知识示例验证后推进；M4 依赖 M2/M3。当前源码/portable V1 实现已完成 M0-M3 与 M4 的可自动化部分；剩余 M4 宿主自然语言发现属于安装后的交互式验收。M5/M6 不阻塞首期交付。不在缺乏实际试点数据时承诺工期。
 
 ## 11. 验收矩阵
 
@@ -563,16 +636,20 @@ Manifest 在既有字段基础上记录解析后的库集合、引擎、主题 I
 | KB-04 | 二级节选 | 12 个重点节选范围准确，全部库有索引 |
 | KB-05 | 可追溯 | 每张正式卡片的来源、示例和状态均可解析 |
 | KB-06 | 小上下文使用 | 典型任务可只靠索引、相关卡片和示例完成，不加载整本手册 |
-| SK-01 | Skill 发现 | 首期 5 个 Skill 出现在实际宿主发现结果中，无空壳后续 Skill |
+| KB-07 | 长尾检索 | 冷门官方能力可由 FTS Top-5 定位到正确 section/page，不要求人工翻整本手册 |
+| SK-01 | Skill 发现 | 首期 6 个 Skill 出现在实际宿主发现结果中，无空壳后续 Skill |
 | SK-02 | 路由 | 第 3.3 节每类至少 3 个表达变体；图形类正确匹配，纯文字请求不创建图 |
 | SK-03 | 修订 | 修改文字/主题/关系时修订已有 FigureSpec，不复制出无关图目录 |
 | RT-01 | 兼容 | 所有既有 golden 与既有测试通过，旧输入默认行为未意外改变 |
 | RT-02 | 语义 | 缺失引用、重复 ID、定位环、组包含环、无效参数在编译前报错 |
 | RT-03 | 确定性 | 固定输入、依赖版本和主题得到相同 TeX；依赖列表顺序稳定 |
-| RT-04 | 能力真实 | 三个新 Recipe 均可用 CLI 独立构建，知识状态不越级 |
-| RT-05 | 主题 | 三主题切换后，节点 ID、边端点、标签与业务内容保持一致 |
+| RT-04 | 能力真实 | 四个新 Recipe 均可用 CLI 独立构建，知识状态不越级 |
+| RT-05 | 主题 | 四主题切换后，节点 ID、边端点、标签与业务内容保持一致 |
+| RT-06 | 双模式 | stable 能力不能无故绕过 Structured Mode；Expert Mode 记录来源、实际编译且不自动晋升 stable |
+| PR-01 | Profile | 单栏/双栏 profile 改变尺寸/可读性约束但不改变科学语义或关系 |
 | QA-01 | 视觉 | 目标排版尺寸下无缺字、截断、意外覆盖、错误方向或不可读标签 |
 | QA-02 | 长文本 | 中英文长标签、特殊字符、数学标签与多行文本正常 |
+| QA-03 | 状态分离 | compile success 与 visual QA pass 独立记录，编译成功不能自动视为完成 |
 | PK-01 | 可移植 | 复制生成插件到临时目录，原仓库/原 PDF 不可用时各专项仍能绘图 |
 | PK-02 | 副本一致 | 清单中 canonical 内容与生成副本一致；相对引用不存在越界或缺失 |
 | PK-03 | 包内容 | 无手册 PDF、legacy、字体、构建缓存、开发机绝对路径 |
@@ -587,9 +664,10 @@ Manifest 在既有字段基础上记录解析后的库集合、引擎、主题 I
 | `framework-grouped` | 分组框、标题、背景层、包含关系 |
 | `framework-layered` | 三层模块、网格间距、跨层连接 |
 | `relations-labelled` | 有向/无向/双向关系、边标签、不同路由 |
+| `schematic-scientific` | 科学组件、坐标/作用方向、标签层级与期刊尺寸 |
 | `diagram-longtext-cjk` | 中文与英文长文本、多行、数学内容、特殊字符 |
 
-每个案例保存自包含 FigureSpec 与确定性 `.tex` 快照；必要数据随例提供。至少对一个语义相同的案例构建全部三主题，验证主题切换不改变关系。PDF/PNG 作为本地 QA 产物，不提交。
+每个案例保存自包含 FigureSpec 与确定性 `.tex` 快照；必要数据随例提供。至少对一个语义相同的案例构建全部四主题和两个 journal profile，验证主题/Profile 切换不改变关系。PDF/PNG 作为本地 QA 产物，不提交。
 
 ### 11.2 检查分层
 
@@ -616,18 +694,18 @@ Manifest 在既有字段基础上记录解析后的库集合、引擎、主题 I
 
 | 问题 | 决策 |
 | --- | --- |
-| 分 PDF 后仍难查 | 增加任务索引与知识卡片，原 PDF 仅用于复核 |
+| 分 PDF 后仍难查 | 增加 section-level corpus、FTS 和知识卡片，原 PDF 仅用于最终复核 |
 | Skill 大量重叠 | 按图形任务划分；主题独立；统一入口只处理必要路由 |
 | 知识与执行能力不一致 | 分开跟踪文档验证状态和 runtime 支持状态 |
-| 通用 diagram Schema 过早膨胀 | 首期只实现六个案例证明需要的字段 |
-| 任意 raw TeX 绕过结构化模型 | 保留旧兼容，不把 raw TeX 当作新能力默认方案 |
-| 多 Skill 共享文件引用不可靠 | 分发时按清单物化共享资源，独立包端到端验证 |
+| 通用 diagram Schema 过早膨胀 | 只把重复、稳定能力结构化；长尾走受控 Expert Mode |
+| 任意 raw TeX 绕过结构化模型 | stable 能力强制 Structured；Expert Mode 必须来源可追溯、编译、QA |
+| 多 Skill 共享文件漂移 | Skill 保持薄；知识/主题/Profile 在 Plugin 根只分发一份 canonical 副本 |
 | 手册升级页码漂移 | 版本与 SHA 固定，不覆盖旧清单；新版本重新生成映射 |
 | 原文示例和解释转录失真 | 来源复核、编译和视觉检查；记录修改说明与原来源 |
 | 中文图缺字/编译失败 | 根据实际引擎选择可用字体和 CJK 配置，加入回归 |
 | 自动布局结果变化 | 后置引入，固定 seed 和依赖记录，明确可重复性的范围 |
 
-首期已经确定：一个插件、多 Skill、共用运行时、轻量知识随包、PDF 留在本地、保留 1.0、新增 1.1、优先三类结构图。没有阻塞编写首期代码的产品问题；具体字段以本契约为起点，在 golden 实现时通过明确的文档修订收敛。
+首期已经确定：一个插件、6 个 Skill、共用运行时、共享可检索知识随包、原 PDF 留在开发仓库、保留 1.0、新增 1.1、Structured/Expert 双模式、四类新增 diagram Recipe、Theme 与 Publication Profile 分离、编译与视觉 QA 分离。没有阻塞首期代码的产品问题；具体字段以本契约为起点，在 golden 实现时通过明确的文档修订收敛。
 
 ## 14. 依据与阅读入口
 

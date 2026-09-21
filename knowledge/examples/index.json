@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "examples": [
+    {"id":"style-scope","file":"styles.tex","engine":"pdflatex"},
+    {"id":"calc-coordinate","file":"coordinates.tex","engine":"pdflatex"},
+    {"id":"path-routing","file":"routing.tex","engine":"pdflatex"},
+    {"id":"arrow-meta","file":"routing.tex","engine":"pdflatex"},
+    {"id":"node-anchors","file":"positioning.tex","engine":"pdflatex"},
+    {"id":"text-label","file":"text.tex","engine":"pdflatex"},
+    {"id":"relative-positioning","file":"positioning.tex","engine":"pdflatex"},
+    {"id":"matrix-layout","file":"matrix.tex","engine":"pdflatex"},
+    {"id":"chains-layout","file":"chains.tex","engine":"pdflatex"},
+    {"id":"fit-group","file":"groups.tex","engine":"pdflatex"},
+    {"id":"background-layer","file":"groups.tex","engine":"pdflatex"},
+    {"id":"pic-component","file":"pic.tex","engine":"pdflatex"},
+    {"id":"flowchart-shapes","file":"flowchart.tex","engine":"pdflatex"},
+    {"id":"edge-label","file":"relations.tex","engine":"pdflatex"},
+    {"id":"curved-edge","file":"relations.tex","engine":"pdflatex"},
+    {"id":"self-loop","file":"relations.tex","engine":"pdflatex"},
+    {"id":"theme-monochrome","file":"themes.tex","engine":"pdflatex"},
+    {"id":"theme-color","file":"themes.tex","engine":"pdflatex"},
+    {"id":"plain-text","file":"text.tex","engine":"pdflatex"},
+    {"id":"cjk-text","file":"cjk.tex","engine":"xelatex","optional":true},
+    {"id":"library-deps","file":"dependencies.tex","engine":"pdflatex"},
+    {"id":"layout-repair","file":"flowchart.tex","engine":"pdflatex"},
+    {"id":"engine-selection","file":"dependencies.tex","engine":"pdflatex"},
+    {"id":"reusable-pattern","file":"flowchart.tex","engine":"pdflatex"}
+  ]
+}

@@ -2,6 +2,20 @@
 
 Use this map to find the smallest relevant local reference set before creating a figure.
 
+## Preferred installed-Plugin knowledge path
+
+For ordinary installed-Plugin work, do **not** start in the legacy directories below. Query the shared knowledge base first:
+
+```bash
+scripts/funfig.sh capabilities
+scripts/funfig.sh kb search "relative positioning"
+scripts/funfig.sh kb search "fit group"
+```
+
+Search results rank compiled TIKZ-FunFig knowledge cards together with the section-level PGF/TikZ 3.1.11a corpus while preserving their different verification levels. Stable Recipe/capability behavior takes priority; the original PDF is a final provenance/visual-reference source only when the source checkout is available.
+
+The Plugin distributes one shared `knowledge/` tree containing 24 compiled seed cards, executable examples, aliases, and the official manual section corpus. It does not distribute the 1323-page `pgfmanual.pdf` or split-PDF booklets.
+
 The legacy paths in this map are **source-repository development references**. They are intentionally excluded from the portable Plugin package. If the source checkout is unavailable, use the bundled Recipe/Schema behavior; do not treat a missing legacy path as a runtime dependency failure.
 
 All paths are relative to the workspace root.

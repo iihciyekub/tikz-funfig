@@ -7,11 +7,15 @@ from pathlib import Path
 from typing import Any
 
 from .build import BuildError, build_spec, clean_spec, doctor
+from .expert import ExpertBuildError, build_expert, mark_expert_visual_review
 from .io import load_json, write_json_atomic
 from .legacy import migrate_legacy_tex
+from .knowledge import search as search_knowledge, status as knowledge_status
+from .qa import QAError, inspect_spec, mark_visual_review
 from .recipes import list_recipes, load_recipe
 from .render import render_spec
 from .schema import load_and_validate
+from .theme import list_profiles, list_themes
 
 
 PUBLICATION_OFFSET_RECIPES = {
@@ -27,6 +31,12 @@ PUBLICATION_OFFSET_RECIPES = {
     "groupplot",
 }
 DEFAULT_PUBLICATION_AXIS_SHIFT = "6.5pt"
+STRUCTURED_DIAGRAM_RECIPES = {
+    "flowchart",
+    "framework-diagram",
+    "relation-diagram",
+    "scientific-schematic",
+}
 
 
 def _load_valid(path: str) -> tuple[Path, dict[str, Any]]:
@@ -39,8 +49,9 @@ def _load_valid(path: str) -> tuple[Path, dict[str, Any]]:
 
 def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
     recipe = load_recipe(recipe_id)
+    schema_version = "1.1" if recipe_id in STRUCTURED_DIAGRAM_RECIPES else "1.0"
     base: dict[str, Any] = {
-        "schema_version": "1.0",
+        "schema_version": schema_version,
         "id": figure_id,
         "recipe": recipe_id,
         "kind": recipe["kind"],
@@ -48,6 +59,9 @@ def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
         "engine": {"latex": "auto", "compute": "none"},
         "outputs": {"basename": "figure", "keep_build": False},
     }
+    if schema_version == "1.1":
+        base["theme"] = {"id": "journal-muted"}
+        base["profile"] = {"id": "journal-single-column"}
     if recipe_id in PUBLICATION_OFFSET_RECIPES:
         base["canvas"] = {"width": "10.4cm", "height": "7.3cm", "border": "2pt"}
     if recipe["kind"] == "pgfplots":
@@ -310,6 +324,63 @@ def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
                 {"id": "a", "title": "(a)", "series": ["main"]},
                 {"id": "b", "title": "(b)", "series": ["main"]},
             ]
+    elif recipe_id == "flowchart":
+        base["diagram"] = {
+            "layout": {"type": "relative"},
+            "nodes": [
+                {"id": "collect", "label": "Collect data", "role": "process", "position": {"type": "absolute", "x": 0, "y": 0}},
+                {"id": "check", "label": "Valid?", "role": "decision", "position": {"type": "relative", "of": "collect", "direction": "right", "gap": "18mm"}},
+                {"id": "analyze", "label": "Analyze", "role": "process", "position": {"type": "relative", "of": "check", "direction": "right", "gap": "18mm"}},
+            ],
+            "edges": [
+                {"id": "e1", "from": "collect", "to": "check", "route": "straight", "arrows": "forward"},
+                {"id": "e2", "from": "check", "to": "analyze", "route": "straight", "arrows": "forward", "label": "yes"},
+                {"id": "e3", "from": "check", "to": "collect", "route": "curve", "routing": {"bend": -35}, "arrows": "forward", "label": "no", "label_side": "below"},
+            ],
+            "groups": [],
+        }
+    elif recipe_id == "framework-diagram":
+        base["diagram"] = {
+            "layout": {"type": "grid", "row_gap": "18mm", "column_gap": "28mm"},
+            "nodes": [
+                {"id": "input", "label": "Inputs", "role": "module", "position": {"type": "grid", "row": 0, "column": 0}},
+                {"id": "mechanism", "label": "Mechanism", "role": "module", "position": {"type": "grid", "row": 0, "column": 1}},
+                {"id": "outcome", "label": "Outcomes", "role": "module", "position": {"type": "grid", "row": 0, "column": 2}},
+            ],
+            "edges": [
+                {"id": "e1", "from": "input", "to": "mechanism", "route": "straight", "arrows": "forward"},
+                {"id": "e2", "from": "mechanism", "to": "outcome", "route": "straight", "arrows": "forward"},
+            ],
+            "groups": [{"id": "core", "members": ["input", "mechanism", "outcome"], "label": "Research framework"}],
+        }
+    elif recipe_id == "relation-diagram":
+        base["diagram"] = {
+            "layout": {"type": "relative"},
+            "nodes": [
+                {"id": "a", "label": "Concept A", "role": "concept", "position": {"type": "absolute", "x": 0, "y": 0}},
+                {"id": "b", "label": "Concept B", "role": "concept", "position": {"type": "relative", "of": "a", "direction": "right", "gap": "24mm"}},
+                {"id": "c", "label": "Concept C", "role": "concept", "position": {"type": "relative", "of": "a", "direction": "below", "gap": "18mm"}},
+            ],
+            "edges": [
+                {"id": "e1", "from": "a", "to": "b", "route": "straight", "arrows": "both", "label": "associated"},
+                {"id": "e2", "from": "a", "to": "c", "route": "straight", "arrows": "forward", "label": "supports"},
+            ],
+            "groups": [],
+        }
+    elif recipe_id == "scientific-schematic":
+        base["diagram"] = {
+            "layout": {"type": "manual"},
+            "nodes": [
+                {"id": "source", "label": "Source", "role": "component", "position": {"type": "absolute", "x": 0, "y": 0}},
+                {"id": "system", "label": "System", "role": "component", "position": {"type": "absolute", "x": 3.2, "y": 0}},
+                {"id": "measure", "label": "Measurement", "role": "annotation", "position": {"type": "absolute", "x": 3.2, "y": -1.8}},
+            ],
+            "edges": [
+                {"id": "e1", "from": "source", "to": "system", "route": "straight", "arrows": "forward", "label": "input"},
+                {"id": "e2", "from": "system", "to": "measure", "route": "straight", "arrows": "forward", "label": "observe", "label_side": "right"},
+            ],
+            "groups": [],
+        }
     else:
         base["diagram"] = {
             "nodes": [
@@ -329,6 +400,117 @@ def cmd_recipes(_: argparse.Namespace) -> int:
     for recipe in list_recipes():
         print(f"{recipe['id']:<22} {recipe['kind']:<8} {recipe['description']}")
     return 0
+
+
+def cmd_kb_search(args: argparse.Namespace) -> int:
+    hits = search_knowledge(args.query, limit=args.limit)
+    if args.json:
+        print(json.dumps([hit.__dict__ for hit in hits], indent=2, ensure_ascii=False))
+        return 0
+    if not hits:
+        print("no knowledge matches")
+        return 1
+    for hit in hits:
+        location = f" pages={hit.pages}" if hit.pages else ""
+        print(f"{hit.kind:<6} {hit.status:<15} {hit.id}{location}")
+        print(f"  {hit.title}")
+        if hit.summary:
+            print(f"  {hit.summary[:240].strip()}")
+    return 0
+
+
+def cmd_kb_status(args: argparse.Namespace) -> int:
+    payload = knowledge_status()
+    if args.json:
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+    else:
+        print(f"root: {payload['root']}")
+        print(f"cards: {payload['cards']}")
+        print(f"manual chunks: {payload['manual_chunks']}")
+        print("verification: " + ", ".join(f"{key}={value}" for key, value in payload["verification"].items()))
+    return 0
+
+
+def cmd_capabilities(args: argparse.Namespace) -> int:
+    payload = [
+        {
+            "id": recipe["id"],
+            "kind": recipe["kind"],
+            "status": recipe.get("status", "stable"),
+            "capabilities": recipe.get("capabilities", []),
+            "knowledge_ids": recipe.get("knowledge_ids", []),
+        }
+        for recipe in list_recipes()
+    ]
+    if args.json:
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+    else:
+        for item in payload:
+            print(
+                f"{item['id']:<24} {item['status']:<10} "
+                + ",".join(item["capabilities"])
+            )
+    return 0
+
+
+def cmd_themes(args: argparse.Namespace) -> int:
+    items = list_themes()
+    if args.json:
+        print(json.dumps(items, indent=2, ensure_ascii=False))
+    else:
+        for item in items:
+            print(f"{item['id']:<22} {item.get('description', '')}")
+    return 0
+
+
+def cmd_profiles(args: argparse.Namespace) -> int:
+    items = list_profiles()
+    if args.json:
+        print(json.dumps(items, indent=2, ensure_ascii=False))
+    else:
+        for item in items:
+            print(
+                f"{item['id']:<24} target={item.get('target_width_mm')}mm "
+                f"min-text={item.get('minimum_text_pt')}pt {item.get('description', '')}"
+            )
+    return 0
+
+
+def cmd_inspect(args: argparse.Namespace) -> int:
+    spec_path, spec = _load_valid(args.spec)
+    qa = inspect_spec(spec, spec_path, dpi=args.dpi)
+    print(f"preview: {spec_path.parent / qa['preview']}")
+    print(f"machine checks: {'pass' if qa['machine_checks_passed'] else 'warnings'}")
+    for warning in qa.get("warnings", []):
+        print(f"warning: {warning}")
+    print("visual review: pending")
+    return 0
+
+
+def cmd_qa_mark(args: argparse.Namespace) -> int:
+    spec_path, _ = _load_valid(args.spec)
+    qa = mark_visual_review(spec_path, args.result == "pass", args.note or "")
+    print(f"qa: {qa['status']}")
+    return 0 if qa["status"] == "passed" else 1
+
+
+def cmd_expert_build(args: argparse.Namespace) -> int:
+    pdf, manifest = build_expert(
+        args.tex,
+        sources=args.source,
+        cards=args.card,
+        engine=args.engine,
+    )
+    print(f"pdf: {pdf}")
+    print(f"manifest: {manifest}")
+    print("visual QA is still required before treating the expert figure as complete")
+    return 0
+
+
+def cmd_expert_qa(args: argparse.Namespace) -> int:
+    qa = mark_expert_visual_review(args.tex, args.result == "pass", args.note or "")
+    print(f"expert qa: {qa['status']}")
+    return 0 if qa["status"] == "passed" else 1
 
 
 def cmd_validate(args: argparse.Namespace) -> int:
@@ -407,6 +589,29 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("recipes", help="list available figure recipes")
     p.set_defaults(func=cmd_recipes)
 
+    p = sub.add_parser("kb", help="query the shared TIKZ-FunFig knowledge base")
+    kb = p.add_subparsers(dest="kb_command", required=True)
+    q = kb.add_parser("search", help="search cards and official manual sections with SQLite FTS5")
+    q.add_argument("query")
+    q.add_argument("--limit", type=int, default=8)
+    q.add_argument("--json", action="store_true")
+    q.set_defaults(func=cmd_kb_search)
+    q = kb.add_parser("status", help="show knowledge index coverage")
+    q.add_argument("--json", action="store_true")
+    q.set_defaults(func=cmd_kb_status)
+
+    p = sub.add_parser("capabilities", help="list Recipe capabilities and stability")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_capabilities)
+
+    p = sub.add_parser("themes", help="list structured diagram themes")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_themes)
+
+    p = sub.add_parser("profiles", help="list publication/output profiles")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_profiles)
+
     p = sub.add_parser("validate", help="validate a FigureSpec")
     p.add_argument("spec")
     p.set_defaults(func=cmd_validate)
@@ -418,6 +623,30 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("build", help="render and compile a FigureSpec")
     p.add_argument("spec")
     p.set_defaults(func=cmd_build)
+
+    p = sub.add_parser("inspect", help="render a PDF preview and record machine QA before visual review")
+    p.add_argument("spec")
+    p.add_argument("--dpi", type=int, default=180)
+    p.set_defaults(func=cmd_inspect)
+
+    p = sub.add_parser("qa", help="record the result of an actual visual review")
+    p.add_argument("spec")
+    p.add_argument("result", choices=("pass", "fail"))
+    p.add_argument("--note", default="")
+    p.set_defaults(func=cmd_qa_mark)
+
+    p = sub.add_parser("expert-build", help="compile a sourced raw TikZ figure outside the stable FigureSpec capability set")
+    p.add_argument("tex")
+    p.add_argument("--source", action="append", required=True, help="official/manual source ID; repeat as needed")
+    p.add_argument("--card", action="append", default=[], help="knowledge card ID used; repeat as needed")
+    p.add_argument("--engine", choices=("auto", "pdflatex", "xelatex", "lualatex"), default="auto")
+    p.set_defaults(func=cmd_expert_build)
+
+    p = sub.add_parser("expert-qa", help="record an actual visual review for an Expert TikZ Mode figure")
+    p.add_argument("tex")
+    p.add_argument("result", choices=("pass", "fail"))
+    p.add_argument("--note", default="")
+    p.set_defaults(func=cmd_expert_qa)
 
     p = sub.add_parser("clean", help="remove only disposable build intermediates")
     p.add_argument("spec")
@@ -454,7 +683,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         return int(args.func(args))
-    except (ValueError, KeyError, BuildError, json.JSONDecodeError) as exc:
+    except (ValueError, KeyError, BuildError, QAError, ExpertBuildError, json.JSONDecodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 

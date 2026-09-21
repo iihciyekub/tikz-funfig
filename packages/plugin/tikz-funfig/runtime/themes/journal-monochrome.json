@@ -1,0 +1,5 @@
+{
+  "id":"journal-monochrome","version":"1.0","description":"Grayscale-safe journal theme",
+  "tokens":{"node_fill":"white","node_draw":"black!80","text_color":"black","edge_color":"black!80","group_fill":"black!3","group_draw":"black!35","line_width":"0.6pt","group_line_width":"0.45pt","rounded_corners":"2pt"},
+  "roles":{"decision":{"fill":"black!5"},"terminal":{"fill":"black!2"},"data":{"fill":"black!4"}}
+}

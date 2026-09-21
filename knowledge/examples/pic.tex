@@ -1,0 +1,8 @@
+\documentclass[border=2pt]{standalone}
+\usepackage{tikz}
+\tikzset{sensor/.pic={\draw (0,0) circle (3mm); \draw (-2mm,0)--(2mm,0);}}
+\begin{document}
+\begin{tikzpicture}
+  \pic at (0,0) {sensor}; \pic at (15mm,0) {sensor};
+\end{tikzpicture}
+\end{document}
