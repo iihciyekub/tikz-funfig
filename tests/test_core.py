@@ -97,6 +97,7 @@ class FunFigCoreTests(unittest.TestCase):
             "cards/index.json",
             "examples/index.json",
             "manual-index/pgfmanual-3.1.11a.jsonl",
+            "manual-index/pgfmanual-3.1.11a.libraries.json",
         ):
             self.assertEqual(
                 (PROJECT_ROOT / "knowledge" / relative).read_text(encoding="utf-8"),

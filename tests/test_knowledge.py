@@ -54,6 +54,19 @@ class KnowledgeTests(unittest.TestCase):
         self.assertEqual(first["page_start"], 1)
         self.assertEqual(last["page_end"], 1323)
 
+        library_index = json.loads(
+            (
+                PROJECT_ROOT
+                / "knowledge/manual-index/pgfmanual-3.1.11a.libraries.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(library_index["source_id"], source["source_id"])
+        libraries = {item["library"]: item for item in library_index["libraries"]}
+        for library in ("arrows", "automata", "calc", "fit", "matrix", "positioning", "shapes.geometric"):
+            self.assertIn(library, libraries)
+            self.assertTrue(libraries[library]["chunk_ids"])
+            self.assertTrue(libraries[library]["pages"])
+
     @unittest.skipUnless(
         shutil.which("pdftotext") and shutil.which("pdfinfo"),
         "Poppler tools unavailable",
