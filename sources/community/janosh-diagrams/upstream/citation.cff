@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+title: Scientific Diagrams
+message: If you use this software, please cite it as below.
+authors:
+  - family-names: Riebesell
+    given-names: Janosh
+    orcid: https://orcid.org/0000-0001-5233-3462
+    affiliation: University of Cambridge
+    email: janosh.riebesell@gmail.com
+  - family-names: Bringuier
+    given-names: Stefan
+    orcid: https://orcid.org/0000-0001-6753-1437
+    affiliation: University of Arizona
+    email: stefanbringuier@gmail.com
+  - family-names: Koza
+    given-names: Clemens
+    orcid: https://orcid.org/0009-0004-0335-8144
+    affiliation: Practical Robotics Institute Austria
+  - family-names: Hernández Peralta
+    given-names: Sergio Antonio
+    email: sergioahp@proton.me
+  - family-names: Cepeda Alvarado
+    given-names: Luis Enrique
+    email: cepedale98@gmail.com
+    orcid: https://orcid.org/0009-0007-6029-4783
+license: MIT
+license-url: https://github.com/janosh/diagrams/blob/main/license
+repository-code: https://github.com/janosh/diagrams
+type: software
+url: https://github.com/janosh/diagrams
+doi: 10.5281/zenodo.7486911
+version: 0.2.0
+date-released: 2022-12-27

@@ -25,6 +25,42 @@
       "revision": "d8d5424dafa7424df3fbf77022b8f662fffaa4fb",
       "upstream": "https://github.com/pgf-tikz/pgfplots",
       "version": "1.18.2"
+    },
+    {
+      "id": "opentikz-content",
+      "kind": "community",
+      "license_ids": [
+        "CC0-1.0"
+      ],
+      "plugin_policy": "normalized-only",
+      "project": "OpenTikZ",
+      "revision": "359befbf8e8af7ce08e7e387b2c2a198e0ca735d",
+      "upstream": "https://github.com/opentikz/opentikz",
+      "version": "2026-09-24-snapshot"
+    },
+    {
+      "id": "janosh-diagrams",
+      "kind": "community",
+      "license_ids": [
+        "MIT"
+      ],
+      "plugin_policy": "normalized-only",
+      "project": "janosh/diagrams",
+      "revision": "028a16ada31669870ed59a5d484aa1c8b4bedcbd",
+      "upstream": "https://github.com/janosh/diagrams",
+      "version": "2026-09-24-snapshot"
+    },
+    {
+      "id": "petarv-tikz",
+      "kind": "community",
+      "license_ids": [
+        "MIT"
+      ],
+      "plugin_policy": "normalized-only",
+      "project": "PetarV-/TikZ",
+      "revision": "86aee049f5355d77c598b936399e42caf8941e60",
+      "upstream": "https://github.com/PetarV-/TikZ",
+      "version": "2026-09-24-snapshot"
     }
   ]
 }

@@ -41,7 +41,7 @@ The ordinary installed Plugin may query:
 ```text
 compiled knowledge cards
 curated regression-backed templates
-normalized PGF/TikZ and PGFPlots source-example corpora
+normalized PGF/TikZ, PGFPlots, and curated community source-example corpora
 section-level official PGF/TikZ manual corpus
 Recipe/capability registry
 themes and Publication Profiles

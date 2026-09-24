@@ -1,0 +1,14 @@
+title: Plate Capacitor
+creator: Izaak Neutelings
+url: https://tikz.net/capacitors/
+date: 2020-02-01
+tags:
+  - physics
+  - electrodynamics
+  - electronics
+description: >-
+  Parallel-plate capacitor filled with a dielectric. The free charge $\pm Q_\text{C}$ on the
+  plates drives the field $\vec E$, which lines the molecular dipoles up with it. Alignment
+  leaves uncompensated bound charge $\mp Q_\text{surf}$ on the two faces of the dielectric,
+  pointing against the free charge, so the net field is weaker and the capacitance higher than
+  in vacuum.

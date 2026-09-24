@@ -135,7 +135,56 @@ class KnowledgeTests(unittest.TestCase):
         )
         self.assertEqual(
             {item["id"] for item in sources["sources"]},
-            {"pgf-manual-source", "pgfplots-manual-source"},
+            {
+                "pgf-manual-source",
+                "pgfplots-manual-source",
+                "opentikz-content",
+                "janosh-diagrams",
+                "petarv-tikz",
+            },
+        )
+
+    def test_community_source_corpus_matches_pinned_snapshots(self) -> None:
+        index = json.loads(
+            (PROJECT_ROOT / "knowledge/corpus/community.index.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(index["total_examples"], 157)
+        self.assertEqual(
+            index["source_counts"],
+            {
+                "janosh-diagrams": 80,
+                "opentikz-content": 12,
+                "petarv-tikz": 65,
+            },
+        )
+        self.assertEqual(index["safety_flagged_examples"], 0)
+        self.assertEqual(index["compile_status"]["passed"], 3)
+        self.assertEqual(index["verification"]["source-compiled"], 3)
+        lines = [
+            json.loads(line)
+            for line in (PROJECT_ROOT / "knowledge/corpus/community.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+            if line.strip()
+        ]
+        self.assertEqual(len(lines), 157)
+        self.assertEqual(
+            {item["source_id"] for item in lines},
+            {"opentikz-content", "janosh-diagrams", "petarv-tikz"},
+        )
+        self.assertTrue(all(item["source_kind"] == "community" for item in lines))
+        self.assertTrue(all(len(item["source_hash"]) == 64 for item in lines))
+        self.assertTrue(all(len(item["code_hash"]) == 64 for item in lines))
+
+    def test_community_corpus_is_searchable_without_raw_source_access(self) -> None:
+        hits = search("encoder decoder architecture", limit=12)
+        self.assertTrue(
+            any(
+                hit.kind == "example"
+                and "encoder-decoder" in hit.source.casefold()
+                for hit in hits
+            ),
+            [hit.__dict__ for hit in hits],
         )
 
     def test_unified_knowledge_query_benchmark(self) -> None:
@@ -157,10 +206,10 @@ class KnowledgeTests(unittest.TestCase):
 
     def test_knowledge_status_includes_recipes_and_source_examples(self) -> None:
         payload = status()
-        self.assertEqual(payload["source_examples"], 4147)
+        self.assertEqual(payload["source_examples"], 4304)
         self.assertEqual(payload["recipes"], 19)
         self.assertEqual(payload["templates"], 5)
-        self.assertEqual(payload["example_verification"]["source-compiled"], 12)
+        self.assertEqual(payload["example_verification"]["source-compiled"], 15)
 
     @unittest.skipUnless(
         shutil.which("pdftotext") and shutil.which("pdfinfo"),

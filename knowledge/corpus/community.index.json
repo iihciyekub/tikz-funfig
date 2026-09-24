@@ -1,0 +1,42 @@
+{
+  "compile_eligible_examples": 153,
+  "compile_sample_ids": [
+    "opentikz-content-encoder-decoder-36074a71",
+    "janosh-diagrams-self-attention-a2737c84",
+    "petarv-tikz-self-attention-477a43f0"
+  ],
+  "compile_status": {
+    "not-run": 154,
+    "passed": 3
+  },
+  "examples_file": "community.jsonl",
+  "figure_families": {
+    "architecture": 34,
+    "flowchart": 15,
+    "geometry": 14,
+    "graph": 42,
+    "plot": 30,
+    "relation": 7,
+    "schematic": 14,
+    "tikz": 44
+  },
+  "kind": "source-example-corpus",
+  "renderable_examples": 153,
+  "safety_flagged_examples": 0,
+  "schema_version": "1.0",
+  "source_counts": {
+    "janosh-diagrams": 80,
+    "opentikz-content": 12,
+    "petarv-tikz": 65
+  },
+  "sources": [
+    "opentikz-content",
+    "janosh-diagrams",
+    "petarv-tikz"
+  ],
+  "total_examples": 157,
+  "verification": {
+    "source-compiled": 3,
+    "source-extracted": 154
+  }
+}

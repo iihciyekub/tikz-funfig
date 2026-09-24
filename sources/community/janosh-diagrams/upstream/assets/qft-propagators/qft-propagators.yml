@@ -1,0 +1,10 @@
+title: QFT Propagators
+tags:
+  - physics
+  - quantum field theory
+  - Matsubara
+  - causality
+  - Green's function
+  - Feynman
+description: >-
+  Complex plane visualization of different propagator types in quantum field theory: retarded, advanced, and Feynman propagators. The diagram shows their [analytic structure](../qft-propagator-poles) in relation to [Matsubara frequencies](../matsubara-contours) (dots on imaginary axis). This representation helps understanding causality in quantum field theory and the connection between real-time and imaginary-time (thermal) formalisms.

@@ -1,0 +1,18 @@
+{
+  "source_id": "opentikz-content",
+  "project": "OpenTikZ",
+  "title": "OpenTikZ academic conceptual figure content",
+  "version": "2026-09-24-snapshot",
+  "revision": "359befbf8e8af7ce08e7e387b2c2a198e0ca735d",
+  "upstream": "https://github.com/opentikz/opentikz",
+  "source_root": "sources/community/opentikz/upstream",
+  "tree_sha256": "e7639b8e3be16360e0e49463a2896b49b2fc59fbd0de841f98936c56c4cc219b",
+  "tex_file_count": 12,
+  "snapshot_filter": "templates/examples .tex + JSON metadata; catalog/schema/license/readme; no icons/previews/tooling",
+  "license_file": "sources/community/opentikz/upstream/LICENSE-CONTENT",
+  "license_ids": [
+    "CC0-1.0"
+  ],
+  "plugin_policy": "normalized-only",
+  "verified": "2026-09-24"
+}

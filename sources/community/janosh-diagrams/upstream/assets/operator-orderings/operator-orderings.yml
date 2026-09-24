@@ -1,0 +1,10 @@
+title: Operator Orderings
+tags:
+  - physics
+  - quantum field theory
+  - causality
+  - Green's function
+  - time ordering
+  - propagators
+description: >-
+  Visualization of the six possible orderings of four spacetime points $y_1, y_2, y_3, y_4$ on the real line, relevant to the different [time-ordering prescriptions](../qft-propagators) in quantum field theory.

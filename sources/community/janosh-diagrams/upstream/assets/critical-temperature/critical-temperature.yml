@@ -1,0 +1,10 @@
+title: Critical Temperature
+tags:
+  - physics
+  - thermodynamics
+  - phase-transitions
+  - temperature
+  - critical-temperature
+  - statistical physics
+
+description: A plot illustrating a temperature-dependent phase transition as a function of the critical temperature ($T_c$). The orange curve shows the [order parameter](../spontaneous-magnetization) ($m_c$) as a function of temperature, which vanishes continuously at $T_c$. The blue and red curves represent the mathematical components of the order parameter expression near the transition.

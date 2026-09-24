@@ -1,0 +1,18 @@
+{
+  "source_id": "petarv-tikz",
+  "project": "PetarV-/TikZ",
+  "title": "Publication-ready PGF/TikZ figure collection",
+  "version": "2026-09-24-snapshot",
+  "revision": "86aee049f5355d77c598b936399e42caf8941e60",
+  "upstream": "https://github.com/PetarV-/TikZ",
+  "source_root": "sources/community/petarv-tikz/upstream",
+  "tree_sha256": "ce9a4383c65fe1e40b3434a4ac20947b5d49327bb24e3c5f46aea186576747ad",
+  "tex_file_count": 65,
+  "snapshot_filter": "all .tex figures + README/LICENSE only",
+  "license_file": "sources/community/petarv-tikz/upstream/LICENSE",
+  "license_ids": [
+    "MIT"
+  ],
+  "plugin_policy": "normalized-only",
+  "verified": "2026-09-24"
+}

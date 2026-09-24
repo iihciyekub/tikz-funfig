@@ -49,6 +49,19 @@ python3 scripts/build_pgfplots_source_corpus.py build
 python3 scripts/build_pgfplots_source_corpus.py verify --compile-samples
 ```
 
+Curated community snapshots are pinned independently under
+`sources/community/`. Runtime search never reads those raw snapshots
+directly; rebuild their normalized corpus with:
+
+```bash
+python3 scripts/build_community_source_corpus.py build --compile-samples
+python3 scripts/build_community_source_corpus.py verify
+```
+
+Community entries remain `source-extracted` reference knowledge by default.
+Only representative cases that actually compile become `source-compiled`;
+promotion to a TIKZ-FunFig Template or stable Recipe is a separate review step.
+
 The searchable section corpus only needs Poppler (`pdfinfo`, `pdftotext`). Generating official PDF booklets additionally requires `qpdf` so pages are copied without re-rendering or re-encoding:
 
 ```bash

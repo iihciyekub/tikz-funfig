@@ -1,0 +1,8 @@
+title: DFT Choices
+description: A diagram illustrating the various choices and components in [density functional theory (DFT)](../kohn-sham-cycle) calculations, including kinetic energy, external potential, Hartree potential, and [exchange-correlation terms](../xc-functional).
+tags:
+  - physics
+  - quantum mechanics
+  - dft
+  - equations
+  - schematic

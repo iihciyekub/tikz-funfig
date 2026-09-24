@@ -32,6 +32,51 @@
       "ingest": "development",
       "plugin_policy": "normalized-only",
       "verified": "2026-09-24"
+    },
+    {
+      "id": "opentikz-content",
+      "kind": "community",
+      "project": "OpenTikZ",
+      "upstream": "https://github.com/opentikz/opentikz",
+      "revision": "359befbf8e8af7ce08e7e387b2c2a198e0ca735d",
+      "local_root": "sources/community/opentikz/upstream",
+      "manifest": "sources/community/opentikz/source.json",
+      "license_ids": [
+        "CC0-1.0"
+      ],
+      "ingest": "development",
+      "plugin_policy": "normalized-only",
+      "verified": "2026-09-24"
+    },
+    {
+      "id": "janosh-diagrams",
+      "kind": "community",
+      "project": "janosh/diagrams",
+      "upstream": "https://github.com/janosh/diagrams",
+      "revision": "028a16ada31669870ed59a5d484aa1c8b4bedcbd",
+      "local_root": "sources/community/janosh-diagrams/upstream",
+      "manifest": "sources/community/janosh-diagrams/source.json",
+      "license_ids": [
+        "MIT"
+      ],
+      "ingest": "development",
+      "plugin_policy": "normalized-only",
+      "verified": "2026-09-24"
+    },
+    {
+      "id": "petarv-tikz",
+      "kind": "community",
+      "project": "PetarV-/TikZ",
+      "upstream": "https://github.com/PetarV-/TikZ",
+      "revision": "86aee049f5355d77c598b936399e42caf8941e60",
+      "local_root": "sources/community/petarv-tikz/upstream",
+      "manifest": "sources/community/petarv-tikz/source.json",
+      "license_ids": [
+        "MIT"
+      ],
+      "ingest": "development",
+      "plugin_policy": "normalized-only",
+      "verified": "2026-09-24"
     }
   ]
 }

@@ -1,0 +1,18 @@
+{
+  "source_id": "janosh-diagrams",
+  "project": "janosh/diagrams",
+  "title": "Scientific diagrams in physics, chemistry, and machine learning",
+  "version": "2026-09-24-snapshot",
+  "revision": "028a16ada31669870ed59a5d484aa1c8b4bedcbd",
+  "upstream": "https://github.com/janosh/diagrams",
+  "source_root": "sources/community/janosh-diagrams/upstream",
+  "tree_sha256": "30cf86d17c82e41d769bc5efdc81db1fe4137b762a8c6f572df8b671fc4fc857",
+  "tex_file_count": 80,
+  "snapshot_filter": "assets with TikZ .tex + sibling YAML metadata; license/readme/citation; no rendered/site/tooling files",
+  "license_file": "sources/community/janosh-diagrams/upstream/license",
+  "license_ids": [
+    "MIT"
+  ],
+  "plugin_policy": "normalized-only",
+  "verified": "2026-09-24"
+}

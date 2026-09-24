@@ -1,0 +1,9 @@
+title: Dropout
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/0c30a29ec41e3c7d49e0b62a5b8322b2a189d726/Dropout
+tags:
+  - machine learning
+  - neural networks
+  - regularization
+description: Illustration of applying [dropout](https://jmlr.org/papers/v15/srivastava14a.html) with a rate of $p = 0.5$ to a [multilayer perceptron](../multilayer-perceptron).

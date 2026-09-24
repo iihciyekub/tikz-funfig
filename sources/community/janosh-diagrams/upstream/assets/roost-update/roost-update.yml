@@ -1,0 +1,8 @@
+title: Roost Update
+tags:
+  - machine learning
+  - graphs
+  - neural networks
+  - solid state physics
+description: |
+  Representation Learning from Stoichiometry (Roost). Graph representation and update mechanism for the composition La₂CuO₄. Essentially depicting a [graph convolution](../graph-neural-networks). [arxiv:1910.00617](https://arxiv.org/abs/1910.00617)
