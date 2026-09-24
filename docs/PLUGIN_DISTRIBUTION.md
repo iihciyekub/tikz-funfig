@@ -49,6 +49,19 @@ themes and Publication Profiles
 
 The original 1323-page PDF remains a development/provenance source, not a runtime dependency.
 
+## Bundle hygiene and size budget
+
+`scripts/check_plugin_bundle.py` enforces a 25 MiB portable-bundle budget and
+rejects raw source trees, legacy/manual reference directories, PDFs, font
+binaries, LaTeX build intermediates, and common cache files. The budget is a
+distribution guardrail rather than a target: normalized corpus growth should
+prefer compact metadata/search records over copying upstream repositories.
+
+The standalone regression test copies the Plugin to a temporary directory and
+verifies official-manual, PGFPlots, and community knowledge search, curated
+template inspection, and an actual flowchart build without access to the
+repository source tree.
+
 ## Marketplace identity
 
 - Marketplace: `tikz-funfig`

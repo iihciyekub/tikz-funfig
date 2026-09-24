@@ -258,6 +258,40 @@ class KnowledgeTests(unittest.TestCase):
             )
             self.assertEqual(pgfplots_search.returncode, 0, pgfplots_search.stdout)
             self.assertIn("pgfplots-libs.statistics", pgfplots_search.stdout)
+            community_search = subprocess.run(
+                [
+                    "bash",
+                    str(wrapper),
+                    "kb",
+                    "search",
+                    "encoder decoder architecture",
+                    "--limit",
+                    "5",
+                ],
+                cwd=root,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+            self.assertEqual(community_search.returncode, 0, community_search.stdout)
+            self.assertIn("opentikz-content", community_search.stdout)
+            template_inspect = subprocess.run(
+                [
+                    "bash",
+                    str(wrapper),
+                    "templates",
+                    "inspect",
+                    "layered-framework",
+                ],
+                cwd=root,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+            self.assertEqual(template_inspect.returncode, 0, template_inspect.stdout)
+            self.assertIn('"id": "layered-framework"', template_inspect.stdout)
             figure = root / "figure"
             init = subprocess.run(
                 ["bash", str(wrapper), "init", str(figure), "--recipe", "flowchart", "--id", "portable"],

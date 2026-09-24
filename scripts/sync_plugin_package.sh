@@ -19,7 +19,11 @@ plugin = Path(sys.argv[2])
 def refresh(source: Path, destination: Path) -> None:
     if destination.exists():
         shutil.rmtree(destination)
-    shutil.copytree(source, destination)
+    shutil.copytree(
+        source,
+        destination,
+        ignore=shutil.ignore_patterns(".DS_Store", "__pycache__", "*.pyc"),
+    )
 
 refresh(repo / "packages/skill", plugin / "skills/TIKZ-FunFig")
 refresh(repo / "src/funfig", plugin / "runtime/src/funfig")
