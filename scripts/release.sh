@@ -27,39 +27,13 @@ if ! grep -Eq "^## \\[$version\\]( |$)" CHANGELOG.md; then
   exit 1
 fi
 
-python3 - "$version" <<'PY'
-from pathlib import Path
-import re
-import sys
-
-version = sys.argv[1]
-
-init = Path("src/funfig/__init__.py")
-text = init.read_text(encoding="utf-8")
-text = re.sub(r'__version__\s*=\s*"[^"]+"', f'__version__ = "{version}"', text)
-init.write_text(text, encoding="utf-8")
-
-pyproject = Path("pyproject.toml")
-text = pyproject.read_text(encoding="utf-8")
-text = re.sub(r'(?m)^version\s*=\s*"[^"]+"$', f'version = "{version}"', text, count=1)
-pyproject.write_text(text, encoding="utf-8")
-
-helper = Path("scripts/tff")
-text = helper.read_text(encoding="utf-8")
-text = re.sub(r'(?m)^VERSION = "[^"]+"$', f'VERSION = "{version}"', text, count=1)
-helper.write_text(text, encoding="utf-8")
-
-readme = Path("README.md")
-text = readme.read_text(encoding="utf-8")
-text = re.sub(r'Version\s+\d+\.\d+(?:\.\d+)?', f'Version {version}', text, count=1)
-readme.write_text(text, encoding="utf-8")
-PY
-
+python3 scripts/version.py set "$version"
 ./scripts/sync_plugin_package.sh
+python3 scripts/version.py check
 ./scripts/check.sh
 git diff --check
 
-git add README.md CHANGELOG.md pyproject.toml src/funfig/__init__.py scripts/tff packages/plugin/tikz-funfig
+git add CHANGELOG.md pyproject.toml src/funfig/__init__.py scripts/tff packages/plugin/tikz-funfig
 # Version files may already have been prepared and committed during development.
 # Still create the release marker commit before the immutable annotated tag.
 git commit --allow-empty -m "release: v$version"

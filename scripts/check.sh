@@ -5,6 +5,7 @@ repo_root="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$repo_root"
 
 export PYTHONPATH="$repo_root/src${PYTHONPATH:+:$PYTHONPATH}"
+python3 scripts/version.py check
 python3 -m funfig doctor
 python3 scripts/build_manual_reference.py verify
 python3 scripts/build_source_example_corpus.py verify --compile-samples

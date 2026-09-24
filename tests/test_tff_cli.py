@@ -11,6 +11,7 @@ import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
+import re
 
 from funfig import __version__
 
@@ -35,6 +36,10 @@ class TffCliTests(unittest.TestCase):
         self.addCleanup(output.__exit__, None, None, None)
 
     def test_versions_and_bundled_helper_match(self):
+        pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+        canonical = re.search(r'(?m)^version\s*=\s*"([^"]+)"$', pyproject)
+        self.assertIsNotNone(canonical)
+        self.assertEqual(canonical.group(1), __version__)
         self.assertEqual(tff.VERSION, __version__)
         self.assertEqual((ROOT / "scripts/tff").read_bytes(),
                          (ROOT / "packages/plugin/tikz-funfig/scripts/tff").read_bytes())

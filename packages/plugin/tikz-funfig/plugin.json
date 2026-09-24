@@ -1,8 +1,9 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "tikz-funfig",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Schema-driven publication-quality TikZ and PGFPlots figure generation.",
+  "repository": "https://github.com/iihciyekub/tikz-funfig",
   "author": {
     "name": "TIKZ-FunFig"
   },

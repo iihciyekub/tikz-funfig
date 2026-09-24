@@ -91,10 +91,18 @@ for item in skills_manifest.get("skills", []):
             f"{sorted(missing_capabilities)}"
         )
 
-version_source = (repo / "src/funfig/__init__.py").read_text(encoding="utf-8")
-match = re.search(r'__version__\s*=\s*"([^"]+)"', version_source)
+version_source = (repo / "pyproject.toml").read_text(encoding="utf-8")
+match = re.search(r'(?m)^version\s*=\s*"([^"]+)"$', version_source)
 if not match:
-    raise SystemExit("error: could not resolve funfig __version__")
+    raise SystemExit("error: could not resolve canonical pyproject.toml version")
+runtime_source = (repo / "src/funfig/__init__.py").read_text(encoding="utf-8")
+runtime_match = re.search(r'__version__\s*=\s*"([^"]+)"', runtime_source)
+helper_source = (repo / "scripts/tff").read_text(encoding="utf-8")
+helper_match = re.search(r'(?m)^VERSION\s*=\s*"([^"]+)"$', helper_source)
+if not runtime_match or runtime_match.group(1) != match.group(1):
+    raise SystemExit("error: runtime version drift; run 'python3 scripts/version.py sync'")
+if not helper_match or helper_match.group(1) != match.group(1):
+    raise SystemExit("error: tff helper version drift; run 'python3 scripts/version.py sync'")
 manifest_path = plugin / "plugin.json"
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 manifest["version"] = match.group(1)

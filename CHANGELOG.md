@@ -4,6 +4,8 @@ All notable changes to TIKZ-FunFig are recorded here. The project follows semant
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-09-24
+
 ### Added
 
 - Added a runtime-enforced project output contract: explicit destinations win,
@@ -12,6 +14,27 @@ All notable changes to TIKZ-FunFig are recorded here. The project follows semant
   `FUNFIG_PROJECT_ROOT`, or the current project working directory.
 - Added `outputs.formats` with canonical PDF plus optional SVG export through
   Poppler `pdftocairo`, including manifest hashes and dependency checks.
+- Added pinned PGF/TikZ and PGFPlots source-example corpora, direct PGFPlots
+  manual-section indexing from the official TeX include tree, and curated
+  community source knowledge with provenance/license metadata.
+- Added curated paper-grade Templates for frameworks, flowcharts, relations,
+  schematics, confidence bands, error bars, metadata scatter, grouped panels,
+  heatmaps, and 3D surfaces.
+- Added final-size Publication Profile QA metrics and portable Plugin bundle
+  hygiene/standalone-install regression.
+- Added centralized version management with `pyproject.toml` as the canonical
+  version source plus checked runtime/helper/Plugin synchronization.
+
+### Changed
+
+- Plot Recipes now bind to curated PGFPlots knowledge cards instead of
+  production dependencies on legacy reference paths.
+- Knowledge search now combines Recipes, Templates, curated cards, official
+  examples, official manual sections, and community examples with
+  production-oriented ranking and exact-title preference.
+- Codex Plugin documentation now separates local checkout installation,
+  private Git marketplace distribution, release-tag installs, workspace
+  publishing, and universal public Plugin submission.
 
 ## [0.9.0] - 2026-09-22
 
