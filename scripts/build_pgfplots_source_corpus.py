@@ -52,6 +52,35 @@ def _source_root(manifest: dict[str, Any]) -> Path:
     return ROOT / manifest["source_root"]
 
 
+def _canonical_snapshot_files(root: Path) -> list[Path]:
+    files: list[Path] = []
+    for path in root.rglob("*"):
+        if not path.is_file():
+            continue
+        relative = path.relative_to(root)
+        if path.name == ".DS_Store":
+            continue
+        if "gnuplot" in relative.parts:
+            continue
+        if path.suffix.casefold() in {".png", ".pdf", ".gnuplot"}:
+            continue
+        files.append(path)
+    return sorted(files)
+
+
+def _canonical_tree_sha256(root: Path) -> str:
+    import hashlib
+
+    digest = hashlib.sha256()
+    for path in _canonical_snapshot_files(root):
+        relative = path.relative_to(root).as_posix().encode("utf-8")
+        digest.update(relative)
+        digest.update(b"\0")
+        digest.update(bytes.fromhex(common._sha256_file(path)))
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
 def _extra_safety_flags(code: str) -> list[str]:
     flags: set[str] = set()
     if EXTERNAL_DATA_RE.search(code):
@@ -66,7 +95,7 @@ def build_entries() -> tuple[dict[str, Any], list[dict[str, Any]]]:
     source_root = _source_root(manifest)
     if not source_root.is_dir():
         raise RuntimeError(f"PGFPlots source root is missing: {source_root}")
-    actual_hash = common._tree_sha256(source_root)
+    actual_hash = _canonical_tree_sha256(source_root)
     if actual_hash != manifest["tree_sha256"]:
         raise RuntimeError(
             "PGFPlots source tree hash mismatch: "
