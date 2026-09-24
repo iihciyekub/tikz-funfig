@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "flowchart-decision",
+  "task": "create",
+  "family": "flowchart",
+  "render_mode": "structured",
+  "intent": "Show data collection followed by a quality decision and the supplied yes/no outcomes.",
+  "content": {
+    "must_preserve": [
+      "Collect data -> Quality acceptable?",
+      "yes -> Analyze",
+      "no -> Clean / recollect"
+    ],
+    "assumptions": [],
+    "unresolved": []
+  },
+  "references": [],
+  "appearance": {
+    "layout": "Collection, decision, and analysis on the top row; cleaning below the decision.",
+    "typography": "TeX serif text",
+    "theme": "journal-muted",
+    "profile_id": "journal-single-column",
+    "target_width_mm": 88,
+    "minimum_text_pt": 7.5
+  },
+  "knowledge_sources": [
+    "flowchart-shapes",
+    "paths-routing"
+  ],
+  "delivery": {
+    "basename": "flowchart-decision",
+    "formats": [
+      "pdf"
+    ]
+  }
+}

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import html
 import re
 import shutil
 import statistics
@@ -76,6 +77,7 @@ def _pdf_text_metrics(pdf: Path) -> dict[str, Any] | None:
     if result.returncode:
         return None
     heights: list[float] = []
+    words: list[dict[str, Any]] = []
     pattern = re.compile(
         r'<word\s+[^>]*?yMin="([0-9.]+)"[^>]*?yMax="([0-9.]+)"',
         flags=re.IGNORECASE,
@@ -86,10 +88,44 @@ def _pdf_text_metrics(pdf: Path) -> dict[str, Any] | None:
         height = y_max - y_min
         if 1.0 <= height <= 100.0:
             heights.append(height)
+    word_pattern = re.compile(
+        r'<word\s+[^>]*?xMin="([0-9.]+)"[^>]*?yMin="([0-9.]+)"'
+        r'[^>]*?xMax="([0-9.]+)"[^>]*?yMax="([0-9.]+)"[^>]*>(.*?)</word>',
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    for match in word_pattern.finditer(result.stdout):
+        words.append(
+            {
+                "text": html.unescape(re.sub(r"<[^>]+>", "", match.group(5))).strip(),
+                "x_min": float(match.group(1)),
+                "y_min": float(match.group(2)),
+                "x_max": float(match.group(3)),
+                "y_max": float(match.group(4)),
+            }
+        )
+
+    overlaps: list[dict[str, Any]] = []
+    for index, left in enumerate(words):
+        for right in words[index + 1:]:
+            overlap_x = min(left["x_max"], right["x_max"]) - max(left["x_min"], right["x_min"])
+            overlap_y = min(left["y_max"], right["y_max"]) - max(left["y_min"], right["y_min"])
+            if overlap_x <= 0.75 or overlap_y <= 0.75:
+                continue
+            overlaps.append(
+                {
+                    "left": left["text"],
+                    "right": right["text"],
+                    "overlap_x_pt": round(overlap_x, 2),
+                    "overlap_y_pt": round(overlap_y, 2),
+                }
+            )
+
     if not heights:
         return {
             "word_count": 0,
             "bbox_height_pt": None,
+            "bbox_overlap_count": len(overlaps),
+            "bbox_overlaps": overlaps[:12],
         }
     heights.sort()
     p10_index = max(0, min(len(heights) - 1, round((len(heights) - 1) * 0.10)))
@@ -101,6 +137,8 @@ def _pdf_text_metrics(pdf: Path) -> dict[str, Any] | None:
             "median": round(float(statistics.median(heights)), 2),
             "max": round(heights[-1], 2),
         },
+        "bbox_overlap_count": len(overlaps),
+        "bbox_overlaps": overlaps[:12],
     }
 
 
@@ -115,6 +153,17 @@ def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[
     warnings: list[str] = []
     if info.get("pages") != 1:
         warnings.append(f"expected a single-page figure PDF, got {info.get('pages')}")
+    overlap_count = int((text_metrics or {}).get("bbox_overlap_count") or 0)
+    if overlap_count:
+        examples = (text_metrics or {}).get("bbox_overlaps") or []
+        sample = ""
+        if examples:
+            first = examples[0]
+            sample = f" (for example: {first['left']!r} overlaps {first['right']!r})"
+        warnings.append(
+            f"detected {overlap_count} overlapping text bounding-box pair(s){sample}; "
+            "increase node clearance or repair routing/layout before visual review"
+        )
 
     profile = None
     publication_scale = 1.0

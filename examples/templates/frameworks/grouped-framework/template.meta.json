@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "grouped-framework",
+  "family": "framework",
+  "title": "Grouped inputs and mechanisms converging on an outcome",
+  "description": "Two aligned groups of modules feed a shared outcome, with containment showing conceptual roles without adding causal meaning.",
+  "recipe_hint": "framework-diagram",
+  "source_golden": "examples/golden/framework-grouped",
+  "tags": ["grouped framework", "parallel modules", "converging outcome", "containment", "orthogonal routing"],
+  "supported_profiles": ["journal-single-column", "journal-double-column"],
+  "supported_themes": ["journal-monochrome", "journal-muted", "journal-accessible"],
+  "design_fit": {
+    "best_for": ["parallel conceptual groups", "multiple mechanisms converging on one outcome", "aligned grouped modules"],
+    "node_range": [4, 10],
+    "label_density": "medium",
+    "recommended_width_mm": [120, 180],
+    "adaptation_notes": ["Align repeated roles by rows.", "Keep group labels clear of outgoing connectors."],
+    "failure_modes": ["group title collides with edges", "unequal labels destroy row alignment", "orthogonal route enters a neighboring group"]
+  },
+  "requires": {
+    "packages": ["tikz"],
+    "libraries": ["arrows.meta", "backgrounds", "fit"]
+  },
+  "edit_contract": {
+    "editable": ["module labels", "group membership", "group labels", "outcome labels", "theme/profile", "grid gaps", "orthogonal routing"],
+    "structural_limits": {"nodes": [4, 10], "groups": [2, 4]},
+    "locked": ["causal direction must be user supplied", "group containment is visual hierarchy rather than evidence"]
+  }
+}

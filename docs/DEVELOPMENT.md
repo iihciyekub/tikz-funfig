@@ -97,6 +97,20 @@ fidelity in the rendered preview.
 
 ## Adding a capability
 
+The six Skills share `packages/skill/references/workflow.md` plus conditional
+image, composition, design-contract, Expert, and visual-review references.
+`schemas/figure-design.schema.json` defines the additive intent/delivery sidecar;
+`src/funfig/design.py` validates that contract and current delivery artifacts.
+It intentionally interprets only the JSON Schema vocabulary used by this schema,
+with unsupported keywords rejected; it is not a general JSON Schema engine.
+When evolving the contract, update both supported vocabulary (if needed) and
+behavioral tests. Existing FigureSpec-only CLI workflows remain compatible.
+
+Skill descriptions and `agents/openai.yaml` retain normal implicit selection.
+The general Skill frontmatter uses the lowercase `tikz-funfig` identifier
+required by current Skill validation, while `agents/openai.yaml` and Plugin
+metadata retain the public display name `TIKZ-FunFig`.
+
 Use the smallest stable abstraction proven by a real use case. Prefer promoting semantics from existing figures/methods over adding generic options with no demonstrated need.
 
 The expected path is:
@@ -145,4 +159,3 @@ git diff --check
 ```
 
 Review the diff after synchronization. A source change that affects the portable bundle should produce matching generated bundle changes.
-

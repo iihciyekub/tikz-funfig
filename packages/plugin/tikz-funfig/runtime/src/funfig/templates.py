@@ -63,6 +63,7 @@ def search_templates(
             "description": item.get("description", ""),
             "recipe": item.get("recipe_hint", ""),
             "tags": " ".join(item.get("tags", [])),
+            "design_fit": json.dumps(item.get("design_fit", {}), ensure_ascii=False),
         }
         score = 0
         for token in tokens:
@@ -76,6 +77,8 @@ def search_templates(
                 score += 6
             if token in fields["tags"].casefold():
                 score += 5
+            if token in fields["design_fit"].casefold():
+                score += 4
             if token in fields["description"].casefold():
                 score += 2
         if score:

@@ -1,3 +1,6 @@
 interface:
   display_name: "FunFig Flowcharts"
   short_description: "Create journal-ready academic process and decision flows"
+
+policy:
+  allow_implicit_invocation: true

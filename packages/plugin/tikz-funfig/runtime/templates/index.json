@@ -37,9 +37,24 @@
       "path": "flowcharts/decision-branch"
     },
     {
+      "id": "feedback-loop",
+      "family": "flowchart",
+      "path": "flowcharts/feedback-loop"
+    },
+    {
+      "id": "merge-split",
+      "family": "flowchart",
+      "path": "flowcharts/merge-split"
+    },
+    {
       "id": "layered-framework",
       "family": "framework",
       "path": "frameworks/layered-framework"
+    },
+    {
+      "id": "grouped-framework",
+      "family": "framework",
+      "path": "frameworks/grouped-framework"
     },
     {
       "id": "labelled-relations",

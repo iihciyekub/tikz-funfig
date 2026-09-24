@@ -22,6 +22,7 @@ A generated figure project uses this layout:
 
 ```text
 my-figure/
+├── figure.design.json      # Skill-authored intent, image roles, visual/delivery targets
 ├── figure.funfig.json      # editable FigureSpec; source of truth
 ├── figure.tex              # deterministic generated source
 ├── figure.pdf              # canonical compiled artifact
@@ -43,6 +44,19 @@ PDF is canonical; set `outputs.formats` to `["pdf", "svg"]` to derive SVG.
 
 ## CLI
 
+The six Skills select figure families from user context and share an image-aware
+design/retrieval/composition/QA workflow. Users can provide text, data, sketches,
+photos, or style/type references without naming an internal Skill or Recipe.
+The agent performs this routing; Skills are not a separate execution engine.
+See the [Skill design contract](packages/skill/references/design-contract.md).
+
+New Skill-managed figures include `figure.design.json`, checked against
+`schemas/figure-design.schema.json`; existing CLI-only figures remain compatible.
+Structured figures retain FigureSpec as the rendering source. Sourced Expert
+figures use editable TeX plus the same design record and an expert manifest.
+`validate-design --delivery` checks requested artifacts, source/build agreement,
+and recorded QA; image fidelity and aesthetic quality still require visual review.
+
 No third-party Python dependency is required for the v0.1 core.
 
 ```bash
@@ -55,6 +69,7 @@ PYTHONPATH=src python3 -m funfig templates inspect layered-framework
 PYTHONPATH=src python3 -m funfig themes
 PYTHONPATH=src python3 -m funfig profiles
 PYTHONPATH=src python3 -m funfig validate examples/basic-function/figure.funfig.json
+PYTHONPATH=src python3 -m funfig validate-design examples/golden/flowchart-decision/figure.design.json
 PYTHONPATH=src python3 -m funfig render examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig build examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig inspect examples/basic-function/figure.funfig.json

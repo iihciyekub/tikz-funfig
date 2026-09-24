@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "merge-split",
+  "family": "flowchart",
+  "title": "Multiple inputs merge and split to outputs",
+  "description": "Academic branch/merge composition with three inputs converging on one integration step and then splitting to two outputs.",
+  "recipe_hint": "flowchart",
+  "tags": ["merge", "split", "converge", "branch", "parallel inputs", "orthogonal routing"],
+  "supported_profiles": ["journal-double-column"],
+  "supported_themes": ["journal-monochrome", "journal-muted", "journal-accessible"],
+  "design_fit": {
+    "best_for": ["multiple inputs converging to a shared process", "one process branching to multiple outputs", "left-to-right merge and split"],
+    "node_range": [5, 9],
+    "label_density": "short-to-medium",
+    "recommended_width_mm": [140, 180],
+    "adaptation_notes": ["Keep the convergence point visually central.", "Use orthogonal routes only where they clarify parallel lanes."],
+    "failure_modes": ["orthogonal paths overlap labels", "too many lanes collapse at single-column width", "branch meaning is inferred rather than supplied"]
+  },
+  "requires": {
+    "packages": ["tikz"],
+    "libraries": ["arrows.meta", "positioning", "shapes.geometric"]
+  },
+  "edit_contract": {
+    "editable": ["input/output labels", "input/output counts within limits", "integration label", "theme/profile", "grid gaps", "routes"],
+    "structural_limits": {"inputs": [2, 4], "outputs": [2, 3], "nodes": [5, 9]},
+    "locked": ["branch and merge meaning must be user supplied", "do not imply causation solely from layout"]
+  }
+}

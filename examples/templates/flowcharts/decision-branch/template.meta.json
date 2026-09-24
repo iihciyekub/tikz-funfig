@@ -22,6 +22,14 @@
     "journal-muted",
     "journal-accessible"
   ],
+  "design_fit": {
+    "best_for": ["single decision with labelled outcomes", "compact yes/no process branch"],
+    "node_range": [3, 10],
+    "label_density": "short-to-medium",
+    "recommended_width_mm": [80, 180],
+    "adaptation_notes": ["Keep branch labels adjacent to the decision edges.", "Use relative placement when labels have unequal widths."],
+    "failure_modes": ["decision branches look like sequential steps", "branch labels collide with nodes", "grid gaps are mistaken for border clearance"]
+  },
   "requires": {
     "packages": [
       "tikz"

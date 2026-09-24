@@ -1,20 +1,39 @@
 ---
 name: funfig-schematics
-description: Create and revise publication-quality scientific schematics with TIKZ-FunFig. Use for experiments, mechanisms, components, coordinates, inputs/outputs, directional effects, and lightweight scientific geometry that is primarily a labelled schematic rather than a data plot. Do not treat this as CAD, circuit EDA, or a numerical geometry solver.
+description: Create and refine academic TikZ schematics from descriptions, sketches, apparatus photos, or reference figures. Use for components, scientific mechanisms, meaningful geometry, and labelled experiments.
 ---
 
 # FunFig Schematics
 
-Use Recipe `scientific-schematic` for stable component/annotation structures and Expert TikZ Mode for carefully sourced long-tail geometry or decoration features.
-Use the packaged `scripts/funfig.sh` wrapper for capability queries, knowledge search, validation, build, inspection, and sourced Expert Mode.
-Obey the shared TIKZ-FunFig output contract in `TIKZ-FunFig/references/output-policy.md`; do not choose a Plugin/Skill cache as an output directory.
+Use the current Skill's `scripts/funfig.sh` wrapper from the user's project.
+Shared references live in `../TIKZ-FunFig/references/` in the installed Plugin
+(`../../skill/references/` in this source checkout). Read `workflow.md` once;
+use its design, output, knowledge-retrieval, and visual-review contracts.
+For any supplied image, also read `reference-images.md`; distinguish content,
+structure, and style references before borrowing anything. A known figure family
+stays here even when the input is an image. Do not route back to the general Skill
+merely to load shared guidance.
 
-## Workflow
+Extract components, variables, spatial relationships, measurements, interfaces,
+and supplied directionality. Preserve the scientific mechanism. A photograph can
+guide an abstract apparatus schematic; do not infer hidden parts or metric
+measurements from perspective. Separate scientific geometry from stylistic placement.
 
-1. Extract components, named variables, spatial relationships, measurements, and supplied directionality. Never alter the scientific mechanism.
-2. Prefer manual layout when coordinates carry scientific/spatial meaning; use relative layout for component sequences.
-3. Query `coordinates-calc`, `nodes-anchors`, `arrows-meta`, `pics-components`, and `text-labels` as needed.
-4. Keep repeated visual components reusable, but do not hide editable scientific meaning inside opaque macros.
-5. Validate/build/inspect; confirm labels, arrows, and component boundaries at the journal Profile size.
+Use `scientific-schematic` for supported component/annotation structures. Prefer
+manual layout where position carries physical meaning and relative layout for
+component sequences. Use sourced Expert Mode for geometry, decorations, repeated
+components, or mixed compositions beyond that Recipe; do not reduce meaningful
+geometry to boxes merely to fit stable fields.
 
-For capabilities outside FigureSpec, query shared knowledge first and inspect relevant official source examples before broader manual sections. Record source IDs/locations, then use `expert-build`. A raw/source-extracted result remains Expert Mode until promoted through curated knowledge/template and Schema/Recipe/golden tests.
+Query `coordinates calc`, `nodes anchors`, `arrows meta`, `pics components`, and
+`text labels`, then exact relevant official examples/sections. Keep repeated
+components reusable while exposing editable scientific parameters. Consult
+`composition.md` for reading order and `expert-mode.md` only when needed.
+
+Validate/build and view the preview. Check dimensions/units, coordinate orientation,
+component interfaces, direction arrows, annotation leaders, detail insets, and
+label clearance at final width. Ensure any abstraction still supports the intended
+scientific explanation. Finish the shared QA and delivery checks.
+
+This workflow produces explanatory vector figures, not a numerical geometry
+solver, CAD model, circuit EDA validation, or physical simulation.

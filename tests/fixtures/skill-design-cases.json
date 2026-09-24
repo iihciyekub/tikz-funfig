@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "cases": [
+    {
+      "id": "text-merge-split",
+      "input_mode": "text",
+      "request": "左边三个模块汇聚到中间，再向右分成两条支路，连线不要穿过文字。",
+      "family": "flowchart",
+      "task": "create",
+      "expected_template": "merge-split",
+      "query_rewrites": ["merge split parallel inputs", "orthogonal routing", "edge label clearance"],
+      "acceptance": ["preserve three-to-one-to-two topology", "no invented branch meaning", "review edge and label clearance"]
+    },
+    {
+      "id": "reference-style-new-content",
+      "input_mode": "image+text",
+      "request": "参考上传图片的黑白 LaTeX 风格，但使用我的新流程内容。",
+      "family": "flowchart",
+      "task": "redesign",
+      "reference_roles": ["style"],
+      "acceptance": ["transfer style only", "do not copy reference facts or labels", "record reference role in figure.design.json"]
+    },
+    {
+      "id": "existing-figure-repair",
+      "input_mode": "managed-figure",
+      "request": "保留内容和箭头方向，修复文字重叠和回路线穿过标签。",
+      "family": "flowchart",
+      "task": "repair",
+      "query_rewrites": ["diagram layout repair", "paths routing", "edge labels quotes"],
+      "acceptance": ["preserve semantic graph", "repair layout before reducing text size", "rebuild and visually review current output"]
+    },
+    {
+      "id": "expert-angle-annotation",
+      "input_mode": "text",
+      "request": "画两个射线及夹角弧线和 theta 标注，保持 LaTeX 数学风格。",
+      "family": "schematic",
+      "task": "create",
+      "render_mode": "expert",
+      "acceptance": ["use sourced official TikZ knowledge", "keep editable TeX as source", "record expert provenance and visual QA"]
+    }
+  ]
+}

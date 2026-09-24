@@ -10,11 +10,18 @@ pdflatex
 xelatex
 gnuplot
 pdftocairo
+pdfinfo
+pdftoppm
+pdftotext
 ```
 
 `pdflatex` handles most standalone TikZ/PGFPlots figures. `xelatex` is preferred when the figure contains Chinese text or requires system/OpenType fonts. `latexmk` manages repeat compilation. `gnuplot` is required for PGFPlots `gnuplot` and `raw gnuplot` handlers, including implicit-function workflows. `pdftocairo` is required only when `outputs.formats` requests SVG; FunFig derives SVG from the successfully compiled canonical PDF.
 
 ## macOS installation
+
+Poppler `pdfinfo` and `pdftoppm` are required for build-following visual inspection;
+`pdftotext` adds text-box QA evidence. Do not treat missing inspection tools as a
+visual pass. Expert Lua-based features may also require `lualatex`.
 
 ### gnuplot
 
@@ -80,4 +87,3 @@ The bundled `compile_tikz.sh` detects gnuplot-backed source and adds this option
 `-shell-escape` expands TeX's capabilities beyond ordinary document compilation. Never enable it blindly for an unknown or untrusted `.tex` file. Before compiling third-party source, inspect it for commands or packages that execute external programs.
 
 TIKZ-FunFig-generated or locally reviewed source may use shell escape when gnuplot is required.
-

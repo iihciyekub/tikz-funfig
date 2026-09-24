@@ -4,6 +4,26 @@ All notable changes to TIKZ-FunFig are recorded here. The project follows semant
 
 ## [Unreleased]
 
+### Added
+
+- Added the additive `figure.design.json` schema and `validate-design` command
+  for user intent, image-reference roles, layout/typography targets, and stable
+  structured/Expert delivery. Final delivery checks verify artifacts, current
+  build hashes, and recorded machine/visual QA.
+
+### Changed
+
+- Refactored all six Skills around context-driven family routing and shared
+  request interpretation, image references, focused knowledge queries,
+  composition, sourced Expert TikZ, final-size review, and output contracts.
+- Expanded the curated composition layer from 10 to 13 templates with
+  regression-backed feedback-loop, merge/split, and grouped-framework layouts,
+  plus searchable design-fit metadata and end-to-end Skill design fixtures.
+- Made implicit invocation explicit in Skill metadata and preserved the existing
+  FigureSpec compatibility and single shared knowledge/runtime distribution.
+- Clarified that enlarging a canvas does not solve readability at a fixed final
+  width and that design records do not imply automatic aesthetic verification.
+
 ## [0.10.0] - 2026-09-24
 
 ### Added

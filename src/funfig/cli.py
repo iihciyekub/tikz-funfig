@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from .build import BuildError, build_spec, clean_spec, doctor
+from .design import validate_design
 from .expert import ExpertBuildError, build_expert, mark_expert_visual_review
 from .io import load_json, write_json_atomic
 from .legacy import migrate_legacy_tex
@@ -576,6 +577,13 @@ def cmd_validate(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_validate_design(args: argparse.Namespace) -> int:
+    path = Path(args.design).resolve()
+    validate_design(path, delivery=args.delivery)
+    print(f"ok: {'delivery' if args.delivery else 'design'} {path}")
+    return 0
+
+
 def cmd_render(args: argparse.Namespace) -> int:
     spec_path, spec = _load_valid(args.spec)
     tex_path, _ = render_spec(spec, spec_path)
@@ -694,6 +702,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("spec")
     p.set_defaults(func=cmd_validate)
 
+    p = sub.add_parser("validate-design", help="validate figure intent, references, and the delivery contract")
+    p.add_argument("design")
+    p.add_argument("--delivery", action="store_true", help="also verify artifacts, build hashes, and recorded visual QA")
+    p.set_defaults(func=cmd_validate_design)
+
     p = sub.add_parser("render", help="render FigureSpec to deterministic .tex")
     p.add_argument("spec")
     p.set_defaults(func=cmd_render)
@@ -764,4 +777,3 @@ def main(argv: list[str] | None = None) -> int:
     except (ValueError, KeyError, BuildError, QAError, ExpertBuildError, json.JSONDecodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
-

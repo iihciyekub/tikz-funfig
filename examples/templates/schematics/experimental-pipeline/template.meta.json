@@ -22,6 +22,14 @@
     "journal-muted",
     "journal-accessible"
   ],
+  "design_fit": {
+    "best_for": ["experimental apparatus pipelines", "component-to-sensor measurement flow", "grouped scientific components"],
+    "node_range": [3, 10],
+    "label_density": "medium",
+    "recommended_width_mm": [80, 180],
+    "adaptation_notes": ["Preserve meaningful physical ordering.", "Keep measurement annotations visually secondary to apparatus components."],
+    "failure_modes": ["abstract layout destroys spatial meaning", "annotation leaders collide with components", "photo-only detail is invented as apparatus structure"]
+  },
   "requires": {
     "packages": [
       "tikz"

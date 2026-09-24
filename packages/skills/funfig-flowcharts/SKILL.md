@@ -1,20 +1,42 @@
 ---
 name: funfig-flowcharts
-description: Create and revise publication-quality academic flowcharts with TIKZ-FunFig. Use when the figure expresses ordered steps, decisions, branches, merges, loops, feedback, or a research/algorithm pipeline. Do not use for a conceptual framework whose main meaning is layered modules, or a generic concept relationship network without process semantics.
+description: Create and refine academic TikZ process diagrams from text or reference images. Use for ordered steps, decisions, branches, merges, and feedback; layered concepts without process meaning belong to frameworks.
 ---
 
 # FunFig Flowcharts
 
-Model process meaning first, then layout. Do not infer missing decision outcomes or scientific causal meaning.
-Use the packaged `scripts/funfig.sh` wrapper for capability queries, knowledge search, validation, build, and inspection.
-Obey the shared TIKZ-FunFig output contract in `TIKZ-FunFig/references/output-policy.md`; do not choose a Plugin/Skill cache as an output directory.
+Use the current Skill's `scripts/funfig.sh` wrapper from the user's project.
+Shared references live in `../TIKZ-FunFig/references/` in the installed Plugin
+(`../../skill/references/` in this source checkout). Read `workflow.md` once;
+use its design, output, knowledge-retrieval, and visual-review contracts.
+For any supplied image, also read `reference-images.md`; distinguish content,
+structure, and style references before borrowing anything. A known figure family
+stays here even when the input is an image. Do not route back to the general Skill
+merely to load shared guidance.
 
-## Workflow
+Model process meaning first: stable node IDs, readable labels, process/decision/
+terminal/data roles, branch outcomes, merges, and feedback. Do not infer missing
+decision outcomes or scientific causal meaning. Use Recipe `flowchart`, FigureSpec
+1.1, and a suitable Theme/Profile.
 
-1. Extract stable node IDs, labels, roles (`process`, `decision`, `terminal`, `data`), branch labels, and feedback edges.
-2. Use Recipe `flowchart` and FigureSpec 1.1. Prefer relative layout for small flows and grid layout for regular multi-branch flows.
-3. Query shared knowledge for `relative-positioning`, `flowchart-shapes`, `paths-routing`, `curved-edges`, and `diagram-layout-repair` as needed. When the stable Recipe lacks a long-tail layout detail, inspect matching official source examples before broader manual prose.
-4. Keep arrow direction semantic; Theme changes must not change the process graph.
-5. Validate, build, then run `inspect` and visually review the preview. Fix spacing/anchors/routes before shrinking text.
+Prefer relative layout for small flows, variable-width labels, and decision/data
+nodes: TikZ positioning preserves border-to-border clearance. Use grid layout for
+regular parallel lanes with comparable node sizes; `row_gap` / `column_gap` are
+coordinate spacing, not guaranteed clearance between heterogeneous boxes. Read
+`composition.md` when selecting a new layout.
 
-Use Expert TikZ Mode only when the requested notation cannot be expressed by the stable flowchart Recipe. Do not claim BPMN/UML conformance unless that notation is explicitly implemented.
+Search `relative positioning`, `flowchart shapes`, `paths routing`, `curved edges`,
+and `diagram layout repair`. Use explicit routes/anchors to keep feedback outside
+the main reading path. Preserve graph meaning when reorganizing lanes or styling.
+A plain-language need such as “汇合后再分支” should become focused merge/branch and
+routing queries, not just an unsegmented search sentence.
+
+Validate/build/inspect and view the preview. Treat unintended text overlap as a
+layout failure; machine checks alone do not establish acceptance while visual
+review is pending. Fix spacing, anchors, and routes before shrinking text. Increase
+canvas size only when the target publication width permits it; otherwise reflow.
+Check every arrow direction, branch label, merge, and endpoint at final size, then
+record QA and verify delivery with the shared workflow.
+
+Use sourced Expert Mode for required notation outside this Recipe. Do not claim
+BPMN/UML conformance unless that notation is explicitly implemented.

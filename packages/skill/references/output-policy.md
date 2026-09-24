@@ -12,7 +12,8 @@ order:
 1. **Explicit target wins.** If the user names a directory, generate and update
    the managed figure there.
 2. **Managed figure stays in place.** If the requested figure already has a
-   `figure.funfig.json`, revise that FigureSpec and rebuild in the same folder.
+   `figure.funfig.json` or `figure.design.json`, revise the canonical source and
+   rebuild in the same folder. An existing Expert TeX figure also stays in place.
 3. **Explicit project root.** If `--project-root` is supplied, use
    `<project-root>/figures/<figure-id>/`.
 4. **Active-project default.** Otherwise use `FUNFIG_PROJECT_ROOT` when the host
@@ -50,10 +51,49 @@ different working directory may set `FUNFIG_PROJECT_ROOT` instead.
 
 ## Artifact formats
 
-`figure.tex` is always generated. PDF is the canonical compiled artifact and is
+In structured mode `figure.tex` is generated; in Expert Mode it is authored.
+PDF is the canonical compiled artifact and is
 always included. `outputs.formats` defaults to `["pdf"]`; use
 `["pdf", "svg"]` to request a derived `figure.svg`. SVG export uses
 `pdftocairo` after a successful PDF build.
+
+## Stable directory contract
+
+For a new Skill-managed figure use this layout. Omit optional empty directories;
+preserve an existing or explicitly requested artifact basename.
+
+```text
+<project>/figures/<figure-id>/
+  figure.design.json       # common validated intent/reference/delivery record
+  figure.funfig.json       # structured mode: canonical rendering specification
+  figure.tex              # generated in structured mode; authored in Expert Mode
+  figure.pdf              # canonical compiled output
+  figure.svg              # only when requested
+  data/                   # actual local data needed to reproduce the figure
+  references/             # optional relevant retained input images
+  .funfig/
+    manifest.json         # structured mode build and QA state
+    preview.png           # structured review preview
+    build/                # disposable structured intermediates
+```
+
+Expert Mode uses the same visible design/TeX/PDF names but has no synthetic
+FigureSpec. Its state files are `.funfig/expert-manifest.json`,
+`.funfig/expert-preview.png`, and `.funfig/expert-build/`. See `expert-mode.md`.
+The design JSON and corresponding source identify the mode unambiguously.
+Extra formats such as PNG are exports only when explicitly requested and are
+outside the current PDF/SVG delivery-format enum; do not claim schema support
+for a format by silently adding a new enum value.
+
+One requested figure owns one stable folder. Multiple figures use sibling IDs;
+multiple panels of one composed figure share its folder. Keep temporary drafts
+under `.funfig/tmp/`; do not deliver `final2`, `final-new`, or duplicate parallel
+source files unless the user explicitly wants retained variants. Do not rename
+or remove existing user assets merely to impose this layout.
+
+Validate `figure.design.json` before rendering and with `--delivery` after actual
+visual review. The design schema is separate from FigureSpec and does not replace
+its validation. Old figures without a design sidecar remain supported by the CLI.
 
 ## Update behavior
 

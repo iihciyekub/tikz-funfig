@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.1",
+  "id": "template-merge-split",
+  "recipe": "flowchart",
+  "kind": "tikz",
+  "theme": {"id": "journal-monochrome"},
+  "profile": {"id": "journal-double-column"},
+  "diagram": {
+    "layout": {"type": "grid", "row_gap": "17mm", "column_gap": "27mm"},
+    "nodes": [
+      {"id": "in-a", "label": "Input A", "role": "data", "position": {"type": "grid", "row": 0, "column": 0}},
+      {"id": "in-b", "label": "Input B", "role": "data", "position": {"type": "grid", "row": 1, "column": 0}},
+      {"id": "in-c", "label": "Input C", "role": "data", "position": {"type": "grid", "row": 2, "column": 0}},
+      {"id": "merge", "label": "Integrate", "role": "process", "position": {"type": "grid", "row": 1, "column": 1}},
+      {"id": "out-a", "label": "Output A", "role": "process", "position": {"type": "grid", "row": 0, "column": 2}},
+      {"id": "out-b", "label": "Output B", "role": "process", "position": {"type": "grid", "row": 2, "column": 2}}
+    ],
+    "edges": [
+      {"id": "e1", "from": "in-a", "to": "merge", "route": "orthogonal", "routing": {"order": "horizontal-first"}, "arrows": "forward"},
+      {"id": "e2", "from": "in-b", "to": "merge", "route": "straight", "arrows": "forward"},
+      {"id": "e3", "from": "in-c", "to": "merge", "route": "orthogonal", "routing": {"order": "horizontal-first"}, "arrows": "forward"},
+      {"id": "e4", "from": "merge", "to": "out-a", "route": "orthogonal", "routing": {"order": "horizontal-first"}, "arrows": "forward"},
+      {"id": "e5", "from": "merge", "to": "out-b", "route": "orthogonal", "routing": {"order": "horizontal-first"}, "arrows": "forward"}
+    ],
+    "groups": []
+  },
+  "outputs": {"basename": "merge-split", "formats": ["pdf"], "keep_build": false},
+  "metadata": {"template": true, "template_id": "merge-split"}
+}

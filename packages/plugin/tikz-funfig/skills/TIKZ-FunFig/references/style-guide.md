@@ -23,9 +23,10 @@ These are defaults, not rigid rules. Preserve an existing manuscript's house sty
 - Point and intersection marker fills stay separate from their label backgrounds.
   Use `label_style` to customize those labels; marker `style.color` supplies the
   default label text color when `label_style` is omitted.
-- For text-heavy multi-panel figures, enlarge the panel canvas before shrinking
-  fonts; widths around 8.8--9.2cm and heights around 6.6--7.0cm per panel are a
-  useful starting range.
+- For text-heavy multi-panel figures, repair layout and wrapping before shrinking
+  fonts. Enlarge a panel only within the final publication size budget; a larger
+  natural canvas scaled back into a fixed column can make the text even smaller.
+  Consider reflow or separate panels when the target width is fixed.
 - Use `axes.preset: standard` for figures where an offset box is undesirable.
   A custom `axes.axis_line_shift` overrides the preset's default amount.
 - The publication preset also uses inward ticks, thin academic axis/tick strokes,

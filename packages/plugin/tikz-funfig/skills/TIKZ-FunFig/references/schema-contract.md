@@ -8,6 +8,13 @@ The canonical JSON Schema lives in the source repository at:
 
 `tikz-funfig/schemas/figure-spec.schema.json`
 
+The portable Plugin carries it at `runtime/schemas/figure-spec.schema.json`.
+New Skill-managed figures also include `figure.design.json`, validated against
+`figure-design.schema.json` beside it. See `design-contract.md`: this common
+intent/reference/delivery record applies to structured and Expert modes without
+pretending arbitrary Expert TeX is a supported FigureSpec. Structured geometry
+remains authoritative in FigureSpec; Expert geometry remains authoritative in TeX.
+
 ## Core FigureSpec sections
 
 - `schema_version` — contract version.
@@ -57,6 +64,7 @@ For advanced PGFPlots figures, keep geometry/compute semantics structured:
 
 ### Preserve
 
+- `figure.design.json` when present
 - `figure.funfig.json`
 - explicit source data under `data/`
 - generated `figure.tex`

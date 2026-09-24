@@ -22,6 +22,14 @@
     "journal-muted",
     "journal-accessible"
   ],
+  "design_fit": {
+    "best_for": ["input-mechanism-outcome frameworks", "nested conceptual groups", "context or moderator layers"],
+    "node_range": [3, 9],
+    "label_density": "medium",
+    "recommended_width_mm": [120, 180],
+    "adaptation_notes": ["Keep core reading order visually dominant.", "Use group nesting for hierarchy rather than extra causal arrows."],
+    "failure_modes": ["nested group titles collide", "moderator appears causal when it is only contextual", "long labels collapse the layer spacing"]
+  },
   "requires": {
     "packages": [
       "tikz"

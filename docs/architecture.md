@@ -25,6 +25,26 @@ their Recipe.
 
 ## Pipeline
 
+The Skill layer interprets text/data/reference images before invoking this
+deterministic pipeline. Six context-selected Skills share one workflow: distinguish
+content/structure/style references, preserve scientific meaning, choose a family
+and composition, retrieve relevant methods, implement, then visually review.
+Skill routing is performed by the host agent, not a runtime dispatcher.
+
+`figure.design.json` is an additive, schema-validated intent and delivery record
+for new Skill-managed work. It records reference roles, constraints, target
+appearance/physical size, render mode, and output basename/formats. It does not
+replace FigureSpec geometry, automatically apply style, or break existing 1.0/1.1
+figures. `validate-design` checks the record and structured-source agreement;
+`--delivery` also checks required files, current build hashes, and recorded QA.
+Actual semantic fidelity and visual quality still require inspecting the output.
+
+Stable Recipes retain FigureSpec as the editable source. When a genuine long-tail
+feature requires sourced Expert TikZ, TeX is the editable source, the same design
+record describes intent, and `.funfig/expert-manifest.json` records build/provenance/
+QA state. Expert Mode is not an arbitrary-TeX FigureSpec renderer. Full workflow
+details live in `packages/skill/references/workflow.md` and its conditional links.
+
 ```text
 FigureSpec JSON
      │
@@ -124,4 +144,3 @@ The manifest is machine state, but it is intentionally human-readable.
 `packages/skill/` is the source package for the ChatGPT/Codex-style Skill. `scripts/sync_workspace_skill.sh` installs/synchronizes it into the workspace-local `.agents/skills/TIKZ-FunFig` target.
 
 Future system Plugin packaging should consume the same schemas and recipe registry rather than reimplementing them.
-

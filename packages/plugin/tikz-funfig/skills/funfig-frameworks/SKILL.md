@@ -1,20 +1,39 @@
 ---
 name: funfig-frameworks
-description: Create and revise publication-quality research frameworks, conceptual models, layered mechanism diagrams, and grouped system/module diagrams with TIKZ-FunFig. Use when the main structure is layers, modules, nested groups, or labelled cross-layer relationships. Do not invent causal relationships that the user did not supply.
+description: Create and refine academic TikZ research frameworks and module architectures from text or reference images. Use for layers, nested groups, conceptual models, and labelled relationships between modules.
 ---
 
 # FunFig Frameworks
 
-Translate the user's stated conceptual structure without adding scientific claims.
-Use the packaged `scripts/funfig.sh` wrapper for capability queries, knowledge search, validation, build, and inspection.
-Obey the shared TIKZ-FunFig output contract in `TIKZ-FunFig/references/output-policy.md`; do not choose a Plugin/Skill cache as an output directory.
+Use the current Skill's `scripts/funfig.sh` wrapper from the user's project.
+Shared references live in `../TIKZ-FunFig/references/` in the installed Plugin
+(`../../skill/references/` in this source checkout). Read `workflow.md` once;
+use its design, output, knowledge-retrieval, and visual-review contracts.
+For any supplied image, also read `reference-images.md`; distinguish content,
+structure, and style references before borrowing anything. A known figure family
+stays here even when the input is an image. Do not route back to the general Skill
+merely to load shared guidance.
 
-## Workflow
+Extract modules, layer/group membership, relationship direction, and labels
+separately from visual style. Do not add scientific or causal claims. A reference
+architecture may guide organization without supplying the user's module names,
+connections, or results.
 
-1. Extract modules, layer/group membership, relationship direction, and labels separately from visual style.
-2. Use Recipe `framework-diagram` and FigureSpec 1.1. Prefer grid layout for layers; use relative layout for irregular frameworks.
-3. Use groups only for visual containment/hierarchy. Edges remain node-to-node in V1.
-4. Query `fit-groups`, `background-layers`, `matrix-layout`, `nodes-anchors`, and `diagram-layout-repair` when needed. Use retrieved official source examples to ground long-tail grouping/layout syntax without treating them as stable product behavior.
-5. Choose a journal Profile and Theme, validate/build, then inspect at final physical size.
+Use `framework-diagram` with FigureSpec 1.1. Search Templates for the desired
+layer/group structure. Prefer grid layout for regular layers and relative layout
+for irregular structures or varying label lengths. Groups express containment;
+V1 edges remain node-to-node, not group endpoints. Read `composition.md` to set
+a clear reading order, hierarchy, and whitespace before detailed coordinates.
 
-When a framework contains a genuinely separate process flow, keep the semantic boundary clear rather than forcing every relation into flowchart notation.
+Search `fit groups`, `background layers`, `matrix layout`, `nodes anchors`, and
+`diagram layout repair`. Keep group fills lighter than primary modules and group
+titles clear of borders and connectors. Align repeated roles, not just box centers.
+Choose a restrained Theme/Profile and preserve supplied manuscript typography.
+
+If a framework includes a separate process or data panel, consult only that
+family's guidance; do not force all relations into process notation. Arbitrary
+mixed panels and specialized ML components may require sourced Expert Mode.
+
+Validate/build/inspect and review content, containment, cross-layer connections,
+long labels, group nesting, and visual balance at final width. Complete the shared
+QA and delivery checks. A Theme change must not change the conceptual structure.

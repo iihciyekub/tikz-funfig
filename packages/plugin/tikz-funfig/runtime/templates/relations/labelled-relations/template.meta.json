@@ -21,6 +21,14 @@
     "journal-monochrome",
     "journal-muted"
   ],
+  "design_fit": {
+    "best_for": ["small labelled concept networks", "mixed directed and undirected relations", "parallel or self relationships"],
+    "node_range": [2, 8],
+    "label_density": "medium",
+    "recommended_width_mm": [80, 180],
+    "adaptation_notes": ["Place nodes from topology before bending edges.", "Use curves to distinguish parallel relations, not as decoration."],
+    "failure_modes": ["edge labels overlap each other", "arrow direction is inferred from sentence order", "too many bends obscure topology"]
+  },
   "requires": {
     "packages": [
       "tikz"

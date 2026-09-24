@@ -898,7 +898,7 @@ class FunFigCoreTests(unittest.TestCase):
 
     def test_curated_templates_are_complete_and_searchable(self) -> None:
         items = list_templates()
-        self.assertEqual(len(items), 10)
+        self.assertEqual(len(items), 13)
         self.assertEqual(
             {item["id"] for item in items},
             {
@@ -909,7 +909,10 @@ class FunFigCoreTests(unittest.TestCase):
                 "surface-colorbar",
                 "heatmap-colorbar",
                 "decision-branch",
+                "feedback-loop",
+                "merge-split",
                 "layered-framework",
+                "grouped-framework",
                 "labelled-relations",
                 "experimental-pipeline",
             },
@@ -926,12 +929,28 @@ class FunFigCoreTests(unittest.TestCase):
             search_templates("error uncertainty", limit=2)[0]["id"],
             "error-bars",
         )
+        self.assertEqual(
+            search_templates("feedback return route", limit=2)[0]["id"],
+            "feedback-loop",
+        )
+        self.assertEqual(
+            search_templates("merge split parallel inputs", limit=2)[0]["id"],
+            "merge-split",
+        )
+        self.assertEqual(
+            search_templates("parallel groups converging outcome", limit=2)[0]["id"],
+            "grouped-framework",
+        )
         for item in items:
             with self.subTest(template=item["id"]):
                 directory = PROJECT_ROOT / "examples/templates" / item["path"]
                 meta = load_json(directory / "template.meta.json")
                 self.assertTrue(meta["edit_contract"]["editable"])
                 self.assertTrue(meta["edit_contract"]["locked"])
+                if meta["family"] in {"flowchart", "framework", "relation", "schematic"}:
+                    self.assertTrue(meta["design_fit"]["best_for"])
+                    self.assertTrue(meta["design_fit"]["failure_modes"])
+                    self.assertEqual(len(meta["design_fit"]["recommended_width_mm"]), 2)
                 spec = load_json(directory / "template.funfig.json")
                 result = validate_spec(spec)
                 self.assertTrue(result.ok, result.errors)
@@ -996,6 +1015,36 @@ class FunFigCoreTests(unittest.TestCase):
             self.assertEqual(
                 manifest["qa"]["publication_projection"],
                 qa["publication_projection"],
+            )
+
+    @unittest.skipUnless(
+        shutil.which("latexmk")
+        and shutil.which("pdflatex")
+        and shutil.which("pdfinfo")
+        and shutil.which("pdftoppm")
+        and shutil.which("pdftotext"),
+        "TeX/Poppler QA toolchain unavailable",
+    )
+    def test_inspect_flags_overlapping_text_boxes(self) -> None:
+        source_dir = PROJECT_ROOT / "examples/golden/flowchart-decision"
+        with tempfile.TemporaryDirectory() as temp:
+            work_dir = Path(temp) / "flowchart-overlap"
+            shutil.copytree(
+                source_dir,
+                work_dir,
+                ignore=shutil.ignore_patterns("*.pdf", ".funfig"),
+            )
+            spec_path = work_dir / "figure.funfig.json"
+            spec = load_json(spec_path)
+            spec["outputs"]["basename"] = "flowchart-overlap"
+            spec["diagram"]["layout"]["column_gap"] = "8mm"
+            build_spec(spec, spec_path)
+            qa = inspect_spec(spec, spec_path, dpi=144)
+            self.assertFalse(qa["machine_checks_passed"])
+            self.assertGreater(qa["text_metrics"]["bbox_overlap_count"], 0)
+            self.assertTrue(
+                any("overlapping text bounding-box" in warning for warning in qa["warnings"]),
+                qa["warnings"],
             )
 
     @unittest.skipUnless(

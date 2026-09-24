@@ -14,11 +14,33 @@ scripts/funfig.sh kb search "fit group"
 
 Search results cover stable/experimental Recipes, compiled TIKZ-FunFig knowledge cards, normalized PGF/TikZ source examples, and the section-level PGF/TikZ 3.1.11a corpus while preserving their different verification levels. Ranking is relevance-first with a light trust preference; stable Recipe/capability behavior remains the product contract even when a raw official example demonstrates a broader TikZ feature.
 
-The Plugin distributes one shared `knowledge/` tree containing 24 compiled seed cards, project examples, aliases, 2857 normalized official source examples, and the official manual section corpus. It does not distribute the raw upstream PGF source tree, the 1323-page `pgfmanual.pdf`, or split-PDF booklets.
+The Plugin distributes one shared `knowledge/` tree containing compiled cards,
+project examples, aliases, normalized PGF/PGFPlots and curated community source
+examples, and official manual sections. Use `kb status` for current counts. It
+does not distribute raw upstream source trees, original manuals, or PDF booklets.
 
-The legacy paths in this map are **source-repository development references**. They are intentionally excluded from the portable Plugin package. If the source checkout is unavailable, use the bundled Recipe/Schema behavior; do not treat a missing legacy path as a runtime dependency failure.
+Use `kb search "<focused query>" --json` to retain IDs and provenance. There is
+currently no `kb show` command. Read the matching record from the shared tree:
 
-All paths are relative to the workspace root.
+- Card IDs map through `knowledge/cards/index.json` to Markdown files.
+- Example IDs map to records in `knowledge/corpus/*.jsonl`; read the `code`,
+  dependencies, source locator, verification, and any wrapper/skip information.
+- Official section IDs map to `knowledge/manual-index/*.jsonl`; inspect the
+  matching record's text for key semantics. Expert `--source` needs these IDs.
+- Templates use `templates inspect <id>`; Recipes are declared by `capabilities`.
+
+In the installed Plugin, `knowledge/` is at Plugin root beside `skills/` and
+`runtime/`, not inside `runtime/`. Resolve it relative to the current Skill path;
+do not assume the original source checkout exists. For JSONL, select matching
+IDs rather than reading a whole corpus into context. If source examples dominate
+search results, query the exact official section title to find its manual record.
+
+The legacy paths below are **source-repository development references**. They are
+excluded from the portable Plugin. Installed work uses the bundled Recipes and
+shared knowledge, including sourced Expert Mode for long-tail needs; missing
+legacy paths are not a runtime failure.
+
+The remaining historical paths are relative to the source workspace root.
 
 ## Toolchain and installation
 
@@ -159,4 +181,3 @@ Prefer XeLaTeX for new figures containing Chinese text.
 Do not blindly import these helper files into new work. Read the relevant definitions and copy only the minimal, valid abstractions needed by the new figure.
 
 The `\iiplot` helper depends on `raw gnuplot`. The current workspace toolchain includes gnuplot; still run the dependency check when moving the skill to another machine.
-
