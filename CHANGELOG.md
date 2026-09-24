@@ -4,6 +4,8 @@ All notable changes to TIKZ-FunFig are recorded here. The project follows semant
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-09-24
+
 ### Added
 
 - Added the additive `figure.design.json` schema and `validate-design` command
