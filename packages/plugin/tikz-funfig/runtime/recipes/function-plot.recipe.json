@@ -6,10 +6,7 @@
   "description": "Explicit analytic curves on one axis.",
   "required": ["axes", "data_sources", "series"],
   "capabilities": ["function", "coordinates", "gnuplot", "raw_gnuplot", "annotations"],
-  "external_tools": ["latexmk"],
-  "reference_examples": [
-    "references/legacy/pgfplots-memo/00_基本算子参数/00_base.tex",
-    "references/legacy/tikz-memo/02_pgfplots/基本设置/04坐标轴.tex"
-  ]
+  "knowledge_ids": ["pgfplots-axis-addplot"],
+  "external_tools": ["latexmk"]
 }
 

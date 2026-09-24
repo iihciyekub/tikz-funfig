@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "surface-colorbar",
+  "family": "plot",
+  "title": "3D surface with colorbar",
+  "description": "Publication-oriented analytic or table-driven 3D surface with explicit view and quantitative colorbar.",
+  "recipe_hint": "surface-plot",
+  "source_golden": "examples/golden/surface-plot",
+  "tags": ["surface", "3d", "mesh", "colorbar", "publication plot"],
+  "supported_profiles": ["journal-single-column", "journal-double-column"],
+  "supported_themes": ["journal-muted", "journal-accessible", "journal-monochrome"],
+  "requires": {"packages": ["tikz", "pgfplots"], "libraries": []},
+  "edit_contract": {
+    "editable": ["surface expression/data", "domains", "sampling", "view angle", "colorbar", "theme/profile"],
+    "structural_limits": {"surface_series": [1, 3]},
+    "locked": [
+      "3D representation must match the data semantics",
+      "color limits must not silently change with palette changes"
+    ]
+  }
+}

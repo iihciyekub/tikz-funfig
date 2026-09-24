@@ -11,9 +11,9 @@ Obey the shared TIKZ-FunFig output contract in `TIKZ-FunFig/references/output-po
 ## Workflow
 
 1. Preserve existing FigureSpec/data when revising a managed figure.
-2. Run `scripts/funfig.sh capabilities` and choose the nearest stable PGFPlots Recipe before inventing syntax.
+2. Run `scripts/funfig.sh capabilities` and choose the nearest stable PGFPlots Recipe before inventing syntax. For common publication layouts, search/inspect curated Templates before composing a new layout.
 3. Inspect the user's function/data semantics, axis bounds, units, uncertainty, annotations, and target journal size. Never invent scientific values.
-4. Query `scripts/funfig.sh kb search "<need>"` when syntax or implementation details are uncertain. Prefer the most relevant stable Recipe and compiled project knowledge; use official source examples before falling back to broader manual sections.
+4. Query `scripts/funfig.sh kb search "<need>"` when syntax or implementation details are uncertain. Prefer a compatible Recipe/Template, then compiled PGFPlots knowledge cards, then source-compiled official examples; use the normalized official PGFPlots manual for exact key semantics and long-tail reference details.
 5. Create/update the FigureSpec, validate, render, and build.
 6. Run `funfig inspect`; review the preview at the target publication size. Repair layout/labels before declaring completion.
 

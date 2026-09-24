@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "grouped-panels",
+  "family": "plot",
+  "title": "Aligned grouped panels",
+  "description": "Multi-panel publication figure with shared group layout and edge-aware axis labeling.",
+  "recipe_hint": "groupplot",
+  "source_golden": "examples/golden/groupplot",
+  "tags": ["groupplot", "multi panel", "small multiples", "publication plot"],
+  "supported_profiles": ["journal-single-column", "journal-double-column"],
+  "supported_themes": ["journal-monochrome", "journal-muted", "journal-accessible"],
+  "requires": {"packages": ["tikz", "pgfplots"], "libraries": ["groupplots"]},
+  "edit_contract": {
+    "editable": ["panel titles", "panel count", "series bindings", "shared labels", "panel spacing", "theme/profile"],
+    "structural_limits": {"panels": [2, 9], "columns": [1, 3]},
+    "locked": [
+      "panel data and scales remain user supplied",
+      "different units or scales must be made explicit"
+    ]
+  }
+}

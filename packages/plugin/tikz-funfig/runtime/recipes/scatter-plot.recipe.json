@@ -6,9 +6,6 @@
   "description": "Scientific scatter plot with structured point metadata and optional labels.",
   "required": ["axes", "data_sources", "series"],
   "capabilities": ["scatter", "point-meta", "explicit-meta", "nodes-near-coords", "table-data"],
-  "external_tools": ["latexmk"],
-  "reference_examples": [
-    "references/legacy/pgfplots-memo/02_scatter plots/2_[scatter].tex",
-    "references/legacy/tikz-memo/02_pgfplots/table/07_meta.scatter数据.tex"
-  ]
+  "knowledge_ids": ["pgfplots-scatter-point-meta", "pgfplots-table-data"],
+  "external_tools": ["latexmk"]
 }

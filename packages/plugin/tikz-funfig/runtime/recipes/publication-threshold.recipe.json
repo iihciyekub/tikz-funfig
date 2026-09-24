@@ -15,10 +15,6 @@
     "point-callout",
     "structured-legend"
   ],
-  "external_tools": ["latexmk"],
-  "reference_examples": [
-    "references/legacy/publication-sustainability-1485080/fig1/fig1.tex",
-    "references/legacy/publication-sustainability-1485080/fig4/fig4.tex",
-    "references/legacy/publication-sustainability-1485080/fig11/fig11.tex"
-  ]
+  "knowledge_ids": ["pgfplots-axis-addplot", "pgfplots-fill-between", "pgfplots-coordinate-filtering"],
+  "external_tools": ["latexmk"]
 }

@@ -6,10 +6,7 @@
   "description": "Named scientific curves with semantic intersections and labels.",
   "required": ["axes", "data_sources", "series", "annotations"],
   "capabilities": ["name-path", "intersection", "point-callout"],
-  "external_tools": ["latexmk"],
-  "reference_examples": [
-    "references/legacy/publication-sustainability-1485080/fig4/fig4.tex",
-    "references/legacy/tikz-memo/01_tikz_基础/3.>>算子/路径相交点.tex"
-  ]
+  "knowledge_ids": ["pgfplots-axis-addplot"],
+  "external_tools": ["latexmk"]
 }
 

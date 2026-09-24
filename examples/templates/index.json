@@ -7,6 +7,31 @@
       "path": "plots/confidence-band"
     },
     {
+      "id": "error-bars",
+      "family": "plot",
+      "path": "plots/error-bars"
+    },
+    {
+      "id": "scatter-meta",
+      "family": "plot",
+      "path": "plots/scatter-meta"
+    },
+    {
+      "id": "grouped-panels",
+      "family": "plot",
+      "path": "plots/grouped-panels"
+    },
+    {
+      "id": "surface-colorbar",
+      "family": "plot",
+      "path": "plots/surface-colorbar"
+    },
+    {
+      "id": "heatmap-colorbar",
+      "family": "plot",
+      "path": "plots/heatmap-colorbar"
+    },
+    {
       "id": "decision-branch",
       "family": "flowchart",
       "path": "flowcharts/decision-branch"

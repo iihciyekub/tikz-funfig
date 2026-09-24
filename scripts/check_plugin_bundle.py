@@ -76,6 +76,8 @@ def main() -> int:
         "knowledge/corpus/examples.jsonl",
         "knowledge/corpus/pgfplots-1.18.2.jsonl",
         "knowledge/corpus/community.jsonl",
+        "knowledge/manual-index/pgfplots-1.18.2.jsonl",
+        "knowledge/manual-index/pgfplots-1.18.2.topics.json",
         "runtime/templates/index.json",
         "runtime/schemas/figure-spec.schema.json",
         "skills/TIKZ-FunFig/SKILL.md",

@@ -1,0 +1,719 @@
+{
+  "chapters": [
+    {
+      "id": "pgfplots-manual-pgfplots-title-abstract-intro-l0002",
+      "title": "Introduction"
+    },
+    {
+      "id": "pgfplots-manual-pgfplots-intro-l0003",
+      "title": "Step-by-Step Tutorials"
+    },
+    {
+      "id": "pgfplots-manual-pgfplots-reference-l0003",
+      "title": "The Reference"
+    },
+    {
+      "id": "pgfplots-manual-pgfplots-reference-preliminaryoptions-l0051",
+      "title": "My Chapter"
+    },
+    {
+      "id": "pgfplots-manual-pgfplots-libs-l0002",
+      "title": "Related Libraries"
+    },
+    {
+      "id": "pgfplots-manual-pgfplots-resources-l0002",
+      "title": "Memory and Speed considerations"
+    },
+    {
+      "id": "pgfplots-manual-pgfplots-importexport-l0002",
+      "title": "Import/Export From Other Formats"
+    },
+    {
+      "id": "pgfplots-manual-pgfplots-importexport-l0236",
+      "title": "The first section"
+    },
+    {
+      "id": "pgfplots-manual-pgfplots-importexport-l0242",
+      "title": "The second section"
+    },
+    {
+      "id": "pgfplots-manual-pgfplots-basic-reference-l0002",
+      "title": "Utilities and Basic Level Commands"
+    }
+  ],
+  "libraries": [
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-libs-clickable-l0002",
+        "pgfplots-manual-pgfplots-libs-clickable-l0027",
+        "pgfplots-manual-pgfplots-libs-clickable-l0079",
+        "pgfplots-manual-pgfplots-libs-clickable-l0281",
+        "pgfplots-manual-pgfplots-libs-clickable-l0300",
+        "pgfplots-manual-pgfplots-libs-clickable-l0351",
+        "pgfplots-manual-pgfplots-libs-clickable-l0360",
+        "pgfplots-manual-pgfplots-libs-clickable-l0489",
+        "pgfplots-manual-pgfplots-libs-clickable-l0515"
+      ],
+      "library": "clickable"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-3dplots-l0200",
+        "pgfplots-manual-pgfplots-reference-3dplots-l0748",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l1269",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l4267",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0392",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0608",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0784",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0799",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0815",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0828",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0867"
+      ],
+      "library": "colorbrewer"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-markers-meta-l1269",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0392",
+        "pgfplots-manual-pgfplots-libs-colormaps-l0002"
+      ],
+      "library": "colormaps"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-symbolic-transformations-l0237",
+        "pgfplots-manual-pgfplots-libs-dateplot-l0002"
+      ],
+      "library": "dateplot"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-libs-decorations-softclip-l0002"
+      ],
+      "library": "decorations.softclip"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-tutorial1-l0520",
+        "pgfplots-manual-pgfplots-libs-external-l0002",
+        "pgfplots-manual-pgfplots-importexport-l0034"
+      ],
+      "library": "external"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-2dplots-l1673",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l0002",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l0019",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l0196",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l0328",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l0550",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l0628",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l0860",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l1147",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l1238",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l1326",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l1469"
+      ],
+      "library": "fillbetween"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-libs-groupplots-l0002",
+        "pgfplots-manual-pgfplots-libs-groupplots-l0156"
+      ],
+      "library": "groupplots"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-3dplots-l1475",
+        "pgfplots-manual-pgfplots-reference-3dplots-l1569",
+        "pgfplots-manual-pgfplots-reference-3dplots-l1882",
+        "pgfplots-manual-pgfplots-reference-3dplots-l3408",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l2668",
+        "pgfplots-manual-pgfplots-reference-tikzinteroperability-l0002",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0002",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0052",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0081",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0178",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0186",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0340",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0400",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0407",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0893",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0985",
+        "pgfplots-manual-pgfplots-libs-patchplots-l1022"
+      ],
+      "library": "patchplots"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-2dplots-l2956",
+        "pgfplots-manual-pgfplots-reference-transformations-l0002",
+        "pgfplots-manual-pgfplots-libs-polar-l0002",
+        "pgfplots-manual-pgfplots-libs-polar-l0015",
+        "pgfplots-manual-pgfplots-libs-polar-l0089",
+        "pgfplots-manual-pgfplots-libs-polar-l0120",
+        "pgfplots-manual-pgfplots-libs-polar-l0173",
+        "pgfplots-manual-pgfplots-libs-polar-l0232",
+        "pgfplots-manual-pgfplots-libs-polar-l0258"
+      ],
+      "library": "polar"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-2dplots-l2973",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0002",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0046",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0074",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0152",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0375",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0405",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0549"
+      ],
+      "library": "smithchart"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-libs-statistics-l0002",
+        "pgfplots-manual-pgfplots-libs-statistics-l0013",
+        "pgfplots-manual-pgfplots-libs-statistics-l0037",
+        "pgfplots-manual-pgfplots-libs-statistics-l0618",
+        "pgfplots-manual-pgfplots-libs-statistics-l0630",
+        "pgfplots-manual-pgfplots-libs-statistics-l0725",
+        "pgfplots-manual-pgfplots-libs-statistics-l0763",
+        "pgfplots-manual-pgfplots-libs-statistics-l0871",
+        "pgfplots-manual-pgfplots-libs-statistics-l0997",
+        "pgfplots-manual-pgfplots-libs-statistics-l1397"
+      ],
+      "library": "statistics"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-2dplots-l2966",
+        "pgfplots-manual-pgfplots-libs-ternary-l0002",
+        "pgfplots-manual-pgfplots-libs-ternary-l0014",
+        "pgfplots-manual-pgfplots-libs-ternary-l0498"
+      ],
+      "library": "ternary"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-libs-units-l0002",
+        "pgfplots-manual-pgfplots-libs-units-l0052",
+        "pgfplots-manual-pgfplots-libs-units-l0148"
+      ],
+      "library": "units"
+    }
+  ],
+  "schema_version": "1.0",
+  "source_files": 53,
+  "source_id": "pgfplots-manual-source",
+  "source_version": "1.18.2",
+  "topics": [
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-2dplots-l0002",
+        "pgfplots-manual-pgfplots-reference-2dplots-l0017",
+        "pgfplots-manual-pgfplots-reference-2dplots-l0039",
+        "pgfplots-manual-pgfplots-reference-2dplots-l0069",
+        "pgfplots-manual-pgfplots-reference-2dplots-l0204",
+        "pgfplots-manual-pgfplots-reference-2dplots-l0738",
+        "pgfplots-manual-pgfplots-reference-2dplots-l0744",
+        "pgfplots-manual-pgfplots-reference-2dplots-l0750",
+        "pgfplots-manual-pgfplots-reference-2dplots-l0785",
+        "pgfplots-manual-pgfplots-reference-2dplots-l0908",
+        "pgfplots-manual-pgfplots-reference-2dplots-l1092",
+        "pgfplots-manual-pgfplots-reference-2dplots-l1292",
+        "pgfplots-manual-pgfplots-reference-2dplots-l1374",
+        "pgfplots-manual-pgfplots-reference-2dplots-l1494",
+        "pgfplots-manual-pgfplots-reference-2dplots-l1505",
+        "pgfplots-manual-pgfplots-reference-2dplots-l1673",
+        "pgfplots-manual-pgfplots-reference-2dplots-l1860",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2116",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2224",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2232",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2260",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2265",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2376",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2665",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2708",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2723",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2752",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2835",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2925",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2935",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2948",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2956",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2966",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2973"
+      ],
+      "topic": "2d"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-tutorial4-l0022",
+        "pgfplots-manual-pgfplots-tutorial4-l0147",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2665",
+        "pgfplots-manual-pgfplots-reference-3dplots-l0002",
+        "pgfplots-manual-pgfplots-reference-3dplots-l0013",
+        "pgfplots-manual-pgfplots-reference-3dplots-l0054",
+        "pgfplots-manual-pgfplots-reference-3dplots-l0200",
+        "pgfplots-manual-pgfplots-reference-3dplots-l0438",
+        "pgfplots-manual-pgfplots-reference-3dplots-l0551",
+        "pgfplots-manual-pgfplots-reference-3dplots-l0598",
+        "pgfplots-manual-pgfplots-reference-3dplots-l0748",
+        "pgfplots-manual-pgfplots-reference-3dplots-l0831",
+        "pgfplots-manual-pgfplots-reference-3dplots-l0938",
+        "pgfplots-manual-pgfplots-reference-3dplots-l1195",
+        "pgfplots-manual-pgfplots-reference-3dplots-l1433",
+        "pgfplots-manual-pgfplots-reference-3dplots-l1475",
+        "pgfplots-manual-pgfplots-reference-3dplots-l1569",
+        "pgfplots-manual-pgfplots-reference-3dplots-l1839",
+        "pgfplots-manual-pgfplots-reference-3dplots-l1882",
+        "pgfplots-manual-pgfplots-reference-3dplots-l2045",
+        "pgfplots-manual-pgfplots-reference-3dplots-l2273",
+        "pgfplots-manual-pgfplots-reference-3dplots-l2464",
+        "pgfplots-manual-pgfplots-reference-3dplots-l2997",
+        "pgfplots-manual-pgfplots-reference-3dplots-l3013",
+        "pgfplots-manual-pgfplots-reference-3dplots-l3408",
+        "pgfplots-manual-pgfplots-reference-3dplots-l3443",
+        "pgfplots-manual-pgfplots-reference-3dplots-l3452",
+        "pgfplots-manual-pgfplots-reference-3dplots-l3590",
+        "pgfplots-manual-pgfplots-reference-3dplots-l3598",
+        "pgfplots-manual-pgfplots-reference-3dplots-l3715",
+        "pgfplots-manual-pgfplots-reference-3dplots-l3931",
+        "pgfplots-manual-pgfplots-reference-3dplots-l4477",
+        "pgfplots-manual-pgfplots-reference-3dplots-l4483",
+        "pgfplots-manual-pgfplots-reference-scaling-l0326",
+        "pgfplots-manual-pgfplots-reference-3dconfiguration-l0002",
+        "pgfplots-manual-pgfplots-reference-3dconfiguration-l0014",
+        "pgfplots-manual-pgfplots-reference-3dconfiguration-l0173",
+        "pgfplots-manual-pgfplots-reference-3dconfiguration-l0245",
+        "pgfplots-manual-pgfplots-reference-3dconfiguration-l0395",
+        "pgfplots-manual-pgfplots-importexport-l0657"
+      ],
+      "topic": "3d"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l0002",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l0077",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l0390",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l0503",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l0883",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l0966",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1024",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1064",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1161",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1208",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1259",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1294",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1351",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1371",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1404",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1412",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1560",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1627",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1727",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1797",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1817",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1844",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l2004",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l2237",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l2497",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l2502",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2956",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l3580",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l0002",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l0009",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l0093",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l0343",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l0692",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l0733",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l0747",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l0926",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l1040",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l1123",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l1534",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l1789",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l1913",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l1995",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l2050",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l2156",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l2469",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l2668",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l2833",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l2895",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l2963",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l3005",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l3072",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l3234",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l3327",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l3365",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l3466",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l3478",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l3547",
+        "pgfplots-manual-pgfplots-reference-scaling-l0326",
+        "pgfplots-manual-pgfplots-reference-scaling-l1014",
+        "pgfplots-manual-pgfplots-reference-3dconfiguration-l0002",
+        "pgfplots-manual-pgfplots-reference-3dconfiguration-l0173",
+        "pgfplots-manual-pgfplots-reference-3dconfiguration-l0395",
+        "pgfplots-manual-pgfplots-reference-gridoptions-axiscoordinates-l0002",
+        "pgfplots-manual-pgfplots-reference-gridoptions-axiscoordinates-l0058",
+        "pgfplots-manual-pgfplots-reference-gridoptions-axiscoordinates-l0085",
+        "pgfplots-manual-pgfplots-reference-gridoptions-axiscoordinates-l0276",
+        "pgfplots-manual-pgfplots-reference-gridoptions-axiscoordinates-l0407",
+        "pgfplots-manual-pgfplots-reference-gridoptions-axiscoordinates-l0444",
+        "pgfplots-manual-pgfplots-reference-gridoptions-axiscoordinates-l0760",
+        "pgfplots-manual-pgfplots-reference-layers-l0195",
+        "pgfplots-manual-pgfplots-libs-polar-l0002",
+        "pgfplots-manual-pgfplots-libs-polar-l0015",
+        "pgfplots-manual-pgfplots-libs-polar-l0258",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0046",
+        "pgfplots-manual-pgfplots-libs-ternary-l0014",
+        "pgfplots-manual-pgfplots-basic-reference-l0719"
+      ],
+      "topic": "axis"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-libs-clickable-l0002",
+        "pgfplots-manual-pgfplots-libs-clickable-l0027",
+        "pgfplots-manual-pgfplots-libs-clickable-l0079",
+        "pgfplots-manual-pgfplots-libs-clickable-l0281",
+        "pgfplots-manual-pgfplots-libs-clickable-l0300",
+        "pgfplots-manual-pgfplots-libs-clickable-l0351",
+        "pgfplots-manual-pgfplots-libs-clickable-l0360",
+        "pgfplots-manual-pgfplots-libs-clickable-l0489",
+        "pgfplots-manual-pgfplots-libs-clickable-l0515"
+      ],
+      "topic": "clickable"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-3dplots-l0200",
+        "pgfplots-manual-pgfplots-reference-3dplots-l0748",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l1269",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l4267",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0392",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0608",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0784",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0799",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0815",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0828",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0867"
+      ],
+      "topic": "colorbrewer"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-markers-meta-l0002",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l0886",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l0993",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l1065",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l1345",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l2384",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l4059",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0392",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0608",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0784",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0799",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0815",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0828",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0867",
+        "pgfplots-manual-pgfplots-libs-colormaps-l0002",
+        "pgfplots-manual-pgfplots-importexport-l0764"
+      ],
+      "topic": "colormap"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-markers-meta-l1269",
+        "pgfplots-manual-pgfplots-libs-colorbrewer-l0392",
+        "pgfplots-manual-pgfplots-libs-colormaps-l0002"
+      ],
+      "topic": "colormaps"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-tutorial4-l0197",
+        "pgfplots-manual-pgfplots-reference-3dplots-l2045",
+        "pgfplots-manual-pgfplots-reference-3dplots-l2997"
+      ],
+      "topic": "contour"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-symbolic-transformations-l0237",
+        "pgfplots-manual-pgfplots-libs-dateplot-l0002"
+      ],
+      "topic": "dateplot"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-libs-decorations-softclip-l0002"
+      ],
+      "topic": "decorations.softclip"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-errorbars-l0002"
+      ],
+      "topic": "error-bars"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-tutorial1-l0520",
+        "pgfplots-manual-pgfplots-libs-external-l0002",
+        "pgfplots-manual-pgfplots-importexport-l0034"
+      ],
+      "topic": "external"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-2dplots-l1673",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l0002",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l0019",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l0196",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l0328",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l0550",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l0628",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l0860",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l1147",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l1238",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l1326",
+        "pgfplots-manual-pgfplots-libs-fillbetween-l1469"
+      ],
+      "topic": "fillbetween"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-coordfiltering-l0002",
+        "pgfplots-manual-pgfplots-reference-coordfiltering-l0308",
+        "pgfplots-manual-pgfplots-reference-coordfiltering-l0338"
+      ],
+      "topic": "filtering"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-libs-groupplots-l0002",
+        "pgfplots-manual-pgfplots-libs-groupplots-l0156"
+      ],
+      "topic": "groupplots"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l1161",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l0002",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l0008",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l0367",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l0448",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l0493",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l0630",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l0775",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l0799",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l0866",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l0886",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l0993",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l1065",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l1189",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l1269",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l1345",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l2189",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l2372",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l2384",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l2527",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l2546",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l2885",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l2914",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l2937",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l2979",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l2999",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l3008",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l3216",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l3245",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l3358",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l3580",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l3627",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l3640",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l3700",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l3949",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l4024",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l4053",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l4059",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l4238",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l4265",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l4267",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l4353"
+      ],
+      "topic": "markers"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-3dplots-l1475",
+        "pgfplots-manual-pgfplots-reference-3dplots-l1569",
+        "pgfplots-manual-pgfplots-reference-3dplots-l1882",
+        "pgfplots-manual-pgfplots-reference-3dplots-l3408",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l2668",
+        "pgfplots-manual-pgfplots-reference-tikzinteroperability-l0002",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0002",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0052",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0081",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0178",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0186",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0340",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0400",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0407",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0893",
+        "pgfplots-manual-pgfplots-libs-patchplots-l0985",
+        "pgfplots-manual-pgfplots-libs-patchplots-l1022"
+      ],
+      "topic": "patchplots"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-2dplots-l2956",
+        "pgfplots-manual-pgfplots-reference-transformations-l0002",
+        "pgfplots-manual-pgfplots-libs-polar-l0002",
+        "pgfplots-manual-pgfplots-libs-polar-l0015",
+        "pgfplots-manual-pgfplots-libs-polar-l0089",
+        "pgfplots-manual-pgfplots-libs-polar-l0120",
+        "pgfplots-manual-pgfplots-libs-polar-l0173",
+        "pgfplots-manual-pgfplots-libs-polar-l0232",
+        "pgfplots-manual-pgfplots-libs-polar-l0258"
+      ],
+      "topic": "polar"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-2dplots-l0785",
+        "pgfplots-manual-pgfplots-reference-3dplots-l3590"
+      ],
+      "topic": "quiver"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-linefitting-l0002"
+      ],
+      "topic": "regression"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-scaling-l0002",
+        "pgfplots-manual-pgfplots-reference-scaling-l0039",
+        "pgfplots-manual-pgfplots-reference-scaling-l0095",
+        "pgfplots-manual-pgfplots-reference-scaling-l0320",
+        "pgfplots-manual-pgfplots-reference-scaling-l0326",
+        "pgfplots-manual-pgfplots-reference-scaling-l0360",
+        "pgfplots-manual-pgfplots-reference-scaling-l0666",
+        "pgfplots-manual-pgfplots-reference-scaling-l0866",
+        "pgfplots-manual-pgfplots-reference-scaling-l1014",
+        "pgfplots-manual-pgfplots-reference-scaling-l1028",
+        "pgfplots-manual-pgfplots-reference-tickoptions-l0891"
+      ],
+      "topic": "scaling"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-tutorial3-l0002",
+        "pgfplots-manual-pgfplots-tutorial3-l0011",
+        "pgfplots-manual-pgfplots-tutorial3-l0162",
+        "pgfplots-manual-pgfplots-tutorial3-l0221",
+        "pgfplots-manual-pgfplots-tutorial4-l0147",
+        "pgfplots-manual-pgfplots-reference-2dplots-l1860",
+        "pgfplots-manual-pgfplots-reference-2dplots-l2835",
+        "pgfplots-manual-pgfplots-reference-3dplots-l0598",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l3627",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l3640",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l3700",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l3949",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l4053",
+        "pgfplots-manual-pgfplots-reference-markers-meta-l4265"
+      ],
+      "topic": "scatter"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-2dplots-l2973",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0002",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0046",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0074",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0152",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0375",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0405",
+        "pgfplots-manual-pgfplots-libs-smithchart-l0549"
+      ],
+      "topic": "smithchart"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-2dplots-l0738",
+        "pgfplots-manual-pgfplots-libs-statistics-l0002",
+        "pgfplots-manual-pgfplots-libs-statistics-l0013",
+        "pgfplots-manual-pgfplots-libs-statistics-l0037",
+        "pgfplots-manual-pgfplots-libs-statistics-l0618",
+        "pgfplots-manual-pgfplots-libs-statistics-l0630",
+        "pgfplots-manual-pgfplots-libs-statistics-l0725",
+        "pgfplots-manual-pgfplots-libs-statistics-l0763",
+        "pgfplots-manual-pgfplots-libs-statistics-l0871",
+        "pgfplots-manual-pgfplots-libs-statistics-l0997",
+        "pgfplots-manual-pgfplots-libs-statistics-l1397"
+      ],
+      "topic": "statistics"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l0077",
+        "pgfplots-manual-pgfplots-reference-axis-addplot-l0503",
+        "pgfplots-manual-pgfplots-reference-3dplots-l0054",
+        "pgfplots-manual-pgfplots-reference-3dplots-l1839",
+        "pgfplots-manual-pgfplots-reference-errorbars-l0350",
+        "pgfplots-manual-pgfplots-reference-alignment-l0409"
+      ],
+      "topic": "table-data"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-reference-2dplots-l2966",
+        "pgfplots-manual-pgfplots-libs-ternary-l0002",
+        "pgfplots-manual-pgfplots-libs-ternary-l0014",
+        "pgfplots-manual-pgfplots-libs-ternary-l0498"
+      ],
+      "topic": "ternary"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-tutorial1-l0392",
+        "pgfplots-manual-pgfplots-tutorial2-l0142",
+        "pgfplots-manual-pgfplots-reference-axisdescription-l3547",
+        "pgfplots-manual-pgfplots-reference-tickoptions-l0002",
+        "pgfplots-manual-pgfplots-reference-tickoptions-l0005",
+        "pgfplots-manual-pgfplots-reference-tickoptions-l0106",
+        "pgfplots-manual-pgfplots-reference-tickoptions-l0719",
+        "pgfplots-manual-pgfplots-reference-tickoptions-l0891",
+        "pgfplots-manual-pgfplots-reference-tickoptions-l1137",
+        "pgfplots-manual-pgfplots-reference-tickoptions-l1228",
+        "pgfplots-manual-pgfplots-reference-gridoptions-axiscoordinates-l0002",
+        "pgfplots-manual-pgfplots-reference-gridoptions-axiscoordinates-l0058",
+        "pgfplots-manual-pgfplots-reference-gridoptions-axiscoordinates-l0085",
+        "pgfplots-manual-pgfplots-reference-gridoptions-axiscoordinates-l0276",
+        "pgfplots-manual-pgfplots-reference-gridoptions-axiscoordinates-l0407",
+        "pgfplots-manual-pgfplots-reference-gridoptions-axiscoordinates-l0444",
+        "pgfplots-manual-pgfplots-reference-gridoptions-axiscoordinates-l0760",
+        "pgfplots-manual-pgfplots-libs-patchplots-l1022"
+      ],
+      "topic": "ticks"
+    },
+    {
+      "chunk_ids": [
+        "pgfplots-manual-pgfplots-libs-units-l0002",
+        "pgfplots-manual-pgfplots-libs-units-l0052",
+        "pgfplots-manual-pgfplots-libs-units-l0148"
+      ],
+      "topic": "units"
+    }
+  ],
+  "total_chunks": 415
+}

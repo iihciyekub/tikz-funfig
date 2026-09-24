@@ -15,9 +15,9 @@ class KnowledgeTests(unittest.TestCase):
     def test_knowledge_status_has_compiled_cards_and_manual_corpus(self) -> None:
         payload = status()
         self.assertEqual(Path(payload["root"]), knowledge_root())
-        self.assertEqual(payload["cards"], 24)
-        self.assertGreaterEqual(payload["manual_chunks"], 800)
-        self.assertEqual(payload["verification"]["compiled"], 24)
+        self.assertEqual(payload["cards"], 36)
+        self.assertEqual(payload["manual_chunks"], 1259)
+        self.assertEqual(payload["verification"]["compiled"], 36)
         self.assertEqual(payload["verification"]["draft"], 0)
 
     def test_alias_search_prefers_verified_card_then_official_source(self) -> None:
@@ -115,9 +115,9 @@ class KnowledgeTests(unittest.TestCase):
         )
         self.assertEqual(index["total_examples"], 1290)
         self.assertEqual(index["renderable_examples"], 956)
-        self.assertEqual(len(index["compile_sample_ids"]), 6)
-        self.assertEqual(index["verification"]["source-compiled"], 6)
-        self.assertEqual(index["compile_status"]["passed"], 6)
+        self.assertEqual(len(index["compile_sample_ids"]), 11)
+        self.assertEqual(index["verification"]["source-compiled"], 11)
+        self.assertEqual(index["compile_status"]["passed"], 11)
         lines = [
             line
             for line in (
@@ -142,6 +142,56 @@ class KnowledgeTests(unittest.TestCase):
                 "janosh-diagrams",
                 "petarv-tikz",
             },
+        )
+
+    def test_pgfplots_manual_corpus_matches_pinned_tex_source(self) -> None:
+        source = json.loads(
+            (
+                PROJECT_ROOT / "sources/official/pgfplots/source.json"
+            ).read_text(encoding="utf-8")
+        )
+        corpus = PROJECT_ROOT / "knowledge/manual-index/pgfplots-1.18.2.jsonl"
+        lines = [
+            json.loads(line)
+            for line in corpus.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        self.assertEqual(len(lines), 415)
+        self.assertEqual({item["source_id"] for item in lines}, {source["source_id"]})
+        self.assertEqual({item["source_version"] for item in lines}, {source["version"]})
+        self.assertTrue(any(item["title"] == "Error Bars" for item in lines))
+        point_meta = next(
+            item for item in lines if item["title"] == "User Input Format for Point Meta"
+        )
+        self.assertIn("point meta", point_meta["keys"])
+        error_bars = next(item for item in lines if item["title"] == "Error Bars")
+        self.assertIn("error bars/error mark", error_bars["keys"])
+        self.assertTrue(
+            all(item["source_file"].startswith("doc/latex/pgfplots/") for item in lines)
+        )
+
+        topics = json.loads(
+            (
+                PROJECT_ROOT / "knowledge/manual-index/pgfplots-1.18.2.topics.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(topics["total_chunks"], 415)
+        topic_names = {item["topic"] for item in topics["topics"]}
+        for name in ("error-bars", "groupplots", "statistics", "polar", "ternary"):
+            self.assertIn(name, topic_names)
+
+    def test_pgfplots_manual_and_curated_layers_are_retrievable(self) -> None:
+        hits = search("误差棒", limit=10)
+        self.assertEqual(hits[0].id, "pgfplots-error-bars")
+        self.assertTrue(any(hit.kind == "template" and hit.id == "error-bars" for hit in hits))
+        self.assertTrue(any(hit.kind == "recipe" and hit.id == "error-bar" for hit in hits))
+        self.assertTrue(
+            any(
+                hit.kind == "manual"
+                and "pgfplots-reference-errorbars" in hit.id
+                for hit in hits
+            ),
+            [hit.__dict__ for hit in hits],
         )
 
     def test_community_source_corpus_matches_pinned_snapshots(self) -> None:
@@ -208,8 +258,8 @@ class KnowledgeTests(unittest.TestCase):
         payload = status()
         self.assertEqual(payload["source_examples"], 4304)
         self.assertEqual(payload["recipes"], 19)
-        self.assertEqual(payload["templates"], 5)
-        self.assertEqual(payload["example_verification"]["source-compiled"], 15)
+        self.assertEqual(payload["templates"], 10)
+        self.assertEqual(payload["example_verification"]["source-compiled"], 20)
 
     @unittest.skipUnless(
         shutil.which("pdftotext") and shutil.which("pdfinfo"),
@@ -258,6 +308,31 @@ class KnowledgeTests(unittest.TestCase):
             )
             self.assertEqual(pgfplots_search.returncode, 0, pgfplots_search.stdout)
             self.assertIn("pgfplots-libs.statistics", pgfplots_search.stdout)
+            pgfplots_manual_search = subprocess.run(
+                [
+                    "bash",
+                    str(wrapper),
+                    "kb",
+                    "search",
+                    "Error Bars explicit uncertainty",
+                    "--limit",
+                    "8",
+                ],
+                cwd=root,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+            self.assertEqual(
+                pgfplots_manual_search.returncode,
+                0,
+                pgfplots_manual_search.stdout,
+            )
+            self.assertIn(
+                "pgfplots-manual-pgfplots-reference-errorbars",
+                pgfplots_manual_search.stdout,
+            )
             community_search = subprocess.run(
                 [
                     "bash",

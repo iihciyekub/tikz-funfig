@@ -6,8 +6,6 @@
   "description": "Matrix-style heatmap with explicit cell metadata and structured colorbar.",
   "required": ["axes", "data_sources", "series"],
   "capabilities": ["matrix-plot", "heatmap", "point-meta", "colorbar"],
-  "external_tools": ["latexmk"],
-  "reference_examples": [
-    "references/legacy/tikz-memo/02_pgfplots/coordinate/03_矩阵图.tex"
-  ]
+  "knowledge_ids": ["pgfplots-colormap-colorbar", "pgfplots-table-data"],
+  "external_tools": ["latexmk"]
 }

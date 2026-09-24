@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "heatmap-colorbar",
+  "family": "plot",
+  "title": "Matrix heatmap with colorbar",
+  "description": "Structured matrix-style heatmap with explicit cell metadata and a quantitative colorbar.",
+  "recipe_hint": "heatmap",
+  "source_golden": "examples/golden/heatmap",
+  "tags": ["heatmap", "matrix", "point meta", "colorbar", "publication plot"],
+  "supported_profiles": ["journal-single-column", "journal-double-column"],
+  "supported_themes": ["journal-muted", "journal-accessible", "journal-monochrome"],
+  "requires": {"packages": ["tikz", "pgfplots"], "libraries": []},
+  "edit_contract": {
+    "editable": ["matrix values", "row/column labels", "color limits", "colorbar label", "theme/profile"],
+    "structural_limits": {"rows": [2, 50], "columns": [2, 50]},
+    "locked": [
+      "cell values must come from supplied data",
+      "color normalization must remain explicit and reproducible"
+    ]
+  }
+}

@@ -12,7 +12,13 @@ TIKZ-FunFig's plot source-example corpus.
   artifacts, so local preview/build noise cannot invalidate the pin.
 - Upstream license notice: `upstream/README.md`
 - Runtime corpus: `../../../knowledge/corpus/pgfplots-1.18.2.jsonl`
+- Runtime manual index: `../../../knowledge/manual-index/pgfplots-1.18.2.jsonl`
+- Runtime topic index: `../../../knowledge/manual-index/pgfplots-1.18.2.topics.json`
 
 The raw upstream tree is development/provenance input and is never copied into
-the portable Plugin. Only normalized source-example metadata/code is eligible
-for runtime distribution.
+the portable Plugin. Only normalized manual/source-example knowledge is
+eligible for runtime distribution.
+
+The manual index is built directly from the pinned TeX include tree. This keeps
+source-file/line provenance and avoids rebuilding a PDF only to recover the
+same section text.

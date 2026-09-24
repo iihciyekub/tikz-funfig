@@ -6,9 +6,6 @@
   "description": "Scientific series with explicit, relative, fixed, or asymmetric error bars.",
   "required": ["axes", "data_sources", "series"],
   "capabilities": ["x-error", "y-error", "asymmetric-error", "relative-error", "table-data"],
-  "external_tools": ["latexmk"],
-  "reference_examples": [
-    "references/legacy/tikz-memo/02_pgfplots/table/08_误差棒.tex",
-    "references/legacy/pgfplots-memo/01_plot/02.4_table_error.tex"
-  ]
+  "knowledge_ids": ["pgfplots-error-bars", "pgfplots-table-data"],
+  "external_tools": ["latexmk"]
 }

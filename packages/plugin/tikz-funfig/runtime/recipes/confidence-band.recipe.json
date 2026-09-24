@@ -6,9 +6,6 @@
   "description": "Two named bounds with a reproducible filled interval or confidence band.",
   "required": ["axes", "data_sources", "series", "regions"],
   "capabilities": ["name-path", "fill-between", "soft-clip", "confidence-band"],
-  "external_tools": ["latexmk"],
-  "reference_examples": [
-    "references/legacy/pgfplots-memo/01_plot/04_fillbetween.tex",
-    "references/legacy/tikz-memo/02_pgfplots/fill between/02_软切割填充.tex"
-  ]
+  "knowledge_ids": ["pgfplots-fill-between", "pgfplots-axis-addplot"],
+  "external_tools": ["latexmk"]
 }

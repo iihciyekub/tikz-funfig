@@ -17,13 +17,14 @@
     },
     {
       "query": "三层研究框架",
-      "top_id": "framework-diagram",
+      "top_id": "layered-framework",
       "required_kinds": ["recipe", "template", "card", "example"]
     },
     {
       "query": "confidence band",
       "top_id": "confidence-band",
-      "required_kinds": ["template", "recipe"]
+      "required_ids": ["pgfplots-fill-between"],
+      "required_kinds": ["template", "recipe", "card"]
     },
     {
       "query": "boxplot prepared",
@@ -32,8 +33,9 @@
     },
     {
       "query": "groupplots",
-      "top_id": "pgfplots-libs.groupplots-0001",
-      "required_kinds": ["example", "recipe"]
+      "top_id": "grouped-panels",
+      "required_ids": ["pgfplots-groupplots", "groupplot", "pgfplots-libs.groupplots-0001"],
+      "required_kinds": ["template", "card", "recipe", "example", "manual"]
     },
     {
       "query": "实验装置",
@@ -58,7 +60,41 @@
     {
       "query": "2D convolution matrix",
       "required_ids": ["janosh-diagrams-2d-convolution-ed55da39"],
-      "required_kinds": ["example", "card"]
+      "required_kinds": ["example", "manual"]
+    },
+    {
+      "query": "误差棒",
+      "top_id": "pgfplots-error-bars",
+      "required_ids": ["error-bars", "error-bar"],
+      "required_kinds": ["card", "template", "recipe", "example", "manual"]
+    },
+    {
+      "query": "多子图",
+      "top_id": "pgfplots-groupplots",
+      "required_ids": ["grouped-panels", "groupplot"],
+      "required_kinds": ["card", "template", "recipe"]
+    },
+    {
+      "query": "曲面图 色条",
+      "top_id": "pgfplots-3d-surface",
+      "required_ids": ["surface-colorbar", "surface-plot"],
+      "required_kinds": ["card", "template", "recipe", "manual"]
+    },
+    {
+      "query": "等高线",
+      "top_id": "pgfplots-contour",
+      "required_ids": ["contour-plot"],
+      "required_kinds": ["card", "recipe", "manual"]
+    },
+    {
+      "query": "箱线图",
+      "top_id": "pgfplots-statistics-boxplot",
+      "required_kinds": ["card", "example", "manual"]
+    },
+    {
+      "query": "极坐标",
+      "top_id": "pgfplots-polar-ternary",
+      "required_kinds": ["card", "example", "manual"]
     }
   ]
 }

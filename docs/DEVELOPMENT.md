@@ -41,13 +41,24 @@ python3 scripts/build_source_example_corpus.py verify --compile-samples
 ```
 
 PGFPlots 1.18.2 is pinned separately under `sources/official/pgfplots/`.
-Its source examples use the same provenance/safety model while restoring
-PGFPlots-specific library context before representative compilation:
+Its knowledge stack is generated directly from the pinned TeX documentation:
+one importer builds the source-example corpus with PGFPlots-specific library
+context and representative compilation, while another follows the manual
+include tree and builds chapter/section/subsection search chunks without
+round-tripping through PDF text extraction:
 
 ```bash
 python3 scripts/build_pgfplots_source_corpus.py build
 python3 scripts/build_pgfplots_source_corpus.py verify --compile-samples
+python3 scripts/build_pgfplots_manual_corpus.py build
+python3 scripts/build_pgfplots_manual_corpus.py verify
 ```
+
+Curated `pgfplots-*` knowledge cards and compact project-authored examples form
+the stable layer between Recipes and raw official corpus records. Plot Recipes
+use `knowledge_ids` to bind to these cards. Paper-grade plot Templates are
+promoted from regression-backed Goldens rather than copied from upstream manual
+examples.
 
 Curated community snapshots are pinned independently under
 `sources/community/`. Runtime search never reads those raw snapshots

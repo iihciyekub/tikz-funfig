@@ -24,6 +24,18 @@
     {"id":"library-deps","file":"dependencies.tex","engine":"pdflatex"},
     {"id":"layout-repair","file":"flowchart.tex","engine":"pdflatex"},
     {"id":"engine-selection","file":"dependencies.tex","engine":"pdflatex"},
-    {"id":"reusable-pattern","file":"flowchart.tex","engine":"pdflatex"}
+    {"id":"reusable-pattern","file":"flowchart.tex","engine":"pdflatex"},
+    {"id":"pgfplots-axis-addplot","file":"pgfplots-axis-table.tex","engine":"pdflatex"},
+    {"id":"pgfplots-table-data","file":"pgfplots-axis-table.tex","engine":"pdflatex"},
+    {"id":"pgfplots-error-bars","file":"pgfplots-error-scatter.tex","engine":"pdflatex"},
+    {"id":"pgfplots-scatter-point-meta","file":"pgfplots-error-scatter.tex","engine":"pdflatex"},
+    {"id":"pgfplots-fill-between","file":"pgfplots-fill-group.tex","engine":"pdflatex"},
+    {"id":"pgfplots-groupplots","file":"pgfplots-fill-group.tex","engine":"pdflatex"},
+    {"id":"pgfplots-3d-surface","file":"pgfplots-surface-contour.tex","engine":"pdflatex"},
+    {"id":"pgfplots-contour","file":"pgfplots-surface-contour.tex","engine":"pdflatex"},
+    {"id":"pgfplots-colormap-colorbar","file":"pgfplots-color-statistics.tex","engine":"pdflatex"},
+    {"id":"pgfplots-statistics-boxplot","file":"pgfplots-color-statistics.tex","engine":"pdflatex"},
+    {"id":"pgfplots-coordinate-filtering","file":"pgfplots-filter-polar.tex","engine":"pdflatex"},
+    {"id":"pgfplots-polar-ternary","file":"pgfplots-filter-polar.tex","engine":"pdflatex"}
   ]
 }

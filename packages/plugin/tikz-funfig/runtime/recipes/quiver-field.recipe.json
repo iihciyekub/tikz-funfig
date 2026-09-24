@@ -6,8 +6,6 @@
   "description": "Two- or three-dimensional vector field using PGFPlots quiver expressions.",
   "required": ["axes", "data_sources", "series"],
   "capabilities": ["3d", "quiver", "vector-field", "analytic-components"],
-  "external_tools": ["latexmk"],
-  "reference_examples": [
-    "references/legacy/pgfplots-memo/01_plot/03_quiver.tex"
-  ]
+  "knowledge_ids": ["pgfplots-axis-addplot", "pgfplots-3d-surface"],
+  "external_tools": ["latexmk"]
 }

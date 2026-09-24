@@ -6,10 +6,7 @@
   "description": "Curves with highlighted regimes, threshold bands, and callouts.",
   "required": ["axes", "data_sources", "series", "regions"],
   "capabilities": ["rectangle-regions", "fill-between", "annotations"],
-  "external_tools": ["latexmk"],
-  "reference_examples": [
-    "references/legacy/publication-sustainability-1485080/fig1/fig1.tex",
-    "references/legacy/tikz-memo/02_pgfplots/fill between/02_软切割填充.tex"
-  ]
+  "knowledge_ids": ["pgfplots-fill-between", "pgfplots-coordinate-filtering"],
+  "external_tools": ["latexmk"]
 }
 

@@ -6,9 +6,6 @@
   "description": "Three-dimensional analytic or table-driven surface with structured view and colorbar.",
   "required": ["axes", "data_sources", "series"],
   "capabilities": ["3d", "surface", "mesh", "shader", "colorbar"],
-  "external_tools": ["latexmk"],
-  "reference_examples": [
-    "references/legacy/pgfplots-memo/01_plot/02.3_table_3D.tex",
-    "references/legacy/tikz-memo/02_pgfplots/基本设置/08.2colorbar.tex"
-  ]
+  "knowledge_ids": ["pgfplots-3d-surface", "pgfplots-colormap-colorbar"],
+  "external_tools": ["latexmk"]
 }

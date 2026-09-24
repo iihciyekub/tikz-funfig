@@ -181,6 +181,35 @@ class FunFigCoreTests(unittest.TestCase):
                         f"missing recipe reference: {reference}",
                     )
 
+    def test_plot_recipes_use_curated_knowledge_not_legacy_examples(self) -> None:
+        card_ids = {
+            item["id"]
+            for item in load_json(PROJECT_ROOT / "knowledge/cards/index.json")["cards"]
+        }
+        plot_recipes = {
+            "implicit-function",
+            "function-plot",
+            "data-series",
+            "error-bar",
+            "scatter-plot",
+            "confidence-band",
+            "surface-plot",
+            "contour-plot",
+            "heatmap",
+            "quiver-field",
+            "threshold-region",
+            "intersection-curves",
+            "publication-threshold",
+            "groupplot",
+        }
+        for recipe_id in sorted(plot_recipes):
+            recipe = load_json(PROJECT_ROOT / "recipes" / f"{recipe_id}.recipe.json")
+            with self.subTest(recipe=recipe_id):
+                self.assertNotIn("reference_examples", recipe)
+                knowledge_ids = recipe.get("knowledge_ids", [])
+                self.assertTrue(knowledge_ids)
+                self.assertTrue(set(knowledge_ids).issubset(card_ids))
+
     def test_legacy_method_catalog_tracks_promoted_helpers(self) -> None:
         catalog = load_json(PROJECT_ROOT / "references/methods/legacy-methods.json")
         methods = catalog["methods"]
@@ -869,11 +898,16 @@ class FunFigCoreTests(unittest.TestCase):
 
     def test_curated_templates_are_complete_and_searchable(self) -> None:
         items = list_templates()
-        self.assertEqual(len(items), 5)
+        self.assertEqual(len(items), 10)
         self.assertEqual(
             {item["id"] for item in items},
             {
                 "confidence-band",
+                "error-bars",
+                "scatter-meta",
+                "grouped-panels",
+                "surface-colorbar",
+                "heatmap-colorbar",
                 "decision-branch",
                 "layered-framework",
                 "labelled-relations",
@@ -887,6 +921,10 @@ class FunFigCoreTests(unittest.TestCase):
         self.assertEqual(
             search_templates("research framework", limit=2)[0]["id"],
             "layered-framework",
+        )
+        self.assertEqual(
+            search_templates("error uncertainty", limit=2)[0]["id"],
+            "error-bars",
         )
         for item in items:
             with self.subTest(template=item["id"]):

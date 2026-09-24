@@ -1,0 +1,30 @@
+\documentclass[tikz,border=2pt]{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[xlabel={$x$},ylabel={$y$}]
+\addplot+[
+  only marks,
+  error bars/.cd,
+  y dir=both,
+  y explicit
+] table[x=x,y=y,y error=err] {
+x y err
+0 1.0 0.10
+1 1.8 0.15
+2 2.6 0.20
+};
+\addplot+[
+  only marks,
+  scatter,
+  scatter src=explicit
+] table[x=x,y=y,meta=meta] {
+x y meta
+0.2 0.7 0
+1.2 1.5 1
+2.2 2.2 2
+};
+\end{axis}
+\end{tikzpicture}
+\end{document}

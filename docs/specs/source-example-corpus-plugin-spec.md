@@ -1264,13 +1264,59 @@ Skill 本身保持短。
 - 每个 template 都有结构边界；
 - 不是仅复制 `.tex`。
 
-### M4 — PGFPlots official corpus
+### M4 — PGFPlots Official Knowledge Stack
 
-- 引入 pinned PGFPlots documentation source；
-- 建立 source registry；
-- 抽取/编译 examples；
-- 与 plots Recipe 关联；
-- 扩充 plot templates。
+实施完成后的 PGFPlots 与 PGF/TikZ 使用相同四层知识模型，但 importer 针对 PGFPlots 文档结构优化，不机械复制 PGF 的 PDF 工作流。
+
+#### M4a — Source provenance
+
+- pinned PGFPlots 1.18.2 documentation source；
+- source registry / revision / canonical tree hash / license；
+- raw source 永不进入 portable Plugin。
+
+#### M4b — Manual corpus
+
+- 直接解析 `pgfplots.tex` 的 `include/input` 树；
+- 建立 chapter / section / subsection / source-file / line provenance；
+- 抽取 commands、`/pgfplots/` keys、libraries、topics；
+- 生成 `knowledge/manual-index/pgfplots-1.18.2.jsonl`；
+- 不经 PDF → text 反解析。
+
+#### M4c — Source-example corpus
+
+- 抽取官方 `codeexample`；
+- safety classification；
+- 恢复 PGFPlots library context；
+- representative compile coverage；
+- external-data / external-compute 样例保持 reference-only。
+
+#### M4d — Curated knowledge
+
+- 增加 PGFPlots cards + project-authored minimal compilable examples；
+- Plot Recipes 通过 `knowledge_ids` 绑定稳定 card，而不是直接依赖 raw corpus example ID。
+
+#### M4e — Paper-grade templates
+
+- confidence band；
+- asymmetric error bars；
+- metadata scatter；
+- grouped panels；
+- 3D surface + colorbar；
+- heatmap + colorbar。
+
+模板必须来自 regression-backed FigureSpec/Golden，并带 edit contract。
+
+#### M4f — Retrieval QA
+
+- PGFPlots 中英文 aliases；
+- benchmark 同时要求 card / template / recipe / official example / official manual 按任务合理出现；
+- FTS5/BM25 继续作为默认检索器。
+
+#### M4g — Distribution QA
+
+- Plugin 只携带 normalized manual/example corpus、cards、templates；
+- 不携带 raw PGFPlots source；
+- standalone Plugin regression 必须在无 source checkout 时仍能检索 PGFPlots manual 并完成绘图。
 
 ### M5 — Community curated corpus
 

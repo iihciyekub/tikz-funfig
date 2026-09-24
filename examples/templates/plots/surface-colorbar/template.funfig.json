@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "id": "surface-plot-golden",
+  "recipe": "surface-plot",
+  "kind": "pgfplots",
+  "canvas": {"width": "9cm", "height": "7.2cm", "border": "2pt"},
+  "engine": {"latex": "pdflatex", "compute": "none"},
+  "axes": {
+    "title": "Gaussian surface",
+    "x": {"label": "$x$", "min": -2, "max": 2},
+    "y": {"label": "$y$", "min": -2, "max": 2},
+    "z": {"label": "$f(x,y)$", "min": 0, "max": 1},
+    "grid": "major",
+    "view": {"azimuth": 45, "elevation": 30},
+    "box3d": "complete",
+    "colormap": "viridis",
+    "colorbar": {"position": "right", "label": "$f(x,y)$"}
+  },
+  "data_sources": [
+    {
+      "id": "surface",
+      "type": "function",
+      "expression": "exp(-x^2-y^2)",
+      "domain": "-2:2",
+      "y_domain": "-2:2",
+      "samples": 31
+    }
+  ],
+  "series": [
+    {
+      "id": "surface",
+      "source": "surface",
+      "plot": {"kind": "surface", "shader": "interp"}
+    }
+  ],
+  "outputs": {"basename": "surface-plot", "keep_build": false},
+  "metadata": {"golden": true, "reference": "pgfplots_memo 3D surface"}
+}

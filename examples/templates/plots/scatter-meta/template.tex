@@ -1,0 +1,42 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames,svgnames,x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{calc,arrows.meta,positioning,intersections,fit,shapes.geometric}
+\usepgfplotslibrary{fillbetween}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+  width=9cm,
+  height=6.5cm,
+  axis line shift=6.5pt,
+  tick align=inside,
+  major tick length=2.2pt,
+  axis line style={line width=0.45pt},
+  tick style={black,line width=0.4pt},
+  scaled ticks=false,
+  enlargelimits=false,
+  grid=major,
+  grid style={gray!25,line width=0.2pt},
+  title={Metadata-driven scatter},
+  title style={align=left},
+  colorbar,
+  colorbar style={ylabel={score}},
+  xlabel={$x$},
+  xmin=0,
+  xmax=1,
+  extra x ticks={0,1},
+  extra x tick style={grid=none,tick label style={opacity=0}},
+  ylabel={$y$},
+  ymin=0,
+  ymax=1,
+  extra y ticks={0,1},
+  extra y tick style={grid=none,tick label style={opacity=0}},
+  legend style={draw=none,fill=none,cells={anchor=west}},
+]
+\addplot+ [mark=*,mark size=2.4pt,scatter,only marks,scatter src=explicit] table[x=x,y=y,meta=score] {data/scatter.tsv};
+\end{axis}
+\end{tikzpicture}
+\end{document}

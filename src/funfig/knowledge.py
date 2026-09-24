@@ -91,6 +91,18 @@ def _manual_entries(root: Path) -> Iterable[dict[str, Any]]:
             if not line.strip():
                 continue
             item = json.loads(line)
+            page_start = item.get("page_start")
+            page_end = item.get("page_end")
+            if page_start is not None:
+                location = f"{page_start}-{page_end}"
+            else:
+                line_start = item.get("line_start")
+                line_end = item.get("line_end")
+                location = (
+                    f"L{line_start}-L{line_end}"
+                    if line_start is not None
+                    else ""
+                )
             yield {
                 "id": item["id"],
                 "kind": "manual",
@@ -104,9 +116,16 @@ def _manual_entries(root: Path) -> Iterable[dict[str, Any]]:
                 "style": [],
                 "summary": (item.get("text") or "")[:360].replace("\n", " "),
                 "body": item.get("text", ""),
-                "source": item.get("source_id", ""),
+                "source": (
+                    item.get("source_id", "")
+                    + (
+                        f":{item.get('source_file')}"
+                        if item.get("source_file")
+                        else ""
+                    )
+                ),
                 "status": "official-source",
-                "pages": f"{item.get('page_start')}-{item.get('page_end')}",
+                "pages": location,
             }
 
 
@@ -305,18 +324,19 @@ def search(query: str, limit: int = 8, root: Path | None = None) -> list[Knowled
         rows = connection.execute(
             "SELECT id,kind,title,status,pages,"
             "bm25(knowledge,0,0,0,0,8,7,6,9,9,10,8,5,4,1,1) * "
+            "CASE WHEN lower(title)=lower(?) THEN 1.40 ELSE 1.00 END * "
             "CASE "
-            "WHEN kind='card' AND status='compiled' THEN 1.30 "
-            "WHEN kind='template' AND status='compiled-and-regression-backed' THEN 1.16 "
-            "WHEN kind='template' THEN 1.05 "
-            "WHEN kind='recipe' AND status='stable' THEN 1.20 "
-            "WHEN kind='recipe' THEN 1.10 "
+            "WHEN kind='template' AND status='compiled-and-regression-backed' THEN 1.36 "
+            "WHEN kind='recipe' AND status='stable' THEN 1.32 "
+            "WHEN kind='card' AND status='compiled' THEN 1.22 "
+            "WHEN kind='recipe' THEN 1.15 "
+            "WHEN kind='template' THEN 1.12 "
             "WHEN kind='example' AND status='source-compiled' THEN 1.08 "
             "WHEN kind='example' THEN 1.00 "
             "WHEN kind='manual' THEN 0.92 "
             "ELSE 1.00 END AS score,summary,source "
             "FROM knowledge WHERE knowledge MATCH ? ORDER BY score LIMIT ?",
-            (_fts_query(normalized), candidate_limit),
+            (query.strip(), _fts_query(normalized), candidate_limit),
         ).fetchall()
     finally:
         connection.close()

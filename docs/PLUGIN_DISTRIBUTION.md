@@ -42,7 +42,7 @@ The ordinary installed Plugin may query:
 compiled knowledge cards
 curated regression-backed templates
 normalized PGF/TikZ, PGFPlots, and curated community source-example corpora
-section-level official PGF/TikZ manual corpus
+section-level official PGF/TikZ and PGFPlots manual corpora
 Recipe/capability registry
 themes and Publication Profiles
 ```

@@ -6,10 +6,7 @@
   "description": "File or coordinate driven scientific series.",
   "required": ["axes", "data_sources", "series"],
   "capabilities": ["file", "coordinates", "annotations", "error-ready"],
-  "external_tools": ["latexmk"],
-  "reference_examples": [
-    "references/legacy/tikz-memo/02_pgfplots/table/01_按列名读取.tex",
-    "references/legacy/pgfplots-memo/01_plot/02.4_table_error.tex"
-  ]
+  "knowledge_ids": ["pgfplots-axis-addplot", "pgfplots-table-data"],
+  "external_tools": ["latexmk"]
 }
 

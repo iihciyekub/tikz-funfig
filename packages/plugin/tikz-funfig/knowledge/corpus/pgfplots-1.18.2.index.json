@@ -1,16 +1,21 @@
 {
   "compile_eligible_examples": 829,
   "compile_sample_ids": [
+    "pgfplots-reference.axis-addplot-0004",
     "pgfplots-reference.2dplots-0001",
     "pgfplots-reference.errorbars-0001",
+    "pgfplots-reference.markers-meta-0002",
     "pgfplots-libs.fillbetween-0001",
     "pgfplots-libs.groupplots-0001",
     "pgfplots-reference.3dplots-0001",
-    "pgfplots-libs.statistics-0001"
+    "pgfplots-libs.statistics-0001",
+    "pgfplots-reference.coordfiltering-0001",
+    "pgfplots-libs.polar-0001",
+    "pgfplots-libs.ternary-0001"
   ],
   "compile_status": {
-    "not-run": 1284,
-    "passed": 6
+    "not-run": 1279,
+    "passed": 11
   },
   "examples_file": "pgfplots-1.18.2.jsonl",
   "kind": "source-example-corpus",
@@ -50,7 +55,7 @@
   },
   "total_examples": 1290,
   "verification": {
-    "source-compiled": 6,
-    "source-extracted": 1284
+    "source-compiled": 11,
+    "source-extracted": 1279
   }
 }

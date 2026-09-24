@@ -22,12 +22,18 @@ EXAMPLES_FILE = CORPUS_DIR / "pgfplots-1.18.2.jsonl"
 INDEX_FILE = CORPUS_DIR / "pgfplots-1.18.2.index.json"
 
 SAMPLE_SOURCE_ORDER = (
+    "pgfplots.reference.axis-addplot.tex",
     "pgfplots.reference.2dplots.tex",
     "pgfplots.reference.errorbars.tex",
+    "pgfplots.reference.markers-meta.tex",
     "pgfplots.libs.fillbetween.tex",
     "pgfplots.libs.groupplots.tex",
     "pgfplots.reference.3dplots.tex",
     "pgfplots.libs.statistics.tex",
+    "pgfplots.reference.coordfiltering.tex",
+    "pgfplots.libs.colormaps.tex",
+    "pgfplots.libs.polar.tex",
+    "pgfplots.libs.ternary.tex",
 )
 
 EXTERNAL_DATA_RE = re.compile(
@@ -158,7 +164,10 @@ def _sample_ids(entries: list[dict[str, Any]]) -> list[str]:
             if (
                 entry["compile_eligible"]
                 and entry["engine"] == "pdflatex"
-                and "\\begin{axis}" in code
+                and any(
+                    f"\\begin{{{environment}}}" in code
+                    for environment in ("axis", "groupplot", "polaraxis", "ternaryaxis")
+                )
             ):
                 result.append(entry["id"])
                 break
