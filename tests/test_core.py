@@ -13,6 +13,7 @@ from funfig.cli import main as cli_main
 from funfig.io import load_json, write_json_atomic
 from funfig.legacy import migrate_legacy_tex
 from funfig.paths import PROJECT_ROOT
+from funfig.qa import inspect_spec
 from funfig.recipes import recipe_ids
 from funfig.render import render_spec
 from funfig.schema import validate_spec
@@ -920,6 +921,44 @@ class FunFigCoreTests(unittest.TestCase):
                     generated_tex.read_text(encoding="utf-8"),
                     (source_dir / "template.tex").read_text(encoding="utf-8"),
                 )
+
+    @unittest.skipUnless(
+        shutil.which("latexmk")
+        and shutil.which("pdflatex")
+        and shutil.which("pdfinfo")
+        and shutil.which("pdftoppm")
+        and shutil.which("pdftotext"),
+        "TeX/Poppler QA toolchain unavailable",
+    )
+    def test_inspect_records_final_size_projection_and_text_metrics(self) -> None:
+        item = get_template("layered-framework")
+        source_dir = PROJECT_ROOT / "examples/templates" / item["path"]
+        with tempfile.TemporaryDirectory() as temp:
+            work_dir = Path(temp) / "layered-framework"
+            shutil.copytree(
+                source_dir,
+                work_dir,
+                ignore=shutil.ignore_patterns("*.pdf", ".funfig"),
+            )
+            spec_path = work_dir / "template.funfig.json"
+            spec = load_json(spec_path)
+            build_spec(spec, spec_path)
+            qa = inspect_spec(spec, spec_path, dpi=144)
+            self.assertTrue(qa["machine_checks_passed"], qa["warnings"])
+            self.assertGreater(qa["text_metrics"]["word_count"], 0)
+            bbox = qa["text_metrics"]["bbox_height_pt"]
+            self.assertGreater(bbox["median"], 0)
+            projection = qa["publication_projection"]
+            self.assertGreater(projection["width_mm"], 0)
+            self.assertGreater(projection["height_mm"], 0)
+            self.assertGreater(projection["scale"], 0)
+            self.assertLessEqual(projection["scale"], 1.0)
+            manifest = load_json(work_dir / ".funfig/manifest.json")
+            self.assertEqual(manifest["qa"]["text_metrics"], qa["text_metrics"])
+            self.assertEqual(
+                manifest["qa"]["publication_projection"],
+                qa["publication_projection"],
+            )
 
     @unittest.skipUnless(
         shutil.which("latexmk") and shutil.which("pdflatex"),

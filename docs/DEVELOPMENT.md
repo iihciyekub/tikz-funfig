@@ -73,6 +73,17 @@ python3 scripts/build_manual_reference.py pdfs
 
 The PDF build verifies page count/page boxes and representative source-vs-output text/render parity. `pdfseparate`/`pdfunite`, Ghostscript rewriting, and PDFKit page copies are intentionally not used for formal booklets because testing showed unacceptable resource duplication or text-mapping drift.
 
+## Figure QA
+
+`funfig inspect` renders a preview and records machine checks in the figure
+manifest before a human/agent visual review is marked. For schema 1.1 figures,
+inspection also projects the natural PDF to the selected Publication Profile
+width and records the projected dimensions/scale. When Poppler's `pdftotext`
+is available, word bounding boxes provide a conservative text-size risk signal
+after down-scaling. These metrics are warnings and evidence for visual review;
+they do not replace checking labels, overlaps, arrows, whitespace, and semantic
+fidelity in the rendered preview.
+
 ## Adding a capability
 
 Use the smallest stable abstraction proven by a real use case. Prefer promoting semantics from existing figures/methods over adding generic options with no demonstrated need.

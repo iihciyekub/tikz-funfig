@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 import shutil
+import statistics
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -62,6 +63,47 @@ def _render_preview(pdf: Path, output: Path, dpi: int = 180) -> Path:
     return output
 
 
+def _pdf_text_metrics(pdf: Path) -> dict[str, Any] | None:
+    if shutil.which("pdftotext") is None:
+        return None
+    result = subprocess.run(
+        ["pdftotext", "-bbox", str(pdf), "-"],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if result.returncode:
+        return None
+    heights: list[float] = []
+    pattern = re.compile(
+        r'<word\s+[^>]*?yMin="([0-9.]+)"[^>]*?yMax="([0-9.]+)"',
+        flags=re.IGNORECASE,
+    )
+    for match in pattern.finditer(result.stdout):
+        y_min = float(match.group(1))
+        y_max = float(match.group(2))
+        height = y_max - y_min
+        if 1.0 <= height <= 100.0:
+            heights.append(height)
+    if not heights:
+        return {
+            "word_count": 0,
+            "bbox_height_pt": None,
+        }
+    heights.sort()
+    p10_index = max(0, min(len(heights) - 1, round((len(heights) - 1) * 0.10)))
+    return {
+        "word_count": len(heights),
+        "bbox_height_pt": {
+            "min": round(heights[0], 2),
+            "p10": round(heights[p10_index], 2),
+            "median": round(float(statistics.median(heights)), 2),
+            "max": round(heights[-1], 2),
+        },
+    }
+
+
 def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[str, Any]:
     figure_dir = spec_path.parent
     basename = (spec.get("outputs") or {}).get("basename", "figure")
@@ -69,17 +111,26 @@ def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[
     if not pdf.is_file():
         raise QAError(f"PDF does not exist; build the figure first: {pdf}")
     info = _pdf_info(pdf)
+    text_metrics = _pdf_text_metrics(pdf)
     warnings: list[str] = []
     if info.get("pages") != 1:
         warnings.append(f"expected a single-page figure PDF, got {info.get('pages')}")
 
     profile = None
+    publication_scale = 1.0
+    projected_size: dict[str, float] | None = None
     if spec.get("schema_version") == "1.1":
         profile_id = (spec.get("profile") or {}).get("id", "journal-single-column")
         profile = load_profile(profile_id)
         target = float(profile.get("target_width_mm", 0) or 0)
         width = info.get("width_mm")
         if target and width:
+            publication_scale = min(1.0, target / float(width))
+            projected_size = {
+                "width_mm": round(float(width) * publication_scale, 2),
+                "height_mm": round(float(info.get("height_mm") or 0) * publication_scale, 2),
+                "scale": round(publication_scale, 4),
+            }
             if width > target * 1.2:
                 warnings.append(
                     f"natural PDF width {width:.1f} mm exceeds profile target {target:.1f} mm by more than 20%; inspect readability after journal scaling"
@@ -87,6 +138,26 @@ def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[
             elif width < target * 0.35:
                 warnings.append(
                     f"natural PDF width {width:.1f} mm is much smaller than profile target {target:.1f} mm; inspect line/text scale"
+                )
+        minimum_text_pt = float(profile.get("minimum_text_pt", 0) or 0)
+        bbox = (text_metrics or {}).get("bbox_height_pt") or {}
+        median_height = bbox.get("median")
+        p10_height = bbox.get("p10")
+        if minimum_text_pt and publication_scale < 1.0 and median_height and p10_height:
+            projected_median = float(median_height) * publication_scale
+            projected_p10 = float(p10_height) * publication_scale
+            # Poppler word boxes are usually somewhat shorter than the declared
+            # font size. Keep this warning intentionally conservative.
+            if projected_median < minimum_text_pt * 0.72:
+                warnings.append(
+                    "projected text appears too small after publication scaling: "
+                    f"median word box {projected_median:.1f} pt at target width "
+                    f"(profile minimum text {minimum_text_pt:.1f} pt)"
+                )
+            elif projected_p10 < minimum_text_pt * 0.50:
+                warnings.append(
+                    "some text may become too small after publication scaling: "
+                    f"10th-percentile word box {projected_p10:.1f} pt at target width"
                 )
 
     preview = figure_dir / ".funfig" / "preview.png"
@@ -102,6 +173,8 @@ def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[
         "visual_review": "pending",
         "warnings": warnings,
         "pdf": info,
+        "text_metrics": text_metrics,
+        "publication_projection": projected_size,
         "preview": ".funfig/preview.png",
         "preview_dpi": int(dpi),
         "checked_at": utc_now(),
