@@ -39,6 +39,26 @@
       "query": "实验装置",
       "required_ids": ["scientific-schematic"],
       "required_kinds": ["recipe", "example"]
+    },
+    {
+      "query": "encoder decoder architecture",
+      "required_ids": ["opentikz-content-encoder-decoder-36074a71"],
+      "required_kinds": ["example"]
+    },
+    {
+      "query": "self attention graph",
+      "required_ids": ["janosh-diagrams-self-attention-a2737c84"],
+      "required_kinds": ["example"]
+    },
+    {
+      "query": "Bloch sphere quantum",
+      "required_ids": ["janosh-diagrams-bloch-sphere-02d38e33"],
+      "required_kinds": ["example"]
+    },
+    {
+      "query": "2D convolution matrix",
+      "required_ids": ["janosh-diagrams-2d-convolution-ed55da39"],
+      "required_kinds": ["example", "card"]
     }
   ]
 }

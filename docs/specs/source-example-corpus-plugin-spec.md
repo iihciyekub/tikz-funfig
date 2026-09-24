@@ -12,6 +12,14 @@
 | 本轮目标 | 清理仓库职责边界；建立 PGF/TikZ/PGFPlots 源码示例知识库；建立论文级模板/Golden/QA 体系；保持可安装 Codex Plugin |
 | 非本轮动作 | 本 Spec 未确认前，不移动现有目录、不改 runtime、不批量导入第三方仓库、不改变现有 Plugin 行为 |
 
+### 实施状态（2026-09-24）
+
+- M0–M7 已实现并纳入全仓回归检查。
+- M8 gate 已执行：官方语法、PGFPlots、中文自然语言以及社区长尾
+  architecture/scientific queries 均能由现有 FTS5/BM25 检索稳定命中。
+- 因当前 benchmark 未证明向量检索能解决一个实际失败模式，**M8 不实施
+  embedding/vector DB**；继续以来源可审计的 lexical/metadata 检索为基线。
+
 ## 0. 结论
 
 TIKZ-FunFig 不应继续发展成“一个装了很多 TeX 文件的 Skill”，而应收敛为一个可安装的 **学术图形生成 Plugin**：
