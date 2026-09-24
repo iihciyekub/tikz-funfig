@@ -13,8 +13,9 @@ Read this file before modifying the repository.
 - `themes/` — canonical machine-readable visual themes for structured diagrams.
 - `profiles/` — canonical publication/output profiles and QA thresholds.
 - `examples/golden/` — deterministic regression cases.
+- `sources/` — pinned external/official source material and source manifests; development/provenance only.
 - `references/legacy/` — read-only development/provenance knowledge.
-- `references/manuals/` — versioned source manifests and split plans for official manuals; original PDFs stay outside the portable Plugin.
+- `references/methods/` — mappings from legacy/provenance techniques into promoted product methods.
 
 `packages/plugin/tikz-funfig/` is a generated portable distribution bundle. Do not maintain its runtime or Skill copies by hand. Change the source directories above, then run `./scripts/sync_plugin_package.sh`.
 
@@ -33,7 +34,10 @@ For a new stable capability:
 7. synchronize the portable Plugin;
 8. run `./scripts/check.sh` and `git diff --check`.
 
-Do not make the runtime depend on `references/legacy/` or the original manual PDF. Promote proven semantics into `knowledge/`, `src/`, `schemas/`, `recipes/`, themes/profiles, and golden cases instead.
+Do not make the runtime depend on `sources/`, `references/legacy/`, or the
+original manual PDF. Promote normalized searchable material into `knowledge/`
+and proven semantics into `src/`, `schemas/`, `recipes/`, themes/profiles,
+templates/golden cases instead.
 
 ## Git and release rules
 

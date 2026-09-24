@@ -185,7 +185,7 @@
 
 ### 4.5 来源清单契约
 
-`references/manuals/pgfmanual-3.1.11a/` 保存可提交的 `source.json`、`split-plan.json`、`topics.json` 和简短来源说明。原 PDF 和渲染预览不提交。
+`sources/official/pgf/derived/pdf-index/` 保存可提交的 `source.json`、`split-plan.json`、`topics.json` 和简短来源说明。原 PDF 和渲染预览不提交；原始 PGF 文档源码位于 `sources/official/pgf/upstream/`。
 
 | 字段 | 约束 |
 | --- | --- |
@@ -272,7 +272,7 @@ stable Recipe/capability
 - `tff kb search <query>` 是统一查询入口；runtime 可按需在内存或缓存中构建 FTS 索引，不要求提交不可审查的数据库二进制作为 canonical 源。
 - 查询先做轻量 alias/术语归一化，再在 title/aliases/tags/commands/libraries/summary/body/source 标题上检索；结果必须返回来源类型、验证状态和页码，不能把 manual chunk 与 compiled card 混为同一可信级别。
 - 常规任务目标为读取 1 个专项 Skill 和约 2–5 张卡片；复杂需求可增加，不能为了硬性数量限制遗漏必要知识。
-- `references/legacy/` 和 root `references/manuals/` 均不进入运行时查找链。
+- `references/legacy/` 和 `sources/` 均不进入运行时查找链。
 - 第一阶段不引入 embedding/vector DB。只有在建立真实查询集并证明 FTS Top-5 recall 对长尾语义检索不足后，才允许增加向量检索；向量层只能补充，不能替代来源/命令精确匹配。
 
 ## 6. Canonical 源与打包布局
@@ -297,7 +297,7 @@ packages/
     funfig-relations/SKILL.md
     funfig-schematics/SKILL.md
   plugin/tikz-funfig/             # 生成目标，禁止手工维护副本
-references/manuals/              # 开发溯源清单；不分发
+sources/                         # pinned upstream + 开发溯源清单；不分发
 knowledge/                       # 共享 canonical 知识源；只维护一份
   source-manifests/
   manual-index/

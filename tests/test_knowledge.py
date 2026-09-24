@@ -40,7 +40,7 @@ class KnowledgeTests(unittest.TestCase):
         source = json.loads(
             (
                 PROJECT_ROOT
-                / "references/manuals/pgfmanual-3.1.11a/source.json"
+                / "sources/official/pgf/derived/pdf-index/source.json"
             ).read_text(encoding="utf-8")
         )
         self.assertEqual(source["version"], "3.1.11a")

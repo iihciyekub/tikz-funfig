@@ -217,10 +217,12 @@ class FunFigCoreTests(unittest.TestCase):
         for pattern in forbidden:
             self.assertFalse(list(legacy.rglob(pattern)), f"legacy artifact returned: {pattern}")
 
-    def test_portable_plugin_excludes_legacy_knowledge_base(self) -> None:
+    def test_portable_plugin_excludes_raw_reference_and_source_material(self) -> None:
         plugin = PROJECT_ROOT / "packages/plugin/tikz-funfig"
         self.assertFalse((plugin / "references").exists())
         self.assertFalse((plugin / "runtime/references").exists())
+        self.assertFalse((plugin / "sources").exists())
+        self.assertFalse((plugin / "runtime/sources").exists())
 
     def test_basic_example_validates(self) -> None:
         path = PROJECT_ROOT / "examples/basic-function/figure.funfig.json"

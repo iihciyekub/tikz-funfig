@@ -1,8 +1,11 @@
 # PGF/TikZ manual source record
 
-This directory pins the local `references/pgfmanual.pdf` input used to build the
-TIKZ-FunFig official-reference index. The PDF itself remains the authoritative
-source and is never overwritten by the build pipeline.
+This directory pins the optional local `references/pgfmanual.pdf` input used
+to build the historical PDF-derived TIKZ-FunFig section index. The PDF is a
+development/provenance source and is never overwritten by the build pipeline.
+
+The preferred code/example source is the pinned PGF/TikZ LaTeX documentation
+snapshot under `../../upstream/doc/generic/pgf/`.
 
 - `source.json` verifies version, SHA-256, and page count.
 - `split-plan.json` defines complete first-level booklets and focused excerpts.

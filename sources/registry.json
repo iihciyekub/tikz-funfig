@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "sources": [
+    {
+      "id": "pgf-manual-source",
+      "kind": "official",
+      "project": "PGF/TikZ",
+      "upstream": "https://github.com/pgf-tikz/pgf",
+      "revision": "3.1.11a",
+      "local_root": "sources/official/pgf/upstream",
+      "manifest": "sources/official/pgf/source.json",
+      "license_ids": [
+        "LPPL-1.3c",
+        "GFDL-1.2"
+      ],
+      "ingest": "development",
+      "plugin_policy": "normalized-only",
+      "verified": "2026-09-24"
+    }
+  ]
+}
+

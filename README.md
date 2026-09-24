@@ -8,10 +8,11 @@ Profiles, themes, visual QA, and a sourced Expert TikZ fallback for long-tail
 manual-backed features. Existing 1.0 managed figures and the promoted PGFPlots/
 legacy migration paths remain supported.
 
-The repository has two roles:
+The repository has three roles:
 
 1. **Source project** — schemas, recipes, renderers, tests, documentation, and packaging live here.
-2. **Knowledge base** — compiled task cards and a section-level PGF/TikZ 3.1.11a corpus are directly searchable by the Plugin; legacy notes and the original manual remain provenance/development references.
+2. **Knowledge base** — compiled task cards and a section-level PGF/TikZ 3.1.11a corpus are directly searchable by the Plugin.
+3. **Provenance source tree** — pinned official/community material lives under `sources/`; legacy project material remains under `references/`. Neither is a Plugin runtime dependency.
 
 The repository is the source of truth. Workspace/system Skills and the portable Codex/OpenAI Plugin are installation targets generated or synchronized from this project; they should not become independent forks.
 
@@ -82,7 +83,8 @@ The main concepts are intentionally separate:
 
 - **FigureSpec Schema** — what the requested figure contains.
 - **Figure Recipe** — how a class of figures is interpreted and which renderer/tools it uses.
-- **Knowledge layer** — compiled task cards plus the searchable official-manual section corpus.
+- **Knowledge layer** — compiled task cards plus normalized searchable manual/source-example corpora.
+- **Source layer** — pinned upstream/provenance material used to rebuild or verify normalized knowledge; never a runtime dependency.
 - **Renderer** — deterministic conversion from FigureSpec to TikZ/PGFPlots source.
 - **Theme** — appearance tokens that never change graph/data semantics.
 - **Publication Profile** — target physical size and readability/QA constraints.
@@ -184,6 +186,10 @@ contract is specified in [TFF-SPEC-001](docs/specs/multi-skill-knowledge-base-sp
 The Spec distinguishes currently implemented V1 work from later tree/state/ER/
 advanced-layout phases and is the acceptance baseline for this development cycle.
 
+The source-example corpus, template-library, repository-cleanup, and future
+PGFPlots/community ingestion architecture is specified in
+[TFF-SPEC-002](docs/specs/source-example-corpus-plugin-spec.md).
+
 GitHub CI is defined in `.github/workflows/ci.yml` and runs the portable-bundle
 consistency check plus the full TeX/gnuplot regression suite on pushes to
 `main` and on pull requests.
@@ -202,7 +208,12 @@ three figures with the local TeX toolchain. PDFs are verified as build outputs
 but are not binary-hashed or committed because TeX/PDF metadata may vary by
 toolchain version.
 
-## Legacy/local knowledge
+## External and legacy knowledge
+
+Pinned official/upstream source material is isolated under `sources/`.
+`sources/registry.json` records its version, license, local path, and Plugin
+distribution policy. Raw upstream trees are development inputs only; normalized
+search data belongs in `knowledge/`.
 
 Historical source material is intentionally isolated from the runtime under `references/legacy/`:
 

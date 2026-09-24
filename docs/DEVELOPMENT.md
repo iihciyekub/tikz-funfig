@@ -15,8 +15,8 @@ TIKZ-FunFig separates authored source, regression evidence, historical reference
 | `themes/` | Structured-diagram appearance tokens | Yes |
 | `profiles/` | Publication/output size and QA constraints | Yes |
 | `examples/golden/` | Deterministic regression inputs/snapshots | Yes, deliberately |
+| `sources/` | Pinned official/community upstream material and provenance manifests | Preserve/update deliberately; never runtime |
 | `references/legacy/` | Historical/provenance knowledge | Normally no; preserve as reference |
-| `references/manuals/` | Versioned official-manual source manifests/split plans | Yes |
 | `references/methods/` | Mapping of promoted legacy semantics | Yes |
 | `packages/plugin/tikz-funfig/` | Portable generated Plugin bundle | No; synchronize it |
 
@@ -24,7 +24,10 @@ The portable Plugin deliberately materializes runtime/Skill files so an installe
 
 ## Official manual development pipeline
 
-`references/pgfmanual.pdf` is pinned as PGF/TikZ 3.1.11a by SHA/page count. It is a development/provenance input, not a portable-Plugin runtime dependency.
+`sources/official/pgf/` pins the PGF/TikZ 3.1.11a documentation source and
+its derived PDF-index manifests. The optional `references/pgfmanual.pdf` copy
+is pinned by SHA/page count when present. Both are development/provenance
+inputs, not portable-Plugin runtime dependencies.
 
 The searchable section corpus only needs Poppler (`pdfinfo`, `pdftotext`). Generating official PDF booklets additionally requires `qpdf` so pages are copied without re-rendering or re-encoding:
 
@@ -64,6 +67,13 @@ Do not solve repeatable semantics with arbitrary raw TeX strings if a structured
 ## Legacy references
 
 `references/legacy/` is development knowledge, not runtime content. Production code, recipes, and the installed Plugin must not require those paths. When a historical idiom becomes stable, promote it and record the mapping in `references/methods/`.
+
+## External source material
+
+`sources/` is the canonical home for pinned official/community upstream
+material. Keep each source registered in `sources/registry.json`, preserve its
+license files, and write only normalized/searchable results to `knowledge/`.
+The portable Plugin must work with the entire `sources/` tree absent.
 
 ## Generated files
 

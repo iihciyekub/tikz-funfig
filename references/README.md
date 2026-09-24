@@ -3,6 +3,10 @@
 This directory contains historical source material used to design and verify
 TIKZ-FunFig. It is **development knowledge**, not Plugin runtime content.
 
+Pinned external/official upstream material does not belong here; keep it under
+`sources/`. This directory is now reserved for project-local legacy provenance
+and promoted-method mapping.
+
 ## Promotion model
 
 ```text

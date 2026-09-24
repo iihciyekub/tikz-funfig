@@ -20,7 +20,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MANIFEST_DIR = ROOT / "references/manuals/pgfmanual-3.1.11a"
+MANIFEST_DIR = ROOT / "sources/official/pgf/derived/pdf-index"
 SOURCE_FILE = MANIFEST_DIR / "source.json"
 PLAN_FILE = MANIFEST_DIR / "split-plan.json"
 TOPICS_FILE = MANIFEST_DIR / "topics.json"
