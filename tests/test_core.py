@@ -47,10 +47,11 @@ class FunFigCoreTests(unittest.TestCase):
             (PROJECT_ROOT / "packages/skill/references/methods.md").read_text(encoding="utf-8"),
             (plugin / "skills/TIKZ-FunFig/references/methods.md").read_text(encoding="utf-8"),
         )
-        self.assertEqual(
-            (PROJECT_ROOT / "schemas/figure-spec.schema.json").read_text(encoding="utf-8"),
-            (plugin / "runtime/schemas/figure-spec.schema.json").read_text(encoding="utf-8"),
-        )
+        for schema_name in ("figure-spec.schema.json", "source-example.schema.json"):
+            self.assertEqual(
+                (PROJECT_ROOT / "schemas" / schema_name).read_text(encoding="utf-8"),
+                (plugin / "runtime/schemas" / schema_name).read_text(encoding="utf-8"),
+            )
 
         source_recipes = sorted(path.name for path in (PROJECT_ROOT / "recipes").glob("*.json"))
         plugin_recipes = sorted(path.name for path in (plugin / "runtime/recipes").glob("*.json"))
@@ -97,6 +98,9 @@ class FunFigCoreTests(unittest.TestCase):
             "aliases.json",
             "cards/index.json",
             "examples/index.json",
+            "corpus/index.json",
+            "corpus/sources.json",
+            "corpus/examples.jsonl",
             "manual-index/pgfmanual-3.1.11a.jsonl",
             "manual-index/pgfmanual-3.1.11a.libraries.json",
         ):

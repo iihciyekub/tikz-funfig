@@ -1,0 +1,88 @@
+{
+  "compile_eligible_examples": 2356,
+  "compile_sample_ids": [
+    "pgf-tikz-shapes-0001",
+    "pgf-library-fit-0001",
+    "pgf-library-backgrounds-0001",
+    "pgf-library-chains-0001",
+    "pgf-tikz-arrows-0001",
+    "pgf-tikz-paths-0001"
+  ],
+  "compile_status": {
+    "not-run": 2851,
+    "passed": 6
+  },
+  "examples_file": "examples.jsonl",
+  "figure_families": {
+    "framework": 201,
+    "geometry": 580,
+    "graph": 244,
+    "plot": 393,
+    "relation": 1324,
+    "schematic": 104,
+    "state": 32,
+    "tikz": 855,
+    "tree": 91
+  },
+  "kind": "source-example-corpus",
+  "renderable_examples": 2358,
+  "safety_flagged_examples": 16,
+  "schema_version": "1.0",
+  "skip_reasons": {
+    "code-only": 473,
+    "none": 2358,
+    "remember-picture": 7,
+    "setup-code": 19
+  },
+  "sources": [
+    "pgf-manual-source"
+  ],
+  "sources_file": "sources.json",
+  "top_libraries": {
+    "animations": 136,
+    "arrows.meta": 117,
+    "automata": 12,
+    "backgrounds": 23,
+    "bending": 17,
+    "calc": 34,
+    "calendar": 45,
+    "chains": 14,
+    "circuits.ee.IEC": 48,
+    "datavisualization": 66,
+    "datavisualization.formats.functions": 153,
+    "datavisualization.polar": 13,
+    "decorations": 12,
+    "decorations.fractals": 16,
+    "decorations.markings": 13,
+    "decorations.pathmorphing": 49,
+    "decorations.shapes": 19,
+    "decorations.text": 35,
+    "fadings": 14,
+    "folding": 18,
+    "fpu": 13,
+    "graphdrawing": 28,
+    "graphs": 169,
+    "graphs.standard": 29,
+    "intersections": 17,
+    "math": 19,
+    "matrix": 19,
+    "mindmap": 23,
+    "patterns": 70,
+    "perspective": 15,
+    "petri": 17,
+    "positioning": 55,
+    "quotes": 36,
+    "shadings": 11,
+    "shadows": 24,
+    "shapes.arrows": 13,
+    "shapes.geometric": 56,
+    "shapes.misc": 35,
+    "shapes.multipart": 16,
+    "shapes.symbols": 32
+  },
+  "total_examples": 2857,
+  "verification": {
+    "source-compiled": 6,
+    "source-extracted": 2851
+  }
+}

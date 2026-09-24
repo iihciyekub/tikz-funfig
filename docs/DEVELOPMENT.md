@@ -29,6 +29,17 @@ its derived PDF-index manifests. The optional `references/pgfmanual.pdf` copy
 is pinned by SHA/page count when present. Both are development/provenance
 inputs, not portable-Plugin runtime dependencies.
 
+The LaTeX source-example corpus is rebuilt directly from the pinned upstream
+`codeexample` environments. The importer verifies the source tree hash,
+preserves source/section/line provenance, compares its renderable count with
+PGF's own `extract.lua` when `texlua` is available, and compiles a deterministic
+representative sample:
+
+```bash
+python3 scripts/build_source_example_corpus.py build
+python3 scripts/build_source_example_corpus.py verify --compile-samples
+```
+
 The searchable section corpus only needs Poppler (`pdfinfo`, `pdftotext`). Generating official PDF booklets additionally requires `qpdf` so pages are copied without re-rendering or re-encoding:
 
 ```bash

@@ -6,7 +6,7 @@
   "revision": "3.1.11a",
   "upstream": "https://github.com/pgf-tikz/pgf",
   "source_root": "sources/official/pgf/upstream/doc/generic/pgf",
-  "tree_sha256": "1e5724b99fdc39d26986a37f15ab6c378694f6efde9cc6de711a9479799dfd1d",
+  "tree_sha256": "9ecdcfc1c0d63e5a00e36356934d72b123717d8d6822290c91d3d4a5c329682f",
   "tex_file_count": 133,
   "size_kib": 4996,
   "extractor": "sources/official/pgf/upstream/doc/generic/pgf/extract.lua",

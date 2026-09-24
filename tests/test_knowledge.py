@@ -67,6 +67,45 @@ class KnowledgeTests(unittest.TestCase):
             self.assertTrue(libraries[library]["chunk_ids"])
             self.assertTrue(libraries[library]["pages"])
 
+    def test_source_example_corpus_matches_pinned_pgf_source(self) -> None:
+        index = json.loads(
+            (PROJECT_ROOT / "knowledge/corpus/index.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(index["total_examples"], 2857)
+        self.assertEqual(index["renderable_examples"], 2358)
+        self.assertEqual(len(index["compile_sample_ids"]), 6)
+        self.assertEqual(index["verification"]["source-compiled"], 6)
+        self.assertEqual(index["compile_status"]["passed"], 6)
+        lines = [
+            line
+            for line in (PROJECT_ROOT / "knowledge/corpus/examples.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+            if line.strip()
+        ]
+        self.assertEqual(len(lines), index["total_examples"])
+        first = json.loads(lines[0])
+        last = json.loads(lines[-1])
+        for entry in (first, last):
+            self.assertEqual(entry["source_id"], "pgf-manual-source")
+            self.assertEqual(entry["source_version"], "3.1.11a")
+            self.assertEqual(len(entry["source_hash"]), 64)
+            self.assertEqual(len(entry["code_hash"]), 64)
+            self.assertIn("doc/generic/pgf/", entry["source_locator"]["path"])
+
+    def test_source_example_corpus_verify_command(self) -> None:
+        result = subprocess.run(
+            ["python3", "scripts/build_source_example_corpus.py", "verify"],
+            cwd=PROJECT_ROOT,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("examples=2857", result.stdout)
+        self.assertIn("renderable=2358", result.stdout)
+
     @unittest.skipUnless(
         shutil.which("pdftotext") and shutil.which("pdfinfo"),
         "Poppler tools unavailable",

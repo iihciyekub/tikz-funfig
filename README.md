@@ -61,6 +61,13 @@ PYTHONPATH=src python3 -m funfig init --id fig1 --recipe publication-threshold
 PYTHONPATH=src python3 -m funfig init --project-root path/to/paper --id fig1 --recipe publication-threshold
 ```
 
+Repository maintainers rebuild the pinned PGF/TikZ source-example corpus with:
+
+```bash
+python3 scripts/build_source_example_corpus.py build
+python3 scripts/build_source_example_corpus.py verify --compile-samples
+```
+
 Ordinary 2D paper/scientific recipes default to the `publication-offset` axes
 preset (6.5pt axis-line shift), inward major ticks, thin publication strokes,
 endpoint tick marks at both declared axis limits, and low-contrast translucent
