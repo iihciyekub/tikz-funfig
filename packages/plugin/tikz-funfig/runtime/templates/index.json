@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "templates": [
+    {
+      "id": "confidence-band",
+      "family": "plot",
+      "path": "plots/confidence-band"
+    },
+    {
+      "id": "decision-branch",
+      "family": "flowchart",
+      "path": "flowcharts/decision-branch"
+    },
+    {
+      "id": "layered-framework",
+      "family": "framework",
+      "path": "frameworks/layered-framework"
+    },
+    {
+      "id": "labelled-relations",
+      "family": "relation",
+      "path": "relations/labelled-relations"
+    },
+    {
+      "id": "experimental-pipeline",
+      "family": "schematic",
+      "path": "schematics/experimental-pipeline"
+    }
+  ]
+}

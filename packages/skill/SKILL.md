@@ -94,6 +94,8 @@ The installed Skill includes a wrapper that calls the source project:
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh recipes
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh capabilities
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh kb search "relative positioning"
+.agents/skills/TIKZ-FunFig/scripts/funfig.sh templates search "research framework"
+.agents/skills/TIKZ-FunFig/scripts/funfig.sh templates inspect layered-framework
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh themes
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh profiles
 .agents/skills/TIKZ-FunFig/scripts/funfig.sh validate path/to/figure.funfig.json

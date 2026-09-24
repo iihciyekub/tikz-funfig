@@ -194,10 +194,55 @@ def _recipe_entries(root: Path) -> Iterable[dict[str, Any]]:
         }
 
 
+def _template_entries(root: Path) -> Iterable[dict[str, Any]]:
+    candidates = (
+        root.parent / "examples/templates",
+        root.parent / "runtime/templates",
+    )
+    directory = next(
+        (candidate for candidate in candidates if (candidate / "index.json").is_file()),
+        None,
+    )
+    if directory is None:
+        return
+    index = _json(directory / "index.json")
+    for item in index.get("templates", []):
+        path = directory / item["path"] / "template.meta.json"
+        if not path.is_file():
+            continue
+        meta = _json(path)
+        contract = meta.get("edit_contract", {})
+        yield {
+            "id": meta["id"],
+            "kind": "template",
+            "title": meta.get("title") or meta["id"],
+            "aliases": [
+                *meta.get("tags", []),
+                meta.get("family", ""),
+                meta.get("recipe_hint", ""),
+            ],
+            "tags": meta.get("tags", []),
+            "commands": [],
+            "libraries": meta.get("requires", {}).get("libraries", []),
+            "families": [meta.get("family", ""), meta.get("recipe_hint", "")],
+            "layout": list(contract.get("structural_limits", {}).keys()),
+            "style": [
+                *meta.get("supported_profiles", []),
+                *meta.get("supported_themes", []),
+            ],
+            "summary": meta.get("description", ""),
+            "body": json.dumps(meta, ensure_ascii=False, sort_keys=True),
+            "source": f"templates/{item['path']}/template.meta.json",
+            "status": meta.get("verification", "draft"),
+            "pages": "",
+        }
+
+
 def all_entries(root: Path | None = None) -> list[dict[str, Any]]:
     root = root or knowledge_root()
     return [
         *_recipe_entries(root),
+        *_template_entries(root),
         *_card_entries(root),
         *_corpus_entries(root),
         *_manual_entries(root),
@@ -259,6 +304,8 @@ def search(query: str, limit: int = 8, root: Path | None = None) -> list[Knowled
             "bm25(knowledge,0,0,0,0,8,7,6,9,9,10,8,5,4,1,1) * "
             "CASE "
             "WHEN kind='card' AND status='compiled' THEN 1.30 "
+            "WHEN kind='template' AND status='compiled-and-regression-backed' THEN 1.16 "
+            "WHEN kind='template' THEN 1.05 "
             "WHEN kind='recipe' AND status='stable' THEN 1.20 "
             "WHEN kind='recipe' THEN 1.10 "
             "WHEN kind='example' AND status='source-compiled' THEN 1.08 "
@@ -295,9 +342,10 @@ def status(root: Path | None = None) -> dict[str, Any]:
         "manual_chunks": sum(item["kind"] == "manual" for item in entries),
         "source_examples": sum(item["kind"] == "example" for item in entries),
         "recipes": sum(item["kind"] == "recipe" for item in entries),
+        "templates": sum(item["kind"] == "template" for item in entries),
         "kinds": {
             kind: sum(item["kind"] == kind for item in entries)
-            for kind in ("recipe", "card", "example", "manual")
+            for kind in ("recipe", "template", "card", "example", "manual")
         },
         "verification": {
             state: sum(item["status"] == state for item in entries if item["kind"] == "card")

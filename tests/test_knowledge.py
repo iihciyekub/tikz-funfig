@@ -127,6 +127,7 @@ class KnowledgeTests(unittest.TestCase):
         payload = status()
         self.assertEqual(payload["source_examples"], 2857)
         self.assertEqual(payload["recipes"], 19)
+        self.assertEqual(payload["templates"], 5)
         self.assertEqual(payload["example_verification"]["source-compiled"], 6)
 
     @unittest.skipUnless(

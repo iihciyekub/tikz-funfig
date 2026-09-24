@@ -16,6 +16,7 @@ from funfig.paths import PROJECT_ROOT
 from funfig.recipes import recipe_ids
 from funfig.render import render_spec
 from funfig.schema import validate_spec
+from funfig.templates import get_template, list_templates, search_templates
 
 
 GOLDEN_CASES = ("fig1", "fig4", "fig11")
@@ -47,7 +48,11 @@ class FunFigCoreTests(unittest.TestCase):
             (PROJECT_ROOT / "packages/skill/references/methods.md").read_text(encoding="utf-8"),
             (plugin / "skills/TIKZ-FunFig/references/methods.md").read_text(encoding="utf-8"),
         )
-        for schema_name in ("figure-spec.schema.json", "source-example.schema.json"):
+        for schema_name in (
+            "figure-spec.schema.json",
+            "source-example.schema.json",
+            "template.schema.json",
+        ):
             self.assertEqual(
                 (PROJECT_ROOT / "schemas" / schema_name).read_text(encoding="utf-8"),
                 (plugin / "runtime/schemas" / schema_name).read_text(encoding="utf-8"),
@@ -107,6 +112,25 @@ class FunFigCoreTests(unittest.TestCase):
             self.assertEqual(
                 (PROJECT_ROOT / "knowledge" / relative).read_text(encoding="utf-8"),
                 (plugin / "knowledge" / relative).read_text(encoding="utf-8"),
+            )
+
+        source_templates = PROJECT_ROOT / "examples/templates"
+        plugin_templates = plugin / "runtime/templates"
+        source_files = sorted(
+            path.relative_to(source_templates)
+            for path in source_templates.rglob("*")
+            if path.is_file()
+        )
+        plugin_files = sorted(
+            path.relative_to(plugin_templates)
+            for path in plugin_templates.rglob("*")
+            if path.is_file()
+        )
+        self.assertEqual(source_files, plugin_files)
+        for relative in source_files:
+            self.assertEqual(
+                (source_templates / relative).read_bytes(),
+                (plugin_templates / relative).read_bytes(),
             )
 
         self.assertEqual(
@@ -839,6 +863,61 @@ class FunFigCoreTests(unittest.TestCase):
             tex = (root / "figure.tex").read_text(encoding="utf-8")
             self.assertIn("name intersections={of=A and B,by=I}", tex)
             self.assertIn("funfigIntersectionCallout", tex)
+
+    def test_curated_templates_are_complete_and_searchable(self) -> None:
+        items = list_templates()
+        self.assertEqual(len(items), 5)
+        self.assertEqual(
+            {item["id"] for item in items},
+            {
+                "confidence-band",
+                "decision-branch",
+                "layered-framework",
+                "labelled-relations",
+                "experimental-pipeline",
+            },
+        )
+        self.assertEqual(
+            get_template("layered-framework")["recipe_hint"],
+            "framework-diagram",
+        )
+        self.assertEqual(
+            search_templates("research framework", limit=2)[0]["id"],
+            "layered-framework",
+        )
+        for item in items:
+            with self.subTest(template=item["id"]):
+                directory = PROJECT_ROOT / "examples/templates" / item["path"]
+                meta = load_json(directory / "template.meta.json")
+                self.assertTrue(meta["edit_contract"]["editable"])
+                self.assertTrue(meta["edit_contract"]["locked"])
+                spec = load_json(directory / "template.funfig.json")
+                result = validate_spec(spec)
+                self.assertTrue(result.ok, result.errors)
+
+    @unittest.skipUnless(
+        shutil.which("latexmk") and shutil.which("pdflatex"),
+        "TeX toolchain unavailable",
+    )
+    def test_curated_templates_build_and_match_snapshots(self) -> None:
+        for item in list_templates():
+            with self.subTest(template=item["id"]), tempfile.TemporaryDirectory() as temp:
+                source_dir = PROJECT_ROOT / "examples/templates" / item["path"]
+                work_dir = Path(temp) / item["id"]
+                shutil.copytree(
+                    source_dir,
+                    work_dir,
+                    ignore=shutil.ignore_patterns("*.pdf", ".funfig"),
+                )
+                spec_path = work_dir / "template.funfig.json"
+                spec = load_json(spec_path)
+                pdf_path = build_spec(spec, spec_path)
+                self.assertTrue(pdf_path.exists())
+                generated_tex = work_dir / f"{spec['outputs']['basename']}.tex"
+                self.assertEqual(
+                    generated_tex.read_text(encoding="utf-8"),
+                    (source_dir / "template.tex").read_text(encoding="utf-8"),
+                )
 
     @unittest.skipUnless(
         shutil.which("latexmk") and shutil.which("pdflatex"),

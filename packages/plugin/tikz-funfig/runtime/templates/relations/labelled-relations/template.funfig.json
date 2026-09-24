@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.1",
+  "id": "template-labelled-relations",
+  "recipe": "relation-diagram",
+  "kind": "tikz",
+  "theme": {
+    "id": "journal-monochrome"
+  },
+  "profile": {
+    "id": "journal-single-column"
+  },
+  "diagram": {
+    "layout": {
+      "type": "relative"
+    },
+    "nodes": [
+      {
+        "id": "a",
+        "label": "Concept A",
+        "role": "concept",
+        "position": {
+          "type": "absolute",
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": "b",
+        "label": "Concept B",
+        "role": "concept",
+        "position": {
+          "type": "relative",
+          "of": "a",
+          "direction": "right",
+          "gap": "24mm"
+        }
+      },
+      {
+        "id": "c",
+        "label": "Concept C",
+        "role": "concept",
+        "position": {
+          "type": "relative",
+          "of": "a",
+          "direction": "below right",
+          "gap": "20mm"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "from": "a",
+        "to": "b",
+        "route": "straight",
+        "arrows": "both",
+        "label": "associated"
+      },
+      {
+        "id": "e2",
+        "from": "a",
+        "to": "c",
+        "route": "curve",
+        "routing": {
+          "bend": 22
+        },
+        "arrows": "forward",
+        "label": "supports"
+      },
+      {
+        "id": "e3",
+        "from": "b",
+        "to": "c",
+        "route": "straight",
+        "arrows": "none",
+        "label": "co-occurs",
+        "label_side": "right"
+      },
+      {
+        "id": "e4",
+        "from": "c",
+        "to": "c",
+        "route": "loop",
+        "routing": {
+          "side": "below"
+        },
+        "arrows": "forward",
+        "label": "reinforces",
+        "label_side": "below"
+      }
+    ],
+    "groups": []
+  },
+  "outputs": {
+    "basename": "labelled-relations",
+    "keep_build": false
+  },
+  "metadata": {
+    "template": true,
+    "template_id": "labelled-relations"
+  }
+}

@@ -16,6 +16,7 @@ from .qa import QAError, inspect_spec, mark_visual_review
 from .recipes import list_recipes, load_recipe
 from .render import render_spec
 from .schema import load_and_validate
+from .templates import get_template, list_templates, search_templates
 from .theme import list_profiles, list_themes
 
 
@@ -443,6 +444,7 @@ def cmd_kb_status(args: argparse.Namespace) -> int:
     else:
         print(f"root: {payload['root']}")
         print(f"recipes: {payload['recipes']}")
+        print(f"templates: {payload['templates']}")
         print(f"cards: {payload['cards']}")
         print(f"source examples: {payload['source_examples']}")
         print(f"manual chunks: {payload['manual_chunks']}")
@@ -451,6 +453,38 @@ def cmd_kb_status(args: argparse.Namespace) -> int:
             "example verification: "
             + ", ".join(f"{key}={value}" for key, value in payload["example_verification"].items())
         )
+    return 0
+
+
+def cmd_templates_list(args: argparse.Namespace) -> int:
+    items = list_templates()
+    if args.json:
+        print(json.dumps(items, indent=2, ensure_ascii=False))
+        return 0
+    for item in items:
+        print(
+            f"{item['id']:<24} {item['family']:<12} "
+            f"{item['verification']:<30} {item['title']}"
+        )
+    return 0
+
+
+def cmd_templates_search(args: argparse.Namespace) -> int:
+    items = search_templates(args.query, limit=args.limit)
+    if args.json:
+        print(json.dumps(items, indent=2, ensure_ascii=False))
+        return 0
+    if not items:
+        print("no template matches")
+        return 1
+    for item in items:
+        print(f"{item['id']:<24} {item['family']:<12} {item['title']}")
+        print(f"  {item['description']}")
+    return 0
+
+
+def cmd_templates_inspect(args: argparse.Namespace) -> int:
+    print(json.dumps(get_template(args.template_id), indent=2, ensure_ascii=False))
     return 0
 
 
@@ -629,6 +663,20 @@ def build_parser() -> argparse.ArgumentParser:
     q = kb.add_parser("status", help="show knowledge index coverage")
     q.add_argument("--json", action="store_true")
     q.set_defaults(func=cmd_kb_status)
+
+    p = sub.add_parser("templates", help="list, search, and inspect curated academic templates")
+    templates = p.add_subparsers(dest="template_command", required=True)
+    q = templates.add_parser("list", help="list curated templates")
+    q.add_argument("--json", action="store_true")
+    q.set_defaults(func=cmd_templates_list)
+    q = templates.add_parser("search", help="search curated templates")
+    q.add_argument("query")
+    q.add_argument("--limit", type=int, default=8)
+    q.add_argument("--json", action="store_true")
+    q.set_defaults(func=cmd_templates_search)
+    q = templates.add_parser("inspect", help="show template metadata and edit contract")
+    q.add_argument("template_id")
+    q.set_defaults(func=cmd_templates_inspect)
 
     p = sub.add_parser("capabilities", help="list Recipe capabilities and stability")
     p.add_argument("--json", action="store_true")

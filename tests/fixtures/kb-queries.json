@@ -18,7 +18,12 @@
     {
       "query": "三层研究框架",
       "top_id": "framework-diagram",
-      "required_kinds": ["recipe", "card", "example"]
+      "required_kinds": ["recipe", "template", "card", "example"]
+    },
+    {
+      "query": "confidence band",
+      "top_id": "confidence-band",
+      "required_kinds": ["template", "recipe"]
     },
     {
       "query": "实验装置",

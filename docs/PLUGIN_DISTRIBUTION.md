@@ -13,6 +13,7 @@ recipes/                      canonical Recipe registry
 themes/                       canonical structured-diagram themes
 profiles/                     canonical publication/output profiles
 knowledge/                    canonical cards, verified examples, manual section corpus
+examples/templates/           canonical curated regression-backed templates
 sources/                      pinned upstream/provenance input (NOT distributed)
 IconKitchen canonical icons
         ↓ scripts/sync_plugin_package.sh
@@ -27,7 +28,7 @@ Do not manually maintain `packages/plugin/tikz-funfig/runtime/`, `knowledge/`, o
 
 ## What belongs in the Plugin
 
-The portable bundle contains only what an installed Plugin needs: Plugin manifest/interface assets, six Skills, runtime, schemas, recipes, themes, Publication Profiles, compiled knowledge cards/examples, and the lightweight normalized PGF/TikZ corpus. It must not include `sources/`, `references/legacy/`, raw upstream repositories, the original/split manual PDFs, development notebooks, publication PDFs, fonts, or repository test/build state.
+The portable bundle contains only what an installed Plugin needs: Plugin manifest/interface assets, six Skills, runtime, schemas, recipes, themes, Publication Profiles, curated templates, compiled knowledge cards/examples, and the lightweight normalized PGF/TikZ corpus. It must not include `sources/`, `references/legacy/`, raw upstream repositories, the original/split manual PDFs, development notebooks, publication PDFs, fonts, or repository test/build state.
 
 The shared `knowledge/` directory is distributed **once at Plugin root**. Specialized Skills remain thin and use their materialized `scripts/funfig.sh` wrapper to call the shared runtime. Do not copy the same cards into every Skill.
 
@@ -39,6 +40,7 @@ The ordinary installed Plugin may query:
 
 ```text
 compiled knowledge cards
+curated regression-backed templates
 section-level official manual corpus
 Recipe/capability registry
 themes and Publication Profiles

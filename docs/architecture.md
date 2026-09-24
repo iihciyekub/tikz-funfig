@@ -17,6 +17,12 @@ parser.
 
 This makes small later changes — a range, a color, an annotation, a series, a panel — local edits to structured data rather than full rewrites of hand-generated TikZ.
 
+The **Template layer** sits above Recipes and below one-off figures. A Template
+is a regression-backed FigureSpec plus deterministic TeX snapshot and metadata
+that defines its editable fields, structural limits, and locked semantic rules.
+Templates guide layout/style reuse but never expand the capability contract of
+their Recipe.
+
 ## Pipeline
 
 ```text

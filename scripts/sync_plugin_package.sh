@@ -28,6 +28,7 @@ refresh(repo / "recipes", plugin / "runtime/recipes")
 refresh(repo / "themes", plugin / "runtime/themes")
 refresh(repo / "profiles", plugin / "runtime/profiles")
 refresh(repo / "knowledge", plugin / "knowledge")
+refresh(repo / "examples/templates", plugin / "runtime/templates")
 
 skills_manifest_path = repo / "packages/skills/index.json"
 skills_manifest = json.loads(skills_manifest_path.read_text(encoding="utf-8"))

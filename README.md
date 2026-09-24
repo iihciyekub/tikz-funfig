@@ -49,6 +49,9 @@ No third-party Python dependency is required for the v0.1 core.
 PYTHONPATH=src python3 -m funfig recipes
 PYTHONPATH=src python3 -m funfig capabilities
 PYTHONPATH=src python3 -m funfig kb search "relative positioning"
+PYTHONPATH=src python3 -m funfig templates list
+PYTHONPATH=src python3 -m funfig templates search "research framework"
+PYTHONPATH=src python3 -m funfig templates inspect layered-framework
 PYTHONPATH=src python3 -m funfig themes
 PYTHONPATH=src python3 -m funfig profiles
 PYTHONPATH=src python3 -m funfig validate examples/basic-function/figure.funfig.json
@@ -91,6 +94,7 @@ The main concepts are intentionally separate:
 - **FigureSpec Schema** — what the requested figure contains.
 - **Figure Recipe** — how a class of figures is interpreted and which renderer/tools it uses.
 - **Knowledge layer** — compiled task cards plus normalized searchable manual/source-example corpora.
+- **Template layer** — curated regression-backed FigureSpec/TeX starting points with explicit edit contracts.
 - **Source layer** — pinned upstream/provenance material used to rebuild or verify normalized knowledge; never a runtime dependency.
 - **Renderer** — deterministic conversion from FigureSpec to TikZ/PGFPlots source.
 - **Theme** — appearance tokens that never change graph/data semantics.

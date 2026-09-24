@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TIKZ-FunFig Template Metadata",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "family",
+    "title",
+    "description",
+    "recipe_hint",
+    "supported_profiles",
+    "supported_themes",
+    "requires",
+    "edit_contract",
+    "verification"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "family": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "recipe_hint": {
+      "type": "string"
+    },
+    "source_golden": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "supported_profiles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "supported_themes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "requires": {
+      "type": "object"
+    },
+    "edit_contract": {
+      "type": "object",
+      "required": [
+        "editable",
+        "structural_limits",
+        "locked"
+      ],
+      "properties": {
+        "editable": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "structural_limits": {
+          "type": "object"
+        },
+        "locked": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "verification": {
+      "enum": [
+        "draft",
+        "compiled",
+        "compiled-and-regression-backed",
+        "visual-reviewed"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

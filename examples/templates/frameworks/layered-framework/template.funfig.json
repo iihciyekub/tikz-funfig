@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.1",
+  "id": "template-layered-framework",
+  "recipe": "framework-diagram",
+  "kind": "tikz",
+  "theme": {
+    "id": "journal-accessible"
+  },
+  "profile": {
+    "id": "journal-double-column"
+  },
+  "diagram": {
+    "layout": {
+      "type": "grid",
+      "row_gap": "22mm",
+      "column_gap": "32mm"
+    },
+    "nodes": [
+      {
+        "id": "input",
+        "label": "Input layer",
+        "role": "module",
+        "position": {
+          "type": "grid",
+          "row": 0,
+          "column": 0
+        }
+      },
+      {
+        "id": "process",
+        "label": "Mechanism layer",
+        "role": "module",
+        "position": {
+          "type": "grid",
+          "row": 0,
+          "column": 1
+        }
+      },
+      {
+        "id": "outcome",
+        "label": "Outcome layer",
+        "role": "module",
+        "position": {
+          "type": "grid",
+          "row": 0,
+          "column": 2
+        }
+      },
+      {
+        "id": "moderator",
+        "label": "Context / moderator",
+        "role": "concept",
+        "position": {
+          "type": "grid",
+          "row": 1,
+          "column": 1
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "from": "input",
+        "to": "process",
+        "route": "straight"
+      },
+      {
+        "id": "e2",
+        "from": "process",
+        "to": "outcome",
+        "route": "straight"
+      },
+      {
+        "id": "e3",
+        "from": "moderator",
+        "to": "process",
+        "route": "straight",
+        "label": "conditions",
+        "label_side": "right"
+      }
+    ],
+    "groups": [
+      {
+        "id": "core",
+        "members": [
+          "input",
+          "process",
+          "outcome"
+        ],
+        "label": "Core model"
+      },
+      {
+        "id": "system",
+        "members": [
+          "core",
+          "moderator"
+        ],
+        "label": "Study framework",
+        "padding": "9pt"
+      }
+    ]
+  },
+  "outputs": {
+    "basename": "layered-framework",
+    "keep_build": false
+  },
+  "metadata": {
+    "template": true,
+    "template_id": "layered-framework"
+  }
+}

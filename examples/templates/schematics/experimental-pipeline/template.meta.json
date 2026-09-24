@@ -1,0 +1,59 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "experimental-pipeline",
+  "family": "schematic",
+  "title": "Experimental component pipeline",
+  "description": "Publication-oriented experimental/system schematic with components, grouped apparatus, annotations, and directional measurement flow.",
+  "recipe_hint": "scientific-schematic",
+  "source_golden": "examples/golden/schematic-scientific",
+  "tags": [
+    "experimental apparatus",
+    "scientific schematic",
+    "components",
+    "measurement"
+  ],
+  "supported_profiles": [
+    "journal-single-column",
+    "journal-double-column"
+  ],
+  "supported_themes": [
+    "journal-monochrome",
+    "journal-muted",
+    "journal-accessible"
+  ],
+  "requires": {
+    "packages": [
+      "tikz"
+    ],
+    "libraries": [
+      "arrows.meta",
+      "backgrounds",
+      "fit"
+    ]
+  },
+  "edit_contract": {
+    "editable": [
+      "component labels",
+      "component count",
+      "coordinates",
+      "group labels",
+      "measurement labels",
+      "theme/profile"
+    ],
+    "structural_limits": {
+      "components": [
+        3,
+        10
+      ],
+      "groups": [
+        0,
+        4
+      ]
+    },
+    "locked": [
+      "physical/scientific relationships must be supplied by the user",
+      "manual coordinates may carry scientific meaning"
+    ]
+  }
+}

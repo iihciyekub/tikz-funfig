@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.1",
+  "id": "template-decision-branch",
+  "recipe": "flowchart",
+  "kind": "tikz",
+  "theme": {
+    "id": "journal-muted"
+  },
+  "profile": {
+    "id": "journal-single-column"
+  },
+  "diagram": {
+    "layout": {
+      "type": "grid",
+      "row_gap": "18mm",
+      "column_gap": "25mm"
+    },
+    "nodes": [
+      {
+        "id": "start",
+        "label": "Collect data",
+        "role": "process",
+        "position": {
+          "type": "grid",
+          "row": 0,
+          "column": 0
+        }
+      },
+      {
+        "id": "check",
+        "label": "Quality acceptable?",
+        "role": "decision",
+        "text_width": "24mm",
+        "position": {
+          "type": "grid",
+          "row": 0,
+          "column": 1
+        }
+      },
+      {
+        "id": "accept",
+        "label": "Analyze",
+        "role": "process",
+        "position": {
+          "type": "grid",
+          "row": 0,
+          "column": 2
+        }
+      },
+      {
+        "id": "reject",
+        "label": "Clean / recollect",
+        "role": "process",
+        "position": {
+          "type": "grid",
+          "row": 1,
+          "column": 1
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "from": "start",
+        "to": "check",
+        "route": "straight",
+        "arrows": "forward"
+      },
+      {
+        "id": "e2",
+        "from": "check",
+        "to": "accept",
+        "route": "straight",
+        "arrows": "forward",
+        "label": "yes"
+      },
+      {
+        "id": "e3",
+        "from": "check",
+        "to": "reject",
+        "route": "straight",
+        "arrows": "forward",
+        "label": "no",
+        "label_side": "right"
+      }
+    ],
+    "groups": []
+  },
+  "outputs": {
+    "basename": "decision-branch",
+    "keep_build": false
+  },
+  "metadata": {
+    "template": true,
+    "template_id": "decision-branch"
+  }
+}
