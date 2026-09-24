@@ -13,5 +13,9 @@
   "坐标计算": "coordinates calc",
   "黑白": "monochrome journal theme",
   "色觉": "accessible color theme",
-  "中文": "CJK XeLaTeX LuaLaTeX fonts"
+  "中文": "CJK XeLaTeX LuaLaTeX fonts",
+  "三层研究框架": "framework layered groups three level",
+  "反馈箭头": "feedback curved edge arrows routing",
+  "实验装置": "scientific-schematic scientific schematic experiment apparatus components",
+  "分支合流": "flowchart decision branch merge routing"
 }

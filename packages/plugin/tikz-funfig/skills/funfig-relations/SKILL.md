@@ -13,7 +13,7 @@ Obey the shared TIKZ-FunFig output contract in `TIKZ-FunFig/references/output-po
 
 1. Extract concept/entity nodes and every supplied relationship. Do not infer direction from sentence order when the user says only “related”.
 2. Use Recipe `relation-diagram` and FigureSpec 1.1. The default relation is undirected; set forward/backward/both only when meaning is supplied.
-3. Query `edge-labels-quotes`, `curved-edges`, `self-loops`, `nodes-anchors`, and `arrows-meta` as needed.
+3. Query `edge-labels-quotes`, `curved-edges`, `self-loops`, `nodes-anchors`, and `arrows-meta` as needed. Prefer stable/compiled project knowledge; consult matching official source examples for syntax variants before manual-wide fallback.
 4. Use curved edges only to resolve ambiguity or represent parallel/feedback relations; reconsider layout before adding many bends.
 5. Validate/build/inspect and ensure labels remain readable without relying on color alone.
 

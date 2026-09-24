@@ -14,7 +14,7 @@ Obey the shared TIKZ-FunFig output contract in `TIKZ-FunFig/references/output-po
 1. Extract modules, layer/group membership, relationship direction, and labels separately from visual style.
 2. Use Recipe `framework-diagram` and FigureSpec 1.1. Prefer grid layout for layers; use relative layout for irregular frameworks.
 3. Use groups only for visual containment/hierarchy. Edges remain node-to-node in V1.
-4. Query `fit-groups`, `background-layers`, `matrix-layout`, `nodes-anchors`, and `diagram-layout-repair` when needed.
+4. Query `fit-groups`, `background-layers`, `matrix-layout`, `nodes-anchors`, and `diagram-layout-repair` when needed. Use retrieved official source examples to ground long-tail grouping/layout syntax without treating them as stable product behavior.
 5. Choose a journal Profile and Theme, validate/build, then inspect at final physical size.
 
 When a framework contains a genuinely separate process flow, keep the semantic boundary clear rather than forcing every relation into flowchart notation.

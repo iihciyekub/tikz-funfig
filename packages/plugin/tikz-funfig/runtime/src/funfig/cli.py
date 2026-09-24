@@ -442,9 +442,15 @@ def cmd_kb_status(args: argparse.Namespace) -> int:
         print(json.dumps(payload, indent=2, ensure_ascii=False))
     else:
         print(f"root: {payload['root']}")
+        print(f"recipes: {payload['recipes']}")
         print(f"cards: {payload['cards']}")
+        print(f"source examples: {payload['source_examples']}")
         print(f"manual chunks: {payload['manual_chunks']}")
         print("verification: " + ", ".join(f"{key}={value}" for key, value in payload["verification"].items()))
+        print(
+            "example verification: "
+            + ", ".join(f"{key}={value}" for key, value in payload["example_verification"].items())
+        )
     return 0
 
 
@@ -612,7 +618,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("kb", help="query the shared TIKZ-FunFig knowledge base")
     kb = p.add_subparsers(dest="kb_command", required=True)
-    q = kb.add_parser("search", help="search cards and official manual sections with SQLite FTS5")
+    q = kb.add_parser(
+        "search",
+        help="search recipes, curated cards, source examples, and official manual sections with SQLite FTS5",
+    )
     q.add_argument("query")
     q.add_argument("--limit", type=int, default=8)
     q.add_argument("--json", action="store_true")

@@ -17,4 +17,4 @@ Obey the shared TIKZ-FunFig output contract in `TIKZ-FunFig/references/output-po
 4. Keep repeated visual components reusable, but do not hide editable scientific meaning inside opaque macros.
 5. Validate/build/inspect; confirm labels, arrows, and component boundaries at the journal Profile size.
 
-For capabilities outside FigureSpec, search the official manual corpus first, record source IDs/pages, then use `expert-build`. A raw result remains Expert Mode until promoted through Schema/Recipe/golden tests.
+For capabilities outside FigureSpec, query shared knowledge first and inspect relevant official source examples before broader manual sections. Record source IDs/locations, then use `expert-build`. A raw/source-extracted result remains Expert Mode until promoted through curated knowledge/template and Schema/Recipe/golden tests.

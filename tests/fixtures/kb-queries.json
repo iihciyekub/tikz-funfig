@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "queries": [
+    {
+      "query": "relative positioning",
+      "top_id": "relative-positioning",
+      "required_kinds": ["card", "example"]
+    },
+    {
+      "query": "fit group",
+      "top_id": "fit-groups",
+      "required_kinds": ["card", "example", "manual"]
+    },
+    {
+      "query": "graph drawing layered",
+      "required_kinds": ["example", "manual"]
+    },
+    {
+      "query": "三层研究框架",
+      "top_id": "framework-diagram",
+      "required_kinds": ["recipe", "card", "example"]
+    },
+    {
+      "query": "实验装置",
+      "required_ids": ["scientific-schematic"],
+      "required_kinds": ["recipe", "example"]
+    }
+  ]
+}

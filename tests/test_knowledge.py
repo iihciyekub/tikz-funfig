@@ -106,6 +106,29 @@ class KnowledgeTests(unittest.TestCase):
         self.assertIn("examples=2857", result.stdout)
         self.assertIn("renderable=2358", result.stdout)
 
+    def test_unified_knowledge_query_benchmark(self) -> None:
+        fixture = json.loads(
+            (PROJECT_ROOT / "tests/fixtures/kb-queries.json").read_text(encoding="utf-8")
+        )
+        for case in fixture["queries"]:
+            with self.subTest(query=case["query"]):
+                hits = search(case["query"], limit=12)
+                self.assertTrue(hits)
+                ids = {hit.id for hit in hits}
+                kinds = {hit.kind for hit in hits}
+                if case.get("top_id"):
+                    self.assertEqual(hits[0].id, case["top_id"], [hit.__dict__ for hit in hits])
+                for expected_id in case.get("required_ids", []):
+                    self.assertIn(expected_id, ids, [hit.__dict__ for hit in hits])
+                for expected_kind in case.get("required_kinds", []):
+                    self.assertIn(expected_kind, kinds, [hit.__dict__ for hit in hits])
+
+    def test_knowledge_status_includes_recipes_and_source_examples(self) -> None:
+        payload = status()
+        self.assertEqual(payload["source_examples"], 2857)
+        self.assertEqual(payload["recipes"], 19)
+        self.assertEqual(payload["example_verification"]["source-compiled"], 6)
+
     @unittest.skipUnless(
         shutil.which("pdftotext") and shutil.which("pdfinfo"),
         "Poppler tools unavailable",

@@ -82,7 +82,7 @@ the full rule.
 
 For supported properties — axis ranges, labels, styles, data bindings, series, regions, annotations, panels, nodes, edges — update the FigureSpec and regenerate. Do not patch generated TeX as the long-term source of truth.
 
-For a normal installed-Plugin task, first query capabilities and knowledge instead of editing the Plugin. If a stable Recipe expresses the request, use Structured Mode. If a genuine long-tail TikZ/PGF feature is outside the current Schema, search the official manual corpus and use sourced Expert TikZ Mode; do not misrepresent that raw result as a stable Recipe. In repository-development tasks, reusable repeated behavior can be promoted through Schema -> Recipe/renderer -> knowledge/example -> golden tests.
+For a normal installed-Plugin task, first query capabilities and shared knowledge instead of editing the Plugin. Search results may include stable Recipes, compiled project cards, verified/source-extracted official examples, and manual sections. Prefer the most relevant stable Recipe/compiled project knowledge for production behavior; use official source examples to ground long-tail implementation details. If a genuine TikZ/PGF feature is outside the current Schema, use sourced Expert TikZ Mode and keep it separate from stable capability claims. In repository-development tasks, reusable repeated behavior can be promoted through source example -> curated knowledge/template -> Schema/Recipe/renderer -> golden tests.
 
 Read `references/schema-contract.md` for the field and artifact responsibilities.
 
