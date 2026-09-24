@@ -4,6 +4,17 @@
 
 TIKZ-FunFig uses semantic versioning.
 
+`pyproject.toml` is the single manually managed version source. Runtime,
+`tff`, and portable Plugin versions are derived from it. Use:
+
+```bash
+python3 scripts/version.py get
+python3 scripts/version.py check
+python3 scripts/version.py set X.Y.Z
+```
+
+Do not hand-edit the derived version constants.
+
 - **PATCH** (`0.8.2 → 0.8.3`): bug fixes, docs/governance, packaging/install improvements, and backward-compatible maintenance.
 - **MINOR** (`0.8.x → 0.9.0`): new Recipe/Method/schema capabilities that remain compatible with existing managed figures.
 - **MAJOR** (`1.x → 2.0.0`): intentional incompatible FigureSpec, Plugin, artifact, or CLI contract changes.
@@ -28,7 +39,7 @@ Before 1.0, a breaking contract change should still be explicitly documented and
 The script:
 
 1. validates the release state and target version;
-2. updates runtime/package/README version references;
+2. updates the canonical package version and synchronizes runtime/helper/Plugin versions;
 3. synchronizes the portable Plugin;
 4. runs `./scripts/check.sh` and `git diff --check`;
 5. creates `release: vX.Y.Z`;
@@ -37,6 +48,9 @@ The script:
 8. runs the local Codex update when available.
 
 Published tags must never be moved or rewritten. If a release has a defect, fix it in a new version.
+
+See [CODEX_PLUGIN.md](CODEX_PLUGIN.md) for local development installs, Git
+marketplace distribution, workspace publishing, and public Plugin submission.
 
 ## Changelog
 

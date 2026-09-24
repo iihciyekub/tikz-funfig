@@ -2,7 +2,7 @@
 
 TIKZ-FunFig is a schema-driven figure generation system for reproducible TikZ and PGFPlots figures.
 
-Version 0.9.0 expands TIKZ-FunFig into a multi-Skill academic-figure Plugin with
+TIKZ-FunFig is a multi-Skill academic-figure Plugin with
 FigureSpec 1.1 structured diagrams, searchable PGF/TikZ knowledge, Publication
 Profiles, themes, visual QA, and a sourced Expert TikZ fallback for long-tail
 manual-backed features. Existing 1.0 managed figures and the promoted PGFPlots/
@@ -143,6 +143,14 @@ codex plugin marketplace add git@github.com:iihciyekub/tikz-funfig.git --ref mai
   && codex plugin add tikz-funfig@tikz-funfig
 ```
 
+To test unpublished changes from the current checkout instead of GitHub:
+
+```bash
+./scripts/sync_plugin_package.sh
+codex plugin marketplace add "$(pwd)"
+codex plugin add tikz-funfig@tikz-funfig
+```
+
 With this repository available locally, one command installs both the `tff` CLI
 and the Git-backed Codex Plugin:
 
@@ -169,16 +177,23 @@ Useful companion commands include `tff doctor`. Repository
 maintainers can remove reproducible local build/noise files with
 `scripts/clean_repo.sh`.
 
+For a reproducible installation, pin the marketplace to an immutable release
+tag such as `v0.10.0` instead of `main`.
+
 Releases use a clean working tree and one command:
 
 ```bash
-./scripts/release.sh 0.9.0
+./scripts/release.sh X.Y.Z
 ```
 
 The release command updates the package version, rebuilds the portable Plugin,
 runs the full regression suite, creates the release commit and annotated Git
 tag, pushes `main` and the tag, then refreshes the local Codex installation
 when the Codex CLI is available.
+
+See [Codex Plugin packaging, installation, and publication](docs/CODEX_PLUGIN.md)
+for local development installs, private Git distribution, workspace publishing,
+and submission to the universal public Plugins Directory.
 
 ## Development and governance
 
@@ -191,6 +206,7 @@ contributors and coding agents do not depend on chat history:
 - `docs/GIT_WORKFLOW.md` — commit, branch, and push rules;
 - `docs/RELEASE.md` — semantic versioning and release procedure;
 - `docs/INSTALL_UPDATE.md` — Codex install, update, status, and rollback;
+- `docs/CODEX_PLUGIN.md` — Plugin packaging, local/Git installation, and publication;
 - `docs/PLUGIN_DISTRIBUTION.md` — source → portable Plugin → Codex cache contract;
 - `CHANGELOG.md` — release history and pending changes.
 

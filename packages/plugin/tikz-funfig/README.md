@@ -16,3 +16,7 @@ Synchronized components:
 - `runtime/recipes/` from `recipes/`.
 
 Do not make permanent feature edits only in the synchronized copies.
+The manifest version is derived from the repository's canonical
+`pyproject.toml` version; do not hand-edit it. Use
+`python3 scripts/version.py set X.Y.Z` in the source repository and
+`scripts/sync_plugin_package.sh` to regenerate the bundle.

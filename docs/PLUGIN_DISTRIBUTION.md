@@ -71,6 +71,10 @@ repository source tree.
 
 The historical `tikz-funfig-local` registration is obsolete; update/install helpers remove it when encountered.
 
+For the complete local-development, private-Git, release-tag, workspace, and
+public-directory publication workflows, see
+[CODEX_PLUGIN.md](CODEX_PLUGIN.md).
+
 ## Icons
 
 Canonical source icons are `IconKitchen/macos/AppIcon128.png` and `AppIcon512.png`. `sync_plugin_package.sh` copies these into `packages/plugin/tikz-funfig/assets/` as composer icon/logo assets. Other IconKitchen exports are reproducible local outputs and are not versioned.

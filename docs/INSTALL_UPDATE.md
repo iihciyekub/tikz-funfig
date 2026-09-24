@@ -28,6 +28,19 @@ tff doctor           # Check drawing dependencies
 tff --version        # CLI version (separate from the installed Plugin version)
 ```
 
+For unpublished local development, do not use `tff update`: it fetches the
+configured Git marketplace. Instead, synchronize the portable bundle and add
+the current repository as a local marketplace:
+
+```bash
+./scripts/sync_plugin_package.sh
+codex plugin marketplace add "$(pwd)"
+codex plugin add tikz-funfig@tikz-funfig
+```
+
+See [CODEX_PLUGIN.md](CODEX_PLUGIN.md) for the full local/Git/release/publication
+workflow.
+
 On a new machine, with Git, Python and Codex CLI already installed, this one-line
 command obtains the repository and runs the installer (choose an unused destination):
 
