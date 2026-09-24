@@ -16,6 +16,22 @@
       "ingest": "development",
       "plugin_policy": "normalized-only",
       "verified": "2026-09-24"
+    },
+    {
+      "id": "pgfplots-manual-source",
+      "kind": "official",
+      "project": "PGFPlots",
+      "upstream": "https://github.com/pgf-tikz/pgfplots",
+      "revision": "d8d5424dafa7424df3fbf77022b8f662fffaa4fb",
+      "release_tag": "1.18.2",
+      "local_root": "sources/official/pgfplots/upstream",
+      "manifest": "sources/official/pgfplots/source.json",
+      "license_ids": [
+        "GPL-3.0-or-later"
+      ],
+      "ingest": "development",
+      "plugin_policy": "normalized-only",
+      "verified": "2026-09-24"
     }
   ]
 }

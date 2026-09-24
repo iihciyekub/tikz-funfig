@@ -106,6 +106,38 @@ class KnowledgeTests(unittest.TestCase):
         self.assertIn("examples=2857", result.stdout)
         self.assertIn("renderable=2358", result.stdout)
 
+    def test_pgfplots_source_example_corpus_matches_pinned_source(self) -> None:
+        index = json.loads(
+            (
+                PROJECT_ROOT
+                / "knowledge/corpus/pgfplots-1.18.2.index.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(index["total_examples"], 1290)
+        self.assertEqual(index["renderable_examples"], 956)
+        self.assertEqual(len(index["compile_sample_ids"]), 6)
+        self.assertEqual(index["verification"]["source-compiled"], 6)
+        self.assertEqual(index["compile_status"]["passed"], 6)
+        lines = [
+            line
+            for line in (
+                PROJECT_ROOT / "knowledge/corpus/pgfplots-1.18.2.jsonl"
+            ).read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        self.assertEqual(len(lines), index["total_examples"])
+        sample = json.loads(lines[0])
+        self.assertEqual(sample["source_id"], "pgfplots-manual-source")
+        self.assertEqual(sample["source_version"], "1.18.2")
+        self.assertIn("doc/latex/pgfplots/", sample["source_locator"]["path"])
+        sources = json.loads(
+            (PROJECT_ROOT / "knowledge/corpus/sources.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            {item["id"] for item in sources["sources"]},
+            {"pgf-manual-source", "pgfplots-manual-source"},
+        )
+
     def test_unified_knowledge_query_benchmark(self) -> None:
         fixture = json.loads(
             (PROJECT_ROOT / "tests/fixtures/kb-queries.json").read_text(encoding="utf-8")
@@ -125,10 +157,10 @@ class KnowledgeTests(unittest.TestCase):
 
     def test_knowledge_status_includes_recipes_and_source_examples(self) -> None:
         payload = status()
-        self.assertEqual(payload["source_examples"], 2857)
+        self.assertEqual(payload["source_examples"], 4147)
         self.assertEqual(payload["recipes"], 19)
         self.assertEqual(payload["templates"], 5)
-        self.assertEqual(payload["example_verification"]["source-compiled"], 6)
+        self.assertEqual(payload["example_verification"]["source-compiled"], 12)
 
     @unittest.skipUnless(
         shutil.which("pdftotext") and shutil.which("pdfinfo"),
@@ -167,6 +199,16 @@ class KnowledgeTests(unittest.TestCase):
             )
             self.assertEqual(search_result.returncode, 0, search_result.stdout)
             self.assertIn("fit-groups", search_result.stdout)
+            pgfplots_search = subprocess.run(
+                ["bash", str(wrapper), "kb", "search", "boxplot prepared", "--limit", "2"],
+                cwd=root,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+            self.assertEqual(pgfplots_search.returncode, 0, pgfplots_search.stdout)
+            self.assertIn("pgfplots-libs.statistics", pgfplots_search.stdout)
             figure = root / "figure"
             init = subprocess.run(
                 ["bash", str(wrapper), "init", str(figure), "--recipe", "flowchart", "--id", "portable"],

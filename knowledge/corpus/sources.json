@@ -13,6 +13,18 @@
       "revision": "3.1.11a",
       "upstream": "https://github.com/pgf-tikz/pgf",
       "version": "3.1.11a"
+    },
+    {
+      "id": "pgfplots-manual-source",
+      "kind": "official",
+      "license_ids": [
+        "GPL-3.0-or-later"
+      ],
+      "plugin_policy": "normalized-only",
+      "project": "PGFPlots",
+      "revision": "d8d5424dafa7424df3fbf77022b8f662fffaa4fb",
+      "upstream": "https://github.com/pgf-tikz/pgfplots",
+      "version": "1.18.2"
     }
   ]
 }

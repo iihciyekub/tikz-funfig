@@ -29,6 +29,8 @@ sources/
 └── community/
 ```
 
-The first registered source is the PGF/TikZ 3.1.11a documentation source
-snapshot. The normalized section corpus remains in `knowledge/manual-index/`.
+The registered official sources are the PGF/TikZ 3.1.11a documentation source
+and PGFPlots 1.18.2 documentation source. The normalized PGF section corpus
+remains in `knowledge/manual-index/`; normalized code examples from both
+projects live in `knowledge/corpus/`.
 

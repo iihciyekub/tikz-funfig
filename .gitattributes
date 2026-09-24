@@ -1,0 +1,3 @@
+# Preserve pinned vendored upstream snapshots byte-for-byte. Their historical
+# whitespace is part of the source hash and is not a TIKZ-FunFig style error.
+sources/official/*/upstream/** -whitespace

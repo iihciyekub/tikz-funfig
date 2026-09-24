@@ -1,0 +1,56 @@
+{
+  "compile_eligible_examples": 829,
+  "compile_sample_ids": [
+    "pgfplots-reference.2dplots-0001",
+    "pgfplots-reference.errorbars-0001",
+    "pgfplots-libs.fillbetween-0001",
+    "pgfplots-libs.groupplots-0001",
+    "pgfplots-reference.3dplots-0001",
+    "pgfplots-libs.statistics-0001"
+  ],
+  "compile_status": {
+    "not-run": 1284,
+    "passed": 6
+  },
+  "examples_file": "pgfplots-1.18.2.jsonl",
+  "kind": "source-example-corpus",
+  "renderable_examples": 956,
+  "safety_flagged_examples": 148,
+  "schema_version": "1.0",
+  "skip_reasons": {
+    "code-only": 334,
+    "none": 956
+  },
+  "sources": [
+    "pgfplots-manual-source"
+  ],
+  "top_libraries": {
+    "backgrounds": 1,
+    "clickable": 8,
+    "colorbrewer": 261,
+    "colormaps": 163,
+    "dateplot": 9,
+    "decorations.markings": 56,
+    "decorations.softclip": 1,
+    "external": 31,
+    "fillbetween": 116,
+    "fixedpointarithmetic": 1,
+    "groupplots": 11,
+    "intersections": 16,
+    "patchplots": 276,
+    "patterns": 206,
+    "plotmarks": 138,
+    "polar": 102,
+    "shapes.arrows": 33,
+    "smithchart": 103,
+    "spy": 138,
+    "statistics": 32,
+    "ternary": 97,
+    "units": 8
+  },
+  "total_examples": 1290,
+  "verification": {
+    "source-compiled": 6,
+    "source-extracted": 1284
+  }
+}

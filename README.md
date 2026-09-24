@@ -11,7 +11,7 @@ legacy migration paths remain supported.
 The repository has three roles:
 
 1. **Source project** — schemas, recipes, renderers, tests, documentation, and packaging live here.
-2. **Knowledge base** — compiled task cards and a section-level PGF/TikZ 3.1.11a corpus are directly searchable by the Plugin.
+2. **Knowledge base** — compiled task cards, curated templates, PGF/TikZ 3.1.11a source/manual knowledge, and PGFPlots 1.18.2 source examples are directly searchable by the Plugin.
 3. **Provenance source tree** — pinned official/community material lives under `sources/`; legacy project material remains under `references/`. Neither is a Plugin runtime dependency.
 
 The repository is the source of truth. Workspace/system Skills and the portable Codex/OpenAI Plugin are installation targets generated or synchronized from this project; they should not become independent forks.
@@ -69,6 +69,8 @@ Repository maintainers rebuild the pinned PGF/TikZ source-example corpus with:
 ```bash
 python3 scripts/build_source_example_corpus.py build
 python3 scripts/build_source_example_corpus.py verify --compile-samples
+python3 scripts/build_pgfplots_source_corpus.py build
+python3 scripts/build_pgfplots_source_corpus.py verify --compile-samples
 ```
 
 Ordinary 2D paper/scientific recipes default to the `publication-offset` axes

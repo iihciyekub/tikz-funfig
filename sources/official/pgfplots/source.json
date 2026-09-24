@@ -1,0 +1,19 @@
+{
+  "source_id": "pgfplots-manual-source",
+  "project": "PGFPlots",
+  "title": "PGFPlots documentation source",
+  "version": "1.18.2",
+  "revision": "d8d5424dafa7424df3fbf77022b8f662fffaa4fb",
+  "release_tag": "1.18.2",
+  "upstream": "https://github.com/pgf-tikz/pgfplots",
+  "source_root": "sources/official/pgfplots/upstream/doc/latex/pgfplots",
+  "tree_sha256": "f1ea554ff0f0be346e64b9acffdf09221bdbc51a979df422a5ceb9ff30d9a1df",
+  "tex_file_count": 65,
+  "size_bytes": 5717574,
+  "license_file": "sources/official/pgfplots/upstream/README.md",
+  "license_ids": [
+    "GPL-3.0-or-later"
+  ],
+  "plugin_policy": "normalized-only",
+  "verified": "2026-09-24"
+}

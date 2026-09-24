@@ -106,6 +106,8 @@ class FunFigCoreTests(unittest.TestCase):
             "corpus/index.json",
             "corpus/sources.json",
             "corpus/examples.jsonl",
+            "corpus/pgfplots-1.18.2.jsonl",
+            "corpus/pgfplots-1.18.2.index.json",
             "manual-index/pgfmanual-3.1.11a.jsonl",
             "manual-index/pgfmanual-3.1.11a.libraries.json",
         ):

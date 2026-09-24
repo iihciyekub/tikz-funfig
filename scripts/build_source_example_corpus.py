@@ -35,16 +35,21 @@ BEGIN = r"\begin{codeexample}"
 END = r"\end{codeexample}"
 BEGIN_RE = re.compile(re.escape(BEGIN))
 SECTION_RE = re.compile(
-    r"\\(section|subsection|subsubsection|paragraph)\s*\{",
+    r"\\(chapter|section|subsection|subsubsection|paragraph)\s*\{",
     flags=re.MULTILINE,
 )
 COMMAND_RE = re.compile(r"\\[A-Za-z@]+")
 KEY_RE = re.compile(r"/(?:tikz|pgf|pgfplots)/[A-Za-z0-9 ._:/-]+")
 TIKZ_LIBRARY_RE = re.compile(r"\\usetikzlibrary\s*\{([^}]*)\}")
 PGF_LIBRARY_RE = re.compile(r"\\usepgflibrary\s*\{([^}]*)\}")
+PGFPLOTS_LIBRARY_RE = re.compile(r"\\usepgfplotslibrary\s*\{([^}]*)\}")
+PGFPLOTS_LIBRARY_ENV_RE = re.compile(
+    r"\\begin\{pgfplotslibrary\}\s*\{([^}]*)\}"
+)
 PACKAGE_RE = re.compile(r"\\usepackage(?:\[[^\]]*\])?\s*\{([^}]*)\}")
 
 SECTION_LEVELS = {
+    "chapter": 0,
     "section": 1,
     "subsection": 2,
     "subsubsection": 3,
@@ -232,12 +237,36 @@ def _section_events(text: str) -> list[tuple[int, int, str, str]]:
 
 
 def _libraries(*chunks: str) -> list[str]:
-    result: list[str] = []
+    typed = _typed_libraries(*chunks)
+    return sorted(
+        set(
+            [
+                *typed["tikz"],
+                *typed["pgf"],
+                *typed["pgfplots"],
+            ]
+        )
+    )
+
+
+def _typed_libraries(*chunks: str) -> dict[str, list[str]]:
+    result: dict[str, set[str]] = {
+        "tikz": set(),
+        "pgf": set(),
+        "pgfplots": set(),
+    }
     for text in chunks:
-        for pattern in (TIKZ_LIBRARY_RE, PGF_LIBRARY_RE):
+        for kind, pattern in (
+            ("tikz", TIKZ_LIBRARY_RE),
+            ("pgf", PGF_LIBRARY_RE),
+            ("pgfplots", PGFPLOTS_LIBRARY_RE),
+            ("pgfplots", PGFPLOTS_LIBRARY_ENV_RE),
+        ):
             for raw in pattern.findall(text):
-                result.extend(value.strip() for value in raw.split(",") if value.strip())
-    return sorted(set(result))
+                result[kind].update(
+                    value.strip() for value in raw.split(",") if value.strip()
+                )
+    return {kind: sorted(values) for kind, values in result.items()}
 
 
 def _packages(*chunks: str) -> list[str]:
@@ -334,16 +363,26 @@ def _engine(libraries: list[str], code: str, preamble: str) -> str:
     return "pdflatex"
 
 
-def _source_path_for_locator(relative: Path) -> str:
-    return f"doc/generic/pgf/{relative.as_posix()}"
+def _source_path_for_locator(relative: Path, locator_prefix: str) -> str:
+    return f"{locator_prefix.rstrip('/')}/{relative.as_posix()}"
 
 
-def _extract_file(path: Path, source_root: Path, source_id: str, version: str) -> list[dict[str, Any]]:
+def _extract_file(
+    path: Path,
+    source_root: Path,
+    source_id: str,
+    version: str,
+    *,
+    locator_prefix: str = "doc/generic/pgf",
+    id_prefix: str = "pgf",
+    license_ids: list[str] | None = None,
+) -> list[dict[str, Any]]:
     raw_bytes = path.read_bytes()
     text = raw_bytes.decode("utf-8")
     relative = path.relative_to(source_root)
     source_sha = _sha256_bytes(raw_bytes)
     sections = _section_events(text)
+    file_library_types = _typed_libraries(text)
     section_index = 0
     hierarchy: dict[int, dict[str, Any]] = {}
     examples: list[dict[str, Any]] = []
@@ -387,12 +426,36 @@ def _extract_file(path: Path, source_root: Path, source_id: str, version: str) -
         )
         render_code = render_instead or content
         analysis_text = "\n".join((preamble, current_setup, pre, render_code, post))
-        libraries = _libraries(analysis_text)
+        local_library_types = _typed_libraries(analysis_text)
+        library_types = {
+            kind: sorted(
+                set(
+                    [
+                        *file_library_types.get(kind, []),
+                        *local_library_types.get(kind, []),
+                    ]
+                )
+            )
+            for kind in ("tikz", "pgf", "pgfplots")
+        }
+        libraries = sorted(
+            set(
+                [
+                    *library_types["tikz"],
+                    *library_types["pgf"],
+                    *library_types["pgfplots"],
+                ]
+            )
+        )
         safety = _safety_flags(analysis_text)
         renderable = not is_setup and not is_code_only and not remember_picture
         compile_eligible = renderable and not safety
         engine = _engine(libraries, render_code, preamble)
-        example_id = f"pgf-{relative.stem.removeprefix('pgfmanual-en-')}-{ordinal:04d}"
+        stem = relative.stem
+        for prefix in ("pgfmanual-en-", "pgfplots."):
+            if stem.startswith(prefix):
+                stem = stem[len(prefix) :]
+        example_id = f"{id_prefix}-{stem}-{ordinal:04d}"
         line_start = text.count("\n", 0, begin_match.start()) + 1
         line_end = text.count("\n", 0, end_index + len(END)) + 1
 
@@ -403,7 +466,7 @@ def _extract_file(path: Path, source_root: Path, source_id: str, version: str) -
                 "source_kind": "official",
                 "source_version": version,
                 "source_locator": {
-                    "path": _source_path_for_locator(relative),
+                    "path": _source_path_for_locator(relative, locator_prefix),
                     "line_start": line_start,
                     "line_end": line_end,
                     "ordinal": ordinal,
@@ -423,6 +486,7 @@ def _extract_file(path: Path, source_root: Path, source_id: str, version: str) -
                     )
                 ),
                 "libraries": libraries,
+                "library_types": library_types,
                 "packages": _packages(preamble, current_setup),
                 "commands": _commands(preamble, current_setup, pre, render_code, post),
                 "keys": _keys(preamble, current_setup, pre, render_code, post),
@@ -448,7 +512,7 @@ def _extract_file(path: Path, source_root: Path, source_id: str, version: str) -
                 ),
                 "verification": "source-extracted",
                 "compile_status": "not-run",
-                "license_ids": ["LPPL-1.3c", "GFDL-1.2"],
+                "license_ids": license_ids or ["LPPL-1.3c", "GFDL-1.2"],
                 "source_hash": source_sha,
                 "code_hash": _sha256_bytes(content.encode("utf-8")),
             }
@@ -530,23 +594,32 @@ def _index_payload(manifest: dict[str, Any], entries: list[dict[str, Any]]) -> d
 
 def _runtime_sources_payload(manifest: dict[str, Any]) -> dict[str, Any]:
     registry = _load_json(SOURCE_REGISTRY)
-    record = next(
-        item for item in registry["sources"] if item["id"] == manifest["source_id"]
-    )
-    return {
-        "schema_version": "1.0",
-        "sources": [
+    sources: list[dict[str, Any]] = []
+    for record in registry.get("sources", []):
+        if record.get("plugin_policy") != "normalized-only":
+            continue
+        source_manifest = {}
+        manifest_path = record.get("manifest")
+        if manifest_path and (ROOT / manifest_path).is_file():
+            source_manifest = _load_json(ROOT / manifest_path)
+        sources.append(
             {
-                "id": manifest["source_id"],
+                "id": record["id"],
                 "kind": record["kind"],
                 "project": record["project"],
                 "upstream": record["upstream"],
                 "revision": record["revision"],
-                "version": manifest["version"],
-                "license_ids": manifest["license_ids"],
+                "version": source_manifest.get(
+                    "version",
+                    record.get("release_tag", record["revision"]),
+                ),
+                "license_ids": record.get("license_ids", []),
                 "plugin_policy": record["plugin_policy"],
             }
-        ],
+        )
+    return {
+        "schema_version": "1.0",
+        "sources": sources,
     }
 
 
@@ -575,9 +648,28 @@ def build(write: bool = True) -> tuple[dict[str, Any], list[dict[str, Any]], str
 
 def _standalone_source(entry: dict[str, Any]) -> str:
     code = entry["render_instead"] or entry["code"]
+    typed = entry.get("library_types", {})
+    library_lines: list[str] = []
+    if typed.get("tikz"):
+        library_lines.append(
+            "\\usetikzlibrary{" + ",".join(typed["tikz"]) + "}"
+        )
+    if typed.get("pgf"):
+        library_lines.append(
+            "\\usepgflibrary{" + ",".join(typed["pgf"]) + "}"
+        )
+    if typed.get("pgfplots"):
+        library_lines.extend(
+            [
+                "\\usepackage{pgfplots}",
+                "\\usepgfplotslibrary{" + ",".join(typed["pgfplots"]) + "}",
+            ]
+        )
     return (
         "\\documentclass{standalone}\n"
         "\\usepackage{fp,pgf,tikz,xcolor}\n"
+        + "\n".join(library_lines)
+        + "\n"
         f"{entry['preamble']}\n"
         "\\begin{document}\n"
         f"{entry['setup_code']}\n"

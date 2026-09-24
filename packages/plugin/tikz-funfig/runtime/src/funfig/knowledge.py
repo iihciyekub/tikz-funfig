@@ -111,44 +111,47 @@ def _manual_entries(root: Path) -> Iterable[dict[str, Any]]:
 
 
 def _corpus_entries(root: Path) -> Iterable[dict[str, Any]]:
-    path = root / "corpus/examples.jsonl"
-    if not path.is_file():
+    directory = root / "corpus"
+    if not directory.is_dir():
         return
-    for line in path.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        item = json.loads(line)
-        locator = item.get("source_locator", {})
-        source_path = locator.get("path", "")
-        line_start = locator.get("line_start")
-        line_end = locator.get("line_end")
-        location = ""
-        if line_start:
-            location = f"L{line_start}" + (f"-L{line_end}" if line_end and line_end != line_start else "")
-        source = source_path + (f":{location}" if location else "")
-        aliases = [
-            *item.get("tags", []),
-            *item.get("figure_families", []),
-            *item.get("layout_traits", []),
-            *item.get("style_traits", []),
-        ]
-        yield {
-            "id": item["id"],
-            "kind": "example",
-            "title": item.get("title") or item["id"],
-            "aliases": aliases,
-            "tags": item.get("tags", []),
-            "commands": item.get("commands", []),
-            "libraries": item.get("libraries", []),
-            "families": item.get("figure_families", []),
-            "layout": item.get("layout_traits", []),
-            "style": item.get("style_traits", []),
-            "summary": item.get("summary", ""),
-            "body": item.get("code", ""),
-            "source": source,
-            "status": item.get("verification", "source-extracted"),
-            "pages": location,
-        }
+    for path in sorted(directory.glob("*.jsonl")):
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            item = json.loads(line)
+            locator = item.get("source_locator", {})
+            source_path = locator.get("path", "")
+            line_start = locator.get("line_start")
+            line_end = locator.get("line_end")
+            location = ""
+            if line_start:
+                location = f"L{line_start}" + (
+                    f"-L{line_end}" if line_end and line_end != line_start else ""
+                )
+            source = source_path + (f":{location}" if location else "")
+            aliases = [
+                *item.get("tags", []),
+                *item.get("figure_families", []),
+                *item.get("layout_traits", []),
+                *item.get("style_traits", []),
+            ]
+            yield {
+                "id": item["id"],
+                "kind": "example",
+                "title": item.get("title") or item["id"],
+                "aliases": aliases,
+                "tags": item.get("tags", []),
+                "commands": item.get("commands", []),
+                "libraries": item.get("libraries", []),
+                "families": item.get("figure_families", []),
+                "layout": item.get("layout_traits", []),
+                "style": item.get("style_traits", []),
+                "summary": item.get("summary", ""),
+                "body": item.get("code", ""),
+                "source": source,
+                "status": item.get("verification", "source-extracted"),
+                "pages": location,
+            }
 
 
 def _recipe_root(root: Path) -> Path | None:

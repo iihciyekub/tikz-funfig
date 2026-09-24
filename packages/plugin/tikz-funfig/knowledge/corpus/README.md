@@ -9,8 +9,10 @@ metadata, renderability, and safety flags.
 
 Current files:
 
-- `examples.jsonl` — one normalized source example per line.
-- `index.json` — deterministic counts and representative compile sample IDs.
+- `examples.jsonl` — normalized PGF/TikZ 3.1.11a source examples.
+- `index.json` — PGF/TikZ deterministic counts and representative compile sample IDs.
+- `pgfplots-1.18.2.jsonl` — normalized PGFPlots 1.18.2 source examples.
+- `pgfplots-1.18.2.index.json` — PGFPlots deterministic counts and compile sample IDs.
 - `sources.json` — compact runtime-safe provenance for included sources.
 
 Rebuild and verify:
@@ -18,6 +20,8 @@ Rebuild and verify:
 ```bash
 python3 scripts/build_source_example_corpus.py build
 python3 scripts/build_source_example_corpus.py verify --compile-samples
+python3 scripts/build_pgfplots_source_corpus.py build
+python3 scripts/build_pgfplots_source_corpus.py verify --compile-samples
 ```
 
 Raw source trees never belong here. A corpus example is reference knowledge;

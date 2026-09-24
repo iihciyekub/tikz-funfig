@@ -26,6 +26,16 @@
       "required_kinds": ["template", "recipe"]
     },
     {
+      "query": "boxplot prepared",
+      "required_ids": ["pgfplots-libs.statistics-0005"],
+      "required_kinds": ["example"]
+    },
+    {
+      "query": "groupplots",
+      "top_id": "pgfplots-libs.groupplots-0001",
+      "required_kinds": ["example", "recipe"]
+    },
+    {
       "query": "实验装置",
       "required_ids": ["scientific-schematic"],
       "required_kinds": ["recipe", "example"]

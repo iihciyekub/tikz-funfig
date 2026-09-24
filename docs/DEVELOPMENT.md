@@ -40,6 +40,15 @@ python3 scripts/build_source_example_corpus.py build
 python3 scripts/build_source_example_corpus.py verify --compile-samples
 ```
 
+PGFPlots 1.18.2 is pinned separately under `sources/official/pgfplots/`.
+Its source examples use the same provenance/safety model while restoring
+PGFPlots-specific library context before representative compilation:
+
+```bash
+python3 scripts/build_pgfplots_source_corpus.py build
+python3 scripts/build_pgfplots_source_corpus.py verify --compile-samples
+```
+
 The searchable section corpus only needs Poppler (`pdfinfo`, `pdftotext`). Generating official PDF booklets additionally requires `qpdf` so pages are copied without re-rendering or re-encoding:
 
 ```bash

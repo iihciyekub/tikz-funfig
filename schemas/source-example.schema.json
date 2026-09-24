@@ -48,6 +48,15 @@
     "style_traits": {"type": "array", "items": {"type": "string"}},
     "tags": {"type": "array", "items": {"type": "string"}},
     "libraries": {"type": "array", "items": {"type": "string"}},
+    "library_types": {
+      "type": "object",
+      "properties": {
+        "tikz": {"type": "array", "items": {"type": "string"}},
+        "pgf": {"type": "array", "items": {"type": "string"}},
+        "pgfplots": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
     "packages": {"type": "array", "items": {"type": "string"}},
     "commands": {"type": "array", "items": {"type": "string"}},
     "keys": {"type": "array", "items": {"type": "string"}},
