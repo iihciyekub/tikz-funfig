@@ -7,6 +7,16 @@
       "required_kinds": ["card", "example"]
     },
     {
+      "query": "commutative diagram matrix arrows",
+      "top_id": "commutative-diagrams",
+      "required_kinds": ["card", "recipe", "example"]
+    },
+    {
+      "query": "Petri net tokens transitions",
+      "top_id": "petri-net-diagrams",
+      "required_kinds": ["card", "example", "manual"]
+    },
+    {
       "query": "fit group",
       "top_id": "fit-groups",
       "required_kinds": ["card", "example", "manual"]
@@ -19,6 +29,26 @@
       "query": "三层研究框架",
       "top_id": "layered-framework",
       "required_kinds": ["recipe", "template", "card", "example"]
+    },
+    {
+      "query": "中介模型",
+      "top_id": "mediation-model",
+      "required_kinds": ["template"]
+    },
+    {
+      "query": "链式中介",
+      "top_id": "chain-mediation",
+      "required_kinds": ["template"]
+    },
+    {
+      "query": "调节效应",
+      "top_id": "moderation-model",
+      "required_kinds": ["template"]
+    },
+    {
+      "query": "商学 组织能力 企业绩效",
+      "top_id": "business-capability-performance",
+      "required_kinds": ["template"]
     },
     {
       "query": "confidence band",

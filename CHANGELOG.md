@@ -4,6 +4,30 @@ All notable changes to TIKZ-FunFig are recorded here. The project follows semant
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-09-27
+
+### Added
+
+- Expanded the curated social-science and business collection to 20 Templates,
+  including mediation, moderation, direct-effects, capability-performance, and
+  multi-antecedent frameworks. Grid `auto_fit` uses Publication Profile width
+  and label estimates; relation edges can target another edge for moderation.
+- Added structured sloped edge labels and a Petri-net Recipe with semantic
+  validation, golden cases, and searchable knowledge. Expanded bounded,
+  source-backed Expert geometry and reference-reproduction examples.
+- Added image-only TeXample blind fixtures and a five-family paper-figure visual
+  benchmark with explicit width, machine, and agent-review evidence.
+
+### Changed
+
+- Unified final-size inspection across structured diagrams and legacy plots,
+  and preserved structured visual-review history through rebuilds.
+- Improved academic figure defaults: auto-fit English labels wrap at word
+  boundaries, the feedback Template returns below the main path, and the
+  moderation Template keeps H1 clear of the path junction.
+- Refined Skill routing, focused knowledge retrieval, and visual-review guidance
+  around measured PDF width, diagram clearance, and plot tick collisions.
+
 ## [0.11.0] - 2026-09-24
 
 ### Added

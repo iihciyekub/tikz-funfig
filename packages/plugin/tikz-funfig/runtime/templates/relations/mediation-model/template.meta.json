@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "mediation-model",
+  "family": "relation",
+  "title": "Mediation research model",
+  "description": "Paper-ready independent-variable to mediator to outcome model with an optional direct path.",
+  "recipe_hint": "relation-diagram",
+  "tags": ["mediation", "mediator", "social science", "business research", "中介模型", "中介变量", "路径模型", "H1 H2"],
+  "supported_profiles": ["journal-single-column", "journal-double-column"],
+  "supported_themes": ["journal-monochrome", "journal-muted", "journal-accessible"],
+  "design_fit": {
+    "best_for": ["simple mediation models", "indirect-effect conceptual diagrams", "social-science path models"],
+    "node_range": [3, 5],
+    "label_density": "medium",
+    "recommended_width_mm": [88, 178],
+    "adaptation_notes": ["Keep the mediation chain on one dominant horizontal axis.", "Use the curved direct path only when the user supplies a direct-effect hypothesis."],
+    "failure_modes": ["direct path crosses the mediator", "hypothesis labels overlap nodes", "causality is inferred rather than supplied"]
+  },
+  "requires": {"packages": ["tikz"], "libraries": ["arrows.meta"]},
+  "edit_contract": {
+    "editable": ["construct labels", "hypothesis labels", "direct path", "theme/profile"],
+    "structural_limits": {"constructs": [3, 5], "paths": [2, 7]},
+    "locked": ["path direction must be user supplied", "mediation is a displayed model, not proof of an indirect effect"]
+  }
+}

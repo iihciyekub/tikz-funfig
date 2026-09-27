@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0",
+  "cases": [
+    {
+      "id": "projectile-motion",
+      "family": "mixed",
+      "features": ["analytic-curve", "vector-annotation", "angle-annotation"],
+      "expected_route": "expert",
+      "expected_patterns": ["annotation-leaders", "multi-region-composition"],
+      "acceptance": ["preserve trajectory semantics", "velocity/angle annotations remain readable", "no invented numerical data"]
+    },
+    {
+      "id": "sri-yantra",
+      "family": "schematic",
+      "features": ["intersection-geometry", "bezier-structure", "layered-rings"],
+      "expected_route": "expert",
+      "expected_patterns": ["intersection-geometry", "bezier-structure", "layered-transparency"],
+      "acceptance": ["preserve symmetry", "intersection topology is coherent", "petal layers do not collide"]
+    },
+    {
+      "id": "rotated-sphere",
+      "family": "schematic",
+      "features": ["3d-coordinate-frame", "projected-wireframe", "rotation-annotation"],
+      "expected_route": "expert",
+      "expected_patterns": ["3d-coordinate-frame", "projected-wireframe", "annotation-leaders"],
+      "acceptance": ["camera convention is consistent", "great-circle projection is coherent", "rotation annotation is unambiguous"]
+    },
+    {
+      "id": "hexagonal-prism",
+      "family": "schematic",
+      "features": ["3d-coordinate-frame", "hidden-edge-logic"],
+      "expected_route": "expert",
+      "expected_patterns": ["3d-coordinate-frame", "hidden-edge-logic"],
+      "acceptance": ["front/back edge classification matches the requested view", "projected proportions remain stable"]
+    },
+    {
+      "id": "procedural-city",
+      "family": "schematic",
+      "features": ["procedural-layout", "repeated-components", "isometric-geometry"],
+      "expected_route": "expert",
+      "expected_patterns": ["procedural-layout", "repeated-components"],
+      "acceptance": ["generation is deterministic", "components remain legible", "no severe accidental collisions"]
+    },
+    {
+      "id": "circular-chord-network",
+      "family": "schematic",
+      "features": ["cyclic-symmetry", "dense-chords", "center-spokes"],
+      "expected_route": "expert",
+      "expected_patterns": ["repeated-components"],
+      "expected_generators": ["ring_nodes", "boundary_circle", "complete_edges", "center_node", "center_spokes"],
+      "acceptance": ["outer nodes are equally spaced", "dense edges remain visually subordinate to nodes", "generated topology is deterministic", "center remains at the origin"]
+    },
+    {
+      "id": "triangular-lattice-tiling",
+      "family": "schematic",
+      "features": ["translation-symmetry", "skew-lattice", "dense-nearest-neighbour-graph", "tiling-cells"],
+      "expected_route": "expert",
+      "expected_patterns": ["repeated-components"],
+      "expected_generators": ["lattice_nodes", "lattice_edges", "lattice_cells"],
+      "acceptance": ["one shared lattice basis controls all geometry", "nearest-neighbour topology is deterministic", "cell fill remains subordinate to edges and nodes", "no cumulative spacing drift"]
+    },
+    {
+      "id": "koch-snowflake-fractal",
+      "family": "schematic",
+      "features": ["recursive-geometry", "self-similarity", "high-segment-count"],
+      "expected_route": "expert",
+      "expected_patterns": ["procedural-layout"],
+      "expected_generators": ["koch_snowflake"],
+      "acceptance": ["recursion is deterministic", "threefold global symmetry is preserved", "fine segments remain legible at publication width"]
+    },
+    {
+      "id": "projected-box-cluster",
+      "family": "schematic",
+      "features": ["3d-projection", "repeated-solids", "axonometric-geometry"],
+      "expected_route": "expert",
+      "expected_patterns": ["3d-coordinate-frame", "repeated-components"],
+      "expected_generators": ["projected_box"],
+      "acceptance": ["all boxes share one projection basis", "parallel 3D directions remain parallel after projection", "repeated solids remain visually separable"]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 ---
 name: funfig-plots
-description: Create and refine academic TikZ/PGFPlots data and function plots from descriptions, data, or reference figures. Use for axes, uncertainty, scientific fields, and aligned plot panels.
+description: Create and refine academic TikZ/PGFPlots 2D function and data plots from descriptions, data, or reference figures. Use for analytic functions, data series, scatter, uncertainty/error bars, thresholds, and aligned paper panels; advanced fields/3D are long-tail.
 ---
 
 # FunFig Plots
@@ -20,10 +20,11 @@ those values are actually readable or independently provided. Never infer
 confidence intervals, sample size, or measurements from visual appearance.
 
 Choose among the current PGFPlots Recipes via `capabilities`; search curated
-Templates before inventing a layout. Use dedicated error/scatter/band/field/3D
-Recipes where suitable, `publication-threshold` for threshold/regime/callout
+Templates before inventing a layout. Prefer the 2D function/data/error/scatter/
+band Recipes, `publication-threshold` for threshold/regime/callout
 figures, and `groupplot` for aligned plot panels. Statistical/long-tail methods
-with knowledge coverage but no Recipe remain Expert Mode.
+with knowledge coverage but no Recipe remain Expert Mode. Existing 3D/field
+Recipes are retained for explicit specialist requests, not as a default route.
 
 Prefer direct binding to supplied data files. Use coordinates for small fixed
 sets and expressions for analytic functions; use Python preprocessing only where

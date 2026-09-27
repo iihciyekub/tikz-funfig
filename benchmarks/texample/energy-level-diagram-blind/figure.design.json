@@ -1,0 +1,11 @@
+{
+  "schema_version":"1.0","id":"energy-level-diagram","task":"reproduce","family":"schematic","render_mode":"expert",
+  "intent":"Recreate the three-state energy-level diagram from the rendered reference without reading its TeX source.",
+  "content":{"must_preserve":["solid levels for |a>, |b>, |c>","three dashed offsets Δ1, Δ2, Δ3","two bidirectional transitions ω1 and ω2","one Γ transition"],"assumptions":["No physical scale or numerical energy values are implied"],"unresolved":[]},
+  "references":[{"locator":"https://texample.net/files/energy-level-diagram.png","roles":["content","structure","style"],"adopt":["triangular placement of levels","solid/dashed level hierarchy","transition labels"],"do_not_transfer":["original TeX source","caption typesetting"]}],
+  "appearance":{"layout":"Three energy states in a triangular composition","typography":"TeX serif math","theme":"journal-monochrome","target_width_mm":88,"minimum_text_pt":7.5},
+  "knowledge_sources":["pgfmanual-3.1.11a-p0179-0179","pgfmanual-3.1.11a-p0223-0225","arrows-meta"],
+  "routing":{"features":["bare-energy-level-lines","dashed-offsets","bidirectional-transition-arrows"],"recipe_candidate":"scientific-schematic","unsupported_features":["energy-level line primitives and exact transition endpoints"],"decision":"expert","reason":"The schematic Recipe represents boxed components and would distort energy levels and their offset transitions.","expert_patterns":["annotation-leaders"],"knowledge_queries":["arrow tips","nodes and edges"]},
+  "review":{"reference_anchors":["upper |b> level","left |a> level","lower-right |c> level","three transition labels"],"repair_limit":3},
+  "delivery":{"basename":"figure","formats":["pdf"]}
+}

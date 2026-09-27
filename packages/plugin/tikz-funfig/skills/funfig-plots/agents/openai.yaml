@@ -1,6 +1,7 @@
 interface:
   display_name: "FunFig Plots"
-  short_description: "Build publication-quality mathematical and data plots"
+  short_description: "Plot 2D functions, data, uncertainty, and paper comparisons"
+  default_prompt: "Use $funfig-plots to turn my function or data into an editable paper-ready plot."
 
 policy:
   allow_implicit_invocation: true

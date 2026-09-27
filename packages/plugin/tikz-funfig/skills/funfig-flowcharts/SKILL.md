@@ -31,6 +31,13 @@ the main reading path. Preserve graph meaning when reorganizing lanes or styling
 A plain-language need such as “汇合后再分支” should become focused merge/branch and
 routing queries, not just an unsegmented search sentence.
 
+On diagonal branches, use `diagram.edges[].label_sloped: true` when the label
+should follow the path; then review the preview for label-to-node clearance.
+The default horizontal label is still useful for short, shallow branches.
+For a return arrow from a right-hand decision to a left-hand step, inspect the
+sign of its curve bend in the actual preview; route it below the main path when
+that avoids crossing the forward arrows and node text.
+
 Validate/build/inspect and view the preview. Treat unintended text overlap as a
 layout failure; machine checks alone do not establish acceptance while visual
 review is pending. Fix spacing, anchors, and routes before shrinking text. Increase

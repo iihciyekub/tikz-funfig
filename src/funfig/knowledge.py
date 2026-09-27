@@ -79,6 +79,8 @@ def _card_entries(root: Path) -> Iterable[dict[str, Any]]:
             "source": ", ".join(item.get("sources", [])),
             "status": item.get("verification", "draft"),
             "pages": ", ".join(str(value) for value in item.get("pages", [])),
+            "example_ids": item.get("example_ids", []),
+            "file": str(path),
         }
 
 
@@ -170,6 +172,14 @@ def _corpus_entries(root: Path) -> Iterable[dict[str, Any]]:
                 "source": source,
                 "status": item.get("verification", "source-extracted"),
                 "pages": location,
+                "packages": item.get("packages", []),
+                "engine": item.get("engine"),
+                "renderable": item.get("renderable"),
+                "compile_status": item.get("compile_status"),
+                "safety_flags": item.get("safety_flags", []),
+                "skip_reason": item.get("skip_reason"),
+                "source_locator": locator,
+                "license_ids": item.get("license_ids", []),
             }
 
 
@@ -271,6 +281,14 @@ def all_entries(root: Path | None = None) -> list[dict[str, Any]]:
     ]
 
 
+def get_entry(entry_id: str, root: Path | None = None) -> dict[str, Any]:
+    """Return one exact knowledge record with its provenance and verification state."""
+    for entry in all_entries(root):
+        if entry["id"] == entry_id:
+            return entry
+    raise KeyError(f"unknown knowledge ID: {entry_id}")
+
+
 def _join(value: Any) -> str:
     if isinstance(value, list):
         return " ".join(str(item) for item in value)
@@ -340,7 +358,7 @@ def search(query: str, limit: int = 8, root: Path | None = None) -> list[Knowled
         ).fetchall()
     finally:
         connection.close()
-    hits: list[KnowledgeHit] = []
+    filtered: list[KnowledgeHit] = []
     example_sources: dict[str, int] = {}
     for row in rows:
         hit = KnowledgeHit(*row)
@@ -350,10 +368,23 @@ def search(query: str, limit: int = 8, root: Path | None = None) -> list[Knowled
             if seen >= 2:
                 continue
             example_sources[source_group] = seen + 1
-        hits.append(hit)
-        if len(hits) >= int(limit):
-            break
-    return hits
+        filtered.append(hit)
+
+    selected = filtered[: int(limit)]
+    # A compiled task card often summarizes an official manual section. As the
+    # curated template library grows, many highly relevant templates can crowd
+    # that primary source out of a short result window. Preserve the useful
+    # template ranking, but when a verified card is already selected, keep one
+    # matching official-manual result visible as provenance when one exists.
+    if (
+        int(limit) >= 4
+        and any(hit.kind == "card" for hit in selected)
+        and not any(hit.kind == "manual" for hit in selected)
+    ):
+        manual = next((hit for hit in filtered if hit.kind == "manual"), None)
+        if manual is not None:
+            selected[-1] = manual
+    return selected
 
 
 def status(root: Path | None = None) -> dict[str, Any]:

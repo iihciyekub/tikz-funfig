@@ -48,6 +48,87 @@
       }
     },
     "knowledge_sources": {"$ref": "#/$defs/texts"},
+    "routing": {
+      "type": "object", "additionalProperties": false,
+      "required": ["features", "recipe_candidate", "unsupported_features", "decision", "reason", "expert_patterns", "knowledge_queries"],
+      "properties": {
+        "features": {"$ref": "#/$defs/texts"},
+        "recipe_candidate": {"$ref": "#/$defs/text"},
+        "unsupported_features": {"$ref": "#/$defs/texts"},
+        "decision": {"enum": ["structured", "expert"]},
+        "reason": {"$ref": "#/$defs/text"},
+        "expert_patterns": {"$ref": "#/$defs/texts"},
+        "knowledge_queries": {"$ref": "#/$defs/texts"}
+      }
+    },
+    "review": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reference_anchors", "repair_limit"],
+      "properties": {
+        "reference_anchors": {"$ref": "#/$defs/texts"},
+        "repair_limit": {"type": "integer", "minimum": 1, "maximum": 8}
+      }
+    },
+    "structure_model": {
+      "type": "object", "additionalProperties": false,
+      "required": ["coordinate_system", "symmetry", "generators", "constraints"],
+      "properties": {
+        "coordinate_system": {"enum": ["polar", "cartesian", "isometric", "3d", "abstract"]},
+        "symmetry": {
+          "type": "object", "additionalProperties": false,
+          "required": ["group", "order", "phase_deg", "tolerance"],
+          "properties": {
+            "group": {"$ref": "#/$defs/text"},
+            "order": {"type": "integer", "minimum": 1, "maximum": 10000},
+            "phase_deg": {"type": "number"},
+            "tolerance": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        },
+        "generators": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["id", "type", "parameters"],
+            "properties": {
+              "id": {"$ref": "#/$defs/identifier"},
+              "type": {"enum": [
+                "ring_nodes", "boundary_circle", "complete_edges", "circulant_edges", "star_polygon", "center_node", "center_spokes",
+                "line_nodes", "complete_bipartite_edges", "lattice_nodes", "lattice_edges", "lattice_cells",
+                "parametric_curve", "koch_snowflake", "projected_box", "projected_prism", "point_nodes", "delaunay_edges", "voronoi_cells", "l_system", "truchet_tiles"
+              ]},
+              "parameters": {"type": "object", "additionalProperties": true}
+            }
+          }
+        },
+        "constraints": {"$ref": "#/$defs/texts"}
+      }
+    },
+    "visual_density": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "target": {"enum": ["light", "balanced", "dense"]},
+        "edge_line_width_pt": {"type": "number", "minimum": 0.05, "maximum": 2},
+        "edge_opacity": {"type": "number", "minimum": 0.02, "maximum": 1},
+        "boundary_line_width_pt": {"type": "number", "minimum": 0.05, "maximum": 2},
+        "boundary_opacity": {"type": "number", "minimum": 0.02, "maximum": 1},
+        "node_outline_pt": {"type": "number", "minimum": 0.05, "maximum": 2},
+        "node_outline_opacity": {"type": "number", "minimum": 0.02, "maximum": 1},
+        "curve_line_width_pt": {"type": "number", "minimum": 0.05, "maximum": 3},
+        "curve_opacity": {"type": "number", "minimum": 0.02, "maximum": 1},
+        "cell_outline_opacity": {"type": "number", "minimum": 0.02, "maximum": 1}
+      }
+    },
+    "search_space": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["path", "values"],
+        "properties": {
+          "path": {"$ref": "#/$defs/text"},
+          "values": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "number"}}
+        }
+      }
+    },
     "delivery": {
       "type": "object", "additionalProperties": false,
       "required": ["basename", "formats"],
@@ -60,6 +141,15 @@
   "allOf": [{
     "if": {"properties": {"render_mode": {"const": "expert"}}},
     "then": {"required": ["knowledge_sources"], "properties": {"knowledge_sources": {"type": "array", "minItems": 1}}}
+  }, {
+    "if": {"required": ["routing"], "properties": {"render_mode": {"const": "expert"}}},
+    "then": {"properties": {"routing": {"properties": {"decision": {"const": "expert"}}}}}
+  }, {
+    "if": {"required": ["routing"], "properties": {"render_mode": {"const": "structured"}}},
+    "then": {"properties": {"routing": {"properties": {"decision": {"const": "structured"}}}}}
+  }, {
+    "if": {"required": ["structure_model"]},
+    "then": {"properties": {"render_mode": {"const": "expert"}}}
   }],
   "$defs": {
     "identifier": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"},

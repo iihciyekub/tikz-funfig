@@ -48,6 +48,18 @@ use the selected column width as a readability/space budget.
 Prefer semantic anchors, relative placement, named coordinates, and reusable
 components to accumulated arbitrary offsets. Grid row/column gaps are coordinate
 spacing; they do not guarantee visible clearance between unequal shapes.
+For regular academic models with several comparable constructs, prefer
+`diagram.layout.auto_fit=true`: it uses the selected Publication Profile width,
+column count, and label-length estimates to choose a shared text width and safer
+grid center spacing. Explicit node `text_width` and layout gaps remain overrides.
+Use this for mediation/path/business-framework starters before hand-tuning widths.
+Auto-fit nodes wrap at word boundaries without splitting ordinary English words;
+review especially long words and formulas for overflow at the final width.
+
+For moderation models, point the moderator to the supplied relationship itself
+with `to_edge` rather than drawing an unintended moderator-to-outcome direct path.
+Reserve edge-to-edge targets for semantics such as moderation/path annotation;
+ordinary relationships should still terminate on construct nodes.
 
 Search Templates by structure and inspect their edit contracts before reuse.
 Compose compatible methods where useful. Repeated source examples are technical

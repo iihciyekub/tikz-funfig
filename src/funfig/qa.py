@@ -18,6 +18,21 @@ class QAError(RuntimeError):
     pass
 
 
+_TEX_LENGTH_RE = re.compile(r"^\s*(\d+(?:\.\d+)?)(pt|mm|cm|in)\s*$")
+
+
+def _tex_length_mm(value: Any) -> float | None:
+    if not isinstance(value, str):
+        return None
+    match = _TEX_LENGTH_RE.match(value)
+    if not match:
+        return None
+    number = float(match.group(1))
+    unit = match.group(2)
+    factor = {"mm": 1.0, "cm": 10.0, "in": 25.4, "pt": 25.4 / 72.27}[unit]
+    return number * factor
+
+
 def _pdf_info(pdf: Path) -> dict[str, Any]:
     if shutil.which("pdfinfo") is None:
         raise QAError("pdfinfo is required for figure inspection")
@@ -168,27 +183,41 @@ def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[
     profile = None
     publication_scale = 1.0
     projected_size: dict[str, float] | None = None
+    target_width_mm: float | None = None
+    minimum_text_pt = 0.0
+    target_source: str | None = None
     if spec.get("schema_version") == "1.1":
         profile_id = (spec.get("profile") or {}).get("id", "journal-single-column")
         profile = load_profile(profile_id)
-        target = float(profile.get("target_width_mm", 0) or 0)
-        width = info.get("width_mm")
-        if target and width:
-            publication_scale = min(1.0, target / float(width))
-            projected_size = {
-                "width_mm": round(float(width) * publication_scale, 2),
-                "height_mm": round(float(info.get("height_mm") or 0) * publication_scale, 2),
-                "scale": round(publication_scale, 4),
-            }
-            if width > target * 1.2:
-                warnings.append(
-                    f"natural PDF width {width:.1f} mm exceeds profile target {target:.1f} mm by more than 20%; inspect readability after journal scaling"
-                )
-            elif width < target * 0.35:
-                warnings.append(
-                    f"natural PDF width {width:.1f} mm is much smaller than profile target {target:.1f} mm; inspect line/text scale"
-                )
+        target_width_mm = float(profile.get("target_width_mm", 0) or 0) or None
         minimum_text_pt = float(profile.get("minimum_text_pt", 0) or 0)
+        target_source = f"profile:{profile_id}"
+    else:
+        target_width_mm = _tex_length_mm((spec.get("canvas") or {}).get("width"))
+        if target_width_mm:
+            # Legacy/plot FigureSpec has no Publication Profile. Use the explicit
+            # canvas width as the intended physical width and the project's
+            # conservative journal baseline for text-risk projection.
+            minimum_text_pt = 7.5
+            target_source = "canvas.width"
+
+    width = info.get("width_mm")
+    if target_width_mm and width:
+        publication_scale = min(1.0, target_width_mm / float(width))
+        projected_size = {
+            "width_mm": round(float(width) * publication_scale, 2),
+            "height_mm": round(float(info.get("height_mm") or 0) * publication_scale, 2),
+            "scale": round(publication_scale, 4),
+        }
+        if width > target_width_mm * 1.2:
+            warnings.append(
+                f"natural PDF width {width:.1f} mm exceeds target {target_width_mm:.1f} mm by more than 20%; inspect readability after publication scaling"
+            )
+        elif width < target_width_mm * 0.35:
+            warnings.append(
+                f"natural PDF width {width:.1f} mm is much smaller than target {target_width_mm:.1f} mm; inspect line/text scale"
+            )
+
         bbox = (text_metrics or {}).get("bbox_height_pt") or {}
         median_height = bbox.get("median")
         p10_height = bbox.get("p10")
@@ -201,13 +230,24 @@ def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[
                 warnings.append(
                     "projected text appears too small after publication scaling: "
                     f"median word box {projected_median:.1f} pt at target width "
-                    f"(profile minimum text {minimum_text_pt:.1f} pt)"
+                    f"(minimum text baseline {minimum_text_pt:.1f} pt)"
                 )
             elif projected_p10 < minimum_text_pt * 0.50:
                 warnings.append(
                     "some text may become too small after publication scaling: "
                     f"10th-percentile word box {projected_p10:.1f} pt at target width"
                 )
+
+    size_check = {
+        "natural_width_mm": info.get("width_mm"),
+        "natural_height_mm": info.get("height_mm"),
+        "target_width_mm": round(target_width_mm, 2) if target_width_mm else None,
+        "target_source": target_source,
+        "minimum_text_pt": minimum_text_pt or None,
+        "scale_to_target": round(publication_scale, 4) if target_width_mm else None,
+        "projected_width_mm": (projected_size or {}).get("width_mm"),
+        "projected_height_mm": (projected_size or {}).get("height_mm"),
+    }
 
     preview = figure_dir / ".funfig" / "preview.png"
     _render_preview(pdf, preview, dpi=dpi)
@@ -216,6 +256,8 @@ def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[
     if not manifest_file.is_file():
         raise QAError(f"manifest does not exist: {manifest_file}")
     manifest = load_json(manifest_file)
+    previous_qa = manifest.get("qa") or {}
+    review_history = list(previous_qa.get("review_history") or [])
     manifest["qa"] = {
         "status": "preview_ready",
         "machine_checks_passed": not warnings,
@@ -223,10 +265,14 @@ def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[
         "warnings": warnings,
         "pdf": info,
         "text_metrics": text_metrics,
+        "size_check": size_check,
         "publication_projection": projected_size,
         "preview": ".funfig/preview.png",
         "preview_dpi": int(dpi),
         "checked_at": utc_now(),
+        "review_history": review_history,
+        "review_count": len(review_history),
+        "repair_cycles": sum(1 for item in review_history if item.get("result") == "failed"),
     }
     if profile:
         manifest["qa"]["profile"] = {
@@ -247,9 +293,19 @@ def mark_visual_review(spec_path: Path, passed: bool, note: str) -> dict[str, An
     qa = manifest.setdefault("qa", {})
     if qa.get("status") not in {"preview_ready", "passed", "failed"}:
         raise QAError("run 'funfig inspect' before recording a visual review")
-    qa["visual_review"] = "passed" if passed else "failed"
+    reviewed_at = utc_now()
+    result = "passed" if passed else "failed"
+    qa["visual_review"] = result
     qa["status"] = "passed" if passed and qa.get("machine_checks_passed", True) else "failed"
     qa["review_note"] = note
-    qa["reviewed_at"] = utc_now()
+    qa["reviewed_at"] = reviewed_at
+    history = qa.setdefault("review_history", [])
+    history.append({
+        "result": result,
+        "note": note,
+        "reviewed_at": reviewed_at,
+    })
+    qa["review_count"] = len(history)
+    qa["repair_cycles"] = sum(1 for item in history if item.get("result") == "failed")
     write_manifest(figure_dir, manifest)
     return qa

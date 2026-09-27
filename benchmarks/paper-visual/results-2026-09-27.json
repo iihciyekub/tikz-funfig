@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "run_date": "2026-09-27",
+  "method": "agent review of final 180 dpi previews; measured PDF widths; no independent human grading",
+  "case_count": 5,
+  "passed_count": 5,
+  "results": [
+    {
+      "case_id": "social-moderation-cjk-single",
+      "family": "social-science",
+      "template_id": "moderation-model",
+      "profile_id": "journal-single-column",
+      "natural_width_mm": 83.53,
+      "target_width_mm": 88,
+      "width_pass": true,
+      "machine_checks_passed": true,
+      "visual_review": "passed",
+      "qa_status": "passed",
+      "review_note": "Viewed final preview: moderator ends on the X-to-Y path; H1 moved clear of the junction; H2 and three CJK node labels are readable.",
+      "repair_cycles": 0
+    },
+    {
+      "case_id": "business-capability-en-double",
+      "family": "business",
+      "template_id": "business-capability-performance",
+      "profile_id": "journal-double-column",
+      "natural_width_mm": 156.01,
+      "target_width_mm": 178,
+      "width_pass": true,
+      "machine_checks_passed": true,
+      "visual_review": "passed",
+      "qa_status": "passed",
+      "review_note": "Viewed final preview: three group borders and connections are clear; long English labels wrap at word boundaries without broken words.",
+      "repair_cycles": 0
+    },
+    {
+      "case_id": "math-variable-relations-single",
+      "family": "mathematical-model",
+      "template_id": "mediation-model",
+      "profile_id": "journal-single-column",
+      "natural_width_mm": 83.53,
+      "target_width_mm": 88,
+      "width_pass": true,
+      "machine_checks_passed": true,
+      "visual_review": "passed",
+      "qa_status": "passed",
+      "review_note": "Viewed final preview: beta and gamma labels are distinct, the direct path stays below the mediated path, and formulas are legible.",
+      "repair_cycles": 0
+    },
+    {
+      "case_id": "plot-confidence-band-single",
+      "family": "function-data-plot",
+      "template_id": "confidence-band",
+      "profile_id": null,
+      "natural_width_mm": 78.8,
+      "target_width_mm": 88,
+      "width_pass": true,
+      "machine_checks_passed": true,
+      "visual_review": "passed",
+      "qa_status": "passed",
+      "review_note": "Viewed final preview: mean line and blue interval remain distinct; explicit y ticks avoid the former scientific-notation collision.",
+      "repair_cycles": 0
+    },
+    {
+      "case_id": "flowchart-feedback-cjk-double",
+      "family": "flowchart",
+      "template_id": "feedback-loop",
+      "profile_id": "journal-double-column",
+      "natural_width_mm": 131.77,
+      "target_width_mm": 178,
+      "width_pass": true,
+      "machine_checks_passed": true,
+      "visual_review": "passed",
+      "qa_status": "passed",
+      "review_note": "Viewed final preview: failure feedback runs below the main path; pass/fail labels and CJK node text do not collide.",
+      "repair_cycles": 0
+    }
+  ]
+}

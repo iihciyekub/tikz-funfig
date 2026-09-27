@@ -8,9 +8,11 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from funfig.cli import _starter_spec, main
 from funfig.design import validate_design
+from funfig.expert import ExpertBuildError, build_expert, inspect_expert_dependencies, mark_expert_visual_review
 from funfig.io import load_json, write_json_atomic
 from funfig.manifest import sha256_file
 from funfig.paths import PROJECT_ROOT
@@ -61,6 +63,128 @@ class DesignTests(unittest.TestCase):
         self.design["knowledge_sources"] = ["pgfmanual-3.1.11a-p0128-0129"]
         write_json_atomic(self.path, self.design)
         self.assertEqual(validate_design(self.path)["references"][0]["roles"], ["style"])
+
+    def test_complex_route_and_review_plan_are_schema_validated(self) -> None:
+        self.design["render_mode"] = "expert"
+        self.design["knowledge_sources"] = ["pgfmanual-3.1.11a-p0128-0129"]
+        self.design["routing"] = {
+            "features": ["3d-wireframe", "repeated-components"],
+            "recipe_candidate": "scientific-schematic",
+            "unsupported_features": ["3d-wireframe"],
+            "decision": "expert",
+            "reason": "The stable Recipe cannot preserve the projected wireframe geometry.",
+            "expert_patterns": ["projected-wireframe", "repeated-components"],
+            "knowledge_queries": ["ellipse arc projection", "foreach repeated components"],
+        }
+        self.design["review"] = {
+            "reference_anchors": ["central axis", "upper cluster centroid", "lower boundary"],
+            "repair_limit": 3,
+        }
+        write_json_atomic(self.path, self.design)
+        validated = validate_design(self.path)
+        self.assertEqual(validated["routing"]["decision"], "expert")
+        self.assertEqual(validated["review"]["repair_limit"], 3)
+
+        self.design["routing"]["decision"] = "structured"
+        write_json_atomic(self.path, self.design)
+        with self.assertRaises(ValueError):
+            validate_design(self.path)
+
+        self.design["routing"]["decision"] = "expert"
+        self.design["review"]["repair_limit"] = 0
+        write_json_atomic(self.path, self.design)
+        with self.assertRaises(ValueError):
+            validate_design(self.path)
+
+    def test_expert_review_history_survives_rebuild(self) -> None:
+        tex = self.root / "expert.tex"
+        tex.write_text(
+            "\\documentclass[tikz,border=2pt]{standalone}\n"
+            "\\begin{document}\\begin{tikzpicture}\\draw (0,0)--(1,0);\\end{tikzpicture}\\end{document}\n",
+            encoding="utf-8",
+        )
+        source = "pgfmanual-3.1.11a-p0565-0565"
+        build_expert(tex, sources=[source])
+        first = mark_expert_visual_review(tex, False, "line hierarchy needs repair")
+        self.assertEqual(first["review_count"], 1)
+        self.assertEqual(first["repair_cycles"], 1)
+
+        tex.write_text(
+            "\\documentclass[tikz,border=2pt]{standalone}\n"
+            "\\begin{document}\\begin{tikzpicture}\\draw[line width=.8pt] (0,0)--(1,0);\\end{tikzpicture}\\end{document}\n",
+            encoding="utf-8",
+        )
+        build_expert(tex, sources=[source])
+        second = mark_expert_visual_review(tex, True, "repaired line hierarchy")
+        self.assertEqual(second["review_count"], 2)
+        self.assertEqual(second["repair_cycles"], 1)
+        self.assertEqual([item["result"] for item in second["review_history"]], ["failed", "passed"])
+        manifest = load_json(self.root / ".funfig/expert-manifest.json")
+        self.assertEqual(manifest["build_iteration"], 2)
+        self.assertTrue(manifest["build"]["dependencies"]["ok"])
+
+    def test_expert_dependency_preflight_tracks_class_packages_comments_and_missing(self) -> None:
+        tex = self.root / "deps.tex"
+        (self.root / "localclass.cls").write_text("% local fixture\n", encoding="utf-8")
+        (self.root / "localpkg.sty").write_text("% local fixture\n", encoding="utf-8")
+        tex.write_text(
+            "\\documentclass{localclass}\n"
+            "% \\usepackage{commentedout}\n"
+            "\\usepackage[american]{localpkg,definitely-missing-funfig-package}\n"
+            "\\RequirePackage{localpkg}\n"
+            "\\begin{document}x\\end{document}\n",
+            encoding="utf-8",
+        )
+        deps = inspect_expert_dependencies(tex)
+        self.assertEqual(deps["document_class"]["name"], "localclass")
+        self.assertTrue(deps["document_class"]["available"])
+        self.assertEqual(
+            [item["name"] for item in deps["packages"]],
+            ["localpkg", "definitely-missing-funfig-package"],
+        )
+        self.assertEqual(deps["missing"], ["definitely-missing-funfig-package.sty"])
+        self.assertFalse(deps["ok"])
+
+    def test_expert_build_stops_before_compile_when_dependency_is_missing(self) -> None:
+        tex = self.root / "missing-dep.tex"
+        tex.write_text(
+            "\\documentclass{standalone}\n"
+            "\\usepackage{missingpkg}\n"
+            "\\begin{document}x\\end{document}\n",
+            encoding="utf-8",
+        )
+        missing = {
+            "document_class": {"name": "standalone", "file": "standalone.cls", "available": True},
+            "packages": [{"name": "missingpkg", "file": "missingpkg.sty", "available": False}],
+            "missing": ["missingpkg.sty"],
+            "ok": False,
+        }
+        with patch("funfig.expert.inspect_expert_dependencies", return_value=missing):
+            with self.assertRaisesRegex(ExpertBuildError, "missingpkg\\.sty"):
+                build_expert(tex, sources=["pgfmanual-3.1.11a-p0565-0565"])
+        self.assertFalse((self.root / "missing-dep.pdf").exists())
+
+    def test_expert_build_accepts_verified_card_as_only_provenance(self) -> None:
+        tex = self.root / "card-only.tex"
+        tex.write_text(
+            "\\documentclass[tikz,border=2pt]{standalone}\n"
+            "\\begin{document}\\begin{tikzpicture}\\draw (0,0)--(1,0);\\end{tikzpicture}\\end{document}\n",
+            encoding="utf-8",
+        )
+        _, manifest_path = build_expert(tex, cards=["nodes-anchors"])
+        manifest = load_json(manifest_path)
+        self.assertEqual(manifest["sources"], [])
+        self.assertEqual(manifest["knowledge_cards"], ["nodes-anchors"])
+        self.assertTrue(manifest["build"]["dependencies"]["ok"])
+
+    def test_expert_build_rejects_missing_provenance(self) -> None:
+        tex = self.root / "no-provenance.tex"
+        tex.write_text(
+            "\\documentclass{standalone}\\begin{document}x\\end{document}\n",
+            encoding="utf-8",
+        )
+        with self.assertRaisesRegex(ExpertBuildError, "--source or --card"):
+            build_expert(tex)
 
     def test_source_identity_and_format_drift_are_rejected(self) -> None:
         spec = _starter_spec("flowchart", self.design["id"])
@@ -138,7 +262,12 @@ class DesignTests(unittest.TestCase):
             (PROJECT_ROOT / "schemas/figure-design.schema.json").read_bytes(),
             (plugin / "runtime/schemas/figure-design.schema.json").read_bytes(),
         )
-        for name in ("workflow.md", "reference-images.md", "composition.md", "design-contract.md", "visual-review.md", "expert-mode.md"):
+        for name in (
+            "workflow.md", "reference-images.md", "routing.md", "expert-patterns.md",
+            "structure-inference.md", "generative-geometry.md", "density-aware-styling.md",
+            "parameter-search.md", "symmetry-and-constraints.md", "composition.md",
+            "design-contract.md", "visual-review.md", "expert-mode.md",
+        ):
             self.assertEqual(
                 (PROJECT_ROOT / "packages/skill/references" / name).read_bytes(),
                 (plugin / "skills/TIKZ-FunFig/references" / name).read_bytes(),

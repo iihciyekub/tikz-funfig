@@ -5,6 +5,11 @@ Review the rendered image, not just TeX or the compiler log. `inspect` and
 Record actual observations with `qa` / `expert-qa`. Never mark a preview you have
 not viewed as visually passed, and never edit a manifest to manufacture a pass.
 
+For reference-led work, define a small set of visual anchors before reviewing,
+for example major extrema, group centroids, central axes, junctions, panel bounds,
+or salient curve/shape intersections. Compare structure and relative placement;
+do not optimize raw pixel similarity at the expense of meaning.
+
 ## Acceptance order
 
 1. **Meaning:** content, numbers, labels, directions, uncertainty, and group
@@ -15,6 +20,8 @@ not viewed as visually passed, and never edit a manifest to manufacture a pass.
    labels, line weights, markers, arrowheads, and panel lettering.
 4. **Geometry:** no unintended text collision, clipping, edge through label/node,
    obscured data, ambiguous crossings, or group-border/title collision.
+   Check hypothesis labels at path junctions, whether feedback arrows stay
+   outside the main path, and whether long English words break awkwardly.
 5. **Design:** coherent typography, alignment, spacing, hierarchy, color encoding,
    and grayscale readability when appropriate.
 6. **Delivery:** correct editable source and requested formats, current build/QA
@@ -41,13 +48,53 @@ content, reference fidelity, requested style, and final-size readability satisfy
 the task. If successive changes no longer improve a concrete remaining problem,
 report that problem and the useful current artifacts rather than looping.
 
+## Defect-led repair loop
+
+For a nontrivial reference reproduction or substantial redesign, use a short
+defect ledger for each review cycle:
+
+```text
+iteration: 2
+defects:
+- upper cluster too narrow relative to the reference anchors
+- grid competes visually with primary components
+repairs:
+- increase upper-cluster horizontal spread
+- reduce secondary grid line opacity/weight
+```
+
+Each defect must be observable in the current preview and each repair must target
+that defect. Do not make unrelated cosmetic changes in the same cycle. Default to
+three review/repair cycles; continue only when a concrete defect remains and the
+previous cycle made measurable progress.
+
+The runtime keeps review history across rebuilds. A failed review followed by a
+repair and rebuild must remain visible in `qa.review_history`; use `repair_cycles`
+as the count of failed review rounds rather than reconstructing it from memory.
+
+Before passing, check all four layers:
+
+1. semantic correctness;
+2. geometry/clearance;
+3. reference alignment or intended visual hierarchy;
+4. readability at the target publication width.
+
+For dense or generative figures, review at three scales: a small thumbnail for
+global silhouette and balance, the normal preview for spacing/density hierarchy,
+and a zoomed view for node masking, crossings, line joins, and local collisions.
+If the structure is correct but the figure is too dark or too weak, repair visual
+density or run a bounded parameter search instead of changing topology.
+
 ## Runtime limits
 
-Structured 1.1 inspection provides Publication Profile width/text-risk estimates.
-Older plot paths and Expert Mode do not yet offer identical automatic checks.
-Use the physical dimensions in `figure.design.json` for manual final-size review
-in every mode. Word boxes are approximate text measurements, not exact font-size
-or full geometry/edge-collision analysis. Do not claim automatic aesthetic scoring.
+`inspect` now records one `size_check` contract for both major managed paths:
+structured 1.1 diagrams use the Publication Profile target width/minimum text,
+while 1.0 function/data plots use the explicit `canvas.width` plus the conservative
+7.5 pt journal text baseline. The record includes natural PDF dimensions, target
+source/width, scale-to-target, and projected dimensions. Expert Mode still needs
+manual final-size interpretation from `figure.design.json`. Word boxes are
+approximate text measurements, not exact font-size or full geometry/edge-collision
+analysis. Do not claim automatic aesthetic scoring.
 
 Structured diagram width comes from node geometry, label sizes, and gaps;
 `canvas.width` does not resize the diagram to that width. A Publication Profile

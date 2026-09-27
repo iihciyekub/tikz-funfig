@@ -1,6 +1,7 @@
 interface:
   display_name: "FunFig Flowcharts"
-  short_description: "Create journal-ready academic process and decision flows"
+  short_description: "Turn steps and decisions into an editable flowchart"
+  default_prompt: "Use $funfig-flowcharts to draw my process with decisions and feedback."
 
 policy:
   allow_implicit_invocation: true

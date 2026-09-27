@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0",
+  "cases": [
+    {
+      "id": "social-moderation-cjk-single",
+      "family": "social-science",
+      "template_id": "moderation-model",
+      "profile_id": "journal-single-column",
+      "target_width_mm": 88,
+      "node_updates": {
+        "w": {"label": "感知风险程度"},
+        "x": {"label": "平台信息透明度"},
+        "y": {"label": "消费者购买意愿"}
+      },
+      "edge_updates": {
+        "main-effect": {"label": "H1"},
+        "moderation": {"label": "H2 调节效应"}
+      },
+      "review_focus": ["moderator points to the path", "H1/H2 clear of lines", "CJK labels fit one column"]
+    },
+    {
+      "id": "business-capability-en-double",
+      "family": "business",
+      "template_id": "business-capability-performance",
+      "profile_id": "journal-double-column",
+      "target_width_mm": 178,
+      "node_updates": {
+        "r1": {"label": "Digital resource availability"},
+        "r2": {"label": "Regional market uncertainty"},
+        "c1": {"label": "Organizational learning capability"},
+        "c2": {"label": "Cross-functional strategic execution"},
+        "p1": {"label": "Long-run firm performance"},
+        "p2": {"label": "Operational resilience"}
+      },
+      "review_focus": ["three group borders remain distinct", "long labels wrap naturally", "vertical enabling edge is clear"]
+    },
+    {
+      "id": "math-variable-relations-single",
+      "family": "mathematical-model",
+      "template_id": "mediation-model",
+      "profile_id": "journal-single-column",
+      "target_width_mm": 88,
+      "node_updates": {
+        "x": {"label": "$x_t$", "label_format": "tex"},
+        "m": {"label": "$m_t = g(x_t)$", "label_format": "tex"},
+        "y": {"label": "$y_{t+1}$", "label_format": "tex"}
+      },
+      "edge_updates": {
+        "h1": {"label": "$\\beta_1$", "label_format": "tex"},
+        "h2": {"label": "$\\beta_2$", "label_format": "tex"},
+        "direct": {"label": "$\\gamma$", "label_format": "tex"}
+      },
+      "review_focus": ["math labels compile and are legible", "direct path stays distinct", "arrows do not touch formulas"]
+    },
+    {
+      "id": "plot-confidence-band-single",
+      "family": "function-data-plot",
+      "template_id": "confidence-band",
+      "target_width_mm": 88,
+      "canvas_updates": {"width": "7.3cm", "height": "5.4cm"},
+      "axes_updates": {
+        "title": "",
+        "y": {"label": "$f(x)$", "min": -0.2, "max": 1.2, "ticks": [-0.2, 0, 0.5, 1]}
+      },
+      "review_focus": ["mean remains distinct from band", "axes and ticks remain legible", "figure fits one column"]
+    },
+    {
+      "id": "flowchart-feedback-cjk-double",
+      "family": "flowchart",
+      "template_id": "feedback-loop",
+      "profile_id": "journal-double-column",
+      "target_width_mm": 178,
+      "node_updates": {
+        "collect": {"label": "收集多源研究数据"},
+        "check": {"label": "质量检查通过？"},
+        "model": {"label": "估计结构模型"}
+      },
+      "edge_updates": {
+        "e2": {"label": "通过"},
+        "e3": {"label": "未通过"}
+      },
+      "review_focus": ["feedback stays outside main path", "yes/no branches are unambiguous", "CJK text and arrows are clear"]
+    }
+  ]
+}

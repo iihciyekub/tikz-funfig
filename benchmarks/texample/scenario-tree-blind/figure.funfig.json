@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.1",
+  "id": "scenario-tree",
+  "recipe": "flowchart",
+  "kind": "tikz",
+  "theme": {
+    "id": "journal-monochrome"
+  },
+  "profile": {
+    "id": "journal-double-column"
+  },
+  "diagram": {
+    "layout": {
+      "type": "manual"
+    },
+    "nodes": [
+      {
+        "id": "country_b",
+        "label": "Country B",
+        "role": "process",
+        "shape": "rounded-rectangle",
+        "position": {
+          "type": "absolute",
+          "x": 0,
+          "y": 0
+        },
+        "appearance": {
+          "fill": "violet!5",
+          "draw": "violet!55!black"
+        }
+      },
+      {
+        "id": "country_a",
+        "label": "Country A",
+        "role": "process",
+        "shape": "rounded-rectangle",
+        "position": {
+          "type": "absolute",
+          "x": 4.4,
+          "y": 1.4
+        },
+        "appearance": {
+          "fill": "violet!5",
+          "draw": "violet!55!black"
+        }
+      },
+      {
+        "id": "scenario_1",
+        "label": "\\begin{tabular}{c}\\textbf{Scenario 1}\\\\\\hline Country B: $s\\bar Q$\\\\Country A: $(1-s)\\bar Q$\\end{tabular}",
+        "label_format": "tex",
+        "role": "process",
+        "shape": "rounded-rectangle",
+        "position": {
+          "type": "absolute",
+          "x": 6.4,
+          "y": -1.9
+        },
+        "appearance": {
+          "fill": "violet!5",
+          "draw": "violet!55!black"
+        }
+      },
+      {
+        "id": "scenario_2",
+        "label": "\\begin{tabular}{c}\\textbf{Scenario 2}\\\\\\hline Country B: $s\\bar Q+2\\alpha\\Delta E-sc$\\\\Country A: $(1-s)\\bar Q-\\alpha\\Delta E-(1-s)c$\\end{tabular}",
+        "label_format": "tex",
+        "role": "process",
+        "shape": "rounded-rectangle",
+        "position": {
+          "type": "absolute",
+          "x": 12.5,
+          "y": 0.25
+        },
+        "appearance": {
+          "fill": "violet!5",
+          "draw": "violet!55!black"
+        }
+      },
+      {
+        "id": "scenario_3",
+        "label": "\\begin{tabular}{c}\\textbf{Scenario 3}\\\\\\hline Country B: $s\\bar Q-2sc$\\\\Country A: $(1-s)\\bar Q-2(1-s)c$\\end{tabular}",
+        "label_format": "tex",
+        "role": "process",
+        "shape": "rounded-rectangle",
+        "position": {
+          "type": "absolute",
+          "x": 12.5,
+          "y": 2.65
+        },
+        "appearance": {
+          "fill": "violet!5",
+          "draw": "violet!55!black"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "b_a",
+        "from": "country_b",
+        "to": "country_a",
+        "arrows": "none",
+        "label": "Devalues",
+        "label_position": 0.55,
+        "label_sloped": true
+      },
+      {
+        "id": "b_1",
+        "from": "country_b",
+        "to": "scenario_1",
+        "arrows": "none",
+        "label": "Unchanged parity",
+        "label_position": 0.52,
+        "label_side": "below",
+        "label_sloped": true
+      },
+      {
+        "id": "a_3",
+        "from": "country_a",
+        "to": "scenario_3",
+        "arrows": "none",
+        "label": "Devalues",
+        "label_position": 0.53,
+        "label_sloped": true
+      },
+      {
+        "id": "a_2",
+        "from": "country_a",
+        "to": "scenario_2",
+        "arrows": "none",
+        "label": "Unchanged parity",
+        "label_position": 0.58,
+        "label_side": "below",
+        "label_sloped": true
+      }
+    ],
+    "groups": []
+  },
+  "outputs": {
+    "basename": "figure",
+    "keep_build": false
+  }
+}

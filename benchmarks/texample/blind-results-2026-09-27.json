@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.1",
+  "run_root": "ephemeral local run; reproducible inputs are in benchmarks/texample/",
+  "case_count": 2,
+  "passed_count": 2,
+  "failed_count": 0,
+  "results": [
+    {
+      "case_id": "energy-level-diagram",
+      "design_id": "energy-level-diagram",
+      "route": "expert",
+      "expected_route": "expert",
+      "route_match": true,
+      "patterns": [
+        "annotation-leaders"
+      ],
+      "missing_expected_patterns": [],
+      "generator_types": [],
+      "missing_expected_generators": [],
+      "knowledge_sources": [
+        "pgfmanual-3.1.11a-p0179-0179",
+        "pgfmanual-3.1.11a-p0223-0225",
+        "arrows-meta"
+      ],
+      "build_iteration": 1,
+      "review_history": [
+        {
+          "build_iteration": 1,
+          "result": "passed",
+          "note": "Viewed preview: three solid/dashed level pairs and labeled ω1/ω2/Γ arrows match visible topology; labels clear at 67 mm width.",
+          "reviewed_at": "2026-09-27T13:08:59.655030+00:00",
+          "tex_sha256": "6c3bc51d08cb445cf0c012c30e63b32d1b203358ff3c2c2246747a9cd4905010"
+        }
+      ],
+      "review_count": 1,
+      "repair_cycles": 0,
+      "final_qa_status": "passed",
+      "pdf": {
+        "pages": 1,
+        "width_pt": 189.352,
+        "height_pt": 132.485,
+        "width_mm": 66.8,
+        "height_mm": 46.74
+      },
+      "reference_locator": "https://texample.net/files/energy-level-diagram.png",
+      "source_exposure": "none",
+      "reviewer": "agent",
+      "scores": {
+        "semantics": {
+          "result": "pass",
+          "evidence": "The preview has three named states, three dashed offsets, bidirectional omega-1/omega-2 arrows, and the Gamma arrow connecting lower levels."
+        },
+        "geometry": {
+          "result": "pass",
+          "evidence": "Viewed the 180 dpi preview: horizontal level lines and dashed offsets are distinct, and transition arrows and labels do not collide."
+        },
+        "readability": {
+          "result": "pass",
+          "evidence": "The measured 66.8 mm PDF fits the 88 mm single-column budget; Greek symbols and ket labels remain clear in the preview."
+        },
+        "reference_alignment": {
+          "result": "pass",
+          "evidence": "The triangular placement, solid/dashed hierarchy, and transition directions match the rendered image; no exact pixel similarity was claimed."
+        }
+      },
+      "reference_review_pass": true,
+      "actual_width_mm": 66.8,
+      "target_width_mm": 88,
+      "width_pass": true,
+      "passed": true
+    },
+    {
+      "case_id": "scenario-tree",
+      "design_id": "scenario-tree",
+      "route": "structured",
+      "expected_route": "structured",
+      "route_match": true,
+      "patterns": [],
+      "missing_expected_patterns": [],
+      "generator_types": [],
+      "missing_expected_generators": [],
+      "knowledge_sources": [
+        "flowchart-shapes",
+        "edge-labels-quotes"
+      ],
+      "build_iteration": 1,
+      "review_history": [
+        {
+          "result": "passed",
+          "note": "Verified all three scenario formulas and four branch labels; no collisions; 169 mm width fits 178 mm double column; pale violet table structure matches reference.",
+          "reviewed_at": "2026-09-27T13:07:13.171704+00:00"
+        },
+        {
+          "result": "failed",
+          "note": "Four horizontal labels interrupt the sloped branch geometry and do not match the reference label direction.",
+          "reviewed_at": "2026-09-27T13:15:52.020907+00:00"
+        },
+        {
+          "result": "passed",
+          "note": "Viewed rebuilt preview: four labels follow diagonal branches; all three scenario formulas are legible; no node or label collision at 169.12 mm width.",
+          "reviewed_at": "2026-09-27T13:16:23.089469+00:00"
+        }
+      ],
+      "review_count": 3,
+      "repair_cycles": 1,
+      "final_qa_status": "passed",
+      "pdf": {
+        "pages": 1,
+        "width_pt": 479.409,
+        "height_pt": 175.8,
+        "width_mm": 169.12,
+        "height_mm": 62.02
+      },
+      "reference_locator": "https://texample.net/files/scenario-tree.png",
+      "source_exposure": "none",
+      "reviewer": "agent",
+      "scores": {
+        "semantics": {
+          "result": "pass",
+          "evidence": "Country B branches to Country A and Scenario 1; Country A branches to Scenarios 2 and 3. Three formula tables and four branch captions were checked against the rendered reference and PDF text."
+        },
+        "geometry": {
+          "result": "pass",
+          "evidence": "Viewed the 180 dpi preview: sloped labels follow each branch; boxes, branch junctions, and formula rows do not collide."
+        },
+        "readability": {
+          "result": "pass",
+          "evidence": "The measured 169.12 mm PDF fits the 178 mm double-column budget without downscaling; formula rows and branch captions remain legible in the preview."
+        },
+        "reference_alignment": {
+          "result": "pass",
+          "evidence": "The redraw retains the reference two-stage topology, pale violet scenario boxes, line directions, and caption orientation; pixel fidelity was not scored."
+        }
+      },
+      "reference_review_pass": true,
+      "actual_width_mm": 169.12,
+      "target_width_mm": 178,
+      "width_pass": true,
+      "passed": true
+    }
+  ],
+  "run_date": "2026-09-27"
+}

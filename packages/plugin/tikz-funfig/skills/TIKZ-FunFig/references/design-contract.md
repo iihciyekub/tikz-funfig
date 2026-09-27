@@ -31,6 +31,19 @@ Use this minimal shape, replacing example content with the user's actual task:
     "minimum_text_pt": 7.5
   },
   "knowledge_sources": ["relative-positioning", "arrows-meta"],
+  "routing": {
+    "features": ["branch-merge"],
+    "recipe_candidate": "flowchart",
+    "unsupported_features": [],
+    "decision": "structured",
+    "reason": "The stable flowchart Recipe preserves the requested process semantics.",
+    "expert_patterns": [],
+    "knowledge_queries": ["flowchart branch merge"]
+  },
+  "review": {
+    "reference_anchors": [],
+    "repair_limit": 3
+  },
   "delivery": {"basename": "figure", "formats": ["pdf"]}
 }
 ```
@@ -39,6 +52,46 @@ Use this minimal shape, replacing example content with the user's actual task:
 plot/flowchart/framework/relation/schematic/mixed. `render_mode` is structured
 or expert. Expert Mode requires nonempty `knowledge_sources`; supply actual
 official section IDs used by `expert-build`, plus supplementary IDs as useful.
+
+`routing` and `review` are optional for simple figures. Use them for complex,
+reference-led, mixed, or Expert work. `routing.decision` must agree with
+`render_mode`; `unsupported_features` describe gaps in the selected Recipe, not
+general TikZ limitations. `review.reference_anchors` should contain only salient
+features that make visual comparison more objective. `repair_limit` defaults to
+three in the Skill workflow; it is a review discipline, not a hard renderer limit.
+
+For dense rule-based geometry, add `structure_model`, optionally
+`visual_density`, and a small numeric `search_space`. A `structure_model` currently
+requires `render_mode: expert`; the generator model becomes the structural source
+of truth and deterministic TeX is emitted from it. Example:
+
+```json
+{
+  "structure_model": {
+    "coordinate_system": "polar",
+    "symmetry": {"group": "C16", "order": 16, "phase_deg": 90, "tolerance": 0.03},
+    "generators": [
+      {"id": "outer", "type": "ring_nodes", "parameters": {"count": 16, "radius": 5.0, "node_radius": 0.30, "phase_deg": 90}},
+      {"id": "chords", "type": "complete_edges", "parameters": {"nodes": "outer"}},
+      {"id": "center", "type": "center_node", "parameters": {"radius": 0.14}},
+      {"id": "spokes", "type": "center_spokes", "parameters": {"nodes": "outer", "center": "center"}}
+    ],
+    "constraints": ["outer nodes are equally spaced", "center is at the origin"]
+  },
+  "visual_density": {"target": "light", "edge_opacity": 0.36},
+  "search_space": [
+    {"path": "visual_density.edge_opacity", "values": [0.28, 0.36, 0.44]}
+  ]
+}
+```
+
+`search_space` is only for numeric visual parameters. Do not search over user data,
+topology, scientific values, or semantics. The current runtime supports bounded
+polar graph, Cartesian/isometric lattice, small point-set Delaunay/Voronoi and
+seeded Truchet tiling,
+safe parametric expression and L-system, and projected-box visibility generators.
+Unsupported generator families remain ordinary sourced
+Expert TikZ until promoted deliberately.
 
 For every relevant image, add a reference entry such as:
 

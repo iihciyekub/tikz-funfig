@@ -1,0 +1,11 @@
+{
+  "schema_version":"1.0","id":"scenario-tree","task":"reproduce","family":"flowchart","render_mode":"structured",
+  "intent":"Recreate the visible country scenario branching diagram from the rendered reference only.",
+  "content":{"must_preserve":["Country B splits into Country A and Scenario 1","Country A splits into Scenarios 2 and 3","four branch labels and all three scenario formulas"],"assumptions":["Use a double-column width for the wide reference"],"unresolved":[]},
+  "references":[{"locator":"https://texample.net/files/scenario-tree.png","roles":["content","structure","style"],"adopt":["two-stage branch topology","rounded scenario tables","formula text verified against rendered PDF text"],"do_not_transfer":["original TeX source"]}],
+  "appearance":{"layout":"Two-stage left-to-right branch with three scenario boxes","typography":"TeX serif","theme":"journal-monochrome","profile_id":"journal-double-column","target_width_mm":178,"minimum_text_pt":7.5},
+  "routing":{"features":["branching-tree","multi-line scenario tables","branch labels","sloped edge labels"],"recipe_candidate":"flowchart","unsupported_features":[],"decision":"structured","reason":"The flowchart Recipe preserves the branching, formula content, and sloped branch labels after the label_sloped capability was promoted from this blind-test failure.","expert_patterns":[],"knowledge_queries":["flowchart branch merge","edge labels quotes"]},
+  "review":{"reference_anchors":["Country B root","Country A upper branch","three scenario boxes","four branch labels"],"repair_limit":3},
+  "knowledge_sources":["flowchart-shapes","edge-labels-quotes"],
+  "delivery":{"basename":"figure","formats":["pdf"]}
+}

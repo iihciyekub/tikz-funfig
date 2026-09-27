@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "id": "template-chain-mediation",
+  "recipe": "relation-diagram",
+  "kind": "tikz",
+  "theme": {"id": "journal-monochrome"},
+  "profile": {"id": "journal-double-column"},
+  "diagram": {
+    "layout": {"type": "grid", "auto_fit": true},
+    "nodes": [
+      {"id": "x", "label": "Antecedent", "role": "concept", "position": {"type": "grid", "row": 0, "column": 0}},
+      {"id": "m1", "label": "Mediator 1", "role": "concept", "position": {"type": "grid", "row": 0, "column": 1}},
+      {"id": "m2", "label": "Mediator 2", "role": "concept", "position": {"type": "grid", "row": 0, "column": 2}},
+      {"id": "y", "label": "Outcome", "role": "concept", "position": {"type": "grid", "row": 0, "column": 3}}
+    ],
+    "edges": [
+      {"id": "h1", "from": "x", "to": "m1", "arrows": "forward", "label": "H1"},
+      {"id": "h2", "from": "m1", "to": "m2", "arrows": "forward", "label": "H2"},
+      {"id": "h3", "from": "m2", "to": "y", "arrows": "forward", "label": "H3"},
+      {"id": "direct", "from": "x", "to": "y", "route": "curve", "routing": {"bend": -24}, "arrows": "forward", "label": "Direct", "label_side": "below"}
+    ],
+    "groups": []
+  },
+  "outputs": {"basename": "chain-mediation", "keep_build": false},
+  "metadata": {"template": true, "template_id": "chain-mediation"}
+}

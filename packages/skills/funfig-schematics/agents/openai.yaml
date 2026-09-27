@@ -1,6 +1,7 @@
 interface:
   display_name: "FunFig Schematics"
-  short_description: "Create publication-quality scientific mechanism schematics"
+  short_description: "Draw editable apparatus and mechanism schematics"
+  default_prompt: "Use $funfig-schematics to turn my apparatus sketch into an editable figure."
 
 policy:
   allow_implicit_invocation: true

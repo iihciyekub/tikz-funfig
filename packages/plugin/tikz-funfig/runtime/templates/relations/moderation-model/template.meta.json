@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "moderation-model",
+  "family": "relation",
+  "title": "Moderation research model",
+  "description": "Social-science moderation model where the moderator points to the hypothesized X-to-Y path rather than to a construct node.",
+  "recipe_hint": "relation-diagram",
+  "tags": ["moderation", "moderator", "interaction", "social science", "business research", "调节效应", "调节变量", "交互效应", "路径模型"],
+  "supported_profiles": ["journal-single-column", "journal-double-column"],
+  "supported_themes": ["journal-monochrome", "journal-muted", "journal-accessible"],
+  "design_fit": {
+    "best_for": ["simple moderation models", "moderator-to-path hypotheses", "interaction-effect conceptual diagrams"],
+    "node_range": [3, 5],
+    "label_density": "medium",
+    "recommended_width_mm": [88, 178],
+    "adaptation_notes": ["Target the moderated path directly instead of drawing a misleading moderator-to-outcome arrow.", "Keep the main effect visually dominant and the moderation arrow secondary."],
+    "failure_modes": ["moderation label collides with the main-path label", "moderator appears as a direct predictor", "the diagram implies a statistically established interaction"]
+  },
+  "requires": {"packages": ["tikz"], "libraries": ["arrows.meta"]},
+  "edit_contract": {
+    "editable": ["predictor label", "outcome label", "moderator label", "hypothesis labels", "theme/profile"],
+    "structural_limits": {"moderators": [1, 2], "target_paths": [1, 2]},
+    "locked": ["the moderator must target a user-supplied path", "the diagram does not establish a statistically significant interaction"]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "date": "2026-09-27",
+  "case": "scenario-tree-blind",
+  "source_url": "https://texample.net/files/scenario-tree.png",
+  "source_access": "rendered reference image only; original TeX intentionally excluded",
+  "route": "structured flowchart FigureSpec 1.1",
+  "initial_result": {
+    "compile": "pass",
+    "machine_qa": "pass",
+    "visual_qa": "fail",
+    "failure": "Two horizontal branch labels overlapped source boxes/other labels; the reference used labels aligned to diagonal branches."
+  },
+  "promoted_capability": {
+    "field": "diagram.edges[].label_sloped",
+    "schema": "boolean",
+    "renderer": "adds TikZ sloped to the edge-label node when true",
+    "golden": "examples/golden/flowchart-sloped-labels/figure.funfig.json"
+  },
+  "final_result": {
+    "compile": "pass",
+    "machine_qa": "pass",
+    "visual_qa": "pass",
+    "repair_cycles": 1,
+    "page_size_pt": [479.409, 175.8]
+  },
+  "artifacts": {
+    "design": "figure.design.json",
+    "spec": "figure.funfig.json"
+  },
+  "scope_limit": "No pixel-fidelity score is claimed; the benchmark tests topology, visible formula content, label placement, compilation, and publication readability."
+}

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import math
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -12,6 +13,7 @@ from .theme import load_profile, load_theme
 
 ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 LENGTH_RE = re.compile(r"^\s*\d+(?:\.\d+)?(?:pt|mm|cm|in|em|ex)\s*$")
+PETRI_ID_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
 
 
 @dataclass(frozen=True)
@@ -67,6 +69,87 @@ def _has_cycle(graph: dict[str, set[str]]) -> bool:
 def _validate_length(value: Any, path: str, errors: list[str]) -> None:
     if value is not None and (not isinstance(value, str) or not LENGTH_RE.match(value)):
         errors.append(f"{path} must be a positive TeX length such as 12mm or 8pt")
+
+
+def _validate_petri(petri: Any, errors: list[str]) -> None:
+    if not isinstance(petri, dict):
+        errors.append("petri must be an object")
+        return
+    allowed = {"places", "transitions", "arcs"}
+    for key in set(petri) - allowed:
+        errors.append(f"petri.{key} is not allowed")
+    node_sets: dict[str, set[str]] = {}
+    for family in ("places", "transitions"):
+        nodes = petri.get(family)
+        if not isinstance(nodes, list) or not nodes:
+            errors.append(f"petri.{family} must be a non-empty array")
+            nodes = []
+        ids: set[str] = set()
+        for index, node in enumerate(nodes):
+            path = f"petri.{family}[{index}]"
+            if not isinstance(node, dict):
+                errors.append(f"{path} must be an object")
+                continue
+            allowed_node = {"id", "label", "label_format", "position"}
+            if family == "places":
+                allowed_node.add("tokens")
+            for key in set(node) - allowed_node:
+                errors.append(f"{path}.{key} is not allowed")
+            node_id = node.get("id")
+            if not isinstance(node_id, str) or not PETRI_ID_RE.fullmatch(node_id):
+                errors.append(f"{path}.id must be a TikZ-safe identifier")
+            elif node_id in ids:
+                errors.append(f"duplicate petri.{family} id: {node_id}")
+            else:
+                ids.add(node_id)
+            if not isinstance(node.get("label"), str):
+                errors.append(f"{path}.label must be a string")
+            if node.get("label_format", "plain") not in {"plain", "tex"}:
+                errors.append(f"{path}.label_format must be plain or tex")
+            position = node.get("position")
+            if not isinstance(position, dict) or set(position) != {"x", "y"} or any(
+                not isinstance(position[key], (int, float))
+                or isinstance(position[key], bool)
+                or not math.isfinite(position[key])
+                for key in ("x", "y") if isinstance(position, dict) and key in position
+            ):
+                errors.append(f"{path}.position requires finite numeric x and y")
+            if family == "places":
+                tokens = node.get("tokens")
+                if type(tokens) is not int or tokens < 0:
+                    errors.append(f"{path}.tokens must be a non-negative integer")
+        node_sets[family] = ids
+    overlap = node_sets["places"] & node_sets["transitions"]
+    if overlap:
+        errors.append("Petri place and transition IDs must be disjoint: " + ", ".join(sorted(overlap)))
+    arcs = petri.get("arcs")
+    if not isinstance(arcs, list) or not arcs:
+        errors.append("petri.arcs must be a non-empty array")
+        arcs = []
+    pairs: set[tuple[str, str]] = set()
+    for index, arc in enumerate(arcs):
+        path = f"petri.arcs[{index}]"
+        if not isinstance(arc, dict):
+            errors.append(f"{path} must be an object")
+            continue
+        for key in set(arc) - {"from", "to", "weight", "bend"}:
+            errors.append(f"{path}.{key} is not allowed")
+        source, target = arc.get("from"), arc.get("to")
+        if not isinstance(source, str) or not isinstance(target, str) or not (
+            (source in node_sets["places"] and target in node_sets["transitions"])
+            or (source in node_sets["transitions"] and target in node_sets["places"])
+        ):
+            errors.append(f"{path} must connect one place and one transition")
+        elif (source, target) in pairs:
+            errors.append(f"{path} duplicates a directed arc; use weight instead")
+        else:
+            pairs.add((source, target))
+        weight = arc.get("weight")
+        if type(weight) is not int or weight < 1:
+            errors.append(f"{path}.weight must be a positive integer")
+        bend = arc.get("bend", 0)
+        if not isinstance(bend, (int, float)) or isinstance(bend, bool) or not math.isfinite(bend) or abs(bend) > 80:
+            errors.append(f"{path}.bend must be between -80 and 80 degrees")
 
 
 def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> ValidationResult:
@@ -304,6 +387,12 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                 )
 
     diagram = spec.get("diagram")
+    if recipe_id == "petri-net":
+        if diagram is not None:
+            errors.append("petri-net uses petri, not diagram")
+        _validate_petri(spec.get("petri"), errors)
+    elif "petri" in spec:
+        errors.append("petri data requires recipe='petri-net'")
     if diagram is not None:
         if not isinstance(diagram, dict):
             errors.append("diagram must be an object")
@@ -315,8 +404,9 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                     "diagram node/group IDs share one namespace; duplicates: "
                     + ", ".join(sorted(node_ids & group_ids))
                 )
+            edge_ids: set[str] = set()
             if schema_version == "1.1":
-                _unique_ids(diagram.get("edges", []), "diagram.edges", errors)
+                edge_ids = _unique_ids(diagram.get("edges", []), "diagram.edges", errors)
                 layout = diagram.get("layout") or {"type": "relative"}
                 if not isinstance(layout, dict):
                     errors.append("diagram.layout must be an object")
@@ -324,6 +414,8 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                 layout_type = layout.get("type")
                 if layout_type not in {"manual", "relative", "grid"}:
                     errors.append("diagram.layout.type must be manual, relative, or grid")
+                if "auto_fit" in layout and not isinstance(layout["auto_fit"], bool):
+                    errors.append("diagram.layout.auto_fit must be a boolean")
                 _validate_length(layout.get("row_gap"), "diagram.layout.row_gap", errors)
                 _validate_length(layout.get("column_gap"), "diagram.layout.column_gap", errors)
 
@@ -412,21 +504,55 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                 if _has_cycle(group_graph):
                     errors.append("diagram group containment must not contain a cycle")
 
+            edge_target_graph: dict[str, set[str]] = {edge_id: set() for edge_id in edge_ids}
             for index, edge in enumerate(diagram.get("edges", [])):
                 if not isinstance(edge, dict):
                     errors.append(f"diagram.edges[{index}] must be an object")
                     continue
-                for field in ("from", "to"):
-                    if edge.get(field) not in node_ids:
+                if edge.get("from") not in node_ids:
+                    errors.append(
+                        f"diagram.edges[{index}].from references unknown node: {edge.get('from')!r}"
+                    )
+                if schema_version != "1.1":
+                    if edge.get("to") not in node_ids:
                         errors.append(
-                            f"diagram.edges[{index}].{field} references unknown node: {edge.get(field)!r}"
+                            f"diagram.edges[{index}].to references unknown node: {edge.get('to')!r}"
                         )
-                if schema_version == "1.1":
+                    if "to_edge" in edge:
+                        errors.append(f"diagram.edges[{index}].to_edge requires schema 1.1")
+                else:
+                    has_to = isinstance(edge.get("to"), str) and bool(edge.get("to"))
+                    has_to_edge = isinstance(edge.get("to_edge"), str) and bool(edge.get("to_edge"))
+                    if has_to == has_to_edge:
+                        errors.append(f"diagram.edges[{index}] requires exactly one of to or to_edge")
+                    elif has_to:
+                        if edge.get("to") not in node_ids:
+                            errors.append(
+                                f"diagram.edges[{index}].to references unknown node: {edge.get('to')!r}"
+                            )
+                    else:
+                        target_edge = edge.get("to_edge")
+                        if recipe_id != "relation-diagram":
+                            errors.append(
+                                f"diagram.edges[{index}].to_edge is only supported by relation-diagram"
+                            )
+                        if target_edge not in edge_ids:
+                            errors.append(
+                                f"diagram.edges[{index}].to_edge references unknown edge: {target_edge!r}"
+                            )
+                        elif edge.get("id") == target_edge:
+                            errors.append(f"diagram.edges[{index}] cannot target itself with to_edge")
+                        elif edge.get("id") in edge_target_graph:
+                            edge_target_graph[edge["id"]].add(target_edge)
+                        if edge.get("to_anchor"):
+                            errors.append(f"diagram.edges[{index}].to_anchor is not valid with to_edge")
+                    if "label_sloped" in edge and not isinstance(edge["label_sloped"], bool):
+                        errors.append(f"diagram.edges[{index}].label_sloped must be a boolean")
                     route = edge.get("route", "straight")
                     routing = edge.get("routing") or {}
-                    if route == "loop" and edge.get("from") != edge.get("to"):
+                    if route == "loop" and (has_to_edge or edge.get("from") != edge.get("to")):
                         errors.append(f"diagram.edges[{index}] route=loop requires from == to")
-                    if edge.get("from") == edge.get("to") and route != "loop":
+                    if has_to and edge.get("from") == edge.get("to") and route != "loop":
                         errors.append(f"diagram.edges[{index}] self-edge requires route=loop")
                     if not isinstance(routing, dict):
                         errors.append(f"diagram.edges[{index}].routing must be an object")
@@ -439,6 +565,8 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                             errors.append(f"diagram.edges[{index}] loop routing accepts only side")
                         if route == "straight" and routing:
                             errors.append(f"diagram.edges[{index}] straight route does not accept routing options")
+            if schema_version == "1.1" and _has_cycle(edge_target_graph):
+                errors.append("diagram edge-to-edge target dependencies must not contain a cycle")
 
     outputs = spec.get("outputs", {})
     if outputs is not None and not isinstance(outputs, dict):

@@ -1,6 +1,7 @@
 interface:
   display_name: "FunFig Relations"
-  short_description: "Create labelled academic concept and relationship diagrams"
+  short_description: "Draw variable, concept, path, and mathematical model relations"
+  default_prompt: "Use $funfig-relations to draw these variables or mathematical objects and label their supplied relationships."
 
 policy:
   allow_implicit_invocation: true

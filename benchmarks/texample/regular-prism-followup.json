@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "date": "2026-09-27",
+  "baseline_case": "regular-hexagonal-prism",
+  "baseline_assessment": "expert_candidate",
+  "relationship_to_texample": "capability follow-up only; independently implemented geometry, not a source or artwork reproduction",
+  "promoted_generator": "projected_prism",
+  "stable_parameters": [
+    "sides",
+    "radius",
+    "height",
+    "origin",
+    "rotation_deg",
+    "project_x",
+    "project_y",
+    "project_z",
+    "camera_direction",
+    "visibility"
+  ],
+  "golden": "examples/golden/generative-hexagonal-prism/figure.design.json",
+  "checks": {
+    "regular_hexagonal_prism_edges": 18,
+    "hidden_dashed_hidden_edges": 5,
+    "visible_only_edges": 13,
+    "deterministic_render": "pass",
+    "compile": "pass: one-page PDF; machine checks passed"
+  },
+  "scope_limit": "Regular convex prisms under orthographic projection only; no perspective, arbitrary polyhedra, face fills, or inter-solid prism occlusion."
+}

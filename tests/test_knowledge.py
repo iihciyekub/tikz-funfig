@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-from funfig.knowledge import knowledge_root, search, status
+from funfig.knowledge import get_entry, knowledge_root, search, status
 from funfig.paths import PROJECT_ROOT
 
 
@@ -15,9 +17,9 @@ class KnowledgeTests(unittest.TestCase):
     def test_knowledge_status_has_compiled_cards_and_manual_corpus(self) -> None:
         payload = status()
         self.assertEqual(Path(payload["root"]), knowledge_root())
-        self.assertEqual(payload["cards"], 36)
+        self.assertEqual(payload["cards"], 38)
         self.assertEqual(payload["manual_chunks"], 1259)
-        self.assertEqual(payload["verification"]["compiled"], 36)
+        self.assertEqual(payload["verification"]["compiled"], 38)
         self.assertEqual(payload["verification"]["draft"], 0)
 
     def test_alias_search_prefers_verified_card_then_official_source(self) -> None:
@@ -35,6 +37,30 @@ class KnowledgeTests(unittest.TestCase):
             any(hit.kind == "manual" and hit.pages == "685-687" for hit in hits),
             [hit.__dict__ for hit in hits],
         )
+
+    def test_exact_knowledge_lookup_exposes_source_and_example_safety(self) -> None:
+        card = get_entry("commutative-diagrams")
+        self.assertEqual(card["status"], "compiled")
+        self.assertIn("commutative-diagram", card["example_ids"])
+        self.assertIn("matrix of math nodes", card["body"])
+        example = get_entry("pgf-library-petri-0003")
+        self.assertEqual(example["kind"], "example")
+        self.assertIn("packages", example)
+        self.assertIn("safety_flags", example)
+        with self.assertRaisesRegex(KeyError, "unknown knowledge ID"):
+            get_entry("not-a-real-knowledge-id")
+
+    def test_kb_show_cli_returns_one_record(self) -> None:
+        result = subprocess.run(
+            [sys.executable, "-m", "funfig", "kb", "show", "petri-net-diagrams", "--json"],
+            cwd=PROJECT_ROOT,
+            env={**os.environ, "PYTHONPATH": str(PROJECT_ROOT / "src")},
+            text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["id"], "petri-net-diagrams")
+        self.assertEqual(payload["example_ids"], ["petri-net"])
 
     def test_manual_source_manifest_matches_generated_corpus(self) -> None:
         source = json.loads(
@@ -257,8 +283,8 @@ class KnowledgeTests(unittest.TestCase):
     def test_knowledge_status_includes_recipes_and_source_examples(self) -> None:
         payload = status()
         self.assertEqual(payload["source_examples"], 4304)
-        self.assertEqual(payload["recipes"], 19)
-        self.assertEqual(payload["templates"], 13)
+        self.assertEqual(payload["recipes"], 20)
+        self.assertEqual(payload["templates"], 20)
         self.assertEqual(payload["example_verification"]["source-compiled"], 20)
 
     @unittest.skipUnless(
@@ -298,6 +324,16 @@ class KnowledgeTests(unittest.TestCase):
             )
             self.assertEqual(search_result.returncode, 0, search_result.stdout)
             self.assertIn("fit-groups", search_result.stdout)
+            show_result = subprocess.run(
+                ["bash", str(wrapper), "kb", "show", "commutative-diagrams", "--json"],
+                cwd=root,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+            self.assertEqual(show_result.returncode, 0, show_result.stdout)
+            self.assertEqual(json.loads(show_result.stdout)["status"], "compiled")
             pgfplots_search = subprocess.run(
                 ["bash", str(wrapper), "kb", "search", "boxplot prepared", "--limit", "2"],
                 cwd=root,

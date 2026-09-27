@@ -1,0 +1,29 @@
+\documentclass[border=3pt]{standalone}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\begin{document}
+\begin{tikzpicture}[>=Stealth,font=\small,line cap=round]
+  \tikzset{level/.style={line width=0.7pt},virtual/.style={line width=0.55pt,densely dashed,black!75},transition/.style={<->,line width=0.7pt}}
+
+  % Three physical levels and three nearby virtual offsets.
+  \draw[level] (-0.4,1.55) -- (0.5,1.55);
+  \draw[virtual] (-0.4,1.05) -- (0.5,1.05);
+  \node[left] at (-0.42,1.55) {$\lvert a\rangle$};
+  \node[above] at (0.05,1.05) {$\Delta_3$};
+
+  \draw[level] (1.75,4.15) -- (2.65,4.15);
+  \draw[virtual] (1.75,3.68) -- (2.65,3.68);
+  \node[above] at (2.2,4.15) {$\lvert b\rangle$};
+  \node[above] at (2.2,3.68) {$\Delta_1$};
+
+  \draw[virtual] (3.9,0.98) -- (4.8,0.98);
+  \draw[level] (3.9,0.52) -- (4.8,0.52);
+  \node[right] at (4.82,0.52) {$\lvert c\rangle$};
+  \node[below] at (4.35,0.98) {$\Delta_2$};
+
+  \draw[transition] (0.45,1.75) -- node[left=2pt] {$\omega_1$} (1.85,3.53);
+  \draw[transition] (2.58,3.55) -- node[right=2pt] {$\omega_2$} (4.1,1.1);
+  \draw[->,line width=0.65pt] (0.55,1.02) -- node[above=2pt] {$\Gamma$} (3.82,0.95);
+\end{tikzpicture}
+\end{document}

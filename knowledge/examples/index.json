@@ -9,6 +9,8 @@
     {"id":"text-label","file":"text.tex","engine":"pdflatex"},
     {"id":"relative-positioning","file":"positioning.tex","engine":"pdflatex"},
     {"id":"matrix-layout","file":"matrix.tex","engine":"pdflatex"},
+    {"id":"commutative-diagram","file":"commutative.tex","engine":"pdflatex"},
+    {"id":"petri-net","file":"petri.tex","engine":"pdflatex"},
     {"id":"chains-layout","file":"chains.tex","engine":"pdflatex"},
     {"id":"fit-group","file":"groups.tex","engine":"pdflatex"},
     {"id":"background-layer","file":"groups.tex","engine":"pdflatex"},

@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "cases": [
+    {
+      "id": "scenario-tree",
+      "family": "flowchart",
+      "expected_route": "structured",
+      "blind_required": true,
+      "reference_url": "https://texample.net/files/scenario-tree.png",
+      "acceptance": [
+        "preserve the two-stage branching topology and visible formula content",
+        "keep four branch labels clear and aligned to their branches",
+        "fit within the 178 mm double-column target"
+      ]
+    },
+    {
+      "id": "energy-level-diagram",
+      "family": "schematic",
+      "expected_route": "expert",
+      "expected_patterns": ["annotation-leaders"],
+      "blind_required": true,
+      "reference_url": "https://texample.net/files/energy-level-diagram.png",
+      "acceptance": [
+        "preserve the three levels and dashed offsets",
+        "show both bidirectional transitions and the Gamma transition",
+        "fit within the 88 mm single-column target"
+      ]
+    }
+  ]
+}

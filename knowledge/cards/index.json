@@ -261,6 +261,34 @@
       ]
     },
     {
+      "id": "commutative-diagrams",
+      "title": "Commutative diagrams with matrix anchors",
+      "file": "commutative-diagrams.md",
+      "summary": "Place mathematical objects in a matrix and label directed morphisms without inventing commutativity claims.",
+      "aliases": ["commutative diagram", "morphism diagram", "交换图", "态射图"],
+      "tags": ["mathematics", "relations", "matrix", "expert"],
+      "commands": ["\\matrix", "\\draw"],
+      "libraries": ["matrix", "arrows.meta"],
+      "sources": ["pgfmanual-3.1.11a"],
+      "pages": [319, 331],
+      "verification": "compiled",
+      "example_ids": ["commutative-diagram"]
+    },
+    {
+      "id": "petri-net-diagrams",
+      "title": "Petri-net places, transitions, and tokens",
+      "file": "petri-net-diagrams.md",
+      "summary": "Draw places, transitions, directed arcs, and supplied markings with the PGF petri library.",
+      "aliases": ["petri net", "Petri-net", "佩特里网", "库所 变迁 令牌"],
+      "tags": ["formal-model", "relations", "structured", "expert"],
+      "commands": ["\\node", "\\draw"],
+      "libraries": ["petri", "positioning"],
+      "sources": ["pgfmanual-3.1.11a"],
+      "pages": [745, 749],
+      "verification": "compiled",
+      "example_ids": ["petri-net"]
+    },
+    {
       "id": "chains-layout",
       "title": "Chains for sequential layout",
       "file": "chains-layout.md",

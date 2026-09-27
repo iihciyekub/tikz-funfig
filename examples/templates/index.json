@@ -62,6 +62,41 @@
       "path": "relations/labelled-relations"
     },
     {
+      "id": "mediation-model",
+      "family": "relation",
+      "path": "relations/mediation-model"
+    },
+    {
+      "id": "chain-mediation",
+      "family": "relation",
+      "path": "relations/chain-mediation"
+    },
+    {
+      "id": "direct-effects-model",
+      "family": "relation",
+      "path": "relations/direct-effects-model"
+    },
+    {
+      "id": "moderation-model",
+      "family": "relation",
+      "path": "relations/moderation-model"
+    },
+    {
+      "id": "multi-antecedent-mechanism",
+      "family": "framework",
+      "path": "frameworks/multi-antecedent-mechanism"
+    },
+    {
+      "id": "business-capability-performance",
+      "family": "framework",
+      "path": "frameworks/business-capability-performance"
+    },
+    {
+      "id": "theory-mechanism-outcomes",
+      "family": "framework",
+      "path": "frameworks/theory-mechanism-outcomes"
+    },
+    {
       "id": "experimental-pipeline",
       "family": "schematic",
       "path": "schematics/experimental-pipeline"

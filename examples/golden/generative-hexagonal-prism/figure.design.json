@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0",
+  "id": "generative-hexagonal-prism",
+  "task": "create",
+  "family": "schematic",
+  "render_mode": "expert",
+  "intent": "Deterministic golden example for a regular hexagonal prism under orthographic projection with automatic hidden-edge classification.",
+  "content": {
+    "must_preserve": [
+      "regular hexagonal base",
+      "parallel extrusion edges",
+      "hidden edges are view-dependent"
+    ],
+    "assumptions": [],
+    "unresolved": []
+  },
+  "references": [],
+  "appearance": {
+    "layout": "Centered projected solid",
+    "typography": "No text",
+    "theme": "journal-monochrome",
+    "profile_id": "journal-double-column",
+    "target_width_mm": 120,
+    "minimum_text_pt": 7.5
+  },
+  "knowledge_sources": [
+    "pgfmanual-3.1.11a-p0149-0149",
+    "pgfmanual-3.1.11a-p0160-0161"
+  ],
+  "routing": {
+    "features": [
+      "3d-projection",
+      "regular-prism",
+      "hidden-edges"
+    ],
+    "recipe_candidate": "scientific-schematic",
+    "unsupported_features": [
+      "view-dependent-convex-solid-edges"
+    ],
+    "decision": "expert",
+    "reason": "The figure is generated from a regular 3D prism and orthographic visibility rules rather than independent schematic nodes.",
+    "expert_patterns": [
+      "3d-coordinate-frame",
+      "hidden-edge-logic"
+    ],
+    "knowledge_queries": [
+      "3d coordinate projection",
+      "hidden edge line drawing"
+    ]
+  },
+  "review": {
+    "reference_anchors": [
+      "top regular hexagon",
+      "bottom regular hexagon",
+      "six parallel vertical edges",
+      "dashed rear edges"
+    ],
+    "repair_limit": 3
+  },
+  "structure_model": {
+    "coordinate_system": "3d",
+    "symmetry": {
+      "group": "C6",
+      "order": 6,
+      "phase_deg": 30,
+      "tolerance": 0
+    },
+    "generators": [
+      {
+        "id": "prism",
+        "type": "projected_prism",
+        "parameters": {
+          "sides": 6,
+          "radius": 2.4,
+          "height": 3.2,
+          "rotation_deg": 30,
+          "visibility": "hidden_dashed"
+        }
+      }
+    ],
+    "constraints": [
+      "top and bottom polygons are congruent regular hexagons",
+      "corresponding vertices are joined by parallel extrusion edges",
+      "edge visibility is derived from the orthographic camera direction"
+    ]
+  },
+  "visual_density": {
+    "target": "light",
+    "edge_line_width_pt": 0.28,
+    "edge_opacity": 0.5,
+    "curve_line_width_pt": 0.34,
+    "curve_opacity": 0.72
+  },
+  "delivery": {
+    "basename": "hexagonal-prism",
+    "formats": [
+      "pdf"
+    ]
+  }
+}

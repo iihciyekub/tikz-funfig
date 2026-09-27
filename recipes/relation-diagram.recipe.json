@@ -4,7 +4,7 @@
   "required":["diagram"],
   "schema_versions":["1.1"],
   "roles":["concept","module","annotation"],
-  "capabilities":["structured-nodes","labelled-edges","directed-edges","undirected-edges","curved-edges","self-loops","groups"],
+  "capabilities":["structured-nodes","labelled-edges","directed-edges","undirected-edges","curved-edges","self-loops","edge-targets","groups"],
   "status":"stable","defaults":{"edge_arrows":"none"},
   "knowledge_ids":["edge-labels-quotes","curved-edges","self-loops","nodes-anchors","arrows-meta"],
   "external_tools":["latexmk"]

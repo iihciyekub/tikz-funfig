@@ -9,11 +9,11 @@ from pathlib import Path
 
 from funfig import __version__
 from funfig.build import build_spec, clean_spec
-from funfig.cli import main as cli_main
+from funfig.cli import CORE_PRODUCT_RECIPES, main as cli_main
 from funfig.io import load_json, write_json_atomic
 from funfig.legacy import migrate_legacy_tex
 from funfig.paths import PROJECT_ROOT
-from funfig.qa import inspect_spec
+from funfig.qa import inspect_spec, mark_visual_review
 from funfig.recipes import recipe_ids
 from funfig.render import render_spec
 from funfig.schema import validate_spec
@@ -26,6 +26,7 @@ ADVANCED_GOLDEN_CASES = ("surface-plot", "contour-plot", "heatmap", "quiver-fiel
 METHOD_GOLDEN_CASES = ("implicit-function",)
 DIAGRAM_GOLDEN_CASES = (
     "flowchart-decision",
+    "flowchart-sloped-labels",
     "flowchart-feedback",
     "framework-grouped",
     "framework-layered",
@@ -36,6 +37,17 @@ DIAGRAM_GOLDEN_CASES = (
 
 
 class FunFigCoreTests(unittest.TestCase):
+    def test_product_scope_whitelist_keeps_common_paper_figures_core(self) -> None:
+        required_core = {
+            "function-plot", "data-series", "error-bar", "scatter-plot",
+            "confidence-band", "publication-threshold", "groupplot",
+            "flowchart", "framework-diagram", "relation-diagram",
+        }
+        self.assertTrue(required_core <= CORE_PRODUCT_RECIPES)
+        self.assertNotIn("surface-plot", CORE_PRODUCT_RECIPES)
+        self.assertNotIn("quiver-field", CORE_PRODUCT_RECIPES)
+        self.assertNotIn("petri-net", CORE_PRODUCT_RECIPES)
+
     def test_portable_plugin_bundle_matches_source(self) -> None:
         plugin = PROJECT_ROOT / "packages/plugin/tikz-funfig"
         manifest = load_json(plugin / "plugin.json")
@@ -167,6 +179,7 @@ class FunFigCoreTests(unittest.TestCase):
                 "flowchart",
                 "framework-diagram",
                 "relation-diagram",
+                "petri-net",
                 "scientific-schematic",
             ],
         )
@@ -595,6 +608,7 @@ class FunFigCoreTests(unittest.TestCase):
     def test_structured_diagram_goldens_match_committed_tex(self) -> None:
         required_fragments = {
             "flowchart-decision": ("diamond,aspect=2", "{yes}", "{no}"),
+            "flowchart-sloped-labels": ("above,sloped", "below,sloped", "{first path}", "{second path}"),
             "flowchart-feedback": ("bend right=38", "(check.south)", "(collect.south)"),
             "framework-grouped": ("on background layer", "fit=(x1)(x2)", "-|"),
             "framework-layered": ("fit=(input)(process)(outcome)", "fit=(core)(moderator)"),
@@ -862,6 +876,31 @@ class FunFigCoreTests(unittest.TestCase):
             self.assertEqual(first_manifest["hashes"]["tex_sha256"], second_manifest["hashes"]["tex_sha256"])
             self.assertTrue((root / ".funfig/manifest.json").exists())
 
+    @unittest.skipUnless(
+        shutil.which("latexmk") and shutil.which("pdflatex")
+        and shutil.which("pdfinfo") and shutil.which("pdftoppm"),
+        "TeX/Poppler QA toolchain unavailable",
+    )
+    def test_structured_review_history_survives_rebuild(self) -> None:
+        source = load_json(PROJECT_ROOT / "examples/golden/flowchart-decision/figure.funfig.json")
+        with tempfile.TemporaryDirectory() as temp:
+            spec_path = Path(temp) / "figure.funfig.json"
+            write_json_atomic(spec_path, source)
+            build_spec(source, spec_path)
+            inspect_spec(source, spec_path, dpi=100)
+            first = mark_visual_review(spec_path, False, "branch label needs more clearance")
+            self.assertEqual(first["repair_cycles"], 1)
+
+            build_spec(source, spec_path)
+            pending = load_json(spec_path.parent / ".funfig/manifest.json")["qa"]
+            self.assertEqual(pending["status"], "not_checked")
+            self.assertEqual(pending["repair_cycles"], 1)
+            inspect_spec(source, spec_path, dpi=100)
+            second = mark_visual_review(spec_path, True, "branch label is clear")
+            self.assertEqual(second["review_count"], 2)
+            self.assertEqual(second["repair_cycles"], 1)
+            self.assertEqual([item["result"] for item in second["review_history"]], ["failed", "passed"])
+
     @unittest.skipUnless(shutil.which("latexmk") and shutil.which("pdflatex"), "TeX toolchain unavailable")
     def test_build_keeps_stable_artifacts_and_cleans_intermediates(self) -> None:
         source_path = PROJECT_ROOT / "examples/basic-function/figure.funfig.json"
@@ -898,7 +937,7 @@ class FunFigCoreTests(unittest.TestCase):
 
     def test_curated_templates_are_complete_and_searchable(self) -> None:
         items = list_templates()
-        self.assertEqual(len(items), 13)
+        self.assertEqual(len(items), 20)
         self.assertEqual(
             {item["id"] for item in items},
             {
@@ -914,6 +953,13 @@ class FunFigCoreTests(unittest.TestCase):
                 "layered-framework",
                 "grouped-framework",
                 "labelled-relations",
+                "mediation-model",
+                "chain-mediation",
+                "direct-effects-model",
+                "moderation-model",
+                "multi-antecedent-mechanism",
+                "business-capability-performance",
+                "theory-mechanism-outcomes",
                 "experimental-pipeline",
             },
         )
@@ -941,6 +987,25 @@ class FunFigCoreTests(unittest.TestCase):
             search_templates("parallel groups converging outcome", limit=2)[0]["id"],
             "grouped-framework",
         )
+        self.assertEqual(search_templates("中介模型", limit=2)[0]["id"], "mediation-model")
+        self.assertEqual(search_templates("链式中介", limit=2)[0]["id"], "chain-mediation")
+        self.assertEqual(
+            search_templates("商学 组织能力 企业绩效", limit=2)[0]["id"],
+            "business-capability-performance",
+        )
+        self.assertEqual(
+            search_templates("多自变量 直接效应", limit=2)[0]["id"],
+            "direct-effects-model",
+        )
+        self.assertEqual(search_templates("调节效应", limit=2)[0]["id"], "moderation-model")
+        self.assertEqual(
+            search_templates("多前因 机制 结果变量", limit=2)[0]["id"],
+            "multi-antecedent-mechanism",
+        )
+        self.assertEqual(
+            search_templates("theory mechanism outcome", limit=2)[0]["id"],
+            "theory-mechanism-outcomes",
+        )
         for item in items:
             with self.subTest(template=item["id"]):
                 directory = PROJECT_ROOT / "examples/templates" / item["path"]
@@ -954,6 +1019,55 @@ class FunFigCoreTests(unittest.TestCase):
                 spec = load_json(directory / "template.funfig.json")
                 result = validate_spec(spec)
                 self.assertTrue(result.ok, result.errors)
+
+    def test_grid_auto_fit_wraps_nodes_and_expands_center_spacing(self) -> None:
+        path = PROJECT_ROOT / "examples/templates/frameworks/business-capability-performance/template.funfig.json"
+        spec = load_json(path)
+        result = validate_spec(spec, path)
+        self.assertTrue(result.ok, result.errors)
+        with tempfile.TemporaryDirectory() as temp:
+            spec_path = Path(temp) / "figure.funfig.json"
+            write_json_atomic(spec_path, spec)
+            tex_path, _ = render_spec(spec, spec_path)
+            tex = tex_path.read_text(encoding="utf-8")
+            self.assertIn("x=53.0mm", tex)
+            self.assertIn("y=19.9mm", tex)
+            self.assertIn("text width=39.1mm", tex)
+            self.assertIn(r"execute at begin node={\hyphenpenalty=10000\relax}", tex)
+            self.assertIn("{Organizational capability}", tex)
+
+    def test_relation_edge_can_target_another_edge_midpoint(self) -> None:
+        path = PROJECT_ROOT / "examples/templates/relations/moderation-model/template.funfig.json"
+        spec = load_json(path)
+        result = validate_spec(spec, path)
+        self.assertTrue(result.ok, result.errors)
+        with tempfile.TemporaryDirectory() as temp:
+            spec_path = Path(temp) / "figure.funfig.json"
+            write_json_atomic(spec_path, spec)
+            tex_path, _ = render_spec(spec, spec_path)
+            tex = tex_path.read_text(encoding="utf-8")
+            self.assertIn("coordinate[pos=0.5] (funfig_edge_main-effect_mid)", tex)
+            self.assertIn("(w) --", tex)
+            self.assertIn("(funfig_edge_main-effect_mid);", tex)
+
+        broken = json.loads(json.dumps(spec))
+        broken["diagram"]["edges"][1]["to_edge"] = "missing-edge"
+        result = validate_spec(broken)
+        self.assertFalse(result.ok)
+        self.assertTrue(any("unknown edge" in error for error in result.errors))
+
+        cyclic = json.loads(json.dumps(spec))
+        cyclic["diagram"]["edges"][0].pop("to")
+        cyclic["diagram"]["edges"][0]["to_edge"] = "moderation"
+        result = validate_spec(cyclic)
+        self.assertFalse(result.ok)
+        self.assertTrue(any("target dependencies" in error for error in result.errors))
+
+        invalid_slope = json.loads(json.dumps(spec))
+        invalid_slope["diagram"]["edges"][0]["label_sloped"] = "yes"
+        result = validate_spec(invalid_slope)
+        self.assertFalse(result.ok)
+        self.assertTrue(any("label_sloped must be a boolean" in error for error in result.errors))
 
     @unittest.skipUnless(
         shutil.which("latexmk") and shutil.which("pdflatex"),
@@ -1010,12 +1124,37 @@ class FunFigCoreTests(unittest.TestCase):
             self.assertGreater(projection["height_mm"], 0)
             self.assertGreater(projection["scale"], 0)
             self.assertLessEqual(projection["scale"], 1.0)
+            self.assertEqual(qa["size_check"]["target_source"], "profile:journal-double-column")
+            self.assertEqual(qa["size_check"]["target_width_mm"], 178.0)
             manifest = load_json(work_dir / ".funfig/manifest.json")
             self.assertEqual(manifest["qa"]["text_metrics"], qa["text_metrics"])
             self.assertEqual(
                 manifest["qa"]["publication_projection"],
                 qa["publication_projection"],
             )
+
+    @unittest.skipUnless(
+        shutil.which("latexmk")
+        and shutil.which("pdflatex")
+        and shutil.which("pdfinfo")
+        and shutil.which("pdftoppm")
+        and shutil.which("pdftotext"),
+        "TeX/Poppler QA toolchain unavailable",
+    )
+    def test_plot_inspect_uses_canvas_width_for_publication_size_check(self) -> None:
+        source_dir = PROJECT_ROOT / "examples/basic-function"
+        with tempfile.TemporaryDirectory() as temp:
+            work_dir = Path(temp) / "basic-function"
+            shutil.copytree(source_dir, work_dir, ignore=shutil.ignore_patterns("*.pdf", ".funfig", "*.tex"))
+            spec_path = work_dir / "figure.funfig.json"
+            spec = load_json(spec_path)
+            build_spec(spec, spec_path)
+            qa = inspect_spec(spec, spec_path, dpi=120)
+            self.assertEqual(qa["size_check"]["target_source"], "canvas.width")
+            self.assertAlmostEqual(qa["size_check"]["target_width_mm"], 100.0, places=1)
+            self.assertEqual(qa["size_check"]["minimum_text_pt"], 7.5)
+            self.assertIsNotNone(qa["publication_projection"])
+            self.assertGreater(qa["size_check"]["natural_width_mm"], 0)
 
     @unittest.skipUnless(
         shutil.which("latexmk")

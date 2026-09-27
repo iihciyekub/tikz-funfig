@@ -5,8 +5,8 @@ import re
 from pathlib import Path
 from typing import Any
 
-from .io import write_text_atomic
-from .manifest import sha256_file, utc_now, write_manifest
+from .io import load_json, write_text_atomic
+from .manifest import manifest_path, sha256_file, utc_now, write_manifest
 from .recipes import load_recipe
 from .schema import validate_spec
 from .theme import load_profile, load_theme
@@ -1092,13 +1092,135 @@ def _endpoint(node_id: str, anchor: str | None) -> str:
     return f"({node_id}.{anchor})" if anchor and anchor != "center" else f"({node_id})"
 
 
+def _edge_midpoint_name(edge_id: str) -> str:
+    safe = re.sub(r"[^A-Za-z0-9_-]", "_", edge_id)
+    return f"funfig_edge_{safe}_mid"
+
+
+def _ordered_structured_edges(edges: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    edge_ids = {edge.get("id") for edge in edges if edge.get("id")}
+    pending = list(edges)
+    emitted: list[dict[str, Any]] = []
+    emitted_ids: set[str] = set()
+    while pending:
+        progress = False
+        for edge in list(pending):
+            dependency = edge.get("to_edge")
+            if not dependency or dependency not in edge_ids or dependency in emitted_ids:
+                emitted.append(edge)
+                if edge.get("id"):
+                    emitted_ids.add(edge["id"])
+                pending.remove(edge)
+                progress = True
+        if not progress:
+            raise ValueError("cannot order diagram edge-to-edge target dependencies")
+    return emitted
+
+
 def _edge_label(edge: dict[str, Any]) -> str:
     if not edge.get("label"):
         return ""
     position = _fmt(edge.get("label_position", 0.5))
     side = edge.get("label_side", "above")
     text = _diagram_text(edge.get("label"), edge.get("label_format"))
-    return f" node[pos={position},{side},fill=white,inner sep=1.2pt] {{{text}}}"
+    slope = ",sloped" if edge.get("label_sloped") else ""
+    return f" node[pos={position},{side}{slope},fill=white,inner sep=1.2pt] {{{text}}}"
+
+
+_TEX_LENGTH_RE = re.compile(r"^\s*(\d+(?:\.\d+)?)(pt|mm|cm|in|em|ex)\s*$")
+
+
+def _length_mm(value: str | None, default: float = 0.0) -> float:
+    if not value:
+        return default
+    match = _TEX_LENGTH_RE.match(str(value))
+    if not match:
+        return default
+    number = float(match.group(1))
+    unit = match.group(2)
+    factors = {
+        "mm": 1.0,
+        "cm": 10.0,
+        "in": 25.4,
+        "pt": 25.4 / 72.27,
+        "em": 3.2,
+        "ex": 1.6,
+    }
+    return number * factors[unit]
+
+
+def _label_visual_em(label: str, label_format: str | None = None) -> float:
+    text = str(label or "")
+    if label_format == "tex":
+        text = re.sub(r"\\[A-Za-z]+\*?", "", text)
+        text = re.sub(r"[{}$]", "", text)
+    total = 0.0
+    for char in text:
+        code = ord(char)
+        if char.isspace():
+            total += 0.32
+        elif code > 0x2E7F:
+            total += 1.0
+        elif char.isupper():
+            total += 0.68
+        elif char.islower():
+            total += 0.53
+        elif char.isdigit():
+            total += 0.56
+        else:
+            total += 0.38
+    return max(total, 1.0)
+
+
+def _adaptive_grid_metrics(
+    diagram: dict[str, Any], profile: dict[str, Any], layout: dict[str, Any]
+) -> tuple[str, str, str | None]:
+    """Choose conservative paper-width grid spacing and a shared node text width.
+
+    This intentionally remains a small deterministic heuristic. Explicit row/
+    column gaps and per-node text widths always win over these defaults.
+    """
+    if not layout.get("auto_fit") or layout.get("type") != "grid":
+        return (
+            layout.get("row_gap") or profile.get("default_row_gap", "13mm"),
+            layout.get("column_gap") or profile.get("default_column_gap", "18mm"),
+            None,
+        )
+
+    nodes = [node for node in diagram.get("nodes", []) if isinstance(node, dict)]
+    grid_nodes = [
+        node for node in nodes
+        if isinstance(node.get("position"), dict) and node["position"].get("type") == "grid"
+    ]
+    columns = max((int(node["position"]["column"]) for node in grid_nodes), default=0) + 1
+    columns = max(columns, 1)
+    target_width = float(profile.get("target_width_mm", 178.0))
+    outer_budget = 10.0 if target_width >= 120 else 6.0
+    clearance = 9.0 if target_width >= 120 else 6.0
+    box_width = (target_width - outer_budget - clearance * (columns - 1)) / columns
+    box_width = max(21.0, min(44.0, box_width))
+    inner_x = _length_mm(profile.get("node_inner_xsep", "6pt"), 2.2)
+    text_width = max(15.0, box_width - 2.0 * inner_x)
+
+    max_lines = 1
+    line_capacity_em = max(text_width / 3.0, 5.0)
+    for node in grid_nodes:
+        if node.get("text_width"):
+            continue
+        visual_em = _label_visual_em(node.get("label", ""), node.get("label_format"))
+        estimated_lines = max(1, min(4, math.ceil(visual_em / line_capacity_em)))
+        max_lines = max(max_lines, estimated_lines)
+
+    min_height = _length_mm(profile.get("node_min_height", "8mm"), 8.0)
+    estimated_height = min_height + (max_lines - 1) * 3.9
+    auto_row = max(
+        _length_mm(profile.get("default_row_gap", "13mm"), 13.0),
+        estimated_height + 7.0,
+    )
+    auto_column = box_width + clearance
+    row_gap = layout.get("row_gap") or f"{auto_row:.1f}mm"
+    column_gap = layout.get("column_gap") or f"{auto_column:.1f}mm"
+    return row_gap, column_gap, f"{text_width:.1f}mm"
 
 
 def _render_diagram_structured(spec: dict[str, Any]) -> str:
@@ -1127,9 +1249,9 @@ def _render_diagram_structured(spec: dict[str, Any]) -> str:
     lines.extend(["\\begin{document}"])
 
     picture_options = [f"font={profile_font}", ">=Stealth"]
+    adaptive_text_width: str | None = None
     if layout.get("type") == "grid":
-        row_gap = layout.get("row_gap") or profile.get("default_row_gap", "13mm")
-        column_gap = layout.get("column_gap") or profile.get("default_column_gap", "18mm")
+        row_gap, column_gap, adaptive_text_width = _adaptive_grid_metrics(diagram, profile, layout)
         picture_options.extend([f"x={column_gap}", f"y={row_gap}"])
     lines.append(f"\\begin{{tikzpicture}}[{','.join(picture_options)}]")
 
@@ -1146,6 +1268,9 @@ def _render_diagram_structured(spec: dict[str, Any]) -> str:
             options.append(f"minimum width={node['min_width']}")
         if node.get("text_width"):
             options.append(f"text width={node['text_width']}")
+        elif adaptive_text_width and (node.get("position") or {}).get("type") == "grid":
+            options.append(f"text width={adaptive_text_width}")
+            options.append(r"execute at begin node={\hyphenpenalty=10000\relax}")
         position = node.get("position") or {}
         position_type = position.get("type")
         placement = ""
@@ -1179,7 +1304,8 @@ def _render_diagram_structured(spec: dict[str, Any]) -> str:
             lines.append(f"\\node[{','.join(options)}] ({group['id']}) {{}};")
         lines.append("\\end{scope}")
 
-    for edge in diagram.get("edges", []):
+    targeted_edge_ids = {edge.get("to_edge") for edge in diagram.get("edges", []) if edge.get("to_edge")}
+    for edge in _ordered_structured_edges(list(diagram.get("edges", []))):
         appearance = {
             "draw": tokens.get("edge_color", "black!70"),
             "line_width": tokens.get("line_width", "0.6pt"),
@@ -1187,19 +1313,28 @@ def _render_diagram_structured(spec: dict[str, Any]) -> str:
         }
         options = [_edge_arrow(edge, recipe)] + _appearance_options(appearance)
         source = _endpoint(edge["from"], edge.get("from_anchor"))
-        target = _endpoint(edge["to"], edge.get("to_anchor"))
+        target = (
+            f"({_edge_midpoint_name(edge['to_edge'])})"
+            if edge.get("to_edge")
+            else _endpoint(edge["to"], edge.get("to_anchor"))
+        )
         label = _edge_label(edge)
+        midpoint = (
+            f" coordinate[pos=0.5] ({_edge_midpoint_name(edge['id'])})"
+            if edge.get("id") in targeted_edge_ids
+            else ""
+        )
         route = edge.get("route", "straight")
         routing = edge.get("routing") or {}
         if route == "straight":
-            lines.append(f"\\draw[{','.join(options)}] {source} --{label} {target};")
+            lines.append(f"\\draw[{','.join(options)}] {source} --{label}{midpoint} {target};")
         elif route == "orthogonal":
             operator = "-|" if routing.get("order", "horizontal-first") == "horizontal-first" else "|-"
-            lines.append(f"\\draw[{','.join(options)}] {source} {operator}{label} {target};")
+            lines.append(f"\\draw[{','.join(options)}] {source} {operator}{label}{midpoint} {target};")
         elif route == "curve":
             bend = float(routing.get("bend", 25))
             curve = f"bend left={_fmt(abs(bend))}" if bend >= 0 else f"bend right={_fmt(abs(bend))}"
-            lines.append(f"\\draw[{','.join(options)}] {source} to[{curve}]{label} {target};")
+            lines.append(f"\\draw[{','.join(options)}] {source} to[{curve}]{label}{midpoint} {target};")
         else:
             side = routing.get("side", "above")
             lines.append(f"\\draw[{','.join(options)}] {source} to[loop {side}]{label} {target};")
@@ -1212,6 +1347,69 @@ def render_diagram(spec: dict[str, Any]) -> str:
     if spec.get("schema_version") == "1.1":
         return _render_diagram_structured(spec)
     return _render_diagram_legacy(spec)
+
+
+def render_petri(spec: dict[str, Any]) -> str:
+    net = spec["petri"]
+    theme, profile = _structured_theme_profile(spec)
+    colors = theme.get("tokens", {})
+    font = profile.get("font", "\\small")
+    border = (spec.get("canvas") or {}).get("border", "2pt")
+    labels = [str(node["label"]) for family in ("places", "transitions") for node in net[family]]
+    lines = [
+        f"\\documentclass[border={border}]{{standalone}}",
+        "\\usepackage[dvipsnames,svgnames,x11names]{xcolor}",
+        "\\usepackage{tikz}",
+    ]
+    if any(any(ord(char) > 127 for char in label) for label in labels):
+        lines.append("\\usepackage[UTF8]{ctex}")
+    lines += [
+        "\\usetikzlibrary{petri,positioning,arrows.meta}",
+        "\\begin{document}",
+        f"\\begin{{tikzpicture}}[x=1cm,y=1cm,>=Stealth,font={font}]",
+    ]
+    for place in net["places"]:
+        position = place["position"]
+        marking = f"tokens={place['tokens']}" if place["tokens"] < 10 else ""
+        options = [
+            "place", "minimum size=9mm", "line width=0.6pt",
+            f"draw={colors.get('node_draw', 'black')}",
+            f"fill={colors.get('node_fill', 'white')}",
+        ]
+        if marking:
+            options.append(marking)
+        contents = "{}" if marking or place["tokens"] == 0 else "{\\scriptsize " + str(place["tokens"]) + "}"
+        lines.append(
+            f"\\node[{','.join(options)}] ({place['id']}) at ({_fmt(position['x'])},{_fmt(position['y'])}) {contents};"
+        )
+        if place["label"]:
+            label = _diagram_text(place["label"], place.get("label_format"))
+            lines.append(f"\\node[above=2pt of {place['id']},inner sep=0pt] {{{label}}};")
+    for transition in net["transitions"]:
+        position = transition["position"]
+        options = [
+            "transition", "minimum width=2.5mm", "minimum height=8mm",
+            "line width=0.6pt", f"draw={colors.get('node_draw', 'black')}",
+            f"fill={colors.get('node_draw', 'black')}",
+        ]
+        lines.append(
+            f"\\node[{','.join(options)}] ({transition['id']}) at ({_fmt(position['x'])},{_fmt(position['y'])}) {{}};"
+        )
+        if transition["label"]:
+            label = _diagram_text(transition["label"], transition.get("label_format"))
+            lines.append(f"\\node[below=2pt of {transition['id']},inner sep=0pt] {{{label}}};")
+    for arc in net["arcs"]:
+        label = "" if arc["weight"] == 1 else f" node[midway,above,fill=white,inner sep=1pt] {{{arc['weight']}}}"
+        bend = arc.get("bend", 0)
+        source, target = arc["from"], arc["to"]
+        if bend:
+            side = "left" if bend > 0 else "right"
+            path = f"({source}) to[bend {side}={_fmt(abs(bend))}]{label} ({target})"
+        else:
+            path = f"({source}) --{label} ({target})"
+        lines.append(f"\\draw[->,line width=0.6pt] {path};")
+    lines += ["\\end{tikzpicture}", "\\end{document}", ""]
+    return "\n".join(lines)
 
 
 def output_formats_for_spec(spec: dict[str, Any]) -> list[str]:
@@ -1248,6 +1446,8 @@ def render_spec(spec: dict[str, Any], spec_path: Path) -> tuple[Path, dict[str, 
         text = render_groupplot(spec)
     elif renderer == "diagram":
         text = render_diagram(spec)
+    elif renderer == "petri":
+        text = render_petri(spec)
     else:
         raise ValueError(f"unsupported renderer: {renderer}")
 
@@ -1257,6 +1457,14 @@ def render_spec(spec: dict[str, Any], spec_path: Path) -> tuple[Path, dict[str, 
     tex_path = figure_dir / f"{basename}.tex"
     write_text_atomic(tex_path, text)
 
+    previous_path = manifest_path(figure_dir)
+    previous = load_json(previous_path) if previous_path.is_file() else {}
+    same_figure = (
+        previous.get("figure_id") == spec["id"]
+        and (previous.get("artifacts") or {}).get("spec") == spec_path.name
+    )
+    review_history = list((previous.get("qa") or {}).get("review_history") or []) if same_figure else []
+
     manifest = {
         "manifest_version": "1.0",
         "figure_id": spec["id"],
@@ -1265,7 +1473,12 @@ def render_spec(spec: dict[str, Any], spec_path: Path) -> tuple[Path, dict[str, 
         "recipe": {"id": recipe["id"], "version": recipe["version"]},
         "renderer": renderer,
         "status": "rendered",
-        "qa": {"status": "not_checked"},
+        "qa": {
+            "status": "not_checked",
+            "review_history": review_history,
+            "review_count": len(review_history),
+            "repair_cycles": sum(1 for item in review_history if item.get("result") == "failed"),
+        },
         "updated_at": utc_now(),
         "dependencies": dependencies_for_spec(spec),
         "artifacts": {

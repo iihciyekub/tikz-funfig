@@ -1,6 +1,6 @@
 # TIKZ-FunFig
 
-TIKZ-FunFig is a schema-driven figure generation system for reproducible TikZ and PGFPlots figures.
+TIKZ-FunFig is a schema-driven academic figure system for reproducible TikZ and PGFPlots figures.
 
 TIKZ-FunFig is a multi-Skill academic-figure Plugin with
 FigureSpec 1.1 structured diagrams, searchable PGF/TikZ knowledge, Publication
@@ -15,6 +15,28 @@ The repository has three roles:
 3. **Provenance source tree** — pinned official/community material lives under `sources/`; legacy project material remains under `references/`. Neither is a Plugin runtime dependency.
 
 The repository is the source of truth. Workspace/system Skills and the portable Codex/OpenAI Plugin are installation targets generated or synchronized from this project; they should not become independent forks.
+
+## Product scope
+
+The core product is intentionally focused on common academic-paper figures:
+
+- social-science and business research frameworks, conceptual/path models, and labelled variable relationships;
+- mathematical model/relationship diagrams where the user supplies the semantics;
+- 2D function and data plots, including scatter, uncertainty/error bars, thresholds/regimes, and ordinary multi-panel comparisons;
+- flowcharts for research procedures, decisions, branches, merges, and analysis workflows;
+- basic explanatory academic schematics when the existing structured vocabulary fits.
+
+The project prioritizes publication readability, editable source, faithful meaning,
+and visual QA inside this boundary. Existing Expert/generative code for dense
+graphs, fractals, tilings, and projected 3D geometry remains available for
+backward compatibility or an explicit specialist request, but it is a long-tail
+capability rather than the default product direction. It should not drive new
+feature expansion. See the [scope boundary](packages/skill/references/scope-boundary.md).
+
+TIKZ-FunFig is not an electrical/mechanical CAD or EDA system, simulation engine,
+general 3D modeller, animation tool, GIS/cartography system, or statistical/
+mathematical inference engine. It visualizes supplied research content; it does
+not invent or validate domain claims outside the drawing contract.
 
 ## Stable figure contract
 
@@ -50,6 +72,28 @@ photos, or style/type references without naming an internal Skill or Recipe.
 The agent performs this routing; Skills are not a separate execution engine.
 See the [Skill design contract](packages/skill/references/design-contract.md).
 
+Complex/reference-led work uses an explicit
+[routing contract](packages/skill/references/routing.md) to choose Structured vs
+Expert without distorting the requested semantics. Expert figures are planned from
+reusable [Expert patterns](packages/skill/references/expert-patterns.md), then pass
+a defect-led visual repair loop rather than treating compilation as success. The
+blind [reference reproduction benchmark](benchmarks/reference-reproduction/README.md)
+tracks route choice, pattern composition, repair cycles, and final QA.
+The [TeXample capability audit](benchmarks/texample/README.md) records 30
+cross-category source reviews and identifies gaps that still need redraw tests.
+
+The runtime also retains a bounded generative Expert subsystem developed during
+capability research. Treat it as long-tail/experimental rather than as the main
+product surface. Existing managed figures continue to build, but new work should
+stay inside the core academic-paper families unless the user explicitly requests
+the specialist geometry.
+
+To explore before drawing, ask “TIKZ-FunFig 能画哪些图？” or invoke
+`$tikz-funfig` and ask for its capability menu. The
+[capability menu](packages/skill/references/capability-menu.md) lists plot and
+diagram families, example requests, and optional explicit Skill names. A concrete
+request can go straight to drawing; users do not need to choose a Skill first.
+
 New Skill-managed figures include `figure.design.json`, checked against
 `schemas/figure-design.schema.json`; existing CLI-only figures remain compatible.
 Structured figures retain FigureSpec as the rendering source. Sourced Expert
@@ -63,6 +107,7 @@ No third-party Python dependency is required for the v0.1 core.
 PYTHONPATH=src python3 -m funfig recipes
 PYTHONPATH=src python3 -m funfig capabilities
 PYTHONPATH=src python3 -m funfig kb search "relative positioning"
+PYTHONPATH=src python3 -m funfig kb show commutative-diagrams --json
 PYTHONPATH=src python3 -m funfig templates list
 PYTHONPATH=src python3 -m funfig templates search "research framework"
 PYTHONPATH=src python3 -m funfig templates inspect layered-framework
@@ -73,6 +118,10 @@ PYTHONPATH=src python3 -m funfig validate-design examples/golden/flowchart-decis
 PYTHONPATH=src python3 -m funfig render examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig build examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig inspect examples/basic-function/figure.funfig.json
+PYTHONPATH=src python3 -m funfig generative-render path/to/figure.design.json
+PYTHONPATH=src python3 -m funfig generative-build path/to/figure.design.json
+PYTHONPATH=src python3 -m funfig generative-variants path/to/figure.design.json --limit 9
+PYTHONPATH=src python3 -m funfig generative-hypotheses path/to/figure.design.json path/to/reference.png --limit 9
 PYTHONPATH=src python3 -m funfig clean examples/basic-function/figure.funfig.json
 PYTHONPATH=src python3 -m funfig migrate-legacy path/to/legacy.tex path/to/new-figure
 PYTHONPATH=src python3 -m funfig init --id fig1 --recipe publication-threshold
@@ -132,6 +181,10 @@ confidence-band, and groupplot family. Golden examples for all four live under
 See `docs/recipes/advanced-plots.md` for the structured surface, contour,
 heatmap, and quiver family. Contour generation uses the managed gnuplot path;
 the other three remain pure PGFPlots/TeX.
+
+See `docs/recipes/petri-net.md` for marked place/transition diagrams with
+validated bipartite directed arcs and weights. Dynamic net properties require
+separate analysis.
 
 ## Portable Plugin
 

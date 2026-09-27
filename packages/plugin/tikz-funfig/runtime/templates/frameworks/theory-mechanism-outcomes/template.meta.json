@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "theory-mechanism-outcomes",
+  "family": "framework",
+  "title": "Theory, mechanisms, and outcomes framework",
+  "description": "General three-stage academic framework for theoretical/contextual drivers, mechanisms, and multiple outcomes.",
+  "recipe_hint": "framework-diagram",
+  "tags": ["theory mechanism outcome", "conceptual model", "social science", "framework", "理论框架", "机制模型", "结果", "研究模型"],
+  "supported_profiles": ["journal-double-column"],
+  "supported_themes": ["journal-monochrome", "journal-muted", "journal-accessible"],
+  "design_fit": {
+    "best_for": ["theory-to-mechanism frameworks", "context-mechanism-outcome models", "multi-outcome conceptual frameworks"],
+    "node_range": [5, 10],
+    "label_density": "medium-high",
+    "recommended_width_mm": [125, 178],
+    "adaptation_notes": ["Preserve a left-to-right explanatory hierarchy.", "Use within-stage links only when the user explicitly supplies them."],
+    "failure_modes": ["stages look like temporal process when they are conceptual", "within-stage relation crosses stage arrows", "long theory labels crowd group titles"]
+  },
+  "requires": {"packages": ["tikz"], "libraries": ["arrows.meta", "backgrounds", "fit"]},
+  "edit_contract": {
+    "editable": ["driver/context labels", "mechanism labels", "outcome labels", "stage labels", "relationships", "theme/profile"],
+    "structural_limits": {"stages": [3, 4], "constructs": [5, 12]},
+    "locked": ["stage order is a visual explanation supplied by the user", "the framework does not establish empirical mechanism effects"]
+  }
+}

@@ -30,7 +30,7 @@
       "source_dir": "packages/skills/funfig-relations",
       "phase": "v1",
       "recipe_ids": ["relation-diagram"],
-      "capability_ids": ["structured-nodes", "labelled-edges", "directed-edges", "undirected-edges", "curved-edges", "self-loops", "groups"],
+      "capability_ids": ["structured-nodes", "labelled-edges", "directed-edges", "undirected-edges", "curved-edges", "self-loops", "edge-targets", "groups"],
       "knowledge_tags": ["relations", "edges", "labels", "routing"]
     },
     {

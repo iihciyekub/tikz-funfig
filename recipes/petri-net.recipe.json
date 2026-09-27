@@ -1,0 +1,7 @@
+{
+  "id":"petri-net","version":"1.0","kind":"tikz","renderer":"petri",
+  "description":"Marked place/transition Petri net with directed weighted arcs.",
+  "required":["petri"],"schema_versions":["1.1"],"status":"stable",
+  "capabilities":["bipartite-arcs","initial-marking","arc-weights","manual-layout"],
+  "knowledge_ids":["petri-net-diagrams"],"external_tools":["latexmk"]
+}

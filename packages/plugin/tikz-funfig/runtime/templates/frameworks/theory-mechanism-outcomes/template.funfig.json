@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.1",
+  "id": "template-theory-mechanism-outcomes",
+  "recipe": "framework-diagram",
+  "kind": "tikz",
+  "theme": {"id": "journal-monochrome"},
+  "profile": {"id": "journal-double-column"},
+  "diagram": {
+    "layout": {"type": "grid", "auto_fit": true},
+    "nodes": [
+      {"id": "t1", "label": "Theoretical driver", "role": "concept", "position": {"type": "grid", "row": 0, "column": 0}},
+      {"id": "t2", "label": "Contextual condition", "role": "concept", "position": {"type": "grid", "row": 1, "column": 0}},
+      {"id": "m1", "label": "Mechanism A", "role": "module", "position": {"type": "grid", "row": 0, "column": 1}},
+      {"id": "m2", "label": "Mechanism B", "role": "module", "position": {"type": "grid", "row": 1, "column": 1}},
+      {"id": "o1", "label": "Primary outcome", "role": "module", "position": {"type": "grid", "row": 0, "column": 2}},
+      {"id": "o2", "label": "Secondary outcome", "role": "module", "position": {"type": "grid", "row": 1, "column": 2}}
+    ],
+    "edges": [
+      {"id": "e1", "from": "t1", "to": "m1"},
+      {"id": "e2", "from": "t2", "to": "m2"},
+      {"id": "e3", "from": "m1", "to": "o1"},
+      {"id": "e4", "from": "m2", "to": "o2"},
+      {"id": "e5", "from": "m1", "to": "m2", "route": "curve", "routing": {"bend": 18}, "label": "interaction", "label_side": "right"}
+    ],
+    "groups": [
+      {"id": "drivers", "members": ["t1", "t2"], "label": "Theory & context"},
+      {"id": "mechanisms", "members": ["m1", "m2"], "label": "Mechanisms"},
+      {"id": "outcomes", "members": ["o1", "o2"], "label": "Outcomes"}
+    ]
+  },
+  "outputs": {"basename": "theory-mechanism-outcomes", "keep_build": false},
+  "metadata": {"template": true, "template_id": "theory-mechanism-outcomes"}
+}

@@ -9,10 +9,17 @@ from typing import Any
 
 from .build import BuildError, build_spec, clean_spec, doctor
 from .design import validate_design
-from .expert import ExpertBuildError, build_expert, mark_expert_visual_review
+from .expert import ExpertBuildError, build_expert, inspect_expert_dependencies, mark_expert_visual_review
+from .generative import (
+    GenerativeError,
+    build_generative_design,
+    build_generative_variants,
+    compare_topology_hypotheses,
+    render_generative_design,
+)
 from .io import load_json, write_json_atomic
 from .legacy import migrate_legacy_tex
-from .knowledge import search as search_knowledge, status as knowledge_status
+from .knowledge import get_entry as get_knowledge_entry, search as search_knowledge, status as knowledge_status
 from .qa import QAError, inspect_spec, mark_visual_review
 from .recipes import list_recipes, load_recipe
 from .render import render_spec
@@ -35,6 +42,29 @@ PUBLICATION_OFFSET_RECIPES = {
 }
 DEFAULT_PUBLICATION_AXIS_SHIFT = "6.5pt"
 STRUCTURED_DIAGRAM_RECIPES = {
+    "flowchart",
+    "framework-diagram",
+    "relation-diagram",
+    "scientific-schematic",
+    "petri-net",
+}
+
+# Product scope is deliberately narrower than technical runtime coverage. New
+# recipes default to long-tail until they are explicitly promoted here.
+CORE_PRODUCT_RECIPES = {
+    "implicit-function",
+    "function-plot",
+    "data-series",
+    "error-bar",
+    "scatter-plot",
+    "confidence-band",
+    "contour-plot",
+    "heatmap",
+    "threshold-region",
+    "intersection-curves",
+    "publication-threshold",
+    "groupplot",
+    "mechanism-diagram",
     "flowchart",
     "framework-diagram",
     "relation-diagram",
@@ -343,6 +373,20 @@ def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
                 {"id": "a", "title": "(a)", "series": ["main"]},
                 {"id": "b", "title": "(b)", "series": ["main"]},
             ]
+    elif recipe_id == "petri-net":
+        base["petri"] = {
+            "places": [
+                {"id": "ready", "label": "Ready", "position": {"x": 0, "y": 0}, "tokens": 1},
+                {"id": "done", "label": "Done", "position": {"x": 4, "y": 0}, "tokens": 0},
+            ],
+            "transitions": [
+                {"id": "run", "label": "Run", "position": {"x": 2, "y": 0}},
+            ],
+            "arcs": [
+                {"from": "ready", "to": "run", "weight": 1},
+                {"from": "run", "to": "done", "weight": 1},
+            ],
+        }
     elif recipe_id == "flowchart":
         base["diagram"] = {
             "layout": {"type": "relative"},
@@ -438,6 +482,30 @@ def cmd_kb_search(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_kb_show(args: argparse.Namespace) -> int:
+    try:
+        entry = get_knowledge_entry(args.id)
+    except KeyError as exc:
+        print(str(exc.args[0]), file=sys.stderr)
+        return 1
+    if args.json:
+        print(json.dumps(entry, indent=2, ensure_ascii=False))
+        return 0
+    print(f"{entry['kind']} {entry['id']} [{entry['status']}]")
+    print(entry["title"])
+    if entry.get("source"):
+        print(f"source: {entry['source']}")
+    if entry.get("pages"):
+        print(f"location: {entry['pages']}")
+    for field in ("packages", "libraries", "engine", "compile_status", "safety_flags", "skip_reason", "example_ids"):
+        value = entry.get(field)
+        if value:
+            print(f"{field}: {', '.join(value) if isinstance(value, list) else value}")
+    if entry.get("body"):
+        print("\n" + entry["body"].strip())
+    return 0
+
+
 def cmd_kb_status(args: argparse.Namespace) -> int:
     payload = knowledge_status()
     if args.json:
@@ -495,6 +563,7 @@ def cmd_capabilities(args: argparse.Namespace) -> int:
             "id": recipe["id"],
             "kind": recipe["kind"],
             "status": recipe.get("status", "stable"),
+            "product_scope": "core" if recipe["id"] in CORE_PRODUCT_RECIPES else "long_tail",
             "capabilities": recipe.get("capabilities", []),
             "knowledge_ids": recipe.get("knowledge_ids", []),
         }
@@ -505,7 +574,7 @@ def cmd_capabilities(args: argparse.Namespace) -> int:
     else:
         for item in payload:
             print(
-                f"{item['id']:<24} {item['status']:<10} "
+                f"{item['id']:<24} {item['status']:<10} {item['product_scope']:<10} "
                 + ",".join(item["capabilities"])
             )
     return 0
@@ -565,10 +634,68 @@ def cmd_expert_build(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_expert_deps(args: argparse.Namespace) -> int:
+    dependencies = inspect_expert_dependencies(args.tex)
+    if args.json:
+        print(json.dumps(dependencies, ensure_ascii=False, indent=2))
+    else:
+        document_class = dependencies.get("document_class")
+        if document_class:
+            status = "ok" if document_class["available"] else "missing"
+            print(f"class {document_class['name']}: {status} ({document_class['file']})")
+        for package in dependencies["packages"]:
+            status = "ok" if package["available"] else "missing"
+            print(f"package {package['name']}: {status} ({package['file']})")
+        if not document_class and not dependencies["packages"]:
+            print("no explicit TeX class/package dependencies found")
+    return 0 if dependencies["ok"] else 1
+
+
 def cmd_expert_qa(args: argparse.Namespace) -> int:
     qa = mark_expert_visual_review(args.tex, args.result == "pass", args.note or "")
     print(f"expert qa: {qa['status']}")
     return 0 if qa["status"] == "passed" else 1
+
+
+def cmd_generative_render(args: argparse.Namespace) -> int:
+    tex, metadata = render_generative_design(args.design, output=args.output)
+    print(f"tex: {tex}")
+    print(
+        "generation: "
+        f"nodes={metadata['node_count']} edges={metadata['edge_count']} "
+        f"generators={','.join(metadata['generator_types'])}"
+    )
+    return 0
+
+
+def cmd_generative_build(args: argparse.Namespace) -> int:
+    pdf, manifest, metadata = build_generative_design(args.design, engine=args.engine)
+    print(f"pdf: {pdf}")
+    print(f"manifest: {manifest}")
+    print(
+        "generation: "
+        f"nodes={metadata['node_count']} edges={metadata['edge_count']} "
+        f"line={metadata['resolved_density']['edge_line_width_pt']:.3f}pt "
+        f"opacity={metadata['resolved_density']['edge_opacity']:.3f}"
+    )
+    print("visual QA is still required before treating the generative figure as complete")
+    return 0
+
+
+def cmd_generative_variants(args: argparse.Namespace) -> int:
+    preview, report = build_generative_variants(args.design, limit=args.limit, engine=args.engine)
+    print(f"contact sheet: {preview}")
+    print(f"variant report: {report}")
+    print("choose a visually superior variant, transfer its parameter values to the main design, rebuild, and review")
+    return 0
+
+
+def cmd_generative_hypotheses(args: argparse.Namespace) -> int:
+    preview, report = compare_topology_hypotheses(args.design, args.reference, limit=args.limit, engine=args.engine)
+    print(f"ranked contact sheet: {preview}")
+    print(f"hypothesis report: {report}")
+    print("inspect the highest-ranked candidate against the reference before adopting its topology")
+    return 0
 
 
 def cmd_validate(args: argparse.Namespace) -> int:
@@ -668,6 +795,10 @@ def build_parser() -> argparse.ArgumentParser:
     q.add_argument("--limit", type=int, default=8)
     q.add_argument("--json", action="store_true")
     q.set_defaults(func=cmd_kb_search)
+    q = kb.add_parser("show", help="show one exact knowledge record with provenance and verification")
+    q.add_argument("id")
+    q.add_argument("--json", action="store_true")
+    q.set_defaults(func=cmd_kb_show)
     q = kb.add_parser("status", help="show knowledge index coverage")
     q.add_argument("--json", action="store_true")
     q.set_defaults(func=cmd_kb_status)
@@ -728,16 +859,44 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("expert-build", help="compile a sourced raw TikZ figure outside the stable FigureSpec capability set")
     p.add_argument("tex")
-    p.add_argument("--source", action="append", required=True, help="official/manual source ID; repeat as needed")
+    p.add_argument("--source", action="append", default=[], help="official/manual source ID; repeat as needed")
     p.add_argument("--card", action="append", default=[], help="knowledge card ID used; repeat as needed")
     p.add_argument("--engine", choices=("auto", "pdflatex", "xelatex", "lualatex"), default="auto")
     p.set_defaults(func=cmd_expert_build)
+
+    p = sub.add_parser("expert-deps", help="preflight document-class and package dependencies for Expert TikZ source")
+    p.add_argument("tex")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_expert_deps)
 
     p = sub.add_parser("expert-qa", help="record an actual visual review for an Expert TikZ Mode figure")
     p.add_argument("tex")
     p.add_argument("result", choices=("pass", "fail"))
     p.add_argument("--note", default="")
     p.set_defaults(func=cmd_expert_qa)
+
+    p = sub.add_parser("generative-render", help="render a structure_model into deterministic Expert TikZ")
+    p.add_argument("design")
+    p.add_argument("--output", help="optional output .tex path; defaults to delivery basename beside the design")
+    p.set_defaults(func=cmd_generative_render)
+
+    p = sub.add_parser("generative-build", help="render and compile a structure_model through sourced Expert TikZ Mode")
+    p.add_argument("design")
+    p.add_argument("--engine", choices=("auto", "pdflatex", "xelatex", "lualatex"), default="auto")
+    p.set_defaults(func=cmd_generative_build)
+
+    p = sub.add_parser("generative-variants", help="build a bounded parameter-search grid and contact sheet from search_space")
+    p.add_argument("design")
+    p.add_argument("--limit", type=int, default=9, help="maximum variant count, 1-24")
+    p.add_argument("--engine", choices=("auto", "pdflatex", "xelatex", "lualatex"), default="auto")
+    p.set_defaults(func=cmd_generative_variants)
+
+    p = sub.add_parser("generative-hypotheses", help="render and rank cyclic graph topology candidates against an aligned PNG/PGM image")
+    p.add_argument("design")
+    p.add_argument("reference")
+    p.add_argument("--limit", type=int, default=9, help="maximum hypothesis count, 2-24")
+    p.add_argument("--engine", choices=("auto", "pdflatex", "xelatex", "lualatex"), default="auto")
+    p.set_defaults(func=cmd_generative_hypotheses)
 
     p = sub.add_parser("clean", help="remove only disposable build intermediates")
     p.add_argument("spec")
@@ -774,6 +933,6 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         return int(args.func(args))
-    except (ValueError, KeyError, BuildError, QAError, ExpertBuildError, json.JSONDecodeError) as exc:
+    except (ValueError, KeyError, BuildError, QAError, ExpertBuildError, GenerativeError, json.JSONDecodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2

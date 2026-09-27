@@ -1,6 +1,6 @@
 ---
 name: funfig-frameworks
-description: Create and refine academic TikZ research frameworks and module architectures from text or reference images. Use for layers, nested groups, conceptual models, and labelled relationships between modules.
+description: Create and refine academic TikZ research frameworks for social science, business, and general research. Use for conceptual/theoretical frameworks, mediator/moderator or layered models, nested groups, constructs, and labelled module relationships.
 ---
 
 # FunFig Frameworks

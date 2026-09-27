@@ -10,7 +10,7 @@
     "edges":[
       {"id":"e1","from":"collect","to":"check","route":"straight","arrows":"forward"},
       {"id":"e2","from":"check","to":"model","route":"straight","arrows":"forward","label":"yes"},
-      {"id":"e3","from":"check","to":"collect","from_anchor":"south","to_anchor":"south","route":"curve","routing":{"bend":-38},"arrows":"forward","label":"no","label_side":"below"}
+      {"id":"e3","from":"check","to":"collect","from_anchor":"south","to_anchor":"south","route":"curve","routing":{"bend":38},"arrows":"forward","label":"no","label_side":"below"}
     ],"groups":[]},
   "outputs":{"basename":"feedback-loop","keep_build":false},"metadata":{"template":true,"template_id":"feedback-loop"}
 }

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -17,6 +18,8 @@ class ExpertBuildError(RuntimeError):
 
 
 DANGEROUS_TEX = (r"\write18", r"\ShellEscape", r"\input|", r"\immediate\write18")
+PACKAGE_RE = re.compile(r"\\(?:usepackage|RequirePackage)(?:\[[^\]]*\])?\{([^}]+)\}")
+DOCUMENT_CLASS_RE = re.compile(r"\\documentclass(?:\[[^\]]*\])?\{([^}]+)\}")
 
 
 def _sha256(path: Path) -> str:
@@ -32,6 +35,82 @@ def _engine(tex: Path, configured: str) -> str:
         return configured
     text = tex.read_text(encoding="utf-8")
     return "xelatex" if any(ord(char) > 127 for char in text) else "pdflatex"
+
+
+def _strip_tex_comments(text: str) -> str:
+    lines: list[str] = []
+    for line in text.splitlines():
+        kept: list[str] = []
+        escaped = False
+        for char in line:
+            if char == "%" and not escaped:
+                break
+            kept.append(char)
+            if char == "\\":
+                escaped = not escaped
+            else:
+                escaped = False
+        lines.append("".join(kept))
+    return "\n".join(lines)
+
+
+def _tex_resource_lookup(tex: Path, filename: str, kpsewhich: str) -> dict[str, Any]:
+    local = tex.parent / filename
+    if local.is_file():
+        return {"file": filename, "available": True, "resolved": str(local), "source": "local"}
+    process = subprocess.run(
+        [kpsewhich, filename],
+        cwd=tex.parent,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    resolved = process.stdout.strip()
+    return {
+        "file": filename,
+        "available": process.returncode == 0 and bool(resolved),
+        "resolved": resolved or None,
+        "source": "texmf" if resolved else None,
+    }
+
+
+def inspect_expert_dependencies(tex_path: str | Path) -> dict[str, Any]:
+    tex = Path(tex_path).resolve()
+    if not tex.is_file():
+        raise ExpertBuildError(f"expert TeX source does not exist: {tex}")
+    kpsewhich = shutil.which("kpsewhich")
+    if kpsewhich is None:
+        raise ExpertBuildError("kpsewhich is required to inspect Expert TikZ dependencies")
+    text = _strip_tex_comments(tex.read_text(encoding="utf-8"))
+    class_match = DOCUMENT_CLASS_RE.search(text)
+    document_class: dict[str, Any] | None = None
+    if class_match:
+        class_name = class_match.group(1).strip()
+        document_class = {
+            "name": class_name,
+            **_tex_resource_lookup(tex, f"{class_name}.cls", kpsewhich),
+        }
+    package_names: list[str] = []
+    for match in PACKAGE_RE.finditer(text):
+        for raw in match.group(1).split(","):
+            name = raw.strip()
+            if name and name not in package_names:
+                package_names.append(name)
+    packages = [
+        {"name": name, **_tex_resource_lookup(tex, f"{name}.sty", kpsewhich)}
+        for name in package_names
+    ]
+    missing: list[str] = []
+    if document_class and not document_class["available"]:
+        missing.append(document_class["file"])
+    missing.extend(item["file"] for item in packages if not item["available"])
+    return {
+        "document_class": document_class,
+        "packages": packages,
+        "missing": missing,
+        "ok": not missing,
+    }
 
 
 def _validate_knowledge_refs(sources: list[str], cards: list[str]) -> None:
@@ -60,17 +139,18 @@ def _relocate_intermediates(tex: Path, state_dir: Path) -> None:
 def build_expert(
     tex_path: str | Path,
     *,
-    sources: list[str],
+    sources: list[str] | None = None,
     cards: list[str] | None = None,
     engine: str = "auto",
 ) -> tuple[Path, Path]:
     tex = Path(tex_path).resolve()
     if not tex.is_file():
         raise ExpertBuildError(f"expert TeX source does not exist: {tex}")
-    if not sources:
-        raise ExpertBuildError("Expert TikZ Mode requires at least one --source reference")
+    sources = list(sources or [])
     cards = list(cards or [])
-    _validate_knowledge_refs(list(sources), cards)
+    if not sources and not cards:
+        raise ExpertBuildError("Expert TikZ Mode requires at least one trusted --source or --card reference")
+    _validate_knowledge_refs(sources, cards)
     text = tex.read_text(encoding="utf-8")
     found = [token for token in DANGEROUS_TEX if token in text]
     if found:
@@ -80,6 +160,12 @@ def build_expert(
         )
     if shutil.which("latexmk") is None:
         raise ExpertBuildError("latexmk is required for Expert TikZ Mode")
+    dependencies = inspect_expert_dependencies(tex)
+    if dependencies["missing"]:
+        raise ExpertBuildError(
+            "missing TeX dependency resource(s): " + ", ".join(dependencies["missing"])
+            + ". Install the required TeX package(s) before expert-build."
+        )
     selected = _engine(tex, engine)
     if selected not in {"pdflatex", "xelatex", "lualatex"}:
         raise ExpertBuildError(f"unsupported TeX engine: {selected}")
@@ -95,6 +181,16 @@ def build_expert(
     )
     state_dir = tex.parent / ".funfig"
     state_dir.mkdir(parents=True, exist_ok=True)
+    manifest_path = state_dir / "expert-manifest.json"
+    previous_manifest: dict[str, Any] = {}
+    if manifest_path.is_file():
+        try:
+            previous_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            previous_manifest = {}
+    previous_qa = previous_manifest.get("qa") or {}
+    review_history = list(previous_qa.get("review_history") or [])
+    build_iteration = int(previous_manifest.get("build_iteration") or 0) + 1
     build_dir = state_dir / "expert-build"
     build_dir.mkdir(parents=True, exist_ok=True)
     log = build_dir / "funfig-expert-build.log"
@@ -127,15 +223,23 @@ def build_expert(
             "pdf": pdf_info,
             "preview": ".funfig/expert-preview.png",
             "preview_dpi": 180,
+            "review_history": review_history,
+            "review_count": len(review_history),
+            "repair_cycles": sum(1 for item in review_history if item.get("result") == "failed"),
         },
-        "sources": list(sources),
+        "build_iteration": build_iteration,
+        "sources": sources,
         "knowledge_cards": cards,
-        "build": {"engine": selected, "command": command, "returncode": 0},
+        "build": {
+            "engine": selected,
+            "command": command,
+            "returncode": 0,
+            "dependencies": dependencies,
+        },
         "artifacts": {"tex": tex.name, "pdf": pdf.name, "log": ".funfig/expert-build/funfig-expert-build.log"},
         "hashes": {"tex_sha256": _sha256(tex), "pdf_sha256": _sha256(pdf)},
         "updated_at": utc_now(),
     }
-    manifest_path = state_dir / "expert-manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return pdf, manifest_path
 
@@ -151,10 +255,22 @@ def mark_expert_visual_review(tex_path: str | Path, passed: bool, note: str) -> 
     qa = manifest.setdefault("qa", {})
     if qa.get("status") not in {"preview_ready", "passed", "failed"}:
         raise ExpertBuildError("expert-build must create a preview before visual review can be recorded")
-    qa["visual_review"] = "passed" if passed else "failed"
+    reviewed_at = utc_now()
+    result = "passed" if passed else "failed"
+    qa["visual_review"] = result
     qa["status"] = "passed" if passed and qa.get("machine_checks_passed", True) else "failed"
     qa["review_note"] = note
-    qa["reviewed_at"] = utc_now()
+    qa["reviewed_at"] = reviewed_at
+    history = qa.setdefault("review_history", [])
+    history.append({
+        "build_iteration": int(manifest.get("build_iteration") or 1),
+        "result": result,
+        "note": note,
+        "reviewed_at": reviewed_at,
+        "tex_sha256": (manifest.get("hashes") or {}).get("tex_sha256"),
+    })
+    qa["review_count"] = len(history)
+    qa["repair_cycles"] = sum(1 for item in history if item.get("result") == "failed")
     manifest["updated_at"] = utc_now()
     manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return qa

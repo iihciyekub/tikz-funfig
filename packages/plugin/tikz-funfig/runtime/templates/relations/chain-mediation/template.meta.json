@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "chain-mediation",
+  "family": "relation",
+  "title": "Chain mediation model",
+  "description": "Four-stage antecedent, mediator-1, mediator-2, outcome path model with an optional direct effect.",
+  "recipe_hint": "relation-diagram",
+  "tags": ["chain mediation", "serial mediation", "social science", "链式中介", "序列中介", "路径模型"],
+  "supported_profiles": ["journal-double-column"],
+  "supported_themes": ["journal-monochrome", "journal-muted", "journal-accessible"],
+  "design_fit": {
+    "best_for": ["serial mediation", "multi-stage mechanism models", "ordered construct paths"],
+    "node_range": [4, 6],
+    "label_density": "medium",
+    "recommended_width_mm": [130, 178],
+    "adaptation_notes": ["Keep mediator order visually explicit.", "Move secondary/direct paths outside the main chain."],
+    "failure_modes": ["direct path hides chain labels", "mediator order becomes ambiguous", "four columns become unreadable at single-column width"]
+  },
+  "requires": {"packages": ["tikz"], "libraries": ["arrows.meta"]},
+  "edit_contract": {
+    "editable": ["construct labels", "hypothesis labels", "number of mediator stages", "direct path", "theme/profile"],
+    "structural_limits": {"constructs": [4, 6], "mediators": [2, 4]},
+    "locked": ["mediator ordering must come from the user's model", "displayed paths do not establish mediation statistically"]
+  }
+}

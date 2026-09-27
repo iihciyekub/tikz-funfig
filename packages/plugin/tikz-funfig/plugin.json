@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "tikz-funfig",
-  "version": "0.11.0",
-  "description": "Schema-driven publication-quality TikZ and PGFPlots figure generation.",
+  "version": "0.12.0",
+  "description": "Create editable academic research figures, plots, frameworks, models, and flowcharts from descriptions, data, sketches, or existing TikZ.",
   "repository": "https://github.com/iihciyekub/tikz-funfig",
   "author": {
     "name": "TIKZ-FunFig"
@@ -18,8 +18,8 @@
     "com.openai": {
       "interface": {
         "displayName": "TIKZ-FunFig",
-        "shortDescription": "Build reproducible publication-quality scientific figures",
-        "longDescription": "Create, migrate, validate, render, and compile scientific figures from stable FigureSpec recipes using TikZ, PGFPlots, LaTeX, and gnuplot, including managed implicit equations and curve-relative annotations.",
+        "shortDescription": "Turn research models and data into editable paper figures",
+        "longDescription": "Create academic 2D function/data plots, social-science and business research frameworks, mathematical or variable-relation models, flowcharts, and basic explanatory schematics from descriptions, data, sketches, reference images, or existing TikZ/PGFPlots source. Deliver editable LaTeX and PDF; request SVG when needed.",
         "developerName": "TIKZ-FunFig",
         "category": "Productivity",
         "capabilities": [
@@ -27,12 +27,12 @@
           "Write"
         ],
         "defaultPrompt": [
-          "Create a scientific plot.",
-          "Build a flowchart.",
-          "Design a research framework.",
-          "Create a relation diagram.",
-          "Build a scientific schematic.",
-          "Convert existing TikZ or PGFPlots."
+          "查看 TIKZ-FunFig 能画哪些图，并给我每类图的示例说法。",
+          "根据我的数据绘制带单位和误差棒的学术图。",
+          "把下面的实验步骤画成有判断分支的流程图。",
+          "把自变量、中介变量、调节变量和结果变量整理成论文研究模型图。",
+          "把我的社会科学或商学研究方案整理成分层框架图。",
+          "帮我修改这份现有的 TikZ 或 PGFPlots 图。"
         ],
         "brandColor": "#000000",
         "composerIcon": "./assets/icon.png",

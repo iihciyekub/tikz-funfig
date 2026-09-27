@@ -95,6 +95,15 @@ after down-scaling. These metrics are warnings and evidence for visual review;
 they do not replace checking labels, overlaps, arrows, whitespace, and semantic
 fidelity in the rendered preview.
 
+For paper-layout changes, run the five-case visual suite in
+`benchmarks/paper-visual/` from a temporary output directory. It spans social
+science, business, mathematical relations, a function/data plot, and a
+feedback flowchart across single/double columns and English/CJK labels.
+`run_cases.py` builds and checks measured PDF widths; a reviewer must still
+view each final preview and record what was observed. For image-only external
+references, use the blind fixture/rubric under `benchmarks/texample/` and
+`benchmarks/reference-reproduction/` without consulting the original TeX.
+
 ## Adding a capability
 
 The six Skills share `packages/skill/references/workflow.md` plus conditional

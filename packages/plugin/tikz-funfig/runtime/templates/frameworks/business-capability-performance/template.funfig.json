@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.1",
+  "id": "template-business-capability-performance",
+  "recipe": "framework-diagram",
+  "kind": "tikz",
+  "theme": {"id": "journal-muted"},
+  "profile": {"id": "journal-double-column"},
+  "diagram": {
+    "layout": {"type": "grid", "auto_fit": true},
+    "nodes": [
+      {"id": "r1", "label": "Resource base", "role": "module", "position": {"type": "grid", "row": 0, "column": 0}},
+      {"id": "r2", "label": "Market conditions", "role": "module", "position": {"type": "grid", "row": 1, "column": 0}},
+      {"id": "c1", "label": "Organizational capability", "role": "concept", "position": {"type": "grid", "row": 0, "column": 1}},
+      {"id": "c2", "label": "Strategic execution", "role": "concept", "position": {"type": "grid", "row": 1, "column": 1}},
+      {"id": "p1", "label": "Firm performance", "role": "module", "position": {"type": "grid", "row": 0, "column": 2}},
+      {"id": "p2", "label": "Long-term resilience", "role": "module", "position": {"type": "grid", "row": 1, "column": 2}}
+    ],
+    "edges": [
+      {"id": "e1", "from": "r1", "to": "c1"},
+      {"id": "e2", "from": "r2", "to": "c2"},
+      {"id": "e3", "from": "c1", "to": "p1"},
+      {"id": "e4", "from": "c2", "to": "p2"},
+      {"id": "e5", "from": "c1", "to": "c2", "label": "enables", "label_side": "right"}
+    ],
+    "groups": [
+      {"id": "inputs", "members": ["r1", "r2"], "label": "Resources & environment"},
+      {"id": "capabilities", "members": ["c1", "c2"], "label": "Capabilities"},
+      {"id": "performance", "members": ["p1", "p2"], "label": "Outcomes"}
+    ]
+  },
+  "outputs": {"basename": "business-capability-performance", "keep_build": false},
+  "metadata": {"template": true, "template_id": "business-capability-performance"}
+}

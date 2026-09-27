@@ -1,0 +1,20 @@
+{
+  "schema_version":"1.0",
+  "date":"2026-09-27",
+  "case":"petri-semantic-prompt",
+  "relationship_to_texample":"independently authored semantic probe; original TeXample source was previously viewed, so this is not blind reference reproduction",
+  "source_url":"https://texample.net/nodetutorial/",
+  "prompt":"petri-semantic-prompt.md",
+  "result_spec":"examples/golden/petri-resource-loop/figure.funfig.json",
+  "route":"structured petri-net FigureSpec 1.1",
+  "checks":{
+    "static_semantics":"pass: three places, one transition, four directed bipartite arcs, marking 2/3/0, weights 1/2/2/1",
+    "compile":"pass: one-page PDF via pdflatex/latexmk",
+    "machine_qa":"pass",
+    "visual_qa":"pass: token dots, arc direction, two weight labels, and opposing arcs inspected",
+    "page_width_mm":53.04,
+    "profile_target_width_mm":88,
+    "repair_cycles":0
+  },
+  "scope_limit":"No image-fidelity score to the TeXample original; no Petri reachability or liveness analysis."
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version":"1.1","id":"petri-resource-loop","recipe":"petri-net","kind":"tikz",
+  "theme":{"id":"journal-monochrome"},"profile":{"id":"journal-single-column"},
+  "petri":{
+    "places":[
+      {"id":"waiting","label":"Waiting","position":{"x":0,"y":0},"tokens":2},
+      {"id":"resource","label":"Resource","position":{"x":2,"y":2},"tokens":3},
+      {"id":"finished","label":"Finished","position":{"x":4,"y":0},"tokens":0}
+    ],
+    "transitions":[{"id":"execute","label":"Execute","position":{"x":2,"y":0}}],
+    "arcs":[
+      {"from":"waiting","to":"execute","weight":1},
+      {"from":"resource","to":"execute","weight":2,"bend":28},
+      {"from":"execute","to":"resource","weight":2,"bend":28},
+      {"from":"execute","to":"finished","weight":1}
+    ]
+  },
+  "outputs":{"basename":"petri-resource-loop","keep_build":false},
+  "metadata":{"golden":true,"meaning":"One waiting item and two resource tokens are required; resources are returned after execution."}
+}

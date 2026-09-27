@@ -37,6 +37,9 @@ These are defaults, not rigid rules. Preserve an existing manuscript's house sty
   default because their 3D/view/colorbar geometry has different layout needs.
 - Prefer explicit `xmin/xmax/ymin/ymax` when the scientific range is semantically meaningful.
 - Use hand-picked ticks for thresholds, optima, breakpoints, or values discussed in the manuscript.
+- At narrow column widths, inspect automatic ticks near zero. Scientific
+  notation can make adjacent labels collide; set explicit ticks and measure
+  the full exported PDF, including labels, before accepting the figure.
 - Avoid excessive decimal digits. Format numbers deliberately with PGF number formatting.
 - Axis labels should include both the quantity name and mathematical symbol when useful.
 - Avoid reversing axes unless it is scientifically meaningful.

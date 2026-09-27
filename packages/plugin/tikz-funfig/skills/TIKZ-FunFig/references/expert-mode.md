@@ -5,24 +5,33 @@ stable Recipe without losing meaning. It expands practical reach without
 pretending every TikZ feature is implemented in FigureSpec. Keep explicit
 provenance for the official/manual knowledge used to justify the long-tail method.
 
-1. Search shared knowledge; inspect relevant examples and the official manual
-   section defining the required feature. Inspect third-party source before use.
-2. Set `render_mode: expert` in `figure.design.json`, record the reason in intent
+1. Read `routing.md` and record why the best stable Recipe is insufficient.
+2. Read `expert-patterns.md`; select a small explicit pattern set and focused
+   knowledge queries before writing detailed coordinates.
+3. Search shared knowledge; inspect relevant examples and the official manual
+   section defining each required long-tail method. Inspect third-party source before use.
+4. Set `render_mode: expert` in `figure.design.json`, record the reason in intent
    or assumptions, and keep actual official section IDs in `knowledge_sources`.
-   Record supplementary card/example IDs there too when useful.
-3. Author standalone `<basename>.tex` using named coordinates, reusable styles,
-   necessary libraries only, and explicit local data dependencies.
-4. Run `expert-build <dir>/figure.tex --source <official-section-id>`; repeat
-   `--source` for more sections and optionally `--card <card-id>` / `--engine`.
-   The command currently accepts official **manual section** IDs as sources,
-   not arbitrary URLs or source-example IDs. Retrieve the corresponding section
-   instead of fabricating an accepted ID.
-5. Open `.funfig/expert-preview.png`, review using `visual-review.md`, repair and
+   Record supplementary card/example IDs there too when useful. For nontrivial
+   figures also persist `routing.features`, `routing.unsupported_features`, and
+   `routing.expert_patterns`.
+5. Author standalone `<basename>.tex` using named coordinates, reusable styles,
+   macros/loops for repeated structures, necessary libraries only, and explicit
+   local data dependencies.
+6. Run `expert-deps <dir>/figure.tex` when the source uses explicit packages or a
+   non-default document class. Resolve missing `.sty`/`.cls` resources before
+   compiling; do not delete a required package merely to make the file build.
+7. Run `expert-build <dir>/figure.tex` with at least one trusted provenance
+   reference: use `--source <official-section-id>` for official manual sections,
+   or `--card <card-id>` for a verified curated knowledge card. Repeat either as
+   needed and optionally set `--engine`. Do not pass arbitrary URLs or fabricate
+   an unrelated PGF section merely to satisfy provenance for a third-party package.
+8. Open `.funfig/expert-preview.png`, review using `visual-review.md`, repair and
    rebuild as needed. Record `expert-qa <tex> pass --note <actual observations>`.
-6. If SVG was requested, derive it from the current PDF with `pdftocairo -svg
+9. If SVG was requested, derive it from the current PDF with `pdftocairo -svg
    <dir>/figure.pdf <dir>/figure.svg` and inspect the SVG too. This is an explicit
    export step; `expert-build` does not export SVG automatically.
-7. Run `validate-design <dir>/figure.design.json --delivery` and deliver the
+10. Run `validate-design <dir>/figure.design.json --delivery` and deliver the
    design, editable TeX, PDF, requested SVG, data, and expert manifest.
 
 Use the user's chosen basename consistently. The normal source name is

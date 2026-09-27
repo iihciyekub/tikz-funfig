@@ -19,12 +19,16 @@ project examples, aliases, normalized PGF/PGFPlots and curated community source
 examples, and official manual sections. Use `kb status` for current counts. It
 does not distribute raw upstream source trees, original manuals, or PDF booklets.
 
-Use `kb search "<focused query>" --json` to retain IDs and provenance. There is
-currently no `kb show` command. Read the matching record from the shared tree:
+Use `kb search "<focused query>" --json` to retain IDs and provenance, then
+`kb show <id> --json` for the exact relevant record. Inspect its verification,
+source, libraries/packages, renderability, and safety flags before reusing a
+technique. `source-extracted` examples are leads, not tested product Recipes.
+The shared tree remains available for direct inspection when needed:
 
 - Card IDs map through `knowledge/cards/index.json` to Markdown files.
-- Example IDs map to records in `knowledge/corpus/*.jsonl`; read the `code`,
-  dependencies, source locator, verification, and any wrapper/skip information.
+- Example IDs map to records in `knowledge/corpus/*.jsonl`; `kb show` returns
+  their code, packages, engine, source locator, verification, and skip/safety
+  information without reading a whole corpus into context.
 - Official section IDs map to `knowledge/manual-index/*.jsonl`; inspect the
   matching record's text for key semantics. Expert `--source` needs these IDs.
 - Templates use `templates inspect <id>`; Recipes are declared by `capabilities`.
@@ -34,6 +38,10 @@ In the installed Plugin, `knowledge/` is at Plugin root beside `skills/` and
 do not assume the original source checkout exists. For JSONL, select matching
 IDs rather than reading a whole corpus into context. If source examples dominate
 search results, query the exact official section title to find its manual record.
+When an external example needs an unbundled package, check that package and its
+documentation explicitly; a similarly named PGF library is not proof of
+identical notation. A Circuitikz transistor, for example, is not covered by
+the basic PGF circuit-library source merely because both draw circuits.
 
 The legacy paths below are **source-repository development references**. They are
 excluded from the portable Plugin. Installed work uses the bundled Recipes and

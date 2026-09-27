@@ -398,11 +398,11 @@ FigureSpec 只覆盖经过产品验证、值得长期维护的稳定语义，不
 | 节点 | `position` | 绝对坐标、相对位置、网格位置三选一 |
 | 节点 | `text_width`, `min_width`, `min_height`, `align` | 正尺寸与 `left/center/right` 对齐 |
 | 节点 | `appearance` | 结构化 fill/draw/text color/line width；不包含关系语义 |
-| `diagram.edges[]` | `id`, `from`, `to` | ID 唯一，端点为真实节点 ID |
+| `diagram.edges[]` | `id`, `from`, `to` / `to_edge` | ID 唯一；通常连节点，关系图可用 `to_edge` 将调节/注释箭头指向另一条边的中点 |
 | 连线 | `from_anchor`, `to_anchor` | 首期 center/north/south/east/west 及四角 |
 | 连线 | `route` | `straight/orthogonal/curve/loop` |
 | 连线 | `arrows` | `none/forward/backward/both` |
-| 连线 | `label`, `label_format`, `label_position`, `label_side` | 边标签、0–1 位置和左右侧/上下面向规则 |
+| 连线 | `label`, `label_format`, `label_position`, `label_side`, `label_sloped` | 边标签、0–1 位置、左右侧/上下面向规则，以及是否沿边方向倾斜 |
 | 连线 | `routing` | 正交方向顺序、曲线 bend、loop 方向，按 route 分支校验 |
 | `diagram.groups[]` | `id`, `members`, `label`, `padding`, `appearance` | 成员为节点或子组；框与标题分开渲染 |
 
@@ -410,7 +410,7 @@ FigureSpec 只覆盖经过产品验证、值得长期维护的稳定语义，不
 
 - `manual`：节点使用 `position: {type: "absolute", x: 0, y: 0}`，x/y 单位统一为 cm。
 - `relative`：至少一个绝对定位根节点；其他节点使用 `{type: "relative", of: "node-id", direction: "right", gap: "12mm"}`，direction 支持四向及四个对角方向。
-- `grid`：节点使用 `{type: "grid", row: 0, column: 0}`；行列是从 0 开始的非负整数，首期每格一个节点，不做跨格。
+- `grid`：节点使用 `{type: "grid", row: 0, column: 0}`；行列是从 0 开始的非负整数，每格一个节点，不做跨格。`layout.auto_fit=true` 时 runtime 按 Publication Profile 宽度、列数和标签长度计算共享文本宽度及保守的中心间距；显式 row/column gap 与节点 text_width 仍优先。
 - 绝对坐标和相对定位可在 relative 模式组合；网格布局不混用其它定位模式。
 - 首期不承诺自动避障。正交路线提供明确方向顺序，复杂回绕可通过用户指定布局或后续 waypoint 能力解决。
 
@@ -423,12 +423,13 @@ FigureSpec 只覆盖经过产品验证、值得长期维护的稳定语义，不
 | 节点角色与形状 | process/module 为 rounded-rectangle，decision 为 diamond，terminal 为 ellipse，data 为 parallelogram，concept 为 rectangle |
 | 标签 | 节点及边默认 plain；align 默认为 center；换行符表示显式分行 |
 | 连线 | route 默认为 straight；arrows 由 Recipe 定义：flowchart/framework 为 forward，relation 为 none |
-| 标签位置 | `label_position` 默认 0.5；`label_side` 为 `above/below/left/right`，相对页面方向，不随箭头方向翻转；默认 above |
+| 标签位置 | `label_position` 默认 0.5；`label_side` 为 `above/below/left/right`；`label_sloped=true` 时标签沿边方向旋转，适合斜向树枝与概率/情景树，默认 false |
+| 边目标 | relation diagram 可用 `to_edge: "edge-id"` 将一条边指向另一条已命名边的中点；用于调节变量/路径注释，禁止循环依赖 |
 | 锚点 | 省略时由节点外边界求交；显式锚点覆盖自动选择 |
 | 正交路由 | `routing.order` 为 `horizontal-first/vertical-first`，默认 horizontal-first，分别先水平/先垂直 |
 | 曲线路由 | `routing.bend` 为带符号角度，正值对应 TikZ bend left，负值 bend right；curve 默认 25 度；0 使用 straight |
 | 自环路由 | `routing.side` 为 `above/below/left/right`，默认 above |
-| 分组 | 首期边端点仍只引用节点；组只管理视觉包含与标题，padding 由主题提供 |
+| 分组 | 组只管理视觉包含与标题，padding 由主题提供；组本身不作为边端点 |
 
 必须将这些默认值写入 Recipe/主题/Schema 文档并保持运行时一致。这里的默认仅适用于 1.1 新图，不回溯改变 1.0 行为。
 

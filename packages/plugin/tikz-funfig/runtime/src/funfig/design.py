@@ -20,7 +20,7 @@ def _check(value: Any, rule: dict[str, Any], root: dict[str, Any], path: str) ->
         "$schema", "$id", "title", "description", "$defs", "$ref", "type",
         "const", "enum", "required", "properties", "additionalProperties",
         "items", "minItems", "uniqueItems", "minLength", "pattern",
-        "exclusiveMinimum", "contains", "if", "then", "allOf",
+        "minimum", "maximum", "exclusiveMinimum", "contains", "if", "then", "allOf",
     }
     if set(rule) - supported:
         raise ValueError(f"unsupported design schema keywords: {sorted(set(rule) - supported)}")
@@ -35,6 +35,7 @@ def _check(value: Any, rule: dict[str, Any], root: dict[str, Any], path: str) ->
         "array": isinstance(value, list),
         "string": isinstance(value, str),
         "number": type(value) in (int, float) and math.isfinite(value),
+        "integer": type(value) is int,
     }
     if "type" in rule and not checks.get(rule["type"], False):
         return errors + [f"{path} must be {rule['type']}"]
@@ -66,6 +67,10 @@ def _check(value: Any, rule: dict[str, Any], root: dict[str, Any], path: str) ->
             errors.append(f"{path} is empty or has an invalid format")
     if type(value) in (int, float) and "exclusiveMinimum" in rule and value <= rule["exclusiveMinimum"]:
         errors.append(f"{path} must be greater than {rule['exclusiveMinimum']}")
+    if type(value) in (int, float) and "minimum" in rule and value < rule["minimum"]:
+        errors.append(f"{path} must be at least {rule['minimum']}")
+    if type(value) in (int, float) and "maximum" in rule and value > rule["maximum"]:
+        errors.append(f"{path} must be at most {rule['maximum']}")
     for item in rule.get("allOf", []):
         errors.extend(_check(value, item, root, path))
     if "if" in rule and not _check(value, rule["if"], root, path):

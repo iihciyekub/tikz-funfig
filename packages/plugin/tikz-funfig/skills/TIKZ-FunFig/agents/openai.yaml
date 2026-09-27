@@ -1,6 +1,7 @@
 interface:
   display_name: "TIKZ-FunFig"
-  short_description: "Route and build reproducible journal-quality scientific figures"
+  short_description: "Create editable academic plots, models, frameworks, and flowcharts"
+  default_prompt: "Use $tikz-funfig to show what kinds of figures I can create and how to start."
 
 policy:
   allow_implicit_invocation: true
