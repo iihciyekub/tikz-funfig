@@ -1,0 +1,74 @@
+name: Example Gallery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "examples/**"
+      - "gallery/**"
+      - "scripts/tff_gallery.py"
+      - "src/funfig/**"
+      - ".github/workflows/gallery.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install TeX preview toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk \
+            poppler-utils \
+            gnuplot-nox \
+            texlive-latex-base \
+            texlive-latex-extra \
+            texlive-pictures \
+            texlive-fonts-recommended \
+            texlive-xetex
+
+      - name: Validate immutable TFF registry
+        run: PYTHONPATH=src python3 scripts/tff_gallery.py check
+
+      - name: Build static gallery and previews
+        run: PYTHONPATH=src python3 scripts/tff_gallery.py build-site --output _site
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: \${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

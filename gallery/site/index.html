@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="TIKZ-FunFig immutable example gallery">
+  <title>TIKZ-FunFig Gallery</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div>
+        <p class="eyebrow">TIKZ-FunFig</p>
+        <h1>Example Gallery</h1>
+        <p class="lede">Browse every curated example by immutable <strong>TFF ID</strong>. Use the ID in a prompt to reuse an exact visual template.</p>
+      </div>
+      <a class="repo-link" href="https://github.com/iihciyekub/tikz-funfig">GitHub ↗</a>
+    </div>
+  </header>
+  <main>
+    <section class="controls" aria-label="Gallery controls">
+      <input id="search" type="search" placeholder="Search TFF-0042, title, family, tags…" autocomplete="off">
+      <select id="kind" aria-label="Filter by kind"><option value="">All kinds</option></select>
+      <span id="count" class="count"></span>
+    </section>
+    <section id="grid" class="grid" aria-live="polite"></section>
+    <p id="empty" class="empty" hidden>No examples match this search.</p>
+  </main>
+  <template id="card-template">
+    <article class="card">
+      <a class="preview-link" target="_blank" rel="noreferrer">
+        <img class="preview" loading="lazy" alt="">
+      </a>
+      <div class="card-body">
+        <div class="meta-row"><code class="tff-id"></code><span class="kind"></span></div>
+        <h2 class="title"></h2>
+        <p class="description"></p>
+        <div class="tags"></div>
+        <div class="actions">
+          <button class="copy-id" type="button">Copy ID</button>
+          <button class="copy-prompt" type="button">Copy prompt</button>
+          <a class="source" target="_blank" rel="noreferrer">Source ↗</a>
+        </div>
+      </div>
+    </article>
+  </template>
+  <script src="app.js" defer></script>
+</body>
+</html>

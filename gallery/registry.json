@@ -1,0 +1,390 @@
+{
+  "schema_version": "1.0",
+  "id_prefix": "TFF",
+  "next_sequence": 54,
+  "policy": {
+    "immutable_ids": true,
+    "reuse_retired_ids": false,
+    "identity_precedence": [
+      "template.meta.json",
+      "figure.funfig.json",
+      "figure.design.json",
+      "template.funfig.json",
+      "tex-fallback"
+    ]
+  },
+  "entries": [
+    {
+      "id": "TFF-0001",
+      "identity": "figure:basic-function",
+      "path": "examples/basic-function",
+      "kind": "example",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0002",
+      "identity": "figure:confidence-band",
+      "path": "examples/golden/confidence-band",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0003",
+      "identity": "figure:contour-plot",
+      "path": "examples/golden/contour-plot",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0004",
+      "identity": "figure:diagram-longtext-cjk",
+      "path": "examples/golden/diagram-longtext-cjk",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0005",
+      "identity": "figure:error-bar",
+      "path": "examples/golden/error-bar",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0006",
+      "identity": "figure:fig1",
+      "path": "examples/golden/fig1",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0007",
+      "identity": "figure:fig11",
+      "path": "examples/golden/fig11",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0008",
+      "identity": "figure:fig4",
+      "path": "examples/golden/fig4",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0009",
+      "identity": "figure:flowchart-decision",
+      "path": "examples/golden/flowchart-decision",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0010",
+      "identity": "figure:flowchart-feedback",
+      "path": "examples/golden/flowchart-feedback",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0011",
+      "identity": "figure:flowchart-sloped-labels",
+      "path": "examples/golden/flowchart-sloped-labels",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0012",
+      "identity": "figure:framework-grouped",
+      "path": "examples/golden/framework-grouped",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0013",
+      "identity": "figure:framework-layered",
+      "path": "examples/golden/framework-layered",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0014",
+      "identity": "design:generative-box-occlusion",
+      "path": "examples/golden/generative-box-occlusion",
+      "kind": "generative",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0015",
+      "identity": "design:generative-cyclic-topology",
+      "path": "examples/golden/generative-cyclic-topology",
+      "kind": "generative",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0016",
+      "identity": "design:generative-dragon-lsystem",
+      "path": "examples/golden/generative-dragon-lsystem",
+      "kind": "generative",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0017",
+      "identity": "design:generative-expression-curve",
+      "path": "examples/golden/generative-expression-curve",
+      "kind": "generative",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0018",
+      "identity": "design:generative-hexagonal-prism",
+      "path": "examples/golden/generative-hexagonal-prism",
+      "kind": "generative",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0019",
+      "identity": "design:generative-hidden-box",
+      "path": "examples/golden/generative-hidden-box",
+      "kind": "generative",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0020",
+      "identity": "design:generative-point-dual",
+      "path": "examples/golden/generative-point-dual",
+      "kind": "generative",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0021",
+      "identity": "design:generative-truchet-tiling",
+      "path": "examples/golden/generative-truchet-tiling",
+      "kind": "generative",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0022",
+      "identity": "figure:groupplot",
+      "path": "examples/golden/groupplot",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0023",
+      "identity": "figure:heatmap",
+      "path": "examples/golden/heatmap",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0024",
+      "identity": "figure:implicit-function",
+      "path": "examples/golden/implicit-function",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0025",
+      "identity": "figure:petri-resource-loop",
+      "path": "examples/golden/petri-resource-loop",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0026",
+      "identity": "figure:quiver-field",
+      "path": "examples/golden/quiver-field",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0027",
+      "identity": "figure:relations-labelled",
+      "path": "examples/golden/relations-labelled",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0028",
+      "identity": "figure:scatter-plot",
+      "path": "examples/golden/scatter-plot",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0029",
+      "identity": "figure:schematic-scientific",
+      "path": "examples/golden/schematic-scientific",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0030",
+      "identity": "figure:surface-plot",
+      "path": "examples/golden/surface-plot",
+      "kind": "golden",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0031",
+      "identity": "figure:mechanism-diagram",
+      "path": "examples/mechanism-diagram",
+      "kind": "example",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0032",
+      "identity": "figure:publication-threshold",
+      "path": "examples/publication-threshold",
+      "kind": "example",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0033",
+      "identity": "template:decision-branch",
+      "path": "examples/templates/flowcharts/decision-branch",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0034",
+      "identity": "template:feedback-loop",
+      "path": "examples/templates/flowcharts/feedback-loop",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0035",
+      "identity": "template:merge-split",
+      "path": "examples/templates/flowcharts/merge-split",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0036",
+      "identity": "template:business-capability-performance",
+      "path": "examples/templates/frameworks/business-capability-performance",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0037",
+      "identity": "template:grouped-framework",
+      "path": "examples/templates/frameworks/grouped-framework",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0038",
+      "identity": "template:layered-framework",
+      "path": "examples/templates/frameworks/layered-framework",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0039",
+      "identity": "template:multi-antecedent-mechanism",
+      "path": "examples/templates/frameworks/multi-antecedent-mechanism",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0040",
+      "identity": "template:theory-mechanism-outcomes",
+      "path": "examples/templates/frameworks/theory-mechanism-outcomes",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0041",
+      "identity": "template:confidence-band",
+      "path": "examples/templates/plots/confidence-band",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0042",
+      "identity": "template:error-bars",
+      "path": "examples/templates/plots/error-bars",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0043",
+      "identity": "template:grouped-panels",
+      "path": "examples/templates/plots/grouped-panels",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0044",
+      "identity": "template:heatmap-colorbar",
+      "path": "examples/templates/plots/heatmap-colorbar",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0045",
+      "identity": "template:scatter-meta",
+      "path": "examples/templates/plots/scatter-meta",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0046",
+      "identity": "template:surface-colorbar",
+      "path": "examples/templates/plots/surface-colorbar",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0047",
+      "identity": "template:chain-mediation",
+      "path": "examples/templates/relations/chain-mediation",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0048",
+      "identity": "template:direct-effects-model",
+      "path": "examples/templates/relations/direct-effects-model",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0049",
+      "identity": "template:labelled-relations",
+      "path": "examples/templates/relations/labelled-relations",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0050",
+      "identity": "template:mediation-model",
+      "path": "examples/templates/relations/mediation-model",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0051",
+      "identity": "template:moderation-model",
+      "path": "examples/templates/relations/moderation-model",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0052",
+      "identity": "template:experimental-pipeline",
+      "path": "examples/templates/schematics/experimental-pipeline",
+      "kind": "template",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0053",
+      "identity": "figure:threshold-region",
+      "path": "examples/threshold-region",
+      "kind": "example",
+      "status": "active"
+    }
+  ],
+  "retired": []
+}

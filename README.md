@@ -16,6 +16,12 @@ The repository has three roles:
 
 The repository is the source of truth. Workspace/system Skills and the portable Codex/OpenAI Plugin are installation targets generated or synchronized from this project; they should not become independent forks.
 
+## Example Gallery
+
+Every curated example is assigned an immutable `TFF-xxxx` ID so humans and AI can refer to the exact same visual template. Browse the static gallery at **https://iihciyekub.github.io/tikz-funfig/** or inspect the canonical mapping in [`gallery/registry.json`](gallery/registry.json).
+
+Examples: `use TFF-0042 as the layout template`, or combine references such as `TFF-0042 for layout and TFF-0018 for styling`. IDs are never reused after retirement; run `python3 scripts/tff_gallery.py sync` whenever example cases are added, moved, or removed.
+
 ## Product scope
 
 The core product is intentionally focused on common academic-paper figures:
