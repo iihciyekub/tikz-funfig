@@ -20,3 +20,7 @@ PYTHONPATH=src python3 scripts/tff_gallery.py build-site --output _site
 \`\`\`
 
 When adding, moving, or deleting examples, run \`sync\` and commit the registry change with the example change.
+
+## External showcase examples
+
+Selected external references may be adapted into original, compile-stable TikZ showcase cases. Each such `.tex` file carries `TFF-Origin`, `TFF-License`, and `TFF-Attribution` headers. The Gallery exposes the original source link while keeping the repository's adapted TikZ source as the editable implementation.

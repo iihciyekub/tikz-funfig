@@ -42,6 +42,21 @@ def humanize(value: str) -> str:
     return value.replace("_", " ").replace("-", " ").strip().title()
 
 
+def tex_metadata(path: Path) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for line in path.read_text(encoding="utf-8").splitlines()[:48]:
+        match = TEX_META_RE.match(line)
+        if not match:
+            continue
+        key = match.group(1).casefold()
+        value = match.group(2).strip()
+        if key == "tags":
+            result[key] = [item.strip() for item in value.split(",") if item.strip()]
+        else:
+            result[key] = value
+    return result
+
+
 def case_dirs() -> list[Path]:
     found: set[Path] = set()
     for path in EXAMPLES.rglob("*"):
@@ -63,6 +78,7 @@ def descriptor(case_dir: Path) -> dict[str, Any]:
     template_spec = case_dir / "template.funfig.json"
 
     data: dict[str, Any] = {}
+    tex_meta: dict[str, Any] = {}
     source: Path | None = None
     identity: str
     kind: str
@@ -96,10 +112,16 @@ def descriptor(case_dir: Path) -> dict[str, Any]:
         if not tex:
             raise ValueError(f"case has no supported source: {case_dir}")
         source = tex[0]
+        tex_meta = tex_metadata(source)
         identity = f"tex:{short}"
         kind = "golden" if short.startswith("golden/") else "example"
 
-    if kind == "template" and template_meta.is_file():
+    if tex_meta:
+        title = str(tex_meta.get("title") or humanize(slug))
+        family = str(tex_meta.get("family") or kind)
+        tags = [str(item) for item in tex_meta.get("tags", []) if isinstance(item, str)]
+        description_text = str(tex_meta.get("description") or "")
+    elif kind == "template" and template_meta.is_file():
         meta = read_json(template_meta)
         title = str(meta.get("title") or humanize(slug))
         family = str(meta.get("family") or "template")
@@ -123,7 +145,7 @@ def descriptor(case_dir: Path) -> dict[str, Any]:
             files.append((case_dir / name).relative_to(ROOT).as_posix())
     files.extend(path.relative_to(ROOT).as_posix() for path in sorted(case_dir.glob("*.tex")))
 
-    return {
+    result = {
         "identity": identity,
         "path": rel,
         "kind": kind,
@@ -134,6 +156,15 @@ def descriptor(case_dir: Path) -> dict[str, Any]:
         "source": source.relative_to(ROOT).as_posix(),
         "files": files,
     }
+    if tex_meta:
+        for source_key, target_key in (
+            ("origin", "origin_url"),
+            ("license", "license"),
+            ("attribution", "attribution"),
+        ):
+            if tex_meta.get(source_key):
+                result[target_key] = str(tex_meta[source_key])
+    return result
 
 
 def discover_cases() -> list[dict[str, Any]]:
@@ -303,6 +334,9 @@ def enriched_registry(registry_path: Path) -> dict[str, Any]:
             raise ValueError(f"registry entry cannot be resolved: {entry['id']} {entry['identity']}")
         row = dict(entry)
         row.update({key: case[key] for key in ("title", "family", "tags", "description", "source", "files")})
+        for key in ("origin_url", "license", "attribution"):
+            if case.get(key):
+                row[key] = case[key]
         row["preview"] = f"previews/{entry['id']}.png"
         row["source_url"] = "https://github.com/iihciyekub/tikz-funfig/tree/main/" + case["path"]
         rows.append(row)

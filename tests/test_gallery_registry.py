@@ -31,9 +31,18 @@ class GalleryRegistryTests(unittest.TestCase):
 
     def test_every_active_entry_resolves(self) -> None:
         data = gallery.enriched_registry(ROOT / "gallery" / "registry.json")
-        self.assertEqual(len(data["entries"]), 53)
+        self.assertEqual(len(data["entries"]), 58)
         for item in data["entries"]:
             self.assertTrue((ROOT / item["source"]).is_file(), item["id"])
+
+    def test_showcase_examples_expose_origin_metadata(self) -> None:
+        data = gallery.enriched_registry(ROOT / "gallery" / "registry.json")
+        showcase = [item for item in data["entries"] if item["id"] >= "TFF-0054"]
+        self.assertEqual(len(showcase), 5)
+        for item in showcase:
+            self.assertTrue(item["origin_url"].startswith("https://texample.net/"), item["id"])
+            self.assertEqual(item["license"], "CC BY-SA 4.0")
+            self.assertIn("TeXample", item["attribution"])
 
     def test_exact_duplicate_aliases_stay_hidden_and_identical(self) -> None:
         data = gallery.enriched_registry(ROOT / "gallery" / "registry.json")
@@ -41,7 +50,7 @@ class GalleryRegistryTests(unittest.TestCase):
         self.assertEqual(len(aliases), 10)
         self.assertEqual(
             len([item for item in data["entries"] if item.get("gallery_visibility") != "hidden"]),
-            43,
+            48,
         )
         by_id = {item["id"]: item for item in data["entries"]}
         for item in aliases:

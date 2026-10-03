@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "id_prefix": "TFF",
-  "next_sequence": 54,
+  "next_sequence": 59,
   "policy": {
     "immutable_ids": true,
     "reuse_retired_ids": false,
@@ -412,6 +412,41 @@
       "id": "TFF-0053",
       "identity": "figure:threshold-region",
       "path": "examples/threshold-region",
+      "kind": "example",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0054",
+      "identity": "tex:showcase/tkz-berge-weighted-network",
+      "path": "examples/showcase/tkz-berge-weighted-network",
+      "kind": "example",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0055",
+      "identity": "tex:showcase/tkz-berge-textbook-graph",
+      "path": "examples/showcase/tkz-berge-textbook-graph",
+      "kind": "example",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0056",
+      "identity": "tex:showcase/maze-solution-path",
+      "path": "examples/showcase/maze-solution-path",
+      "kind": "example",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0057",
+      "identity": "tex:showcase/epc-query-ack-queryrep",
+      "path": "examples/showcase/epc-query-ack-queryrep",
+      "kind": "example",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0058",
+      "identity": "tex:showcase/epc-query-rake-ack",
+      "path": "examples/showcase/epc-query-rake-ack",
       "kind": "example",
       "status": "active"
     }
