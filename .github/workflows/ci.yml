@@ -34,7 +34,8 @@ jobs:
             texlive-latex-extra \
             texlive-pictures \
             texlive-fonts-recommended \
-            texlive-xetex
+            texlive-xetex \
+            texlive-lang-chinese
 
       - name: Validate shell scripts
         run: |
