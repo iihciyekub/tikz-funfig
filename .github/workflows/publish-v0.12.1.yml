@@ -1,0 +1,34 @@
+name: Publish v0.12.1 tag
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-v0.12.1.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate and publish annotated tag
+        env:
+          RELEASE_SHA: 06d3d8ce388f48fdfa42ac594ceec3fd5addb6ad
+          RELEASE_TAG: v0.12.1
+        run: |
+          test "$(git show "$RELEASE_SHA:pyproject.toml" | sed -n 's/^version = "\([^"]*\)"/\1/p')" = "0.12.1"
+          if git ls-remote --exit-code --tags origin "refs/tags/$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "tag already exists"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$RELEASE_TAG" "$RELEASE_SHA" -m "TIKZ-FunFig $RELEASE_TAG"
+          git push origin "refs/tags/$RELEASE_TAG"
