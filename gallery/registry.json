@@ -23,14 +23,14 @@
     },
     {
       "id": "TFF-0002",
-      "identity": "figure:confidence-band",
+      "identity": "figure:golden-confidence-band",
       "path": "examples/golden/confidence-band",
       "kind": "golden",
       "status": "active"
     },
     {
       "id": "TFF-0003",
-      "identity": "figure:contour-plot",
+      "identity": "figure:contour-plot-golden",
       "path": "examples/golden/contour-plot",
       "kind": "golden",
       "status": "active"
@@ -44,28 +44,28 @@
     },
     {
       "id": "TFF-0005",
-      "identity": "figure:error-bar",
+      "identity": "figure:golden-error-bar",
       "path": "examples/golden/error-bar",
       "kind": "golden",
       "status": "active"
     },
     {
       "id": "TFF-0006",
-      "identity": "figure:fig1",
+      "identity": "figure:sustainability-fig1-golden",
       "path": "examples/golden/fig1",
       "kind": "golden",
       "status": "active"
     },
     {
       "id": "TFF-0007",
-      "identity": "figure:fig11",
+      "identity": "figure:sustainability-fig11-golden",
       "path": "examples/golden/fig11",
       "kind": "golden",
       "status": "active"
     },
     {
       "id": "TFF-0008",
-      "identity": "figure:fig4",
+      "identity": "figure:sustainability-fig4-golden",
       "path": "examples/golden/fig4",
       "kind": "golden",
       "status": "active"
@@ -163,14 +163,14 @@
     },
     {
       "id": "TFF-0022",
-      "identity": "figure:groupplot",
+      "identity": "figure:golden-groupplot",
       "path": "examples/golden/groupplot",
       "kind": "golden",
       "status": "active"
     },
     {
       "id": "TFF-0023",
-      "identity": "figure:heatmap",
+      "identity": "figure:heatmap-golden",
       "path": "examples/golden/heatmap",
       "kind": "golden",
       "status": "active"
@@ -191,7 +191,7 @@
     },
     {
       "id": "TFF-0026",
-      "identity": "figure:quiver-field",
+      "identity": "figure:quiver-field-golden",
       "path": "examples/golden/quiver-field",
       "kind": "golden",
       "status": "active"
@@ -205,7 +205,7 @@
     },
     {
       "id": "TFF-0028",
-      "identity": "figure:scatter-plot",
+      "identity": "figure:golden-scatter-plot",
       "path": "examples/golden/scatter-plot",
       "kind": "golden",
       "status": "active"
@@ -219,7 +219,7 @@
     },
     {
       "id": "TFF-0030",
-      "identity": "figure:surface-plot",
+      "identity": "figure:surface-plot-golden",
       "path": "examples/golden/surface-plot",
       "kind": "golden",
       "status": "active"
@@ -233,7 +233,7 @@
     },
     {
       "id": "TFF-0032",
-      "identity": "figure:publication-threshold",
+      "identity": "figure:publication-threshold-demo",
       "path": "examples/publication-threshold",
       "kind": "example",
       "status": "active"
