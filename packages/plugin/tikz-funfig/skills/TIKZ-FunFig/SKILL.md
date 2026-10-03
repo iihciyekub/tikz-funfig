@@ -1,6 +1,6 @@
 ---
 name: tikz-funfig
-description: Design, reproduce, and refine academic TikZ/PGFPlots figures, especially research frameworks, mathematical/variable relationships, 2D function/data plots, flowcharts, and basic academic schematics. Use for unclear or mixed paper figures and cross-family repairs; use a specialized FunFig Skill when the family is clear.
+description: Design, reproduce, and refine academic TikZ/PGFPlots figures, including exact TFF-xxxx Gallery references, research frameworks, mathematical/variable relationships, 2D function/data plots, flowcharts, and basic academic schematics. Use for Gallery-template reuse, unclear or mixed paper figures, and cross-family repairs; use a specialized FunFig Skill when the family is clear.
 ---
 
 # TIKZ-FunFig
@@ -16,6 +16,12 @@ The host agent selects Skills from their descriptions or explicit user invocatio
 This Plugin does not execute Skills as functions or launch agents. Within a task,
 read the appropriate sibling Skill and shared references yourself; the user need
 not name a Skill, Recipe, theme, or schema. Explicit user instructions take priority.
+
+If the request contains an immutable Gallery ID such as `TFF-0034`, read
+[example-gallery.md](references/example-gallery.md) and resolve the exact registry
+entry before choosing a family or inventing a composition. A TFF reference is a
+visual/source reference, not permission to copy another example's scientific
+claims or labels.
 
 Choose the family by the figure's meaning, independently of whether the input is
 text, an image, data, or TeX:
@@ -49,6 +55,8 @@ only when they apply:
 
 - User asks what the Plugin can draw or how to use it, or invokes it without a
   figure request: [capability-menu.md](references/capability-menu.md).
+- User cites one or more `TFF-xxxx` IDs or asks to reuse a Gallery example:
+  [example-gallery.md](references/example-gallery.md).
 - Uploaded photograph, screenshot, sketch, or style/type reference:
   [reference-images.md](references/reference-images.md).
 - Complex, mixed, reference-led, or uncertain route selection:
@@ -92,6 +100,9 @@ and keep the working directory at the user's active project; do not move into th
 Plugin cache to execute it. Repository development can use `PYTHONPATH=src python3
 -m funfig` instead. Query `capabilities`, `templates search/inspect`, and `kb search`
 as needed instead of carrying a static Recipe catalog in these instructions.
+TFF IDs are a separate immutable Gallery namespace: resolve them through the
+bundled Gallery registry, never by guessing from the number or by passing the ID
+to `templates inspect` unless the resolved entry is actually a curated Template.
 Treat `capabilities.product_scope=core` as the default product surface;
 `long_tail` means technically retained but opt-in/specialist, not a prompt to
 broaden the task.

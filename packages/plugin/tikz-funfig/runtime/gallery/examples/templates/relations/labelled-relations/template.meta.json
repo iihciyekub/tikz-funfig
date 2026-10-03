@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "labelled-relations",
+  "family": "relation",
+  "title": "Labelled concept relations",
+  "description": "Small academic concept network with directed, bidirectional, curved, undirected, and self-loop relations.",
+  "recipe_hint": "relation-diagram",
+  "source_golden": "examples/golden/relations-labelled",
+  "tags": [
+    "concept network",
+    "labelled edges",
+    "bidirectional",
+    "self loop"
+  ],
+  "supported_profiles": [
+    "journal-single-column",
+    "journal-double-column"
+  ],
+  "supported_themes": [
+    "journal-monochrome",
+    "journal-muted"
+  ],
+  "design_fit": {
+    "best_for": ["small labelled concept networks", "mixed directed and undirected relations", "parallel or self relationships"],
+    "node_range": [2, 8],
+    "label_density": "medium",
+    "recommended_width_mm": [80, 180],
+    "adaptation_notes": ["Place nodes from topology before bending edges.", "Use curves to distinguish parallel relations, not as decoration."],
+    "failure_modes": ["edge labels overlap each other", "arrow direction is inferred from sentence order", "too many bends obscure topology"]
+  },
+  "requires": {
+    "packages": [
+      "tikz"
+    ],
+    "libraries": [
+      "arrows.meta",
+      "positioning"
+    ]
+  },
+  "edit_contract": {
+    "editable": [
+      "concept labels",
+      "edge labels",
+      "edge direction",
+      "curve bend",
+      "node count",
+      "theme/profile"
+    ],
+    "structural_limits": {
+      "nodes": [
+        2,
+        8
+      ],
+      "edges": [
+        1,
+        16
+      ]
+    },
+    "locked": [
+      "relationship semantics must be user supplied",
+      "do not infer causality from arrow layout"
+    ]
+  }
+}

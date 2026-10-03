@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "id": "mechanism-diagram",
+  "recipe": "mechanism-diagram",
+  "kind": "tikz",
+  "diagram": {
+    "nodes": [
+      {"id": "input", "label": "Input", "at": "0,0"},
+      {"id": "mechanism", "label": "Mechanism", "right_of": "input"},
+      {"id": "outcome", "label": "Outcome", "right_of": "mechanism"}
+    ],
+    "edges": [
+      {"from": "input", "to": "mechanism", "label": "affects"},
+      {"from": "mechanism", "to": "outcome"}
+    ]
+  },
+  "outputs": {"basename": "figure", "keep_build": false}
+}
+

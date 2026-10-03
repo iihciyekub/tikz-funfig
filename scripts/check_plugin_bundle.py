@@ -79,10 +79,14 @@ def main() -> int:
         "knowledge/manual-index/pgfplots-1.18.2.jsonl",
         "knowledge/manual-index/pgfplots-1.18.2.topics.json",
         "runtime/templates/index.json",
+        "runtime/gallery/registry.json",
+        "runtime/gallery/examples/templates/index.json",
+        "runtime/gallery/examples/showcase/maze-solution-path/maze-solution-path.tex",
         "runtime/schemas/figure-spec.schema.json",
         "runtime/schemas/figure-design.schema.json",
         "skills/TIKZ-FunFig/SKILL.md",
         "skills/TIKZ-FunFig/references/workflow.md",
+        "skills/TIKZ-FunFig/references/example-gallery.md",
         "skills/TIKZ-FunFig/references/design-contract.md",
         "skills/funfig-plots/SKILL.md",
         "skills/funfig-flowcharts/SKILL.md",
@@ -93,6 +97,24 @@ def main() -> int:
     missing = [name for name in required if not (PLUGIN / name).is_file()]
     if missing:
         fail("portable Plugin is missing required files: " + ", ".join(missing))
+
+    gallery_registry = json.loads(
+        (PLUGIN / "runtime/gallery/registry.json").read_text(encoding="utf-8")
+    )
+    gallery_entries = gallery_registry.get("entries", [])
+    gallery_ids = [item.get("id") for item in gallery_entries]
+    if not gallery_entries or len(gallery_ids) != len(set(gallery_ids)):
+        fail("portable Plugin gallery registry is empty or has duplicate TFF IDs")
+    gallery_examples = PLUGIN / "runtime/gallery/examples"
+    for item in gallery_entries:
+        if item.get("status", "active") != "active":
+            continue
+        source_path = str(item.get("path", ""))
+        if not source_path.startswith("examples/"):
+            fail(f"invalid gallery source path for {item.get('id')}: {source_path}")
+        bundled = gallery_examples / source_path.removeprefix("examples/")
+        if not bundled.is_dir():
+            fail(f"portable Plugin is missing gallery case for {item.get('id')}: {bundled}")
 
     manifest = json.loads((PLUGIN / "plugin.json").read_text(encoding="utf-8"))
     if manifest.get("name") != "tikz-funfig":

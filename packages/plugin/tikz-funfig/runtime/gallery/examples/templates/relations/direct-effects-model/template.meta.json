@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "direct-effects-model",
+  "family": "relation",
+  "title": "Multiple predictors and one outcome",
+  "description": "Compact conceptual path model for several supplied predictors converging on one outcome.",
+  "recipe_hint": "relation-diagram",
+  "tags": ["multiple predictors", "direct effects", "regression model", "hypotheses", "多自变量", "直接效应", "假设模型", "商学"],
+  "supported_profiles": ["journal-single-column", "journal-double-column"],
+  "supported_themes": ["journal-monochrome", "journal-muted", "journal-accessible"],
+  "design_fit": {
+    "best_for": ["multiple antecedents to one outcome", "hypothesis path models", "compact regression-style conceptual models"],
+    "node_range": [3, 7],
+    "label_density": "medium",
+    "recommended_width_mm": [88, 160],
+    "adaptation_notes": ["Stack predictors and center the outcome vertically.", "Slope labels on diagonal paths when needed for clearance."],
+    "failure_modes": ["diagonal hypothesis labels hit predictor boxes", "outcome is not visually centered", "arrows imply unsupported causal claims"]
+  },
+  "requires": {"packages": ["tikz"], "libraries": ["arrows.meta"]},
+  "edit_contract": {
+    "editable": ["predictor labels", "outcome label", "hypothesis labels", "predictor count", "theme/profile"],
+    "structural_limits": {"predictors": [2, 6], "outcomes": [1, 2]},
+    "locked": ["all directed relationships must be supplied by the user", "diagram arrows do not substitute for statistical evidence"]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "feedback-loop",
+  "family": "flowchart",
+  "title": "Decision flow with exterior feedback",
+  "description": "Compact academic process where a failed decision returns to an earlier acquisition step along an exterior curved route.",
+  "recipe_hint": "flowchart",
+  "source_golden": "examples/golden/flowchart-feedback",
+  "tags": ["feedback", "return loop", "quality control", "decision", "retry"],
+  "supported_profiles": ["journal-single-column", "journal-double-column"],
+  "supported_themes": ["journal-monochrome", "journal-muted", "journal-accessible"],
+  "design_fit": {
+    "best_for": ["linear process with one retry loop", "quality-control feedback", "exterior return routing"],
+    "node_range": [3, 7],
+    "label_density": "short-to-medium",
+    "recommended_width_mm": [80, 180],
+    "adaptation_notes": ["Keep the main reading path straight.", "Route feedback outside the primary labels and nodes."],
+    "failure_modes": ["return edge crosses node labels", "loop dominates the main reading path", "branch labels become ambiguous"]
+  },
+  "requires": {
+    "packages": ["tikz"],
+    "libraries": ["arrows.meta", "positioning", "shapes.geometric"]
+  },
+  "edit_contract": {
+    "editable": ["node labels", "branch labels", "feedback target", "bend amount", "theme/profile", "relative gaps"],
+    "structural_limits": {"decisions": [1, 2], "feedback_edges": [1, 2], "nodes": [3, 7]},
+    "locked": ["feedback meaning and direction must be user supplied", "do not turn a retry loop into causal evidence"]
+  }
+}

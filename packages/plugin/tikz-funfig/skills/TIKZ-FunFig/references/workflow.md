@@ -31,6 +31,13 @@ missing fact or conflicting reference would materially change the content or
 requested fidelity. Do not require approval of every design record or layout.
 A brief explanation of important assumptions is enough for routine choices.
 
+If the user cites any `TFF-xxxx` Gallery ID, read `example-gallery.md` and
+resolve it before general retrieval. Treat the resolved example as an explicit
+reference with the user's stated role (for example layout, style, annotation, or
+overall template). Follow `canonical_id` for hidden duplicate aliases while
+preserving the originally requested ID in provenance. Do not ask the user to
+re-describe a template that the registry can resolve exactly.
+
 For a complex reference, mixed figure, or uncertain implementation path, read
 `routing.md` before implementation. Inventory implementation-relevant features,
 check the best stable Recipe, and persist a concise `routing` record when the
@@ -50,6 +57,13 @@ Older figures remain buildable without a design record; add one when adopting
 this workflow, not by bulk-migrating unrelated work.
 
 ## Retrieve for the actual design problem
+
+A supplied TFF ID is a direct lookup, not a fuzzy search. Inspect its exact
+registry entry and source first; use its structure/style as requested, then search
+Templates or the knowledge base only for missing implementation details. If an
+alias resolves to a canonical entry, use the canonical source while retaining the
+alias as a stable user-facing reference. Multiple TFF IDs may be combined when
+their requested roles are explicit or clearly compatible.
 
 Check `capabilities` for stable support. Search/inspect relevant Templates, then
 retrieve knowledge for missing layout or implementation details. Rewrite a long

@@ -1,0 +1,67 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "layered-framework",
+  "family": "framework",
+  "title": "Layered grouped research framework",
+  "description": "Layered input-mechanism-outcome framework with context node and nested visual groups.",
+  "recipe_hint": "framework-diagram",
+  "source_golden": "examples/golden/framework-layered",
+  "tags": [
+    "research framework",
+    "layered",
+    "grouped",
+    "input mechanism outcome"
+  ],
+  "supported_profiles": [
+    "journal-single-column",
+    "journal-double-column"
+  ],
+  "supported_themes": [
+    "journal-monochrome",
+    "journal-muted",
+    "journal-accessible"
+  ],
+  "design_fit": {
+    "best_for": ["input-mechanism-outcome frameworks", "nested conceptual groups", "context or moderator layers"],
+    "node_range": [3, 9],
+    "label_density": "medium",
+    "recommended_width_mm": [120, 180],
+    "adaptation_notes": ["Keep core reading order visually dominant.", "Use group nesting for hierarchy rather than extra causal arrows."],
+    "failure_modes": ["nested group titles collide", "moderator appears causal when it is only contextual", "long labels collapse the layer spacing"]
+  },
+  "requires": {
+    "packages": [
+      "tikz"
+    ],
+    "libraries": [
+      "arrows.meta",
+      "backgrounds",
+      "fit"
+    ]
+  },
+  "edit_contract": {
+    "editable": [
+      "layer labels",
+      "context nodes",
+      "group labels",
+      "edge labels",
+      "theme/profile",
+      "grid gaps"
+    ],
+    "structural_limits": {
+      "core_layers": [
+        2,
+        5
+      ],
+      "groups": [
+        1,
+        4
+      ]
+    },
+    "locked": [
+      "causal direction must be user supplied",
+      "group containment is visual hierarchy, not causal evidence"
+    ]
+  }
+}

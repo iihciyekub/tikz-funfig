@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "contour-plot-golden",
+  "recipe": "contour-plot",
+  "kind": "pgfplots",
+  "canvas": {"width": "8.5cm", "height": "7cm", "border": "2pt"},
+  "engine": {"latex": "pdflatex", "compute": "gnuplot"},
+  "axes": {
+    "title": "Contour levels of $x^2+y^2$",
+    "x": {"label": "$x$", "min": -2, "max": 2},
+    "y": {"label": "$y$", "min": -2, "max": 2},
+    "grid": "major",
+    "view": {"azimuth": 0, "elevation": 90},
+    "colormap": "viridis",
+    "colorbar": {"position": "right", "label": "$x^2+y^2$"}
+  },
+  "data_sources": [
+    {
+      "id": "radial",
+      "type": "function",
+      "expression": "x^2+y^2",
+      "domain": "-2:2",
+      "y_domain": "-2:2",
+      "samples": 35
+    }
+  ],
+  "series": [
+    {
+      "id": "radial",
+      "source": "radial",
+      "plot": {"kind": "contour", "levels": [0.5, 1, 2, 3]}
+    }
+  ],
+  "outputs": {"basename": "contour-plot", "keep_build": false},
+  "metadata": {"golden": true, "reference": "gnuplot-backed contour"}
+}

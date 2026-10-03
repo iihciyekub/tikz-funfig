@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0",
+  "id": "sustainability-fig11-golden",
+  "recipe": "publication-threshold",
+  "kind": "pgfplots",
+  "canvas": {"width": "10cm", "height": "7.2cm", "border": "2pt"},
+  "engine": {"latex": "pdflatex", "compute": "none"},
+  "axes": {
+    "title": "$p=10, c=4, s=3, w=6, B=100, r=0.05$\\\\$\\mu=100, \\sigma=100$",
+    "axis_line_shift": "6.5pt",
+    "tick_precision": 4,
+    "x": {
+      "label": "Acceptable Bankruptcy Risk: $\\alpha$",
+      "min": 0,
+      "max": 1,
+      "ticks": [0, 0.123, 0.29, 0.5, 0.7, 0.85, 1]
+    },
+    "y": {
+      "label": "Revenue Share: $(p\\theta^\\star,p\\tilde{\\theta}^\\star)$ \\& Buy-Back Price: $(b^\\star,\\tilde b^\\star)$",
+      "min": 0,
+      "max": 20.001,
+      "ticks": [0, 1.05, 6.01, 7.22, 8.89, 16, 20.001]
+    },
+    "grid": "major",
+    "legend": {
+      "at": "(0.98,0.98)",
+      "anchor": "north east",
+      "columns": 1,
+      "font": "\\footnotesize",
+      "cell_anchor": "west"
+    }
+  },
+  "data_sources": [
+    {"id": "b-left", "type": "file", "path": "data/b-left.tsv"},
+    {"id": "b-right", "type": "file", "path": "data/b-right.tsv"},
+    {"id": "b-effective", "type": "file", "path": "data/b-effective.tsv"},
+    {"id": "thetap-left", "type": "file", "path": "data/thetap-left.tsv"},
+    {"id": "thetap-right", "type": "file", "path": "data/thetap-right.tsv"},
+    {"id": "thetap-effective", "type": "file", "path": "data/thetap-effective.tsv"}
+  ],
+  "series": [
+    {
+      "id": "b-left",
+      "source": "b-left",
+      "label": "$b^\\star$",
+      "style": {"color": "MediumBlue", "opacity": 0.454, "line_width": "0.457pt", "line": "dash dot"}
+    },
+    {
+      "id": "b-right",
+      "source": "b-right",
+      "style": {"color": "MediumBlue", "opacity": 0.454, "line_width": "0.457pt", "line": "dash dot"}
+    },
+    {
+      "id": "b-effective",
+      "source": "b-effective",
+      "label": "$\\tilde b^\\star$",
+      "style": {"color": "MediumBlue", "line_width": "0.8pt"}
+    },
+    {
+      "id": "thetap-left",
+      "source": "thetap-left",
+      "label": "$p\\theta^\\star$",
+      "style": {"color": "Maroon", "opacity": 0.454, "line_width": "0.457pt", "line": "dash dot"}
+    },
+    {
+      "id": "thetap-right",
+      "source": "thetap-right",
+      "style": {"color": "Maroon", "opacity": 0.454, "line_width": "0.457pt", "line": "dash dot"}
+    },
+    {
+      "id": "thetap-effective",
+      "source": "thetap-effective",
+      "label": "$p\\tilde{\\theta}^\\star$",
+      "style": {"color": "Crimson", "line_width": "0.8pt"}
+    }
+  ],
+  "regions": [],
+  "annotations": [
+    {
+      "type": "point",
+      "at": [0.09, 5.59],
+      "label": "$(0.09,5.59)$",
+      "anchor": "north west",
+      "shift": "(5pt,-18pt)",
+      "font": "\\scriptsize",
+      "arrow": true,
+      "style": {"fill": "DarkOrange", "draw": "black!70", "mark_size": "1.8pt"}
+    },
+    {
+      "type": "point",
+      "at": [0.125, 6],
+      "label": "$\\{\\alpha,\\tilde b^\\star,p\\tilde{\\theta}^\\star\\}=\\{0.125,6,6\\}$",
+      "anchor": "west",
+      "shift": "(15pt,-4pt)",
+      "font": "\\scriptsize",
+      "arrow": true,
+      "style": {"fill": "LawnGreen", "draw": "black!70", "mark_size": "1.8pt"}
+    },
+    {
+      "type": "point",
+      "at": [0.073, 8.87],
+      "label": "$(0.07,8.89)$",
+      "anchor": "south west",
+      "shift": "(14pt,16pt)",
+      "font": "\\scriptsize",
+      "arrow": true,
+      "style": {"fill": "Chocolate", "draw": "black!70", "mark_size": "1.8pt"}
+    },
+    {
+      "type": "point",
+      "at": [0.295, 7.22],
+      "label": "$(0.295,7.22)$",
+      "anchor": "south west",
+      "shift": "(9pt,24pt)",
+      "font": "\\scriptsize",
+      "arrow": true,
+      "style": {"fill": "Brown", "draw": "black!70", "mark_size": "1.8pt"}
+    },
+    {
+      "type": "point",
+      "at": [0.264, 1.05],
+      "label": "$(0.264,1.05)$",
+      "anchor": "south west",
+      "shift": "(9pt,10pt)",
+      "font": "\\scriptsize",
+      "arrow": true,
+      "style": {"fill": "OldLace", "draw": "black!70", "mark_size": "1.8pt"}
+    }
+  ],
+  "outputs": {"basename": "fig11", "keep_build": false},
+  "metadata": {
+    "golden": true,
+    "provenance": "references/legacy/publication-sustainability-1485080/fig11/fig11.tex",
+    "purpose": "Regression case for paired piecewise contract curves and several annotated threshold points."
+  }
+}

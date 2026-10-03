@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "decision-branch",
+  "family": "flowchart",
+  "title": "Decision branch flowchart",
+  "description": "Compact academic process with one decision, labelled yes/no branches, and regular grid layout.",
+  "recipe_hint": "flowchart",
+  "source_golden": "examples/golden/flowchart-decision",
+  "tags": [
+    "decision",
+    "branch",
+    "process",
+    "yes no"
+  ],
+  "supported_profiles": [
+    "journal-single-column",
+    "journal-double-column"
+  ],
+  "supported_themes": [
+    "journal-monochrome",
+    "journal-muted",
+    "journal-accessible"
+  ],
+  "design_fit": {
+    "best_for": ["single decision with labelled outcomes", "compact yes/no process branch"],
+    "node_range": [3, 10],
+    "label_density": "short-to-medium",
+    "recommended_width_mm": [80, 180],
+    "adaptation_notes": ["Keep branch labels adjacent to the decision edges.", "Use relative placement when labels have unequal widths."],
+    "failure_modes": ["decision branches look like sequential steps", "branch labels collide with nodes", "grid gaps are mistaken for border clearance"]
+  },
+  "requires": {
+    "packages": [
+      "tikz"
+    ],
+    "libraries": [
+      "arrows.meta",
+      "shapes.geometric"
+    ]
+  },
+  "edit_contract": {
+    "editable": [
+      "node labels",
+      "branch labels",
+      "process nodes",
+      "theme/profile",
+      "grid gaps"
+    ],
+    "structural_limits": {
+      "decisions": [
+        1,
+        3
+      ],
+      "nodes": [
+        3,
+        10
+      ]
+    },
+    "locked": [
+      "branch meaning and direction must be user supplied",
+      "do not claim BPMN/UML conformance"
+    ]
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "experimental-pipeline",
+  "family": "schematic",
+  "title": "Experimental component pipeline",
+  "description": "Publication-oriented experimental/system schematic with components, grouped apparatus, annotations, and directional measurement flow.",
+  "recipe_hint": "scientific-schematic",
+  "source_golden": "examples/golden/schematic-scientific",
+  "tags": [
+    "experimental apparatus",
+    "scientific schematic",
+    "components",
+    "measurement"
+  ],
+  "supported_profiles": [
+    "journal-single-column",
+    "journal-double-column"
+  ],
+  "supported_themes": [
+    "journal-monochrome",
+    "journal-muted",
+    "journal-accessible"
+  ],
+  "design_fit": {
+    "best_for": ["experimental apparatus pipelines", "component-to-sensor measurement flow", "grouped scientific components"],
+    "node_range": [3, 10],
+    "label_density": "medium",
+    "recommended_width_mm": [80, 180],
+    "adaptation_notes": ["Preserve meaningful physical ordering.", "Keep measurement annotations visually secondary to apparatus components."],
+    "failure_modes": ["abstract layout destroys spatial meaning", "annotation leaders collide with components", "photo-only detail is invented as apparatus structure"]
+  },
+  "requires": {
+    "packages": [
+      "tikz"
+    ],
+    "libraries": [
+      "arrows.meta",
+      "backgrounds",
+      "fit"
+    ]
+  },
+  "edit_contract": {
+    "editable": [
+      "component labels",
+      "component count",
+      "coordinates",
+      "group labels",
+      "measurement labels",
+      "theme/profile"
+    ],
+    "structural_limits": {
+      "components": [
+        3,
+        10
+      ],
+      "groups": [
+        0,
+        4
+      ]
+    },
+    "locked": [
+      "physical/scientific relationships must be supplied by the user",
+      "manual coordinates may carry scientific meaning"
+    ]
+  }
+}

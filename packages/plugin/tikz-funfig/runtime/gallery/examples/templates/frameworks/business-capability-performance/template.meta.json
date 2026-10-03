@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "business-capability-performance",
+  "family": "framework",
+  "title": "Business capability and performance framework",
+  "description": "Three-stage business framework connecting resources/environment, organizational capabilities, and performance outcomes.",
+  "recipe_hint": "framework-diagram",
+  "tags": ["business", "management", "capability", "performance", "strategy", "resources", "商学", "管理学", "组织能力", "企业绩效"],
+  "supported_profiles": ["journal-double-column"],
+  "supported_themes": ["journal-monochrome", "journal-muted", "journal-accessible"],
+  "design_fit": {
+    "best_for": ["business research frameworks", "resource-capability-performance models", "strategy and management conceptual frameworks"],
+    "node_range": [5, 10],
+    "label_density": "high",
+    "recommended_width_mm": [130, 178],
+    "adaptation_notes": ["Keep the three stages visually distinct.", "Use groups for conceptual stages rather than extra arrows."],
+    "failure_modes": ["long construct names force tiny text", "group titles compete with paths", "cross-stage paths create an accidental process-flow appearance"]
+  },
+  "requires": {"packages": ["tikz"], "libraries": ["arrows.meta", "backgrounds", "fit"]},
+  "edit_contract": {
+    "editable": ["resource/context constructs", "capability constructs", "outcome constructs", "stage labels", "relationships", "theme/profile"],
+    "structural_limits": {"stages": [3, 4], "constructs": [5, 12]},
+    "locked": ["business constructs and relationships must be user supplied", "stage membership does not itself establish causality"]
+  }
+}

@@ -13,13 +13,15 @@ Read this file before modifying the repository.
 - `themes/` — canonical machine-readable visual themes for structured diagrams.
 - `profiles/` — canonical publication/output profiles and QA thresholds.
 - `examples/golden/` — deterministic regression cases.
+- `examples/` — canonical Gallery source cases and curated examples/templates.
+- `gallery/registry.json` — canonical immutable `TFF-xxxx` mapping.
 - `sources/` — pinned external/official source material and source manifests; development/provenance only.
 - `references/legacy/` — read-only development/provenance knowledge.
 - `references/methods/` — mappings from legacy/provenance techniques into promoted product methods.
 
 `packages/plugin/tikz-funfig/` is a generated portable distribution bundle. Do not maintain its runtime or Skill copies by hand. Change the source directories above, then run `./scripts/sync_plugin_package.sh`.
 
-The portable Plugin gets one shared copy of `knowledge/`, `themes/`, and `profiles/`. Do not duplicate canonical knowledge cards into every specialized Skill.
+The portable Plugin gets one shared copy of `knowledge/`, `themes/`, and `profiles/`, plus a bundled Gallery registry/source tree for offline TFF resolution. Do not duplicate canonical knowledge cards into every specialized Skill.
 
 ## Required development flow
 

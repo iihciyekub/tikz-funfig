@@ -20,7 +20,7 @@ The repository is the source of truth. Workspace/system Skills and the portable 
 
 Every curated example is assigned an immutable `TFF-xxxx` ID so humans and AI can refer to the exact same visual template. Browse the static gallery at **https://iihciyekub.github.io/tikz-funfig/** or inspect the canonical mapping in [`gallery/registry.json`](gallery/registry.json).
 
-Examples: `use TFF-0042 as the layout template`, or combine references such as `TFF-0042 for layout and TFF-0018 for styling`. IDs are never reused after retirement; run `python3 scripts/tff_gallery.py sync` whenever example cases are added, moved, or removed.
+Examples: `use TFF-0042 as the layout template`, or combine references such as `TFF-0042 for layout and TFF-0018 for styling`. IDs are never reused after retirement; run `python3 scripts/tff_gallery.py sync` whenever example cases are added, moved, or removed. The portable Plugin bundles the same registry and source cases under `runtime/gallery/`, so Skills can resolve TFF references without the source checkout.
 
 ## Product scope
 
@@ -200,7 +200,8 @@ shared searchable knowledge tree, the bundled runtime, Schema/Recipe registry,
 themes, Publication Profiles, and visual assets. The original `pgfmanual.pdf`
 is not a runtime dependency. `IconKitchen/macos/AppIcon128.png` and `AppIcon512.png` are the canonical
 composer icon/logo sources. Run `scripts/sync_plugin_package.sh` after changing
-Skills, runtime, schemas, recipes, knowledge, themes/profiles, or icons.
+Skills, runtime, schemas, recipes, knowledge, themes/profiles, Gallery/examples,
+or icons.
 
 The repo-local Codex marketplace manifest is `.agents/plugins/marketplace.json`.
 

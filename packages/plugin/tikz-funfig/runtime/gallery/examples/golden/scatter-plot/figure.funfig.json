@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "id": "golden-scatter-plot",
+  "recipe": "scatter-plot",
+  "kind": "pgfplots",
+  "canvas": {"width": "9cm", "height": "6.5cm", "border": "2pt"},
+  "engine": {"latex": "pdflatex", "compute": "none"},
+  "axes": {
+    "title": "Metadata-driven scatter",
+    "x": {"label": "$x$", "min": 0, "max": 1},
+    "y": {"label": "$y$", "min": 0, "max": 1},
+    "grid": "major",
+    "colorbar": {"position": "right", "label": "score"}
+  },
+  "data_sources": [
+    {"id": "points", "type": "file", "path": "data/scatter.tsv", "x": "x", "y": "y"}
+  ],
+  "series": [
+    {
+      "id": "points",
+      "source": "points",
+      "plot": "scatter",
+      "scatter": {"source": "explicit", "meta": "score"},
+      "style": {"mark": "*", "mark_size": "2.4pt"}
+    }
+  ],
+  "regions": [],
+  "annotations": [],
+  "outputs": {"basename": "scatter-plot", "keep_build": false},
+  "metadata": {"golden": true, "reference": "PGFPlots memo scatter examples"}
+}

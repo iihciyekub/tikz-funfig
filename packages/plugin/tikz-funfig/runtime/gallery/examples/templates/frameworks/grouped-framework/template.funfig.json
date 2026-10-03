@@ -1,0 +1,23 @@
+{
+  "schema_version":"1.1","id":"template-grouped-framework","recipe":"framework-diagram","kind":"tikz",
+  "theme":{"id":"journal-muted"},"profile":{"id":"journal-double-column"},
+  "diagram":{"layout":{"type":"grid","row_gap":"19mm","column_gap":"30mm"},
+    "nodes":[
+      {"id":"x1","label":"Observed input","role":"module","position":{"type":"grid","row":0,"column":0}},
+      {"id":"x2","label":"Context","role":"module","position":{"type":"grid","row":1,"column":0}},
+      {"id":"m1","label":"Mechanism A","role":"module","position":{"type":"grid","row":0,"column":1}},
+      {"id":"m2","label":"Mechanism B","role":"module","position":{"type":"grid","row":1,"column":1}},
+      {"id":"y","label":"Outcome","role":"module","position":{"type":"grid","row":0,"column":2}}
+    ],
+    "edges":[
+      {"id":"e1","from":"x1","to":"m1","route":"straight"},
+      {"id":"e2","from":"x2","to":"m2","route":"straight"},
+      {"id":"e3","from":"m1","to":"y","route":"straight"},
+      {"id":"e4","from":"m2","to":"y","route":"orthogonal","routing":{"order":"horizontal-first"}}
+    ],
+    "groups":[
+      {"id":"inputs","members":["x1","x2"],"label":"Inputs"},
+      {"id":"mechanisms","members":["m1","m2"],"label":"Mechanisms"}
+    ]},
+  "outputs":{"basename":"grouped-framework","keep_build":false},"metadata":{"template":true,"template_id":"grouped-framework"}
+}

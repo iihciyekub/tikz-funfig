@@ -32,9 +32,14 @@ The shared tree remains available for direct inspection when needed:
 - Official section IDs map to `knowledge/manual-index/*.jsonl`; inspect the
   matching record's text for key semantics. Expert `--source` needs these IDs.
 - Templates use `templates inspect <id>`; Recipes are declared by `capabilities`.
+- Immutable Gallery IDs use `TFF-xxxx` and resolve through
+  `runtime/gallery/registry.json` in the installed Plugin. The corresponding
+  bundled source case is under `runtime/gallery/examples/`; see
+  `example-gallery.md` before reusing one.
 
 In the installed Plugin, `knowledge/` is at Plugin root beside `skills/` and
-`runtime/`, not inside `runtime/`. Resolve it relative to the current Skill path;
+`runtime/`, not inside `runtime/`. Gallery references live under
+`runtime/gallery/`. Resolve both relative to the current Skill path;
 do not assume the original source checkout exists. For JSONL, select matching
 IDs rather than reading a whole corpus into context. If source examples dominate
 search results, query the exact official section title to find its manual record.

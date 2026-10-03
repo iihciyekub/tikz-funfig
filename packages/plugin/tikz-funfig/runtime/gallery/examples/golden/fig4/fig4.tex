@@ -1,0 +1,64 @@
+\documentclass[border=2pt]{standalone}
+\usepackage[dvipsnames,svgnames,x11names]{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{calc,arrows.meta,positioning,intersections,fit,shapes.geometric}
+\usepgfplotslibrary{fillbetween}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+  width=10cm,
+  height=7.2cm,
+  axis line shift=6.5pt,
+  tick align=inside,
+  major tick length=2.2pt,
+  axis line style={line width=0.45pt},
+  tick style={black,line width=0.4pt},
+  scaled ticks=false,
+  enlargelimits=false,
+  grid=major,
+  grid style={gray!25,line width=0.2pt},
+  title={$p=10, c=4, s=3, w=6, B=100, r=0.05$\\$\theta=0.8, b=3, \mu=100, \sigma=100$},
+  title style={align=left},
+  ticklabel style={/pgf/number format/precision=4},
+  xlabel={Acceptable Bankruptcy Risk: $\alpha$},
+  xmin=0,
+  xmax=1,
+  xtick={0,0.11,0.203333,0.5,1},
+  ylabel={Retailer's \& Manufacturer's Profit: $\pi_r,\pi_s$},
+  ymin=-100,
+  ymax=403.5,
+  ytick={-100,0,33.424,203.828940307,403.05},
+  extra y ticks={403.5},
+  extra y tick style={grid=none,tick label style={opacity=0}},
+  legend style={draw=none,fill=none,cells={anchor=west},at={(0.02,0.98)},anchor=north west,legend columns=1,font=\footnotesize},
+]
+\fill [fill=DarkTurquoise,fill opacity=0.38] (axis cs:0.11,0) rectangle (axis cs:0.203333,33.424);
+\fill [fill=Aquamarine,fill opacity=0.138] (axis cs:0.11,0) rectangle (axis cs:0.203333,203.828940307);
+\addplot+ [blue!80!red,dash dot,line width=0.57pt,opacity=0.45,mark=none,name path=A] table {data/pir.tsv};
+\addlegendentry{$\pi_r=q(\theta p-w)-(p\theta-b)\int_0^qF(x)\,dx-(wq-B)^+r$}
+\addplot+ [blue!80!red,line width=1.15pt,mark=none] table {data/pir-increasing.tsv};
+\addplot+ [blue!80!red,line width=1pt,mark=none] coordinates {(0.204,33.448885) (1,33.448885)};
+\addplot+ [DarkSeaGreen,dash dot,line width=0.57pt,opacity=0.4,mark=none,name path=C] table {data/pis.tsv};
+\addlegendentry{$\pi_s=q[(1-\theta)p+w-c]-[(1-\theta)p-s+b]\int_0^qF(x)\,dx$}
+\addplot+ [DarkSeaGreen,line width=1.15pt,mark=none] table {data/pis-increasing.tsv};
+\addplot+ [DarkSeaGreen,line width=1pt,mark=none] coordinates {(0.204,203.828940307) (1,203.828940307)};
+\node[fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=center,font=\scriptsize] at (axis cs:0.16,10) {$\pi_r$ increasing area};
+\node[fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=center,font=\scriptsize,rotate=90] at (axis cs:0.134,170) {$\pi_s$ increasing area};
+\addplot+[mark size=1.8pt,draw=black!70,fill=OrangeRed,only marks,mark=*] coordinates {(0.203333,33.448885)};
+\coordinate (funfigCalloutPos3) at ([shift={(30pt,24pt)}]axis cs:0.203333,33.448885);
+\node[fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=west,font=\scriptsize] (funfigCallout3) at (funfigCalloutPos3) {$(\alpha,q^\star,\pi_r)=(0.203,58,33.424)$};
+\draw[-{Stealth[length=4pt,width=3pt]},draw=gray!65,line width=0.5pt,shorten >=2pt] (funfigCallout3.west) -- (axis cs:0.203333,33.448885);
+\addplot+[mark size=1.8pt,draw=black!70,fill=Plum,only marks,mark=*] coordinates {(0.203,203.828940307)};
+\coordinate (funfigCalloutPos4) at ([shift={(28pt,-22pt)}]axis cs:0.203,203.828940307);
+\node[fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=west,font=\scriptsize] (funfigCallout4) at (funfigCalloutPos4) {$(\alpha,q^\star,\pi_s)=(0.203,58,203.828)$};
+\draw[-{Stealth[length=4pt,width=3pt]},draw=gray!65,line width=0.5pt,shorten >=2pt] (funfigCallout4.west) -- (axis cs:0.203,203.828940307);
+\path[name intersections={of=A and C,by=profit-zero}];
+\draw[fill=BurntOrange,draw=black!70,line width=0.45pt] (profit-zero) circle (0.7mm);
+\node[fill=white,fill opacity=0.94,text opacity=1,rounded corners=1pt,inner xsep=1.5pt,inner ysep=1.0pt,draw=none,anchor=north west,font=\scriptsize] (funfigIntersectionCallout5) at ([shift={(14pt,-18pt)}]profit-zero) {$(\alpha,q^\star,\pi_r,\pi_s)=(0.113,0,0,0)$};
+\draw[-{Stealth[length=4pt,width=3pt]},shorten >=1pt] (funfigIntersectionCallout5.west) -- (profit-zero);
+\end{axis}
+\end{tikzpicture}
+\end{document}

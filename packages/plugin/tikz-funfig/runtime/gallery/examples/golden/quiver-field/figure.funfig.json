@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "id": "quiver-field-golden",
+  "recipe": "quiver-field",
+  "kind": "pgfplots",
+  "canvas": {"width": "8cm", "height": "7cm", "border": "2pt"},
+  "engine": {"latex": "pdflatex", "compute": "none"},
+  "axes": {
+    "title": "Rotational vector field",
+    "x": {"label": "$x$", "min": -2, "max": 2},
+    "y": {"label": "$y$", "min": -2, "max": 2},
+    "z": {"min": -0.1, "max": 0.1},
+    "grid": "major",
+    "view": {"azimuth": 0, "elevation": 90},
+    "box3d": "complete"
+  },
+  "data_sources": [
+    {
+      "id": "field",
+      "type": "function",
+      "expression": "0",
+      "domain": "-2:2",
+      "y_domain": "-2:2",
+      "samples": 11
+    }
+  ],
+  "series": [
+    {
+      "id": "field",
+      "source": "field",
+      "style": {"color": "MidnightBlue", "line_width": "0.55pt"},
+      "plot": {
+        "kind": "quiver",
+        "u": "-y",
+        "v": "x",
+        "w": "0",
+        "scale_arrows": 0.16,
+        "arrow_style": ["-{Stealth[length=3pt,width=2.5pt]}"]
+      }
+    }
+  ],
+  "outputs": {"basename": "quiver-field", "keep_build": false},
+  "metadata": {"golden": true, "reference": "pgfplots quiver"}
+}

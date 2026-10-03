@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "error-bars",
+  "family": "plot",
+  "title": "Asymmetric error bars",
+  "description": "Publication plot with explicit asymmetric x/y uncertainty bound to table columns.",
+  "recipe_hint": "error-bar",
+  "source_golden": "examples/golden/error-bar",
+  "tags": ["error bars", "uncertainty", "measurement", "publication plot"],
+  "supported_profiles": ["journal-single-column", "journal-double-column"],
+  "supported_themes": ["journal-monochrome", "journal-muted", "journal-accessible"],
+  "requires": {"packages": ["tikz", "pgfplots"], "libraries": []},
+  "edit_contract": {
+    "editable": ["axis labels", "axis ranges", "data file", "error columns", "legend", "theme/profile"],
+    "structural_limits": {"series": [1, 6], "uncertainty_axes": [1, 2]},
+    "locked": [
+      "uncertainty values must be supplied by the user/data",
+      "do not infer confidence levels or error semantics"
+    ]
+  }
+}

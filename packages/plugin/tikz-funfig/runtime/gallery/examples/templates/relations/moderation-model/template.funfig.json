@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.1",
+  "id": "template-moderation-model",
+  "recipe": "relation-diagram",
+  "kind": "tikz",
+  "theme": {"id": "journal-monochrome"},
+  "profile": {"id": "journal-double-column"},
+  "diagram": {
+    "layout": {"type": "grid", "auto_fit": true},
+    "nodes": [
+      {"id": "w", "label": "Moderator", "role": "concept", "position": {"type": "grid", "row": 0, "column": 1}},
+      {"id": "x", "label": "Independent variable", "role": "concept", "position": {"type": "grid", "row": 1, "column": 0}},
+      {"id": "y", "label": "Outcome variable", "role": "concept", "position": {"type": "grid", "row": 1, "column": 2}}
+    ],
+    "edges": [
+      {"id": "main-effect", "from": "x", "to": "y", "arrows": "forward", "label": "H1", "label_side": "below", "label_position": 0.25},
+      {"id": "moderation", "from": "w", "to_edge": "main-effect", "arrows": "forward", "label": "H2: moderates", "label_side": "right"}
+    ],
+    "groups": []
+  },
+  "outputs": {"basename": "moderation-model", "keep_build": false},
+  "metadata": {"template": true, "template_id": "moderation-model"}
+}

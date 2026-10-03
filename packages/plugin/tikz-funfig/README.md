@@ -14,6 +14,9 @@ Synchronized components:
 - `runtime/src/funfig/` from `src/funfig/`.
 - `runtime/schemas/` from `schemas/`.
 - `runtime/recipes/` from `recipes/`.
+- `runtime/gallery/registry.json` from `gallery/registry.json`.
+- `runtime/gallery/examples/` from `examples/`, so immutable `TFF-xxxx`
+  references resolve without the source checkout.
 
 Do not make permanent feature edits only in the synchronized copies.
 The manifest version is derived from the repository's canonical

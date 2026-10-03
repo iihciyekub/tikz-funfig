@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "verification": "compiled-and-regression-backed",
+  "id": "multi-antecedent-mechanism",
+  "family": "framework",
+  "title": "Multiple antecedents, mechanism, and outcome",
+  "description": "Social-science conceptual framework with several antecedents feeding a central mechanism and outcome.",
+  "recipe_hint": "framework-diagram",
+  "tags": ["conceptual framework", "antecedents", "mechanism", "outcome", "social science", "多前因", "机制", "结果变量", "理论框架"],
+  "supported_profiles": ["journal-double-column"],
+  "supported_themes": ["journal-monochrome", "journal-muted", "journal-accessible"],
+  "design_fit": {
+    "best_for": ["multi-antecedent conceptual models", "mechanism frameworks", "social-science hypothesis frameworks"],
+    "node_range": [5, 10],
+    "label_density": "medium-high",
+    "recommended_width_mm": [125, 178],
+    "adaptation_notes": ["Group antecedents without implying relations among them.", "Keep the core mechanism and outcome on one reading axis."],
+    "failure_modes": ["group label collides with arrows", "diagonal labels touch nodes", "antecedent grouping is mistaken for causal hierarchy"]
+  },
+  "requires": {"packages": ["tikz"], "libraries": ["arrows.meta", "backgrounds", "fit"]},
+  "edit_contract": {
+    "editable": ["antecedent labels", "mechanism label", "outcome label", "hypothesis labels", "group labels", "theme/profile"],
+    "structural_limits": {"antecedents": [2, 6], "mechanisms": [1, 2], "outcomes": [1, 3]},
+    "locked": ["grouping is conceptual organization, not evidence", "all path directions must be supplied by the user"]
+  }
+}

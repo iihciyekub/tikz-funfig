@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.1",
+  "id": "template-multi-antecedent-mechanism",
+  "recipe": "framework-diagram",
+  "kind": "tikz",
+  "theme": {"id": "journal-muted"},
+  "profile": {"id": "journal-double-column"},
+  "diagram": {
+    "layout": {"type": "grid", "auto_fit": true},
+    "nodes": [
+      {"id": "a1", "label": "Antecedent A", "role": "module", "position": {"type": "grid", "row": 0, "column": 0}},
+      {"id": "a2", "label": "Antecedent B", "role": "module", "position": {"type": "grid", "row": 1, "column": 0}},
+      {"id": "a3", "label": "Antecedent C", "role": "module", "position": {"type": "grid", "row": 2, "column": 0}},
+      {"id": "m", "label": "Core mechanism", "role": "concept", "position": {"type": "grid", "row": 1, "column": 1}},
+      {"id": "y", "label": "Research outcome", "role": "module", "position": {"type": "grid", "row": 1, "column": 2}}
+    ],
+    "edges": [
+      {"id": "e1", "from": "a1", "to": "m", "label": "H1", "label_sloped": true},
+      {"id": "e2", "from": "a2", "to": "m", "label": "H2"},
+      {"id": "e3", "from": "a3", "to": "m", "label": "H3", "label_sloped": true, "label_side": "below"},
+      {"id": "e4", "from": "m", "to": "y", "label": "H4"}
+    ],
+    "groups": [
+      {"id": "antecedents", "members": ["a1", "a2", "a3"], "label": "Antecedents"},
+      {"id": "model", "members": ["antecedents", "m", "y"], "label": "Conceptual model", "padding": "8pt"}
+    ]
+  },
+  "outputs": {"basename": "multi-antecedent-mechanism", "keep_build": false},
+  "metadata": {"template": true, "template_id": "multi-antecedent-mechanism"}
+}

@@ -33,6 +33,9 @@ refresh(repo / "themes", plugin / "runtime/themes")
 refresh(repo / "profiles", plugin / "runtime/profiles")
 refresh(repo / "knowledge", plugin / "knowledge")
 refresh(repo / "examples/templates", plugin / "runtime/templates")
+refresh(repo / "examples", plugin / "runtime/gallery/examples")
+(plugin / "runtime/gallery").mkdir(parents=True, exist_ok=True)
+shutil.copy2(repo / "gallery/registry.json", plugin / "runtime/gallery/registry.json")
 
 skills_manifest_path = repo / "packages/skills/index.json"
 skills_manifest = json.loads(skills_manifest_path.read_text(encoding="utf-8"))

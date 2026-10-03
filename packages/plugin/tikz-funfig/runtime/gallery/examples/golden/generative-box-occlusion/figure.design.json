@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "id": "generative-box-occlusion",
+  "task": "create",
+  "family": "schematic",
+  "render_mode": "expert",
+  "intent": "Golden orthographic overlap with automatic cross-box edge occlusion.",
+  "content": {
+    "must_preserve": [
+      "deterministic geometry"
+    ],
+    "assumptions": [],
+    "unresolved": []
+  },
+  "references": [],
+  "appearance": {
+    "layout": "Centered mathematical geometry",
+    "typography": "No text",
+    "theme": "journal-monochrome",
+    "profile_id": "journal-double-column",
+    "target_width_mm": 140,
+    "minimum_text_pt": 7.5
+  },
+  "knowledge_sources": [
+    "pgfmanual-3.1.11a-p0149-0149",
+    "pgfmanual-3.1.11a-p0160-0161"
+  ],
+  "routing": {
+    "features": [
+      "generative-geometry"
+    ],
+    "recipe_candidate": "scientific-schematic",
+    "unsupported_features": [
+      "rule-based-geometry"
+    ],
+    "decision": "expert",
+    "reason": "The geometry follows a compact mathematical rule.",
+    "expert_patterns": [
+      "repeated-components"
+    ],
+    "knowledge_queries": [
+      "polar coordinates cyclic graph",
+      "path line drawing"
+    ]
+  },
+  "review": {
+    "reference_anchors": [
+      "circle center",
+      "top node",
+      "left/right extrema",
+      "bottom node",
+      "central node"
+    ],
+    "repair_limit": 3
+  },
+  "structure_model": {
+    "coordinate_system": "3d",
+    "symmetry": {
+      "group": "generated",
+      "order": 1,
+      "phase_deg": 0,
+      "tolerance": 0
+    },
+    "generators": [
+      {
+        "id": "rear",
+        "type": "projected_box",
+        "parameters": {
+          "origin": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            3,
+            2,
+            2
+          ],
+          "visibility": "visible_only",
+          "occlude_other_boxes": true
+        }
+      },
+      {
+        "id": "front",
+        "type": "projected_box",
+        "parameters": {
+          "origin": [
+            1.4,
+            1.2,
+            0.9
+          ],
+          "size": [
+            2.2,
+            1.6,
+            1.8
+          ],
+          "visibility": "visible_only",
+          "occlude_other_boxes": true
+        }
+      }
+    ],
+    "constraints": [
+      "deterministic coordinates"
+    ]
+  },
+  "visual_density": {
+    "target": "light",
+    "edge_line_width_pt": 0.24,
+    "edge_opacity": 0.36,
+    "boundary_opacity": 0.58
+  },
+  "delivery": {
+    "basename": "box-occlusion",
+    "formats": [
+      "pdf"
+    ]
+  }
+}

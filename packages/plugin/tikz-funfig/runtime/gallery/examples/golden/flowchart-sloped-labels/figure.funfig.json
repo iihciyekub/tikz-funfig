@@ -1,0 +1,13 @@
+{
+  "schema_version":"1.1","id":"flowchart-sloped-labels","recipe":"flowchart","kind":"tikz",
+  "theme":{"id":"journal-monochrome"},"profile":{"id":"journal-single-column"},
+  "diagram":{"layout":{"type":"manual"},"nodes":[
+    {"id":"choice","label":"Decision","role":"decision","position":{"type":"absolute","x":0,"y":0}},
+    {"id":"upper","label":"Upper","role":"process","position":{"type":"absolute","x":4,"y":1.4}},
+    {"id":"lower","label":"Lower","role":"process","position":{"type":"absolute","x":4,"y":-1.4}}
+  ],"edges":[
+    {"id":"up","from":"choice","to":"upper","arrows":"forward","label":"first path","label_sloped":true,"label_side":"above","label_position":0.55},
+    {"id":"down","from":"choice","to":"lower","arrows":"forward","label":"second path","label_sloped":true,"label_side":"below","label_position":0.55}
+  ],"groups":[]},
+  "outputs":{"basename":"flowchart-sloped-labels","keep_build":false},"metadata":{"golden":true}
+}

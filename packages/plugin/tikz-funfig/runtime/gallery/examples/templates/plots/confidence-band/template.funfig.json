@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0",
+  "id": "template-confidence-band",
+  "recipe": "confidence-band",
+  "kind": "pgfplots",
+  "canvas": {
+    "width": "9cm",
+    "height": "6.5cm",
+    "border": "2pt"
+  },
+  "engine": {
+    "latex": "pdflatex",
+    "compute": "none"
+  },
+  "axes": {
+    "title": "Mean curve with confidence band",
+    "x": {
+      "label": "$x$",
+      "min": 0,
+      "max": 1
+    },
+    "y": {
+      "label": "$f(x)$",
+      "min": -0.05,
+      "max": 1.25
+    },
+    "grid": "major",
+    "legend": {
+      "position": "north west",
+      "font": "\\footnotesize"
+    }
+  },
+  "data_sources": [
+    {
+      "id": "upper",
+      "type": "function",
+      "expression": "x^2+0.12+0.04*sin(deg(4*pi*x))",
+      "domain": "0:1",
+      "samples": 160
+    },
+    {
+      "id": "lower",
+      "type": "function",
+      "expression": "x^2-0.12-0.04*sin(deg(4*pi*x))",
+      "domain": "0:1",
+      "samples": 160
+    },
+    {
+      "id": "mean",
+      "type": "function",
+      "expression": "x^2",
+      "domain": "0:1",
+      "samples": 160
+    }
+  ],
+  "series": [
+    {
+      "id": "upper",
+      "source": "upper",
+      "name_path": "upper",
+      "style": {
+        "color": "SteelBlue",
+        "line": "dashed",
+        "opacity": 0.65
+      }
+    },
+    {
+      "id": "lower",
+      "source": "lower",
+      "name_path": "lower",
+      "style": {
+        "color": "SteelBlue",
+        "line": "dashed",
+        "opacity": 0.65
+      }
+    },
+    {
+      "id": "mean",
+      "source": "mean",
+      "label": "mean",
+      "style": {
+        "color": "MidnightBlue",
+        "line_width": "1.0pt"
+      }
+    }
+  ],
+  "regions": [
+    {
+      "id": "confidence",
+      "type": "between",
+      "path_a": "upper",
+      "path_b": "lower",
+      "style": {
+        "fill": "LightSkyBlue",
+        "fill_opacity": 0.32
+      }
+    }
+  ],
+  "annotations": [],
+  "outputs": {
+    "basename": "confidence-band",
+    "keep_build": false
+  },
+  "metadata": {
+    "template": true,
+    "template_id": "confidence-band"
+  }
+}
