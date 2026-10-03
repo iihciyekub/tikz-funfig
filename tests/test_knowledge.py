@@ -300,6 +300,11 @@ class KnowledgeTests(unittest.TestCase):
             stderr=subprocess.STDOUT,
             check=False,
         )
+        manual = PROJECT_ROOT / "references" / "pgfmanual.pdf"
+        if not manual.is_file():
+            self.assertNotEqual(result.returncode, 0, result.stdout)
+            self.assertIn("manual source is missing", result.stdout)
+            return
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("pages=1323", result.stdout)
 
