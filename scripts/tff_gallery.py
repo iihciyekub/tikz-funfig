@@ -18,7 +18,7 @@ EXAMPLES = ROOT / "examples"
 DEFAULT_REGISTRY = ROOT / "gallery" / "registry.json"
 SITE_TEMPLATE = ROOT / "gallery" / "site"
 ID_RE = re.compile(r"^TFF-(\d{4,})$")
-TEX_META_RE = re.compile(r"^%\\s*TFF-([A-Za-z]+)\\s*:\\s*(.*?)\\s*$")
+TEX_META_RE = re.compile(r"^%\s*TFF-([A-Za-z]+)\s*:\s*(.*?)\s*$")
 KNOWN_DESCRIPTORS = (
     "template.meta.json",
     "figure.funfig.json",
