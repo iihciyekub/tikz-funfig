@@ -35,6 +35,25 @@ class GalleryRegistryTests(unittest.TestCase):
         for item in data["entries"]:
             self.assertTrue((ROOT / item["source"]).is_file(), item["id"])
 
+    def test_exact_duplicate_aliases_stay_hidden_and_identical(self) -> None:
+        data = gallery.enriched_registry(ROOT / "gallery" / "registry.json")
+        aliases = [item for item in data["entries"] if item.get("canonical_id")]
+        self.assertEqual(len(aliases), 10)
+        self.assertEqual(
+            len([item for item in data["entries"] if item.get("gallery_visibility") != "hidden"]),
+            43,
+        )
+        by_id = {item["id"]: item for item in data["entries"]}
+        for item in aliases:
+            self.assertEqual(item["gallery_visibility"], "hidden")
+            self.assertEqual(item["duplicate_reason"], "exact-tex")
+            canonical = by_id[item["canonical_id"]]
+            alias_tex = sorted((ROOT / item["path"]).glob("*.tex"))
+            canonical_tex = sorted((ROOT / canonical["path"]).glob("*.tex"))
+            self.assertEqual(len(alias_tex), 1, item["id"])
+            self.assertEqual(len(canonical_tex), 1, canonical["id"])
+            self.assertEqual(alias_tex[0].read_bytes(), canonical_tex[0].read_bytes(), item["id"])
+
 
 if __name__ == "__main__":
     unittest.main()

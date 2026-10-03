@@ -198,6 +198,9 @@ def compute_registry(registry_path: Path = DEFAULT_REGISTRY) -> dict[str, Any]:
             "kind": case["kind"],
             "status": "active",
         }
+        for key in ("canonical_id", "gallery_visibility", "duplicate_reason"):
+            if old.get(key):
+                entry[key] = old[key]
         if entry["id"] in seen_ids:
             raise ValueError(f"duplicate gallery id: {entry['id']}")
         seen_ids.add(entry["id"])
@@ -254,7 +257,39 @@ def command_check(args: argparse.Namespace) -> int:
     ids = [item["id"] for item in committed["entries"]] + [item["id"] for item in committed["retired"]]
     if len(ids) != len(set(ids)):
         raise ValueError("gallery registry contains duplicate TFF ids")
-    print(f"ok: gallery registry has {len(committed['entries'])} active immutable ids")
+
+    active_by_id = {item["id"]: item for item in committed["entries"]}
+    cases = {case["identity"]: case for case in discover_cases()}
+    hidden_aliases = 0
+    for item in committed["entries"]:
+        canonical_id = item.get("canonical_id")
+        if not canonical_id:
+            continue
+        hidden_aliases += 1
+        if canonical_id == item["id"] or canonical_id not in active_by_id:
+            raise ValueError(f"invalid canonical_id for {item['id']}: {canonical_id}")
+        if item.get("gallery_visibility") != "hidden":
+            raise ValueError(f"duplicate alias must be hidden in gallery: {item['id']}")
+        if item.get("duplicate_reason") == "exact-tex":
+            canonical = active_by_id[canonical_id]
+            alias_case = cases.get(item["identity"])
+            canonical_case = cases.get(canonical["identity"])
+            if alias_case is None or canonical_case is None:
+                raise ValueError(f"duplicate alias cannot resolve cases: {item['id']}")
+            alias_tex = sorted((ROOT / alias_case["path"]).glob("*.tex"))
+            canonical_tex = sorted((ROOT / canonical_case["path"]).glob("*.tex"))
+            if len(alias_tex) != 1 or len(canonical_tex) != 1:
+                raise ValueError(f"exact-tex alias requires one TeX source per case: {item['id']}")
+            if alias_tex[0].read_bytes() != canonical_tex[0].read_bytes():
+                raise ValueError(
+                    f"deduplicated pair diverged: {item['id']} vs {canonical_id}; "
+                    "remove the alias or choose a new canonical mapping"
+                )
+    visible = len(committed["entries"]) - hidden_aliases
+    print(
+        f"ok: gallery registry has {len(committed['entries'])} active immutable ids; "
+        f"{visible} visible, {hidden_aliases} exact aliases"
+    )
     return 0
 
 
@@ -271,6 +306,24 @@ def enriched_registry(registry_path: Path) -> dict[str, Any]:
         row["preview"] = f"previews/{entry['id']}.png"
         row["source_url"] = "https://github.com/iihciyekub/tikz-funfig/tree/main/" + case["path"]
         rows.append(row)
+
+    by_id = {row["id"]: row for row in rows}
+    for row in rows:
+        canonical_id = row.get("canonical_id")
+        if not canonical_id:
+            continue
+        canonical = by_id.get(canonical_id)
+        if canonical is None:
+            raise ValueError(f"canonical gallery entry is missing: {canonical_id}")
+        row["preview"] = canonical["preview"]
+        row["canonical"] = {
+            "id": canonical["id"],
+            "title": canonical["title"],
+            "path": canonical["path"],
+            "source": canonical["source"],
+        }
+        canonical.setdefault("aliases", []).append(row["id"])
+
     result = dict(registry)
     result["entries"] = rows
     return result
@@ -348,8 +401,9 @@ When a user says "use TFF-0042":
 4. replace semantic content with the user's requested content;
 5. keep scientific meaning and the current TIKZ-FunFig source-of-truth rules;
 6. if multiple IDs are supplied, treat each requested role explicitly (for example layout vs style).
+7. if an entry has canonical_id, treat the requested TFF ID as a stable alias and use the canonical entry as the primary visual/source template.
 
-Retired IDs must never be reassigned to unrelated examples.
+Retired IDs must never be reassigned to unrelated examples. Hidden aliases remain resolvable and must not be reassigned.
 """
 
 
@@ -369,6 +423,8 @@ def command_build_site(args: argparse.Namespace) -> int:
     failures = []
     if not args.skip_previews:
         for entry in catalog["entries"]:
+            if entry.get("gallery_visibility") == "hidden":
+                continue
             try:
                 render_preview(cases[entry["identity"]], output / entry["preview"])
                 print(f"preview: {entry['id']} {entry['path']}")

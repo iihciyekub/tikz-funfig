@@ -26,7 +26,10 @@
       "identity": "figure:golden-confidence-band",
       "path": "examples/golden/confidence-band",
       "kind": "golden",
-      "status": "active"
+      "status": "active",
+      "canonical_id": "TFF-0041",
+      "gallery_visibility": "hidden",
+      "duplicate_reason": "exact-tex"
     },
     {
       "id": "TFF-0003",
@@ -47,7 +50,10 @@
       "identity": "figure:golden-error-bar",
       "path": "examples/golden/error-bar",
       "kind": "golden",
-      "status": "active"
+      "status": "active",
+      "canonical_id": "TFF-0042",
+      "gallery_visibility": "hidden",
+      "duplicate_reason": "exact-tex"
     },
     {
       "id": "TFF-0006",
@@ -75,7 +81,10 @@
       "identity": "figure:flowchart-decision",
       "path": "examples/golden/flowchart-decision",
       "kind": "golden",
-      "status": "active"
+      "status": "active",
+      "canonical_id": "TFF-0033",
+      "gallery_visibility": "hidden",
+      "duplicate_reason": "exact-tex"
     },
     {
       "id": "TFF-0010",
@@ -96,14 +105,20 @@
       "identity": "figure:framework-grouped",
       "path": "examples/golden/framework-grouped",
       "kind": "golden",
-      "status": "active"
+      "status": "active",
+      "canonical_id": "TFF-0037",
+      "gallery_visibility": "hidden",
+      "duplicate_reason": "exact-tex"
     },
     {
       "id": "TFF-0013",
       "identity": "figure:framework-layered",
       "path": "examples/golden/framework-layered",
       "kind": "golden",
-      "status": "active"
+      "status": "active",
+      "canonical_id": "TFF-0038",
+      "gallery_visibility": "hidden",
+      "duplicate_reason": "exact-tex"
     },
     {
       "id": "TFF-0014",
@@ -166,14 +181,20 @@
       "identity": "figure:golden-groupplot",
       "path": "examples/golden/groupplot",
       "kind": "golden",
-      "status": "active"
+      "status": "active",
+      "canonical_id": "TFF-0043",
+      "gallery_visibility": "hidden",
+      "duplicate_reason": "exact-tex"
     },
     {
       "id": "TFF-0023",
       "identity": "figure:heatmap-golden",
       "path": "examples/golden/heatmap",
       "kind": "golden",
-      "status": "active"
+      "status": "active",
+      "canonical_id": "TFF-0044",
+      "gallery_visibility": "hidden",
+      "duplicate_reason": "exact-tex"
     },
     {
       "id": "TFF-0024",
@@ -201,14 +222,20 @@
       "identity": "figure:relations-labelled",
       "path": "examples/golden/relations-labelled",
       "kind": "golden",
-      "status": "active"
+      "status": "active",
+      "canonical_id": "TFF-0049",
+      "gallery_visibility": "hidden",
+      "duplicate_reason": "exact-tex"
     },
     {
       "id": "TFF-0028",
       "identity": "figure:golden-scatter-plot",
       "path": "examples/golden/scatter-plot",
       "kind": "golden",
-      "status": "active"
+      "status": "active",
+      "canonical_id": "TFF-0045",
+      "gallery_visibility": "hidden",
+      "duplicate_reason": "exact-tex"
     },
     {
       "id": "TFF-0029",
@@ -222,7 +249,10 @@
       "identity": "figure:surface-plot-golden",
       "path": "examples/golden/surface-plot",
       "kind": "golden",
-      "status": "active"
+      "status": "active",
+      "canonical_id": "TFF-0046",
+      "gallery_visibility": "hidden",
+      "duplicate_reason": "exact-tex"
     },
     {
       "id": "TFF-0031",
