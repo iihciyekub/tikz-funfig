@@ -609,7 +609,7 @@ class FunFigCoreTests(unittest.TestCase):
         required_fragments = {
             "flowchart-decision": ("diamond,aspect=2", "{yes}", "{no}"),
             "flowchart-sloped-labels": ("above,sloped", "below,sloped", "{first path}", "{second path}"),
-            "flowchart-feedback": ("bend right=38", "(check.south)", "(collect.south)"),
+            "flowchart-feedback": ("bend left=50", "(check.south)", "(collect.south)"),
             "framework-grouped": ("on background layer", "fit=(x1)(x2)", "-|"),
             "framework-layered": ("fit=(input)(process)(outcome)", "fit=(core)(moderator)"),
             "relations-labelled": ("[<->", "bend left=22", "loop below"),
