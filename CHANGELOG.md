@@ -4,6 +4,30 @@ All notable changes to TIKZ-FunFig are recorded here. The project follows semant
 
 ## [Unreleased]
 
+## [0.12.1] - 2026-10-03
+
+### Added
+
+- Added the immutable `TFF-xxxx` Example Gallery with GitHub Pages previews,
+  exact ID lookup, permanent alias/retirement rules, and five sourced showcase
+  examples for graph, maze, and EPC-flow compositions.
+- Bundled the Gallery registry and example source cases in the portable Plugin so
+  all six Skills can resolve TFF references without the repository checkout.
+
+### Changed
+
+- Aligned the canonical Skill, shared workflow/reference map, capability menu, and
+  portable Plugin around exact TFF resolution, canonical aliases, multi-reference
+  layout/style roles, and external-example provenance.
+- Deduplicated exact Gallery copies without retiring their stable IDs, and improved
+  decision/feedback flowchart spacing, label clearance, and feedback routing.
+
+### Fixed
+
+- Fixed GitHub Pages deployment initialization, CJK preview dependencies, clean-clone
+  manual-source checks, PGF source-manifest drift, and Gallery/Plugin synchronization
+  regressions exposed by the new deployment pipeline.
+
 ## [0.12.0] - 2026-09-27
 
 ### Added
