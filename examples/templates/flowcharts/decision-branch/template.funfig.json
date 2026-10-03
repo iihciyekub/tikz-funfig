@@ -12,8 +12,8 @@
   "diagram": {
     "layout": {
       "type": "grid",
-      "row_gap": "18mm",
-      "column_gap": "25mm"
+      "row_gap": "28mm",
+      "column_gap": "45mm"
     },
     "nodes": [
       {
@@ -30,7 +30,7 @@
         "id": "check",
         "label": "Quality acceptable?",
         "role": "decision",
-        "text_width": "24mm",
+        "text_width": "20mm",
         "position": {
           "type": "grid",
           "row": 0,

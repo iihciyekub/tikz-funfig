@@ -91,7 +91,10 @@
       "identity": "figure:flowchart-feedback",
       "path": "examples/golden/flowchart-feedback",
       "kind": "golden",
-      "status": "active"
+      "status": "active",
+      "canonical_id": "TFF-0034",
+      "gallery_visibility": "hidden",
+      "duplicate_reason": "exact-tex"
     },
     {
       "id": "TFF-0011",

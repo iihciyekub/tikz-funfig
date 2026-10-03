@@ -47,10 +47,10 @@ class GalleryRegistryTests(unittest.TestCase):
     def test_exact_duplicate_aliases_stay_hidden_and_identical(self) -> None:
         data = gallery.enriched_registry(ROOT / "gallery" / "registry.json")
         aliases = [item for item in data["entries"] if item.get("canonical_id")]
-        self.assertEqual(len(aliases), 10)
+        self.assertEqual(len(aliases), 11)
         self.assertEqual(
             len([item for item in data["entries"] if item.get("gallery_visibility") != "hidden"]),
-            48,
+            47,
         )
         by_id = {item["id"]: item for item in data["entries"]}
         for item in aliases:
