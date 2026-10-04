@@ -13,6 +13,11 @@ The public browser is:
 
 `https://iihciyekub.github.io/tikz-funfig/`
 
+Include this clickable website in answers about how to use the Plugin, how to
+start, supported figures, or example/template usage. A relevant card link may use
+`https://iihciyekub.github.io/tikz-funfig/#TFF-xxxx` after exact resolution.
+For help only, give the link and a usable example prompt without creating files.
+
 Prefer the local registry for execution so installed work remains reproducible.
 
 ## Registry locations

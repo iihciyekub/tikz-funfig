@@ -29,8 +29,8 @@
       "skill_id": "funfig-relations",
       "source_dir": "packages/skills/funfig-relations",
       "phase": "v1",
-      "recipe_ids": ["relation-diagram"],
-      "capability_ids": ["structured-nodes", "labelled-edges", "directed-edges", "undirected-edges", "curved-edges", "self-loops", "edge-targets", "groups"],
+      "recipe_ids": ["relation-diagram", "petri-net"],
+      "capability_ids": ["structured-nodes", "labelled-edges", "directed-edges", "undirected-edges", "curved-edges", "self-loops", "edge-targets", "groups", "bipartite-arcs", "initial-marking", "arc-weights", "manual-layout"],
       "knowledge_tags": ["relations", "edges", "labels", "routing"]
     },
     {

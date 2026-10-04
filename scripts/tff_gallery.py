@@ -429,6 +429,18 @@ def llms_text() -> str:
 
 TFF IDs are immutable example references. Resolve an ID through registry.json.
 
+For questions about how to use TIKZ-FunFig, how to start, supported figures,
+or example/template usage, include https://iihciyekub.github.io/tikz-funfig/.
+Help-only answers do not create figure files. Card prompts contain placeholders
+for the user's content, language, target width, and requested output formats.
+The website supports Chinese and English; its language switch changes the UI,
+example descriptions and copied prompts, and remembers the user's preference.
+
+Choose figure guidance by meaning: frameworks organize layers/groups/modules;
+relations express variable paths, mediation and moderation; flowcharts require
+process order, decisions or explicit branch outcomes. Do not infer process meaning
+from a branching layout or scientific measurements from an example image.
+
 When a user says "use TFF-0042":
 1. find the exact active registry entry;
 2. open its source/path rather than guessing from the number;
@@ -450,7 +462,7 @@ def command_build_site(args: argparse.Namespace) -> int:
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
-    for name in ("index.html", "styles.css", "app.js"):
+    for name in ("index.html", "styles.css", "i18n.js", "prompts.js", "app.js"):
         shutil.copy2(SITE_TEMPLATE / name, output / name)
 
     catalog = enriched_registry(registry_path)

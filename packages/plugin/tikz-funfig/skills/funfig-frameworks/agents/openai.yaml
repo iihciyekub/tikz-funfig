@@ -1,7 +1,7 @@
 interface:
   display_name: "FunFig Frameworks"
-  short_description: "Build social-science and business research frameworks"
-  default_prompt: "Use $funfig-frameworks to organize my constructs and hypotheses into a paper-ready research framework."
+  short_description: "Organize research layers, modules, and nested groups"
+  default_prompt: "Use $funfig-frameworks to organize my layers, modules, and groups into a paper-ready research framework."
 
 policy:
   allow_implicit_invocation: true

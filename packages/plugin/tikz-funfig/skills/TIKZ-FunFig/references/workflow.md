@@ -1,154 +1,91 @@
 # Shared figure workflow
 
-Use this workflow from any FunFig entrypoint. It is an agent workflow, not an
-unimplemented automatic image-to-TikZ service. The runtime validates and renders
-explicit specifications; the agent interprets context and makes design decisions.
+Use for actual figure creation, revision, or implementation planning. For help
+only, answer using `capability-menu.md`, include the Example Gallery link, and
+stop. Explicit user instructions and the requested scope override workflow
+defaults. Make routine visual choices yourself; ask only for missing facts or
+conflicting references that materially affect meaning or requested fidelity.
 
-## Introduce capabilities when useful
+## Common working contract
 
-If the user asks what TIKZ-FunFig can draw, asks how to begin, or invokes a FunFig
-Skill without a concrete figure request, read `capability-menu.md` and show its
-concise capability table in the user's language. Include natural-language examples
-and optional explicit Skill invocations. A request for a specific figure already
-provides the starting point: proceed with that figure and keep any introduction
-brief. Do not require the user to choose a category before working. Do not repeat
-the full menu within the same conversation unless requested. Do not claim to know
-whether the Plugin has been used in earlier conversations.
-If the user only asked for the menu, answer that request without starting a
-figure project.
+Use the current Skill's `scripts/funfig.sh` at its resolved absolute path while
+working in the user's project. Source development may use `PYTHONPATH=src python3
+-m funfig`. The Plugin runtime/knowledge are shared, read-only drawing resources;
+outputs belong in the user's project, never the Plugin cache.
 
-## Understand the request
+Preserve supplied facts, data, units, relationships, IDs, and scientific meaning.
+A style/layout example supplies appearance, not new evidence or labels.
+Structured `figure.funfig.json` is authoritative: edit it and regenerate rather
+than patching generated TeX. In Expert Mode, authored TeX (or a managed
+`structure_model`) is authoritative. Do not invent a Recipe to hide unsupported
+semantics. Normal new delivery includes `figure.design.json`, editable source,
+TeX, PDF, and the mode-specific `.funfig` manifest; add SVG when requested.
+Existing filenames and explicit destinations take precedence. Read
+`output-policy.md` / `schema-contract.md` when initializing or changing output
+placement, formats, or source representation.
 
-Extract the communication goal, supplied facts/data, figure family, task mode
-(create/reproduce/redesign/revise/repair/migrate), reference roles, publication
-width, language, and requested formats. Respect explicit instructions first, then
-existing manuscript conventions, then suitable defaults. Keep content separate
-from appearance; never infer missing data, causation, or a scientific mechanism.
+## Choose the amount of work
 
-For an image, read `reference-images.md`. For a new composition, read
-`composition.md`. Infer ordinary aesthetic choices and proceed. Ask only when a
-missing fact or conflicting reference would materially change the content or
-requested fidelity. Do not require approval of every design record or layout.
-A brief explanation of important assumptions is enough for routine choices.
+- **Local revision/repair:** read the existing source and design first. Preserve
+  its mode, content, IDs, data bindings, and location. Update only affected design
+  choices; retrieve knowledge only for an actual gap. Rebuild and review the current
+  result. Add a minimal design record when adopting managed delivery for an older
+  figure; do not migrate unrelated figures.
+- **New figure/reproduction/redesign:** capture the communication goal, facts,
+  reference roles, width, language, and formats in `figure.design.json` using
+  `design-contract.md`. For a new composition, consult `composition.md`; use
+  `style-guide.md` for typography/axes choices. Choose a compatible stable Recipe
+  or Template without distorting meaning.
+- **Unsupported geometry/notation/composition:** consult `routing.md`, name the
+  concrete gap in the best Recipe, then follow `expert-mode.md`. Styling alone
+  is not a reason to abandon an adequate structured source.
 
-If the user cites any `TFF-xxxx` Gallery ID, read `example-gallery.md` and
-resolve it before general retrieval. Treat the resolved example as an explicit
-reference with the user's stated role (for example layout, style, annotation, or
-overall template). Follow `canonical_id` for hidden duplicate aliases while
-preserving the originally requested ID in provenance. Do not ask the user to
-re-describe a template that the registry can resolve exactly.
+A supplied `TFF-xxxx` is a direct lookup: follow `example-gallery.md` before
+fuzzy retrieval. Keep the requested alias in provenance while using its canonical
+source. For any uploaded image, follow `reference-images.md` and actually view it.
 
-For a complex reference, mixed figure, or uncertain implementation path, read
-`routing.md` before implementation. Inventory implementation-relevant features,
-check the best stable Recipe, and persist a concise `routing` record when the
-choice is nontrivial. Expert Mode must name the concrete Recipe gap rather than
-being selected merely for convenience.
+## Retrieve only what is missing
 
-If the reference contains dense repetition or obvious symmetry, read
-`structure-inference.md` before writing TeX. Ask whether the visible complexity is
-generated by a compact rule. When it is, prefer `structure_model` plus
-`generative-geometry.md` over manual edge/object transcription. Record symmetry
-and invariants using `symmetry-and-constraints.md`.
+Query `capabilities` when support is uncertain or the task introduces a new
+feature. Prefer core Recipes and curated Templates, then verified cards and
+relevant official examples/manual sections. Inspect exact hits with `kb show
+<id> --json`; source-extracted examples are not stable Recipes.
+Rewrite long requests into focused structural/technical queries, for example
+`relative positioning`, `fit groups`, `paths routing`, or `edge labels quotes`.
+Inspect only enough relevant material to resolve the gap; record the IDs used.
+A local edit with known support need not repeat Template or knowledge searches.
 
-Record the accepted intent and constraints in `figure.design.json` using
-`design-contract.md`. Update this record alongside revisions. For existing figures,
-read their source first and preserve IDs, data bindings, filenames, and location.
-Older figures remain buildable without a design record; add one when adopting
-this workflow, not by bulk-migrating unrelated work.
+Load conditional detail only when relevant:
 
-## Retrieve for the actual design problem
-
-A supplied TFF ID is a direct lookup, not a fuzzy search. Inspect its exact
-registry entry and source first; use its structure/style as requested, then search
-Templates or the knowledge base only for missing implementation details. If an
-alias resolves to a canonical entry, use the canonical source while retaining the
-alias as a stable user-facing reference. Multiple TFF IDs may be combined when
-their requested roles are explicit or clearly compatible.
-
-Check `capabilities` for stable support. Search/inspect relevant Templates, then
-retrieve knowledge for missing layout or implementation details. Rewrite a long
-user sentence into a few focused structural/technical queries; do not pass only
-an unsegmented Chinese sentence to lexical search or interpret no hits as proof
-TikZ cannot draw it. Example translations:
-
-| User need | Useful separate queries |
+| Need | Reference |
 | --- | --- |
-| 三个输入汇合，再分成两个输出 | `flowchart branch merge`, `relative positioning` |
-| 连线不要穿过文字 | `paths routing`, `edge labels quotes`, `diagram layout repair` |
-| 像参考图一样有层次和分组 | `layered framework`, `fit groups`, `background layers` |
-| 放大一个局部，同时保留全局 | `spy`, `coordinates calc` |
-| 类似神经网络的模块图 | `encoder decoder architecture`, `pics components` |
+| Dense repetition or symmetry explicitly requested, or existing generative work | `structure-inference.md`, then relevant `generative-geometry.md` / `symmetry-and-constraints.md` |
+| Dense-edge visual weight | `density-aware-styling.md` |
+| Structure correct; numeric aesthetics need tuning | `parameter-search.md` |
+| Exact knowledge location | `reference-map.md` |
+| Legacy migration or promoted implicit/intersection/probe methods | `methods.md` |
+| Missing compiler, CJK font, or gnuplot | `dependencies.md` |
 
-Prefer a compatible stable Recipe/Template, compiled cards, then relevant official
-source examples and manual sections. Use `kb show <id> --json` to inspect exact
-hits and their dependencies/verification; do not treat a source-extracted example
-as a tested Recipe. Inspect a small relevant set (often 2–5 examples); stop when
-the methods are sufficient. Reuse the technique and design
-principle, not incidental coordinates or another figure's scientific claims.
-Record useful knowledge IDs in the design. Source-extracted, source-compiled,
-curated Template, and stable Recipe are different verification levels.
+Infer a compact repetition rule yourself when applicable; do not ask the user
+to select an internal generator. Preserve topology and scientific parameters
+while tuning appearance. Long-tail geometry remains subject to `scope-boundary.md`.
 
-For formal notation (for example a commutative diagram, Petri net, ER diagram,
-UML class diagram, or circuit), check whether the requested semantics are part
-of the stable contract. A generic four-node graph is not evidence of formal
-correctness. `petri-net` validates bipartite directed weighted arcs and an
-initial marking, but does not prove dynamic properties. Use matching sourced
-Expert knowledge where stable coverage ends and
-state any unverified domain semantics or missing package dependencies.
+## Build and finish
 
-## Choose and implement
+For new structured work, initialize in the user's project with `init --id <id>
+--recipe <recipe>` and replace all starter content. Implement design targets in
+supported FigureSpec fields; design JSON does not configure the renderer.
+Validate the design and spec, then `build` and `inspect`. Expert work uses the
+build/provenance commands in `expert-mode.md`.
 
-Use a supported Recipe when it preserves the requested meaning and composition.
-Do not distort an apparatus or unusual diagram merely to fit rectangular nodes.
-If a required feature is outside stable coverage, read `expert-mode.md`, ground
-the implementation in shared knowledge, plan the composition with
-`expert-patterns.md`, and use Expert TeX. Styling preference
-alone does not require abandoning an adequate structured representation.
+Follow `visual-review.md`: view the current preview at target width, check content,
+references, readability and clearance, and repair observed defects. Rebuild after
+source changes; record `qa` / `expert-qa` only after viewing that current output.
+Compilation and recorded machine checks do not establish visual acceptance.
+Finish with `validate-design <dir>/figure.design.json --delivery`.
 
-For supported polar generative geometry, use `generative-render` or
-`generative-build` instead of hand-authoring hundreds of repeated coordinates or
-edges. Let `density-aware-styling.md` control dense-edge hierarchy. If structure
-is correct but visual weight remains uncertain, use the bounded coarse-to-fine
-search in `parameter-search.md`; never search over scientific content.
-
-For a new structured figure, use `init --id <id> --recipe <recipe>` from the user
-project or an explicit directory/project root. Replace starter content completely
-with the user's real content; example numbers and labels are not evidence.
-Create the design record, apply the chosen layout/theme/size in FigureSpec, then:
-
-```text
-validate-design <dir>/figure.design.json
-validate <dir>/figure.funfig.json
-build <dir>/figure.funfig.json
-inspect <dir>/figure.funfig.json
-```
-
-These are arguments to the current Skill's `scripts/funfig.sh` wrapper. Design
-fields describe intent and do not automatically change the renderer: implement
-them in FigureSpec or TeX. Diagrams use 1.1 theme/profile fields. Existing 1.0 plot
-Recipes have their own axis/style/canvas fields; do not add unsupported fields
-or claim automatic Profile checking covers them.
-
-## Review, repair, and deliver
-
-Read `visual-review.md`, open the actual preview, compare it to the content and
-reference requirements, and repair concrete defects. For a reference-led task,
-define a small set of visual anchors before judging fidelity. Use a defect ledger
-and make targeted repairs; default to at most three review/repair cycles unless
-clear progress justifies another pass. Rebuild and re-inspect after changes; only
-mark QA after reviewing the current output. Use `qa <spec> pass
---note <observations>` or the Expert equivalent, then:
-
-```text
-validate-design <dir>/figure.design.json --delivery
-```
-
-This checks the design schema, expected files, structured ID/format agreement,
-current build hashes, and recorded passing QA. It cannot judge image fidelity or
-aesthetic quality on its own. Do not claim a pass unless both the checks and your
-actual visual/content review succeed. If repair ceases to make progress, explain
-the specific unresolved constraint instead of looping or declaring success.
-
-Deliver the preview and links to editable source, design JSON, PDF, and requested
-SVG. Briefly identify major design choices and any material limitation. Internal
-Skill routing and compiler details need not burden the normal user interaction.
+Deliver the preview and requested editable artifacts with a short description of
+material choices or limitations. Continue until the requested result and current
+build/review/delivery checks agree; if a concrete dependency or unresolved fact
+blocks completion, retain useful work and identify it. Planning-only requests
+stop at the requested plan; no files or compilation are required.

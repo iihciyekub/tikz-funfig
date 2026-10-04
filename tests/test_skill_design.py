@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import unittest
 from pathlib import Path
 
@@ -9,7 +10,7 @@ from funfig.templates import search_templates
 
 
 class SkillDesignContractTests(unittest.TestCase):
-    def test_end_to_end_skill_cases_are_structured_and_retrievable(self) -> None:
+    def test_design_fixtures_are_retrievable_inputs_not_agent_evals(self) -> None:
         fixture = json.loads(
             (PROJECT_ROOT / "tests/fixtures/skill-design-cases.json").read_text(encoding="utf-8")
         )
@@ -23,35 +24,37 @@ class SkillDesignContractTests(unittest.TestCase):
         )
         style_case = by_id["reference-style-new-content"]
         self.assertEqual(style_case["reference_roles"], ["style"])
-        self.assertTrue(any("do not copy reference facts" in item for item in style_case["acceptance"]))
         repair = by_id["existing-figure-repair"]
-        self.assertTrue(any("layout before reducing text size" in item for item in repair["acceptance"]))
+        self.assertEqual(repair["task"], "repair")
         expert = by_id["expert-angle-annotation"]
         self.assertEqual(expert["render_mode"], "expert")
-        self.assertTrue(any("provenance" in item for item in expert["acceptance"]))
 
-    def test_shared_skill_references_cover_the_four_eval_modes(self) -> None:
+    def test_skill_references_resolve_without_locking_prompt_wording(self) -> None:
         refs = PROJECT_ROOT / "packages/skill/references"
-        required = {
-            "scope-boundary.md": ("Core capability", "Long-tail / experimental capability", "Out of scope"),
-            "workflow.md": ("focused structural/technical queries", "validate-design"),
-            "reference-images.md": ("Style", "do not transfer"),
-            "routing.md": ("Decision rules", "unsupported_features"),
-            "expert-patterns.md": ("Expert pattern planner", "hidden-edge-logic"),
-            "structure-inference.md": ("Infer rules before objects", "fit_polar_geometry.py"),
-            "generative-geometry.md": ("Generative geometry mode", "complete_edges"),
-            "density-aware-styling.md": ("Density-aware styling", "Drawing nodes last"),
-            "parameter-search.md": ("Coarse-to-fine workflow", "generative-variants"),
-            "symmetry-and-constraints.md": ("Symmetry and structural constraints", "model symmetry"),
-            "composition.md": ("LaTeX academic character", "target size"),
-            "visual-review.md": ("Defect-led repair loop", "reference alignment"),
-            "expert-mode.md": ("Sourced Expert TikZ mode", "provenance"),
-        }
-        for name, fragments in required.items():
-            text = (refs / name).read_text(encoding="utf-8")
-            for fragment in fragments:
-                with self.subTest(file=name, fragment=fragment):
-                    self.assertIn(fragment.casefold(), text.casefold())
+        skills = [PROJECT_ROOT / "packages/skill/SKILL.md", *sorted(
+            (PROJECT_ROOT / "packages/skills").glob("*/SKILL.md"))]
+        for path in [*skills, *refs.glob("*.md")]:
+            text = path.read_text(encoding="utf-8")
+            for name in set(re.findall(r"`([a-z][a-z-]+\.md)`", text)):
+                with self.subTest(file=path.name, reference=name):
+                    self.assertTrue((refs / name).is_file())
+            for name in re.findall(r"\]\((references/[^)]+\.md)\)", text):
+                self.assertTrue((path.parent / name).is_file())
+
+    def test_all_six_skill_metadata_remain_discoverable_and_compact(self) -> None:
+        paths = [PROJECT_ROOT / "packages/skill/SKILL.md", *sorted(
+            (PROJECT_ROOT / "packages/skills").glob("*/SKILL.md"))]
+        names = []
+        for path in paths:
+            text = path.read_text(encoding="utf-8")
+            name = re.search(r"^name: (.+)$", text, re.MULTILINE).group(1)
+            description = re.search(r"^description: (.+)$", text, re.MULTILINE).group(1)
+            names.append(name)
+            self.assertRegex(name, r"^[a-z][a-z0-9-]+$")
+            # Project discovery budget, not an OpenAI format limit.
+            self.assertLessEqual(len(description), 180, path.name)
+            self.assertIn("allow_implicit_invocation: true", (path.parent / "agents/openai.yaml").read_text())
+        self.assertEqual(len(set(names)), 6)
 
     def test_public_capability_surface_stays_inside_core_academic_scope(self) -> None:
         menu = (PROJECT_ROOT / "packages/skill/references/capability-menu.md").read_text(encoding="utf-8")
@@ -62,23 +65,15 @@ class SkillDesignContractTests(unittest.TestCase):
         self.assertIn("长尾/", menu)
         self.assertNotIn("| 规则化复杂几何 |", menu)
 
-        general = (PROJECT_ROOT / "packages/skill/SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("scope-boundary.md", general)
-        self.assertIn("Social/business research framework", general)
-        self.assertIn("Variables, mathematical models", general)
-
-        routing = (PROJECT_ROOT / "packages/skill/references/routing.md").read_text(encoding="utf-8")
-        self.assertIn("Do not proactively route", routing)
-        self.assertIn("user explicitly requested that long-tail geometry", routing)
-
-        generative = (PROJECT_ROOT / "packages/skill/references/generative-geometry.md").read_text(encoding="utf-8")
-        self.assertIn("long-tail / experimental", generative.casefold())
-        self.assertIn("not a default TIKZ-FunFig product surface", generative)
-
-        scope = (PROJECT_ROOT / "packages/skill/references/scope-boundary.md").read_text(encoding="utf-8")
-        for excluded in ("CAD/EDA", "animation", "GIS/map", "statistical inference"):
-            with self.subTest(excluded=excluded):
-                self.assertIn(excluded.casefold(), scope.casefold())
+        manifest = json.loads((PROJECT_ROOT / "packages/skills/index.json").read_text())
+        relations = next(s for s in manifest["skills"] if s["skill_id"] == "funfig-relations")
+        self.assertIn("petri-net", relations["recipe_ids"])
+        for skill in manifest["skills"]:
+            capabilities = set()
+            for recipe_id in skill["recipe_ids"]:
+                recipe = json.loads((PROJECT_ROOT / "recipes" / f"{recipe_id}.recipe.json").read_text())
+                capabilities.update(recipe["capabilities"])
+            self.assertTrue(set(skill["capability_ids"]) <= capabilities)
 
     def test_plugin_metadata_promotes_paper_figures_not_long_tail_geometry(self) -> None:
         plugin = json.loads((PROJECT_ROOT / "packages/plugin/tikz-funfig/plugin.json").read_text(encoding="utf-8"))

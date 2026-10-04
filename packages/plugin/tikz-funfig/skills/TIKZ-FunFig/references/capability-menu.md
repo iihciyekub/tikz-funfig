@@ -1,7 +1,8 @@
 # TIKZ-FunFig capability menu
 
 Use this reference when the user asks what the Plugin can draw, asks how to start,
-or invokes a FunFig Skill without a concrete figure request. Adapt the wording to
+how to use you/TIKZ-FunFig, asks for examples, or invokes a FunFig Skill without a
+concrete figure request. Adapt the wording to
 the user's language. The explicit Skill names below are optional: natural language
 is sufficient, and the host can select the appropriate Skill.
 
@@ -12,12 +13,17 @@ is sufficient, and the host can select the appropriate Skill.
 用文字描述、提供数据、附上草图或参考图片，或交给我现有的
 TikZ/PGFPlots 源码。我可以制作可编辑的 LaTeX 矢量图和 PDF；需要时可输出 SVG。
 
+每次回答上述使用相关问题，都附上可浏览、复制示例提示词的
+**[GitHub Example Gallery](https://iihciyekub.github.io/tikz-funfig/)**。
+网站支持中英文切换，示例说明和可复制提示词随语言切换。
+只需简短介绍或给一个相关例子；同一对话中不必重复完整能力表。
+
 ## 核心能力
 
 | 绘图类型 | 常见内容 | 可以这样说 | 可选的精确入口 |
 | --- | --- | --- | --- |
-| 社会科学与商学框架 | 理论框架、概念模型、中介/调节、分层研究模型、利益相关者/机制框架 | “把这些变量和假设关系整理成论文研究框架图” | `$funfig-frameworks` |
-| 数学模型与关系图 | 变量关系、方程/对象关系、路径模型、概念关系 | “把这个数学模型和变量之间的关系画成论文图” | `$funfig-relations` |
+| 社会科学与商学框架 | 分层研究框架、分组、包含关系、利益相关者/模块组织 | “把 Context、Mechanism、Outcome 三层及各层模块画成论文框架图” | `$funfig-frameworks` |
+| 数学模型与关系图 | 变量路径、中介/调节假设、方程/对象关系、概念关联 | “画 X 到 Y 的关系，并让 W 指向被调节的路径” | `$funfig-relations` |
 | 数据与函数图 | 2D 函数曲线、数据序列、散点、误差棒、置信带、阈值与分区 | “根据这份数据画带单位和误差棒的图” | `$funfig-plots` |
 | 学术多面板图 | 同类函数/数据图的 1×N、2×2 等对比排版 | “把四组结果排成 2×2 对比图” | `$funfig-plots` |
 | 流程图 | 步骤、判断分支、汇合、反馈 | “把这些实验步骤画成流程图” | `$funfig-flowcharts` |

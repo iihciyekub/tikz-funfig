@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "cases": [
+    {"id":"help-how","prompt":"怎么使用你画论文图？给我一个可以浏览例子的网站，不要创建文件。","skills":["TIKZ-FunFig"],"help_link":true,"no_output":true,"forbidden_reads":["workflow.md","design-contract.md","expert-mode.md"]},
+    {"id":"help-capabilities","prompt":"$tikz-funfig 你能画哪些图，怎么开始使用？不要生成图。","skills":["TIKZ-FunFig"],"help_link":true,"no_output":true,"forbidden_reads":["workflow.md","design-contract.md"]},
+    {"id":"explicit-flow","prompt":"用 $funfig-flowcharts 把 Collect -> Check -> Report 画成流程图。现在只说明准备怎样做，不创建文件。","skills":["funfig-flowcharts"],"no_output":true},
+    {"id":"explicit-framework","prompt":"用 $funfig-frameworks 整理一个分层框架：Context 包含 Policy 和 Environment；Mechanism 包含 Learning 和 Practice。现在只说明准备怎样做，不创建文件。","skills":["funfig-frameworks"],"no_output":true},
+    {"id":"explicit-relations","prompt":"用 $funfig-relations 绘制 X -> Y，W 调节这条路径。现在只说明准备怎样做，不创建文件。","skills":["funfig-relations"],"no_output":true},
+    {"id":"explicit-plots","prompt":"用 $funfig-plots 画 y=x^2 在 x=0 到 2 的函数图。现在只说明准备怎样做，不创建文件。","skills":["funfig-plots"],"no_output":true},
+    {"id":"explicit-schematic","prompt":"用 $funfig-schematics 绘制光源、样品、探测器依次相连的实验组件示意图。现在只说明准备怎样做，不创建文件。","skills":["funfig-schematics"],"no_output":true},
+    {"id":"implicit-moderation","prompt":"帮我画论文假设模型：X 影响 Y，W 调节 X 到 Y 的关系。只给选型和实施方案，暂不生成文件。","skills":["funfig-relations"],"forbidden_skills":["funfig-frameworks"],"no_output":true},
+    {"id":"implicit-framework","prompt":"把这些内容画成分组分层理论框架：Context 层含 Policy 与 Environment，Mechanism 层含 Learning 与 Practice，没有变量路径假设。只给实施方案，暂不生成文件。","skills":["funfig-frameworks"],"forbidden_skills":["funfig-relations","funfig-flowcharts"],"no_output":true},
+    {"id":"nonprocess-layout","prompt":"左边三个概念模块汇聚到中间，再向右分成两个模块。连接线只表示关联，不表示时间顺序或判断分支。帮我画论文概念图；只给实施方案，暂不生成文件。","skills":["funfig-relations","funfig-frameworks"],"forbidden_skills":["funfig-flowcharts"],"no_output":true},
+    {"id":"gallery-exact","prompt":"我想用 TFF-0034 的布局画自己的流程。先精确查看这个例子的源码，介绍怎么使用它，并给我示例网站链接；不要创建文件。","skills":["TIKZ-FunFig","funfig-flowcharts"],"help_link":true,"no_output":true,"answer_contains":["TFF-0034"]},
+    {"id":"gallery-alias","prompt":"TFF-0009 可以怎么用？查看它实际指向的示例，告诉我 canonical 编号并给示例网站链接。不要生成文件。","skills":["TIKZ-FunFig","funfig-flowcharts"],"help_link":true,"no_output":true,"answer_contains":["TFF-0033"]},
+    {"id":"gallery-unknown","prompt":"我想用 TFF-9999，请先查它是否存在；不存在就直接说明并给我可选例子的网站，不要猜编号或创建文件。","skills":["TIKZ-FunFig"],"help_link":true,"no_output":true,"answer_contains":["TFF-9999"]},
+    {"id":"missing-data","prompt":"帮我画治疗前后测量值和误差棒论文图。我还没有提供测量数据或误差定义，请先告诉我缺少什么，不要创建文件。","skills":["funfig-plots"],"no_output":true},
+    {"id":"negative-prose","prompt":"把这句话改得更简洁：Our research framework includes three important factors. 不需要绘图或创建文件。","skills":[],"no_output":true},
+    {"id":"negative-theory","prompt":"用一句话解释中介变量和调节变量的区别，不需要画图或创建文件。","skills":[],"no_output":true},
+    {"id":"negative-statistics","prompt":"给我解释置信区间的含义，不需要作图、统计计算或创建文件。","skills":[],"no_output":true},
+    {"id":"negative-css","prompt":"解释 CSS 的 display:flex 和 display:grid 的区别，不创建文件。","skills":[],"no_output":true},
+    {"id":"deliver-flow","prompt":"制作可编辑的论文流程图，只有 Collect -> Check -> Report 三个步骤，无判断分支。英文标签保持原样，单栏 88mm，输出到 figures/quality-flow/。请完成绘图、检查与交付。","skills":["funfig-flowcharts"],"delivery":true,"families":["flowchart"],"labels":["Collect","Check","Report"]},
+    {"id":"deliver-moderation","prompt":"制作可编辑的论文关系模型图：X -> Y，W 调节 X 到 Y 的路径；不要把 W 画成直接影响 Y。标签只用 X、Y、W，双栏 178mm，输出到 figures/moderation/。请完成绘图、检查与交付。","skills":["funfig-relations"],"forbidden_skills":["funfig-frameworks"],"delivery":true,"families":["relation"],"labels":["X","Y","W"],"moderation":true},
+    {"id":"deliver-framework","prompt":"制作可编辑的分组理论框架图：Context 组包含 Policy 和 Environment，Mechanism 组包含 Learning 和 Practice。只表示分组，不添加箭头或假设关系。保持这些英文标签，双栏 178mm，输出到 figures/framework/。请完成绘图、检查与交付。","skills":["funfig-frameworks"],"delivery":true,"families":["framework"],"labels":["Policy","Environment","Learning","Practice"]},
+    {"id":"deliver-data","prompt":"用 measurements.tsv 的原始数据画可编辑论文图：横轴 time (s)，纵轴 value (V)，error 列是对称测量误差，不是置信区间。保留原文件，单栏 88mm，输出到 figures/measurements/。请完成绘图、检查与交付。","skills":["funfig-plots"],"fixture":"data","preserve_input":true,"delivery":true,"families":["plot"]},
+    {"id":"deliver-repair","prompt":"修改 existing/figure.funfig.json 对应的现有论文流程图：保持所有节点文字、连接方向和文件位置，只把风格改为黑白，并检查反馈线是否穿过文字，必要时修正。请完成修改、检查与交付。","skills":["funfig-flowcharts"],"fixture":"existing","delivery":true,"families":["flowchart"]},
+    {"id":"deliver-style","prompt":"参考上传图片的黑白 LaTeX 风格，画我的新流程 Alpha -> Beta -> Gamma。图片只作风格参考，不复制它的步骤、文字或科研内容。标签只用 Alpha、Beta、Gamma，单栏 88mm，输出到 figures/new-process/。请完成绘图、检查与交付。","skills":["funfig-flowcharts"],"fixture":"image","delivery":true,"families":["flowchart"],"labels":["Alpha","Beta","Gamma"],"excluded_labels":["Acquire","Check","Report"],"reference_role":"style"}
+  ]
+}

@@ -4,7 +4,7 @@
     {
       "id": "text-merge-split",
       "input_mode": "text",
-      "request": "左边三个模块汇聚到中间，再向右分成两条支路，连线不要穿过文字。",
+      "request": "三个准备步骤完成后汇合到检查步骤，再按判断结果分成两条流程支路，连线不要穿过文字。",
       "family": "flowchart",
       "task": "create",
       "expected_template": "merge-split",

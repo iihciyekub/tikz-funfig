@@ -22,7 +22,11 @@ def refresh(source: Path, destination: Path) -> None:
     shutil.copytree(
         source,
         destination,
-        ignore=shutil.ignore_patterns(".DS_Store", "__pycache__", "*.pyc"),
+        ignore=shutil.ignore_patterns(
+            ".DS_Store", "__pycache__", "*.pyc", ".pytest_cache", ".mypy_cache",
+            ".funfig", "*.pdf", "*.aux", "*.log", "*.fls", "*.fdb_latexmk",
+            "*.synctex.gz", "*.xdv", "*.toc", "*.out",
+        ),
     )
 
 refresh(repo / "packages/skill", plugin / "skills/TIKZ-FunFig")

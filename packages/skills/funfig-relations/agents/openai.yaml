@@ -1,7 +1,7 @@
 interface:
   display_name: "FunFig Relations"
-  short_description: "Draw variable, concept, path, and mathematical model relations"
-  default_prompt: "Use $funfig-relations to draw these variables or mathematical objects and label their supplied relationships."
+  short_description: "Draw variable paths, mediation, moderation, and relations"
+  default_prompt: "Use $funfig-relations to draw my variable paths and supplied mediation or moderation hypotheses."
 
 policy:
   allow_implicit_invocation: true

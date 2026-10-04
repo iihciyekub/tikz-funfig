@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "tikz-funfig",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "description": "Create editable academic research figures, plots, frameworks, models, and flowcharts from descriptions, data, sketches, or existing TikZ.",
   "repository": "https://github.com/iihciyekub/tikz-funfig",
   "author": {

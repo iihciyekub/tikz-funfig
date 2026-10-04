@@ -34,6 +34,26 @@ The portable bundle contains only what an installed Plugin needs: Plugin manifes
 
 The shared `knowledge/` directory is distributed **once at Plugin root**. Specialized Skills remain thin and use their materialized `scripts/funfig.sh` wrapper to call the shared runtime. Do not copy the same cards into every Skill.
 
+## Skill discovery and task scope
+
+Descriptions front-load the actual trigger rather than repeating every supported
+figure family. The general entry handles help, TFF reuse, mixed/unclear figures,
+and cross-family work. Frameworks organize layers/groups/modules; relation
+diagrams express variable paths, mediation and moderation; a branching layout
+alone does not establish a process. All six retain implicit invocation.
+
+Help-only requests load the capability menu and include the public
+[Example Gallery](https://iihciyekub.github.io/tikz-funfig/), without initializing
+figures. Actual drawing uses the shared local-revision, new-figure, or Expert
+workflow. The website's displayed/copied prompts use the same semantic boundaries
+and ask users for their own content, dimensions and output choices.
+The Gallery supports Chinese and English, including example descriptions and
+copyable prompts, with a remembered language preference.
+
+Renderer regressions and documentation checks do not prove Skill behavior. Use
+`benchmarks/skill-behavior/` for actual isolated Codex traces and independently
+review generated previews. See its README for opt-in runs and evidence limits.
+
 ## Portable runtime contract
 
 An installed copy must work when the source checkout and `references/pgfmanual.pdf` are unavailable. The portable regression test copies the generated Plugin to a temporary standalone directory and verifies knowledge search plus a structured flowchart build through a specialized Skill wrapper.
@@ -81,4 +101,3 @@ public-directory publication workflows, see
 ## Icons
 
 Canonical source icons are `IconKitchen/macos/AppIcon128.png` and `AppIcon512.png`. `sync_plugin_package.sh` copies these into `packages/plugin/tikz-funfig/assets/` as composer icon/logo assets. Other IconKitchen exports are reproducible local outputs and are not versioned.
-

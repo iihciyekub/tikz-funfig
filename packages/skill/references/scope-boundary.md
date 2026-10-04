@@ -8,12 +8,13 @@ expanding the number of drawable object families.
 
 The default product boundary is intentionally narrow:
 
-1. **Social-science and business research frameworks** — conceptual frameworks,
-   variable/path models, mediator/moderator layouts, layered research models,
-   stakeholder/process frameworks, and labelled constructs supplied by the user.
+1. **Social-science and business research frameworks** — layers, groups,
+   containment, stakeholder/module organization, and labelled constructs supplied
+   by the user. Variable paths and mediation/moderation use the relation workflow.
 2. **Mathematical models and relationships** — equations or variables arranged
    as model/relationship diagrams, simple mathematical diagrams, and analytical
-   relationships that can be represented without inventing semantics.
+   relationships, variable paths, and mediation/moderation hypotheses that can be
+   represented without inventing semantics.
 3. **2D function and data plots** — analytic functions, data series, scatter,
    error bars, uncertainty bands, thresholds/regimes, comparisons, and ordinary
    publication multi-panel plots.

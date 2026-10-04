@@ -4,6 +4,34 @@ All notable changes to TIKZ-FunFig are recorded here. The project follows semant
 
 ## [Unreleased]
 
+## [0.12.2] - 2026-10-04
+
+### Added
+
+- Added 24 real Codex Skill behavior cases for discovery, help, negative controls,
+  exact Gallery lookup, semantic routing, and six complete figure deliveries.
+- Added Chinese/English switching to the GitHub Pages Gallery, with localized
+  navigation, all 47 example titles/descriptions, tags, and visible/copyable
+  family-specific prompts. Language preference survives reloads.
+
+### Changed
+
+- Shortened all six Skill entrypoints and descriptions; consolidated shared
+  workflow requirements with separate help, local revision, new-figure, and
+  Expert paths. Detailed formal-notation guidance loads only when needed.
+- Usage and example answers now provide the GitHub Pages Gallery link. Example
+  prompts preserve the user's scientific content and ask for language, width,
+  editable source and PDF without exposing internal implementation choices.
+- Clarified routing by meaning: variable paths and moderation use relations,
+  grouped layers use frameworks, and branching layout alone does not imply flow.
+
+### Fixed
+
+- Fixed initial Gallery loading for permanent alias IDs and aligned the relations
+  package manifest with the supported Petri-net recipe.
+- Prevented local PDFs, TeX build files and `.funfig` state from entering the
+  generated Plugin bundle when synchronizing a checkout with built examples.
+
 ## [0.12.1] - 2026-10-03
 
 ### Added
