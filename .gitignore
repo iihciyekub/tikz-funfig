@@ -3,6 +3,7 @@
 **/.DS_Store
 .vscode/
 .idea/
+tmp/**
 
 # Python
 __pycache__/
