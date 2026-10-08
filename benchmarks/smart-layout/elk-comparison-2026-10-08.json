@@ -1,0 +1,37 @@
+{
+  "scope": "optional flat-layout development experiment",
+  "reports": [
+    {
+      "engine": "elkjs",
+      "version": "0.11.0",
+      "direction": "DOWN",
+      "elapsed_seconds": 0.549,
+      "semantic_signature": "1986bf7594edba32eaa3de30dd3ca3c5ea4a98755dbe7708f6aedb90bcb9fb7f",
+      "machine_checks_passed": true,
+      "defects": [],
+      "width_mm": 81.86,
+      "visual_review": "viewed: arrows and labels checked; reading-order/adapter limitations remain",
+      "limitations": [
+        "flat adapter only",
+        "ELK label placement is not yet mapped exactly to TikZ path labels",
+        "user pins, compound groups, and edge targets need independently verified mapping"
+      ]
+    },
+    {
+      "engine": "elkjs",
+      "version": "0.11.0",
+      "direction": "DOWN",
+      "elapsed_seconds": 0.573,
+      "semantic_signature": "f9494b1defd5c941c08e7458594c772a4d312b57e6e3865ad38578029ed1d383",
+      "machine_checks_passed": true,
+      "defects": [],
+      "width_mm": 76.95,
+      "visual_review": "viewed: arrows and labels checked; reading-order/adapter limitations remain",
+      "limitations": [
+        "flat adapter only",
+        "ELK label placement is not yet mapped exactly to TikZ path labels",
+        "user pins, compound groups, and edge targets need independently verified mapping"
+      ]
+    }
+  ]
+}

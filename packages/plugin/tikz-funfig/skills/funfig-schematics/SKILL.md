@@ -24,3 +24,7 @@ meaning in the Recipe. Search relevant `coordinates calc`, `nodes anchors`,
 Review dimensions/units, orientation, interfaces, direction arrows, leaders,
 detail insets and label clearance at publication width. This produces explanatory
 vector figures; it does not validate CAD, circuits, or physical simulations.
+
+For measured spacing, executable layout conditions, template suitability and
+bounded defect repair, consult shared `smart-layout.md` when relevant. Preserve
+scientific coordinates; finish by viewing the current preview.

@@ -1,11 +1,46 @@
 {
-  "id":"scientific-schematic","version":"1.0","kind":"tikz","renderer":"diagram",
-  "description":"Basic publication-oriented scientific/mechanism schematic with components, coordinates, annotations, and directional relationships.",
-  "required":["diagram"],
-  "schema_versions":["1.1"],
-  "roles":["component","module","concept","annotation","data"],
-  "capabilities":["structured-nodes","manual-layout","relative-layout","component-roles","labelled-edges","groups"],
-  "status":"stable","defaults":{"edge_arrows":"forward"},
-  "knowledge_ids":["coordinates-calc","nodes-anchors","arrows-meta","pics-components","text-labels"],
-  "external_tools":["latexmk"]
+  "id": "scientific-schematic",
+  "version": "1.0",
+  "kind": "tikz",
+  "renderer": "diagram",
+  "description": "Basic publication-oriented scientific/mechanism schematic with components, coordinates, annotations, and directional relationships.",
+  "required": [
+    "diagram"
+  ],
+  "schema_versions": [
+    "1.1"
+  ],
+  "roles": [
+    "component",
+    "module",
+    "concept",
+    "annotation",
+    "data"
+  ],
+  "capabilities": [
+    "structured-nodes",
+    "manual-layout",
+    "relative-layout",
+    "component-roles",
+    "labelled-edges",
+    "groups",
+    "measured-layout",
+    "layout-constraints",
+    "polyline-routing",
+    "bounded-layout-repair"
+  ],
+  "status": "stable",
+  "defaults": {
+    "edge_arrows": "forward"
+  },
+  "knowledge_ids": [
+    "coordinates-calc",
+    "nodes-anchors",
+    "arrows-meta",
+    "pics-components",
+    "text-labels"
+  ],
+  "external_tools": [
+    "latexmk"
+  ]
 }

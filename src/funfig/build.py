@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -9,6 +10,7 @@ from typing import Any
 from .io import load_json
 from .manifest import manifest_path, sha256_file, utc_now, write_manifest
 from .render import dependencies_for_spec, output_formats_for_spec, render_spec
+from .geometry import read_geometry
 
 
 class BuildError(RuntimeError):
@@ -60,6 +62,7 @@ def _relocate_transients(figure_dir: Path, basename: str, build_dir: Path) -> No
         "pgf-plot.table",
         "gnuplot",
         "table",
+        "ffgeom",
     ]
     for suffix in suffixes:
         source = figure_dir / f"{basename}.{suffix}"
@@ -97,6 +100,16 @@ def build_spec(spec: dict[str, Any], spec_path: Path) -> Path:
         raise BuildError("dependency check failed:\n" + "\n".join(messages))
 
     engine = _engine(spec, tex_path)
+    initial_tex_hash = sha256_file(tex_path)
+    geometry_file = figure_dir / '.funfig' / 'geometry.json'
+    layout = (spec.get('diagram') or {}).get('layout') or {}
+    adaptive = layout.get('type') == 'auto' or (layout.get('type') == 'grid' and layout.get('auto_fit'))
+    cache_hit = False
+    if adaptive and geometry_file.is_file():
+        cached = load_json(geometry_file)
+        if cached.get('initial_tex_sha256') == initial_tex_hash and cached.get('engine') == engine:
+            tex_path, manifest = render_spec(spec, spec_path, cached)
+            cache_hit = True
     # Compile from the figure directory instead of using latexmk -outdir.
     # PGFPlots' gnuplot handler launches gnuplot with filenames relative to
     # the TeX working directory; -outdir would place the generated script in
@@ -118,17 +131,37 @@ def build_spec(spec: dict[str, Any], spec_path: Path) -> Path:
         command.append("-latexoption=-shell-escape")
     command.append(tex_path.name)
 
-    process = subprocess.run(
-        command,
-        cwd=figure_dir,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        check=False,
-    )
-    _relocate_transients(figure_dir, basename, build_dir)
     log_path = build_dir / "funfig-build.log"
-    log_path.write_text(process.stdout, encoding="utf-8")
+    measurement = None
+    converged = not adaptive
+    for pass_index in range(4 if adaptive else 1):
+        process = subprocess.run(command, cwd=figure_dir, text=True,
+                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=False)
+        _relocate_transients(figure_dir, basename, build_dir)
+        with log_path.open('a' if pass_index else 'w', encoding='utf-8') as handle:
+            handle.write(process.stdout)
+        if process.returncode:
+            break
+        resolved = (manifest.get('layout') or {}).get('resolved_diagram')
+        if resolved:
+            try:
+                measurement = read_geometry(build_dir / f'{basename}.ffgeom', resolved)
+            except ValueError as error:
+                raise BuildError(str(error)) from error
+        if not adaptive or not measurement:
+            break
+        previous_text = tex_path.read_text(encoding='utf-8')
+        next_path, next_manifest = render_spec(spec, spec_path, measurement)
+        if next_path.read_text(encoding='utf-8') == previous_text:
+            manifest = next_manifest
+            converged = True
+            break
+        if pass_index == 3:
+            # Keep artifacts bound to the last compiled source rather than an
+            # uncompiled proposal when a constraint/shape does not converge.
+            tex_path.write_text(previous_text, encoding='utf-8')
+            break
+        manifest = next_manifest
 
     if process.returncode != 0:
         manifest.update(
@@ -162,6 +195,28 @@ def build_spec(spec: dict[str, Any], spec_path: Path) -> Path:
         }
     )
     manifest["hashes"]["pdf_sha256"] = sha256_file(final_pdf)
+    if manifest.get('layout'):
+        tex_lines = tex_path.read_text(encoding='utf-8').splitlines()
+        overflows = []
+        for match in re.finditer(r'Overfull \\hbox \(([\d.]+)pt too wide\)[^\n]*?at lines (\d+)(?:--(\d+))?', process.stdout):
+            if float(match[1]) <= 1:
+                continue
+            start = int(match[2]); stop = int(match[3] or start)
+            for line in tex_lines[max(0, start - 1):stop]:
+                node_match = re.search(r'\\node\[.*?\] \(([^)]+)\)', line)
+                if node_match:
+                    overflows.append({'id': 'text-overflow:' + node_match[1], 'type': 'text-overflow',
+                                      'severity': 'error', 'objects': [node_match[1]],
+                                      'evidence': {'overflow_pt': float(match[1]), 'source': 'tex-overfull-box'}})
+        manifest['build']['text_overflows'] = overflows
+    if measurement:
+        measurement.update({'hashes': dict(manifest['hashes']), 'engine': engine,
+                            'initial_tex_sha256': initial_tex_hash, 'converged': converged})
+        geometry_file.write_text(json.dumps(measurement, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+        manifest.setdefault('artifacts', {})['geometry'] = '.funfig/geometry.json'
+        manifest.setdefault('layout', {})['passes'] = pass_index + 1
+        manifest['layout']['converged'] = converged
+        manifest['layout']['cache_hit'] = cache_hit
 
     if "svg" in output_formats:
         staged_svg = build_dir / f"{basename}.svg"
@@ -237,4 +292,3 @@ def clean_spec(spec: dict[str, Any], spec_path: Path) -> list[Path]:
         )
         write_manifest(figure_dir, manifest)
     return removed
-

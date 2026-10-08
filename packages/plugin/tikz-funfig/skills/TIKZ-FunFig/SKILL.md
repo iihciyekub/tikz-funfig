@@ -46,3 +46,7 @@ Carry forward established decisions rather than re-running selection on each edi
 Read [scope-boundary.md](references/scope-boundary.md) only when the request
 crosses common academic figure families; retained long-tail support does not
 expand an ordinary task.
+
+For measured spacing, executable layout conditions, template suitability and
+bounded defect repair, consult shared `smart-layout.md` when relevant. Preserve
+scientific coordinates; finish by viewing the current preview.

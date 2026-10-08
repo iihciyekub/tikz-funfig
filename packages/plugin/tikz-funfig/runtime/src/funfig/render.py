@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import copy
+
 import math
 import re
 from pathlib import Path
@@ -9,6 +11,8 @@ from .io import load_json, write_text_atomic
 from .manifest import manifest_path, sha256_file, utc_now, write_manifest
 from .recipes import load_recipe
 from .schema import validate_spec
+from .geometry import MEASUREMENT_PREAMBLE, SAMPLES, records_tex
+from .layout import plan_layout, profile_for, estimate_dimensions
 from .theme import load_profile, load_theme
 
 
@@ -1117,14 +1121,15 @@ def _ordered_structured_edges(edges: list[dict[str, Any]]) -> list[dict[str, Any
     return emitted
 
 
-def _edge_label(edge: dict[str, Any]) -> str:
+def _edge_label(edge: dict[str, Any], index: int | None = None) -> str:
     if not edge.get("label"):
         return ""
     position = _fmt(edge.get("label_position", 0.5))
     side = edge.get("label_side", "above")
     text = _diagram_text(edge.get("label"), edge.get("label_format"))
     slope = ",sloped" if edge.get("label_sloped") else ""
-    return f" node[pos={position},{side}{slope},fill=white,inner sep=1.2pt] {{{text}}}"
+    name = f" (funfig_edge_label_{index})" if index is not None else ""
+    return f" node[pos={position},{side}{slope},fill=white,inner sep=1.2pt]{name} {{{text}}}"
 
 
 _TEX_LENGTH_RE = re.compile(r"^\s*(\d+(?:\.\d+)?)(pt|mm|cm|in|em|ex)\s*$")
@@ -1205,14 +1210,16 @@ def _adaptive_grid_metrics(
     max_lines = 1
     line_capacity_em = max(text_width / 3.0, 5.0)
     for node in grid_nodes:
-        if node.get("text_width"):
-            continue
         visual_em = _label_visual_em(node.get("label", ""), node.get("label_format"))
-        estimated_lines = max(1, min(4, math.ceil(visual_em / line_capacity_em)))
+        capacity = max(_length_mm(node.get("text_width"), text_width) / 3.0, 1)
+        estimated_lines = max(1, math.ceil(visual_em / capacity))
         max_lines = max(max_lines, estimated_lines)
 
     min_height = _length_mm(profile.get("node_min_height", "8mm"), 8.0)
     estimated_height = min_height + (max_lines - 1) * 3.9
+    dimensions = [estimate_dimensions(n, profile, text_width) for n in grid_nodes]
+    estimated_height = max([estimated_height] + [h for _, h in dimensions])
+    box_width = max([box_width] + [w for w, _ in dimensions])
     auto_row = max(
         _length_mm(profile.get("default_row_gap", "13mm"), 13.0),
         estimated_height + 7.0,
@@ -1227,11 +1234,15 @@ def _render_diagram_structured(spec: dict[str, Any]) -> str:
     diagram = spec.get("diagram") or {}
     recipe = load_recipe(spec["recipe"])
     theme, profile = _structured_theme_profile(spec)
+    profile.update(profile_for(spec))
     tokens = theme.get("tokens", {})
     profile_font = profile.get("font", "\\small")
     layout = diagram.get("layout") or {"type": "relative"}
+    measured = bool(layout.get("measure"))
     border = (spec.get("canvas") or {}).get("border", "2pt")
     libraries = _structured_libraries(spec)
+    if measured and diagram.get('groups') and 'positioning' not in libraries:
+        libraries.append('positioning')
     labels = [str(node.get("label", "")) for node in diagram.get("nodes", [])]
     labels += [str(edge.get("label", "")) for edge in diagram.get("edges", [])]
     labels += [str(group.get("label", "")) for group in diagram.get("groups", [])]
@@ -1242,10 +1253,14 @@ def _render_diagram_structured(spec: dict[str, Any]) -> str:
         "\\usepackage[dvipsnames,svgnames,x11names]{xcolor}",
         "\\usepackage{tikz}",
     ]
+    if measured and any(item.get('label_format') == 'tex' for family in ('nodes', 'edges', 'groups') for item in diagram.get(family, [])):
+        lines.append("\\usepackage{amsmath,amssymb}")
     if has_unicode:
         lines.append("\\usepackage[UTF8]{ctex}")
     if libraries:
         lines.append(f"\\usetikzlibrary{{{','.join(libraries)}}}")
+    if measured:
+        lines.append(MEASUREMENT_PREAMBLE)
     lines.extend(["\\begin{document}"])
 
     picture_options = [f"font={profile_font}", ">=Stealth"]
@@ -1268,6 +1283,8 @@ def _render_diagram_structured(spec: dict[str, Any]) -> str:
             options.append(f"minimum width={node['min_width']}")
         if node.get("text_width"):
             options.append(f"text width={node['text_width']}")
+            if measured and node.get('label_format') != 'tex':
+                options.append(r"execute at begin node={\hyphenpenalty=10000\relax}")
         elif adaptive_text_width and (node.get("position") or {}).get("type") == "grid":
             options.append(f"text width={adaptive_text_width}")
             options.append(r"execute at begin node={\hyphenpenalty=10000\relax}")
@@ -1286,7 +1303,29 @@ def _render_diagram_structured(spec: dict[str, Any]) -> str:
         lines.append(f"\\node[{','.join(options)}] ({node['id']}){placement} {{{label}}};")
 
     groups = _ordered_groups(list(diagram.get("groups", [])))
-    if groups:
+    if groups and measured:
+        grouped = {g['id']: g for g in groups}
+        for group in groups:
+            fit = ''.join(f"({member})" for member in group['members'])
+            for member in group['members']:
+                if member in grouped and grouped[member].get('label'):
+                    child_index = diagram['groups'].index(grouped[member])
+                    fit += f"(funfig_group_label_{child_index})"
+            lines.append(f"\\node[fit={fit},inner sep={group.get('padding', '6pt')},draw=none,fill=none] ({group['id']}) {{}};")
+            if group.get('label'):
+                index = diagram['groups'].index(group)
+                text = _diagram_text(group['label'], group.get('label_format'))
+                gap = group.get('title_gap', '0.8mm')
+                lines.append(f"\\node[above={gap} of {group['id']}.north,font={profile_font},inner sep=1.2pt] (funfig_group_label_{index}) {{{text}}};")
+        lines.append("\\begin{scope}[on background layer]")
+        for group in reversed(groups):
+            appearance = {'fill': tokens.get('group_fill', 'black!3'),
+                          'draw': tokens.get('group_draw', 'black!35'),
+                          'line_width': tokens.get('group_line_width', '0.45pt'), **(group.get('appearance') or {})}
+            options = _appearance_options(appearance)
+            lines.append(f"\\draw[{','.join(options)}] ({group['id']}.south west) rectangle ({group['id']}.north east);")
+        lines.append("\\end{scope}")
+    elif groups:
         lines.append("\\begin{scope}[on background layer]")
         for group in groups:
             members = "".join(f"({member})" for member in group.get("members", []))
@@ -1297,15 +1336,20 @@ def _render_diagram_structured(spec: dict[str, Any]) -> str:
                 **(group.get("appearance") or {}),
             }
             options = [f"fit={members}", f"inner sep={group.get('padding', '6pt')}"]
+            if group.get('title_gap'):
+                options.append(f"label distance={group['title_gap']}")
             options += _appearance_options(appearance)
             if group.get("label"):
                 label = _diagram_text(group["label"], group.get("label_format"))
-                options.append(f"label={{[font={profile_font}]above:{{{label}}}}}")
+                index = diagram.get("groups", []).index(group)
+                name = f",name=funfig_group_label_{index}" if measured else ""
+                options.append(f"label={{[font={profile_font}{name}]above:{{{label}}}}}")
             lines.append(f"\\node[{','.join(options)}] ({group['id']}) {{}};")
         lines.append("\\end{scope}")
 
     targeted_edge_ids = {edge.get("to_edge") for edge in diagram.get("edges", []) if edge.get("to_edge")}
     for edge in _ordered_structured_edges(list(diagram.get("edges", []))):
+        index = diagram.get("edges", []).index(edge)
         appearance = {
             "draw": tokens.get("edge_color", "black!70"),
             "line_width": tokens.get("line_width", "0.6pt"),
@@ -1318,7 +1362,9 @@ def _render_diagram_structured(spec: dict[str, Any]) -> str:
             if edge.get("to_edge")
             else _endpoint(edge["to"], edge.get("to_anchor"))
         )
-        label = _edge_label(edge)
+        label = _edge_label(edge, index if measured else None)
+        samples = "".join(f" coordinate[pos={k / SAMPLES:.6f}] (funfig_path_{index}_{k})"
+                          for k in range(SAMPLES + 1)) if measured else ""
         midpoint = (
             f" coordinate[pos=0.5] ({_edge_midpoint_name(edge['id'])})"
             if edge.get("id") in targeted_edge_ids
@@ -1327,18 +1373,36 @@ def _render_diagram_structured(spec: dict[str, Any]) -> str:
         route = edge.get("route", "straight")
         routing = edge.get("routing") or {}
         if route == "straight":
-            lines.append(f"\\draw[{','.join(options)}] {source} --{label}{midpoint} {target};")
+            lines.append(f"\\draw[{','.join(options)}] {source} --{label}{midpoint}{samples} {target};")
         elif route == "orthogonal":
             operator = "-|" if routing.get("order", "horizontal-first") == "horizontal-first" else "|-"
-            lines.append(f"\\draw[{','.join(options)}] {source} {operator}{label}{midpoint} {target};")
+            lines.append(f"\\draw[{','.join(options)}] {source} {operator}{label}{midpoint}{samples} {target};")
         elif route == "curve":
             bend = float(routing.get("bend", 25))
             curve = f"bend left={_fmt(abs(bend))}" if bend >= 0 else f"bend right={_fmt(abs(bend))}"
-            lines.append(f"\\draw[{','.join(options)}] {source} to[{curve}]{label}{midpoint} {target};")
+            lines.append(f"\\draw[{','.join(options)}] {source} to[{curve}]{label}{midpoint}{samples} {target};")
+        elif route == "polyline":
+            points = [source] + [f"({_fmt(p['x'])},{_fmt(p['y'])})" for p in routing['points']] + [target]
+            # Labels and edge-to-edge attachments belong to the central segment.
+            middle = (len(points) - 2) // 2
+            path = points[0]
+            for segment, endpoint in enumerate(points[1:]):
+                annotations = label + midpoint if segment == middle else ""
+                path += f" --{annotations} {endpoint}"
+            lines.append(f"\\draw[{','.join(options)}] {path};")
+            if measured:
+                count = len(points) - 1
+                for k in range(SAMPLES + 1):
+                    progress = k / SAMPLES * count
+                    segment = min(int(progress), count - 1)
+                    local = progress - segment
+                    lines.append(f"\\path {points[segment]} -- coordinate[pos={local:.6f}] (funfig_path_{index}_{k}) {points[segment + 1]};")
         else:
             side = routing.get("side", "above")
-            lines.append(f"\\draw[{','.join(options)}] {source} to[loop {side}]{label} {target};")
+            lines.append(f"\\draw[{','.join(options)}] {source} to[loop {side}]{label}{samples} {target};")
 
+    if measured:
+        lines += records_tex(diagram)
     lines += ["\\end{tikzpicture}", "\\end{document}", ""]
     return "\n".join(lines)
 
@@ -1433,12 +1497,20 @@ def dependencies_for_spec(spec: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def render_spec(spec: dict[str, Any], spec_path: Path) -> tuple[Path, dict[str, Any]]:
+def render_spec(spec: dict[str, Any], spec_path: Path, measurements: dict[str, Any] | None = None) -> tuple[Path, dict[str, Any]]:
     validation = validate_spec(spec, spec_path)
     if not validation.ok:
         raise ValueError("invalid FigureSpec:\n- " + "\n- ".join(validation.errors))
 
     recipe = load_recipe(spec["recipe"])
+    original = spec
+    layout_report = None
+    layout = (spec.get("diagram") or {}).get("layout") or {}
+    if layout.get("type") == "grid" and layout.get("auto_fit"):
+        spec = copy.deepcopy(spec)
+        spec['diagram']['layout']['measure'] = True
+    if layout.get("type") == "auto" or (measurements and layout.get("type") == "grid" and layout.get("auto_fit")):
+        spec, layout_report = plan_layout(spec, measurements, grid=layout.get("type") == "grid")
     renderer = recipe["renderer"]
     if renderer == "pgfplots":
         text = render_pgfplots(spec)
@@ -1508,10 +1580,13 @@ def render_spec(spec: dict[str, Any], spec_path: Path) -> tuple[Path, dict[str, 
             ],
         },
     }
+    if layout_report or (spec.get("diagram") or {}).get("layout", {}).get("measure"):
+        manifest["layout"] = {"report": layout_report, "resolved_diagram": spec["diagram"]}
     if "svg" in output_formats:
         manifest["artifacts"]["svg"] = f"{basename}.svg"
     if spec.get("schema_version") == "1.1":
         theme, profile = _structured_theme_profile(spec)
+        profile.update(profile_for(original))
         manifest["theme"] = {"id": theme["id"], "version": theme.get("version", "1.0")}
         manifest["profile"] = {
             "id": profile["id"],

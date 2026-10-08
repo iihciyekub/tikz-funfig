@@ -1,0 +1,639 @@
+{
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "explicit-large-node",
+      "kind": "large-grid",
+      "expect": "clean",
+      "first_machine_pass": true,
+      "final_machine_pass": true,
+      "first_defects": [],
+      "final_defects": [],
+      "adopted": true,
+      "evaluations": 1,
+      "elapsed_seconds": 2.549,
+      "hashes": {
+        "spec_sha256": "aa9a79418586ca0d5d25dfb645ab1a88b48ee9f490b2a1edac5e26889478bd36",
+        "tex_sha256": "5fa87098201436249678c48224435dcf8b695b2ba95b72d7341d8fdf04945bc4",
+        "pdf_sha256": "360029b38741114efe7ad65cbb93ee1d1f73282d8c3f7fda67466ba3685d1b71"
+      },
+      "visual_review": "passed",
+      "preview": "case-output/explicit-large-node/.funfig/preview.png"
+    },
+    {
+      "id": "long-english",
+      "kind": "long-chain",
+      "expect": "clean",
+      "first_machine_pass": false,
+      "final_machine_pass": true,
+      "first_defects": [
+        {
+          "id": "pdf:0",
+          "type": "publication-size",
+          "severity": "error",
+          "objects": [
+            "pdf"
+          ],
+          "evidence": {
+            "message": "natural PDF width 122.5 mm exceeds target 88.0 mm by more than 20%; inspect readability after publication scaling"
+          }
+        },
+        {
+          "id": "text-overflow:n0",
+          "type": "text-overflow",
+          "severity": "error",
+          "objects": [
+            "n0"
+          ],
+          "evidence": {
+            "overflow_pt": 7.0379,
+            "source": "tex-overfull-box"
+          }
+        },
+        {
+          "id": "text-overflow:n0",
+          "type": "text-overflow",
+          "severity": "error",
+          "objects": [
+            "n0"
+          ],
+          "evidence": {
+            "overflow_pt": 6.66428,
+            "source": "tex-overfull-box"
+          }
+        },
+        {
+          "id": "text-overflow:n1",
+          "type": "text-overflow",
+          "severity": "error",
+          "objects": [
+            "n1"
+          ],
+          "evidence": {
+            "overflow_pt": 18.21977,
+            "source": "tex-overfull-box"
+          }
+        },
+        {
+          "id": "text-overflow:n1",
+          "type": "text-overflow",
+          "severity": "error",
+          "objects": [
+            "n1"
+          ],
+          "evidence": {
+            "overflow_pt": 9.85037,
+            "source": "tex-overfull-box"
+          }
+        },
+        {
+          "id": "text-overflow:n1",
+          "type": "text-overflow",
+          "severity": "error",
+          "objects": [
+            "n1"
+          ],
+          "evidence": {
+            "overflow_pt": 4.36223,
+            "source": "tex-overfull-box"
+          }
+        },
+        {
+          "id": "text-overflow:n2",
+          "type": "text-overflow",
+          "severity": "error",
+          "objects": [
+            "n2"
+          ],
+          "evidence": {
+            "overflow_pt": 1.82683,
+            "source": "tex-overfull-box"
+          }
+        },
+        {
+          "id": "text-overflow:n2",
+          "type": "text-overflow",
+          "severity": "error",
+          "objects": [
+            "n2"
+          ],
+          "evidence": {
+            "overflow_pt": 6.39694,
+            "source": "tex-overfull-box"
+          }
+        },
+        {
+          "id": "text-overflow:n3",
+          "type": "text-overflow",
+          "severity": "error",
+          "objects": [
+            "n3"
+          ],
+          "evidence": {
+            "overflow_pt": 3.33792,
+            "source": "tex-overfull-box"
+          }
+        },
+        {
+          "id": "text-overflow:n4",
+          "type": "text-overflow",
+          "severity": "error",
+          "objects": [
+            "n4"
+          ],
+          "evidence": {
+            "overflow_pt": 13.36215,
+            "source": "tex-overfull-box"
+          }
+        },
+        {
+          "id": "geometry:budget",
+          "type": "space-infeasible",
+          "severity": "error",
+          "objects": [
+            "diagram"
+          ],
+          "evidence": {
+            "required_width_mm": 122.55,
+            "target_width_mm": 88.0
+          }
+        }
+      ],
+      "final_defects": [],
+      "adopted": true,
+      "evaluations": 5,
+      "elapsed_seconds": 5.519,
+      "hashes": {
+        "spec_sha256": "590f454ff6117ae904bd3fa299bf66d3f7c5278d96de6cbdcbcc37c5fa9a2711",
+        "tex_sha256": "df1bf598905682bd42d46c85df06f367fbd5c8b6d0166dbe2f73a3af4063f8bb",
+        "pdf_sha256": "660622902fe911101d7b7113f53a689517b3f18d06cf12191cd55c907ba56b12"
+      },
+      "visual_review": "passed",
+      "preview": "case-output/long-english/.funfig/preview.png"
+    },
+    {
+      "id": "long-cjk",
+      "kind": "cjk-chain",
+      "expect": "clean",
+      "first_machine_pass": true,
+      "final_machine_pass": true,
+      "first_defects": [],
+      "final_defects": [],
+      "adopted": true,
+      "evaluations": 1,
+      "elapsed_seconds": 4.362,
+      "hashes": {
+        "spec_sha256": "6ebb003b2ba3ee9967b5b8a0106ec18556b347924f17604bcf5d16a15470328a",
+        "tex_sha256": "3824894f7856da02205d6b6dd7abcf6d3ffa31bbf36575c5ef693a4d626ad810",
+        "pdf_sha256": "d4a75a8dd816ca0070b371194fa202c2e67795de176a760ed090f237653a284b"
+      },
+      "visual_review": "passed",
+      "preview": "case-output/long-cjk/.funfig/preview.png"
+    },
+    {
+      "id": "decision-shape",
+      "kind": "decision",
+      "expect": "clean",
+      "first_machine_pass": true,
+      "final_machine_pass": true,
+      "first_defects": [],
+      "final_defects": [],
+      "adopted": true,
+      "evaluations": 1,
+      "elapsed_seconds": 2.592,
+      "hashes": {
+        "spec_sha256": "d1b6b4d258edaf3bcbc3ce1964cc744a0c2ffe7a3f6730af3fb4ed2591bb6e0d",
+        "tex_sha256": "e8d254fc4d0f42ab5dbb8237fd616c40347a38ccd25fb0e59e30a77b19a73aba",
+        "pdf_sha256": "7a7c96f0c170631574cf4ead061c3191f887b7dc3b0357babba03f47bdb720ad"
+      },
+      "visual_review": "passed",
+      "preview": "case-output/decision-shape/.funfig/preview.png"
+    },
+    {
+      "id": "nested-groups",
+      "kind": "nested",
+      "expect": "clean",
+      "first_machine_pass": false,
+      "final_machine_pass": true,
+      "first_defects": [
+        {
+          "id": "edge-label-crossing:e2:group-label:result",
+          "type": "edge-label-crossing",
+          "objects": [
+            "e2",
+            "group-label:result"
+          ],
+          "severity": "error",
+          "evidence": {
+            "sampled": true
+          }
+        }
+      ],
+      "final_defects": [],
+      "adopted": true,
+      "evaluations": 3,
+      "elapsed_seconds": 4.021,
+      "hashes": {
+        "spec_sha256": "8bdadeb18ff11d98c3efac3f582617a1c16a0d403a26ef863207482937780025",
+        "tex_sha256": "b2658aa18a6ff8b0429b352047416cc0ca3217c7ece0dae3629c038f8001ccef",
+        "pdf_sha256": "f65abd8c9149fcc547b720a0d7eb9600f5151ad912987bc6bbaf0109d4778683"
+      },
+      "visual_review": "passed",
+      "preview": "case-output/nested-groups/.funfig/preview.png"
+    },
+    {
+      "id": "multiple-feedback",
+      "kind": "feedback",
+      "expect": "clean",
+      "first_machine_pass": false,
+      "final_machine_pass": true,
+      "first_defects": [
+        {
+          "id": "pdf:0",
+          "type": "text-overlap",
+          "severity": "error",
+          "objects": [
+            "pdf"
+          ],
+          "evidence": {
+            "message": "detected 4 overlapping text bounding-box pair(s) (for example: 'revise' overlaps '3'); increase node clearance or repair routing/layout before visual review"
+          }
+        },
+        {
+          "id": "label-node-overlap:edge-label:f1:n2",
+          "type": "label-node-overlap",
+          "objects": [
+            "edge-label:f1",
+            "n2"
+          ],
+          "severity": "error",
+          "evidence": {}
+        },
+        {
+          "id": "label-node-overlap:edge-label:f2:n2",
+          "type": "label-node-overlap",
+          "objects": [
+            "edge-label:f2",
+            "n2"
+          ],
+          "severity": "error",
+          "evidence": {}
+        },
+        {
+          "id": "label-overlap:edge-label:f1:edge-label:f2",
+          "type": "label-overlap",
+          "objects": [
+            "edge-label:f1",
+            "edge-label:f2"
+          ],
+          "severity": "error",
+          "evidence": {}
+        },
+        {
+          "id": "edge-node-crossing:f1:n1",
+          "type": "edge-node-crossing",
+          "objects": [
+            "f1",
+            "n1"
+          ],
+          "severity": "error",
+          "evidence": {
+            "sampled": true
+          }
+        },
+        {
+          "id": "edge-node-crossing:f1:n2",
+          "type": "edge-node-crossing",
+          "objects": [
+            "f1",
+            "n2"
+          ],
+          "severity": "error",
+          "evidence": {
+            "sampled": true
+          }
+        },
+        {
+          "id": "edge-node-crossing:f1:n3",
+          "type": "edge-node-crossing",
+          "objects": [
+            "f1",
+            "n3"
+          ],
+          "severity": "error",
+          "evidence": {
+            "sampled": true
+          }
+        },
+        {
+          "id": "edge-label-crossing:f1:edge-label:f2",
+          "type": "edge-label-crossing",
+          "objects": [
+            "f1",
+            "edge-label:f2"
+          ],
+          "severity": "error",
+          "evidence": {
+            "sampled": true
+          }
+        },
+        {
+          "id": "edge-node-crossing:f2:n2",
+          "type": "edge-node-crossing",
+          "objects": [
+            "f2",
+            "n2"
+          ],
+          "severity": "error",
+          "evidence": {
+            "sampled": true
+          }
+        },
+        {
+          "id": "edge-label-crossing:f2:edge-label:f1",
+          "type": "edge-label-crossing",
+          "objects": [
+            "f2",
+            "edge-label:f1"
+          ],
+          "severity": "error",
+          "evidence": {
+            "sampled": true
+          }
+        }
+      ],
+      "final_defects": [],
+      "adopted": true,
+      "evaluations": 6,
+      "elapsed_seconds": 5.718,
+      "hashes": {
+        "spec_sha256": "3c18cc56717f5c96dc2e3e770e676812fa57e98dcdda0759b895089bcddd9105",
+        "tex_sha256": "01571879a42e8e183e9f3e55362b50068c80f2d94d1fd749554842271a3dc81f",
+        "pdf_sha256": "5a4ce3847727ede196910f9e38b73ffe4b3e553fbb6f25f9e5c1606e6c207831"
+      },
+      "visual_review": "passed",
+      "preview": "case-output/multiple-feedback/.funfig/preview.png"
+    },
+    {
+      "id": "manual-obstacle",
+      "kind": "obstacle",
+      "expect": "clean",
+      "first_machine_pass": false,
+      "final_machine_pass": true,
+      "first_defects": [
+        {
+          "id": "pdf:0",
+          "type": "text-overlap",
+          "severity": "error",
+          "objects": [
+            "pdf"
+          ],
+          "evidence": {
+            "message": "detected 2 overlapping text bounding-box pair(s) (for example: 'signal' overlaps 'Other'); increase node clearance or repair routing/layout before visual review"
+          }
+        },
+        {
+          "id": "label-node-overlap:edge-label:blocked:obstacle",
+          "type": "label-node-overlap",
+          "objects": [
+            "edge-label:blocked",
+            "obstacle"
+          ],
+          "severity": "error",
+          "evidence": {}
+        },
+        {
+          "id": "edge-node-crossing:blocked:obstacle",
+          "type": "edge-node-crossing",
+          "objects": [
+            "blocked",
+            "obstacle"
+          ],
+          "severity": "error",
+          "evidence": {
+            "sampled": true
+          }
+        }
+      ],
+      "final_defects": [],
+      "adopted": true,
+      "evaluations": 2,
+      "elapsed_seconds": 2.32,
+      "hashes": {
+        "spec_sha256": "05d093e62e9c315e68ab90ec47f66371ec1fd6c612657d2284cb93f62f674575",
+        "tex_sha256": "c2574629a6d71eca8c95d96c3624a236868a5bbe8338cf0a7f23d9669a73f07b",
+        "pdf_sha256": "3b7919744bbd84da514bbc30a391dcbd4b27c6cfea314ce28aedc2146dc81b70"
+      },
+      "visual_review": "passed",
+      "preview": "case-output/manual-obstacle/.funfig/preview.png"
+    },
+    {
+      "id": "mathematical-labels",
+      "kind": "math",
+      "expect": "clean-or-typesetting-diagnostic",
+      "first_machine_pass": true,
+      "final_machine_pass": true,
+      "first_defects": [],
+      "final_defects": [],
+      "adopted": true,
+      "evaluations": 1,
+      "elapsed_seconds": 2.893,
+      "hashes": {
+        "spec_sha256": "2834daec0db505763bf1490a84a213f42b33d947085b09a41aabe0b0e53ca30a",
+        "tex_sha256": "a9330ebd0343b9fcb23e5ab4c9a802305cb780b007b9fea702d2d08674110eba",
+        "pdf_sha256": "b528e9bfd232146fe4cd752c7ae9146c40e5ee839b51dc0639fd08f061ece60a"
+      },
+      "visual_review": "passed",
+      "preview": "case-output/mathematical-labels/.funfig/preview.png"
+    },
+    {
+      "id": "changed-text",
+      "kind": "edit",
+      "expect": "clean",
+      "first_machine_pass": true,
+      "final_machine_pass": true,
+      "first_defects": [],
+      "final_defects": [],
+      "adopted": true,
+      "evaluations": 1,
+      "elapsed_seconds": 2.588,
+      "hashes": {
+        "spec_sha256": "24e736d5bbba2b7820022f5c3c3548dab3694205da1fea309cb41e8c7c885257",
+        "tex_sha256": "71138acc3d34845c5bf2e6622823b3f6b4cb2ca492db6232b5134310374b9c71",
+        "pdf_sha256": "ba9a64ff747bbefbac852dfa6ca6979437e18a5d2ee805e2b80b080c9cf806bb"
+      },
+      "visual_review": "passed",
+      "preview": "case-output/changed-text/.funfig/preview.png"
+    },
+    {
+      "id": "pinned-collision",
+      "kind": "pins",
+      "expect": "diagnostic",
+      "first_machine_pass": false,
+      "final_machine_pass": false,
+      "first_defects": [
+        {
+          "id": "pdf:0",
+          "type": "text-overlap",
+          "severity": "error",
+          "objects": [
+            "pdf"
+          ],
+          "evidence": {
+            "message": "detected 1 overlapping text bounding-box pair(s) (for example: '1' overlaps '2'); increase node clearance or repair routing/layout before visual review"
+          }
+        },
+        {
+          "id": "node-overlap:n0:n1",
+          "type": "node-overlap",
+          "objects": [
+            "n0",
+            "n1"
+          ],
+          "severity": "error",
+          "evidence": {}
+        },
+        {
+          "id": "constraint:2",
+          "type": "constraint-conflict",
+          "objects": [
+            "n0",
+            "n1"
+          ],
+          "severity": "error",
+          "evidence": {
+            "constraint": {
+              "type": "order-y",
+              "nodes": [
+                "n0",
+                "n1"
+              ]
+            }
+          }
+        }
+      ],
+      "final_defects": [
+        {
+          "id": "pdf:0",
+          "type": "text-overlap",
+          "severity": "error",
+          "objects": [
+            "pdf"
+          ],
+          "evidence": {
+            "message": "detected 1 overlapping text bounding-box pair(s) (for example: '1' overlaps '2'); increase node clearance or repair routing/layout before visual review"
+          }
+        },
+        {
+          "id": "node-overlap:n0:n1",
+          "type": "node-overlap",
+          "objects": [
+            "n0",
+            "n1"
+          ],
+          "severity": "error",
+          "evidence": {}
+        },
+        {
+          "id": "constraint:2",
+          "type": "constraint-conflict",
+          "objects": [
+            "n0",
+            "n1"
+          ],
+          "severity": "error",
+          "evidence": {
+            "constraint": {
+              "type": "order-y",
+              "nodes": [
+                "n0",
+                "n1"
+              ]
+            }
+          }
+        }
+      ],
+      "adopted": false,
+      "evaluations": 2,
+      "elapsed_seconds": 1.662,
+      "hashes": {
+        "spec_sha256": "19c93bc3696107ccbe94bd524b7bf77ba39b4fb38b0ea9b101d264d48bb7df98",
+        "tex_sha256": "b4708fed6d80069c7470faa029fbc36da142e3ff2c102135f6c7319d9103f22b",
+        "pdf_sha256": "8a6c10df161fe80e858ea83ae19e9b1fe51b2b3d94e308dc96f07278a26f5ead"
+      },
+      "visual_review": "not-accepted: intentional infeasible constraints",
+      "preview": "case-output/pinned-collision/.funfig/preview.png"
+    },
+    {
+      "id": "single-column-impossible",
+      "kind": "impossible",
+      "expect": "diagnostic",
+      "first_machine_pass": false,
+      "final_machine_pass": false,
+      "first_defects": [
+        {
+          "id": "pdf:0",
+          "type": "publication-size",
+          "severity": "error",
+          "objects": [
+            "pdf"
+          ],
+          "evidence": {
+            "message": "natural PDF width 121.6 mm exceeds target 88.0 mm by more than 20%; inspect readability after publication scaling"
+          }
+        },
+        {
+          "id": "geometry:budget",
+          "type": "space-infeasible",
+          "severity": "error",
+          "objects": [
+            "diagram"
+          ],
+          "evidence": {
+            "required_width_mm": 121.62,
+            "target_width_mm": 88.0
+          }
+        }
+      ],
+      "final_defects": [
+        {
+          "id": "pdf:0",
+          "type": "publication-size",
+          "severity": "error",
+          "objects": [
+            "pdf"
+          ],
+          "evidence": {
+            "message": "natural PDF width 121.6 mm exceeds target 88.0 mm by more than 20%; inspect readability after publication scaling"
+          }
+        },
+        {
+          "id": "geometry:budget",
+          "type": "space-infeasible",
+          "severity": "error",
+          "objects": [
+            "diagram"
+          ],
+          "evidence": {
+            "required_width_mm": 121.62,
+            "target_width_mm": 88.0
+          }
+        }
+      ],
+      "adopted": false,
+      "evaluations": 2,
+      "elapsed_seconds": 1.643,
+      "hashes": {
+        "spec_sha256": "b176a1399403d05d131550219dd9ee7208c65aab15a240d464f7eccfa3a538e9",
+        "tex_sha256": "2c97bfe8651903af895049ee46c78c8ec0997d0c50168213d514d089f0333370",
+        "pdf_sha256": "a280ae1e620731efa23aa28b9aa3f1d6b07087d3093779724d6b0cbaa53857a4"
+      },
+      "visual_review": "not-accepted: intentional infeasible constraints",
+      "preview": "case-output/single-column-impossible/.funfig/preview.png"
+    }
+  ],
+  "first_machine_passes": 5,
+  "final_machine_passes": 9,
+  "count": 11,
+  "visual_review": "9 feasible current previews reviewed; 2 infeasible cases correctly rejected"
+}

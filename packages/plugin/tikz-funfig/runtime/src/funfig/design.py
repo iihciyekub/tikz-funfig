@@ -122,6 +122,10 @@ def validate_design(path: Path, *, delivery: bool = False) -> dict[str, Any]:
             qa = manifest.get("qa") or {}
             if qa.get("status") != "passed" or qa.get("visual_review") != "passed" or not qa.get("machine_checks_passed"):
                 errors.append("delivery requires passing machine checks and an actual recorded visual review")
+            size = qa.get('size_check') or {}
+            for key in ('target_width_mm', 'minimum_text_pt'):
+                if size.get(key) is not None and abs(float(size[key]) - float(design['appearance'][key])) > .05:
+                    errors.append(f'delivery {key} differs from the design; apply output profile and rebuild')
             artifacts = {"tex": f"{basename}.tex", "pdf": f"{basename}.pdf"}
             if structured:
                 artifacts["spec"] = "figure.funfig.json"

@@ -27,3 +27,7 @@ meta`, or `groupplots`; consult `style-guide.md` for axes and typography.
 Existing plot Recipes use FigureSpec 1.0 axis/style/canvas fields; do not add 1.1
 diagram theme fields. Check limits, ticks, units, legends, uncertainty and clipping
 at target width, with consistent physical text/marker scales across panels.
+
+For measured spacing, executable layout conditions, template suitability and
+bounded defect repair, consult shared `smart-layout.md` when relevant. Preserve
+scientific coordinates; finish by viewing the current preview.

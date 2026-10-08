@@ -74,7 +74,12 @@ while tuning appearance. Long-tail geometry remains subject to `scope-boundary.m
 
 For new structured work, initialize in the user's project with `init --id <id>
 --recipe <recipe>` and replace all starter content. Implement design targets in
-supported FigureSpec fields; design JSON does not configure the renderer.
+supported FigureSpec fields; `optimize --design` binds the design width/text baseline.
+Common process/framework/relation starters use measured auto placement; physical
+schematics retain their manual coordinates with measurement enabled.
+For adjustable diagrams or reported layout defects, read `smart-layout.md` and
+use measured optimization before final image review. Other design prose remains
+an interpretation contract, not automatic renderer configuration.
 Validate the design and spec, then `build` and `inspect`. Expert work uses the
 build/provenance commands in `expert-mode.md`.
 

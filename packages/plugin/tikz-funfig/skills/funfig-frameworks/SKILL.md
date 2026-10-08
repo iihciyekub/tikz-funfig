@@ -25,3 +25,7 @@ Keep group fills subordinate and titles clear of borders and connectors.
 Review containment, group nesting, cross-layer connections, long labels and
 balance at publication width. Consult only needed family guidance for a separate
 process/data panel; arbitrary mixed panels may require sourced Expert Mode.
+
+For measured spacing, executable layout conditions, template suitability and
+bounded defect repair, consult shared `smart-layout.md` when relevant. Preserve
+scientific coordinates; finish by viewing the current preview.

@@ -1,0 +1,14 @@
+{
+  "canonical_check": "passed",
+  "test_count": 164,
+  "new_regression_tests": 14,
+  "diff_check": "passed",
+  "plugin_bundle_files": 398,
+  "installed_files_match": 398,
+  "installed_plugin": "tikz-funfig@tikz-funfig",
+  "installed_version": "0.12.2",
+  "installed_enabled": true,
+  "installed_optimizer_smoke": "adopted with score [0,0,0], visual review pending",
+  "workspace_check": "blocked by 23 preserved untracked upstream attachments; tracked source hash matches manifest",
+  "canonical_check_log": "/tmp/tff-check-canonical-final-pass.log"
+}

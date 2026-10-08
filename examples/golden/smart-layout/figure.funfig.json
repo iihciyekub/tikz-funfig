@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.1",
+  "id": "smart-layout",
+  "recipe": "flowchart",
+  "kind": "tikz",
+  "profile": {
+    "id": "journal-single-column"
+  },
+  "theme": {
+    "id": "journal-muted"
+  },
+  "outputs": {
+    "basename": "smart-layout"
+  },
+  "diagram": {
+    "layout": {
+      "type": "auto",
+      "direction": "down",
+      "constraints": [
+        {
+          "type": "align-x",
+          "nodes": [
+            "input",
+            "check",
+            "result"
+          ]
+        }
+      ]
+    },
+    "nodes": [
+      {
+        "id": "input",
+        "label": "Collect and harmonize observations",
+        "role": "process"
+      },
+      {
+        "id": "check",
+        "label": "Evaluate the available evidence",
+        "role": "process",
+        "min_height": "18mm"
+      },
+      {
+        "id": "result",
+        "label": "Report supported conclusions",
+        "role": "process"
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "from": "input",
+        "to": "check"
+      },
+      {
+        "id": "e2",
+        "from": "check",
+        "to": "result"
+      }
+    ]
+  },
+  "metadata": {
+    "golden": true,
+    "description": "Measured process layout with an intentionally tall evidence step and executable alignment constraints."
+  }
+}

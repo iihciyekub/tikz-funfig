@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import math
 import json
 import re
 import shutil
@@ -10,7 +11,8 @@ from typing import Any
 
 from .knowledge import all_entries
 from .manifest import utc_now
-from .qa import _pdf_info, _render_preview
+from .qa import _pdf_info, _render_preview, analyze_pdf
+from .design import validate_design
 
 
 class ExpertBuildError(RuntimeError):
@@ -128,7 +130,7 @@ def _validate_knowledge_refs(sources: list[str], cards: list[str]) -> None:
 def _relocate_intermediates(tex: Path, state_dir: Path) -> None:
     build_dir = state_dir / "expert-build"
     build_dir.mkdir(parents=True, exist_ok=True)
-    for suffix in ("aux", "fdb_latexmk", "fls", "log", "out", "synctex.gz"):
+    for suffix in ("aux", "fdb_latexmk", "fls", "log", "out", "synctex.gz", "ffgeom"):
         candidate = tex.with_suffix("." + suffix)
         if candidate.exists():
             destination = build_dir / candidate.name
@@ -142,10 +144,22 @@ def build_expert(
     sources: list[str] | None = None,
     cards: list[str] | None = None,
     engine: str = "auto",
+    target_width_mm: float | None = None,
+    minimum_text_pt: float | None = None,
 ) -> tuple[Path, Path]:
     tex = Path(tex_path).resolve()
     if not tex.is_file():
         raise ExpertBuildError(f"expert TeX source does not exist: {tex}")
+    design_path = tex.parent / 'figure.design.json'
+    appearance = {}
+    if design_path.is_file():
+        design = validate_design(design_path)
+        if design['render_mode'] == 'expert' and design['delivery']['basename'] == tex.stem:
+            appearance = design['appearance']
+    target_width_mm = target_width_mm if target_width_mm is not None else appearance.get('target_width_mm', 178.0)
+    minimum_text_pt = minimum_text_pt if minimum_text_pt is not None else appearance.get('minimum_text_pt', 7.5)
+    if any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) or v <= 0 for v in (target_width_mm, minimum_text_pt)):
+        raise ExpertBuildError('Expert width and text baseline must be finite positive numbers')
     sources = list(sources or [])
     cards = list(cards or [])
     if not sources and not cards:
@@ -205,11 +219,11 @@ def build_expert(
         raise ExpertBuildError(f"compile succeeded but PDF was not created: {pdf}")
 
     preview = state_dir / "expert-preview.png"
-    pdf_info = _pdf_info(pdf)
+    checks = analyze_pdf(pdf, target_width_mm=target_width_mm, minimum_text_pt=minimum_text_pt,
+                         target_source='expert-output-profile')
+    pdf_info = checks['pdf']
     _render_preview(pdf, preview, dpi=180)
-    qa_warnings: list[str] = []
-    if pdf_info.get("pages") != 1:
-        qa_warnings.append(f"expected a single-page figure PDF, got {pdf_info.get('pages')}")
+    qa_warnings = checks['warnings']
 
     manifest = {
         "manifest_version": "1.0",
@@ -220,6 +234,10 @@ def build_expert(
             "machine_checks_passed": not qa_warnings,
             "visual_review": "pending",
             "warnings": qa_warnings,
+            "defects": checks['defects'],
+            "text_metrics": checks['text_metrics'],
+            "size_check": checks['size_check'],
+            "publication_projection": checks['publication_projection'],
             "pdf": pdf_info,
             "preview": ".funfig/expert-preview.png",
             "preview_dpi": 180,

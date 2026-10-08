@@ -67,7 +67,7 @@ class GalleryPromptTests(unittest.TestCase):
             self.assertTrue((output / "prompts.js").is_file())
             self.assertTrue((output / "i18n.js").is_file())
             self.assertIn("https://iihciyekub.github.io/tikz-funfig/", (output / "llms.txt").read_text())
-            self.assertEqual(len(json.loads((output / "registry.json").read_text())["entries"]), 58)
+            self.assertEqual(len(json.loads((output / "registry.json").read_text())["entries"]), 59)
 
 
 if __name__ == "__main__":

@@ -26,3 +26,7 @@ Review each endpoint, label and midpoint target, unintended crossings, loop
 clearance and readability. For explicitly requested commutative diagrams, Petri
 nets, or other formal notation, read shared `formal-relations.md`; check domain
 semantics and stable coverage separately from visual appearance.
+
+For measured spacing, executable layout conditions, template suitability and
+bounded defect repair, consult shared `smart-layout.md` when relevant. Preserve
+scientific coordinates; finish by viewing the current preview.

@@ -26,6 +26,7 @@ from .render import render_spec
 from .schema import load_and_validate
 from .templates import get_template, list_templates, search_templates
 from .theme import list_profiles, list_themes
+from .optimize import optimize_spec
 
 
 PUBLICATION_OFFSET_RECIPES = {
@@ -456,6 +457,12 @@ def _starter_spec(recipe_id: str, figure_id: str) -> dict[str, Any]:
                 {"from": "mechanism", "to": "outcome"},
             ],
         }
+    if recipe_id in {'flowchart', 'framework-diagram', 'relation-diagram'}:
+        base['diagram']['layout'] = {'type': 'auto', 'direction': 'down', 'measure': True}
+        for node in base['diagram']['nodes']:
+            node.pop('position', None)
+    elif recipe_id == 'scientific-schematic':
+        base['diagram']['layout']['measure'] = True
     return base
 
 
@@ -539,7 +546,8 @@ def cmd_templates_list(args: argparse.Namespace) -> int:
 
 
 def cmd_templates_search(args: argparse.Namespace) -> int:
-    items = search_templates(args.query, limit=args.limit)
+    spec = load_json(args.spec) if args.spec else None
+    items = search_templates(args.query, limit=args.limit, spec=spec)
     if args.json:
         print(json.dumps(items, indent=2, ensure_ascii=False))
         return 0
@@ -549,6 +557,8 @@ def cmd_templates_search(args: argparse.Namespace) -> int:
     for item in items:
         print(f"{item['id']:<24} {item['family']:<12} {item['title']}")
         print(f"  {item['description']}")
+        if spec:
+            print('  fit: ' + ('eligible' if item['suitability']['eligible'] else '; '.join(item['suitability']['reasons'])))
     return 0
 
 
@@ -614,6 +624,21 @@ def cmd_inspect(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_optimize(args: argparse.Namespace) -> int:
+    spec_path, spec = _load_valid(args.spec)
+    if args.design:
+        design_path = Path(args.design).resolve()
+        design = validate_design(design_path)
+        if design['id'] != spec['id'] or design['render_mode'] != 'structured':
+            raise ValueError('design must refer to this structured figure')
+        for key in ('target_width_mm', 'minimum_text_pt'):
+            spec['diagram'].setdefault('layout', {})[key] = design['appearance'][key]
+    result = optimize_spec(spec, spec_path, relayout=args.relayout,
+                           max_candidates=args.candidates, repair_limit=args.repairs)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0 if result['adopted'] else 1
+
+
 def cmd_qa_mark(args: argparse.Namespace) -> int:
     spec_path, _ = _load_valid(args.spec)
     qa = mark_visual_review(spec_path, args.result == "pass", args.note or "")
@@ -627,6 +652,8 @@ def cmd_expert_build(args: argparse.Namespace) -> int:
         sources=args.source,
         cards=args.card,
         engine=args.engine,
+        target_width_mm=args.target_width_mm,
+        minimum_text_pt=args.minimum_text_pt,
     )
     print(f"pdf: {pdf}")
     print(f"manifest: {manifest}")
@@ -809,6 +836,7 @@ def build_parser() -> argparse.ArgumentParser:
     q.add_argument("--json", action="store_true")
     q.set_defaults(func=cmd_templates_list)
     q = templates.add_parser("search", help="search curated templates")
+    q.add_argument('--spec', help='rank by actual content, structural limits, and target width')
     q.add_argument("query")
     q.add_argument("--limit", type=int, default=8)
     q.add_argument("--json", action="store_true")
@@ -851,6 +879,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--dpi", type=int, default=180)
     p.set_defaults(func=cmd_inspect)
 
+    p = sub.add_parser('optimize', help='measure, compare bounded layouts, repair locally, and adopt improvements')
+    p.add_argument('spec')
+    p.add_argument('--design', help='apply this figure design target width and minimum text baseline')
+    p.add_argument('--relayout', action='store_true', help='explicitly allow movement of manual/scientific coordinates; pins still hold')
+    p.add_argument('--candidates', type=int, default=3)
+    p.add_argument('--repairs', type=int, default=3)
+    p.set_defaults(func=cmd_optimize)
+
     p = sub.add_parser("qa", help="record the result of an actual visual review")
     p.add_argument("spec")
     p.add_argument("result", choices=("pass", "fail"))
@@ -862,6 +898,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--source", action="append", default=[], help="official/manual source ID; repeat as needed")
     p.add_argument("--card", action="append", default=[], help="knowledge card ID used; repeat as needed")
     p.add_argument("--engine", choices=("auto", "pdflatex", "xelatex", "lualatex"), default="auto")
+    p.add_argument('--target-width-mm', type=float)
+    p.add_argument('--minimum-text-pt', type=float)
     p.set_defaults(func=cmd_expert_build)
 
     p = sub.add_parser("expert-deps", help="preflight document-class and package dependencies for Expert TikZ source")

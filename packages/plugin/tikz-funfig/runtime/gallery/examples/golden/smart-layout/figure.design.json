@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "id": "smart-layout",
+  "task": "create",
+  "family": "flowchart",
+  "render_mode": "structured",
+  "intent": "Show measured spacing around a deliberately tall evidence-evaluation step.",
+  "content": {
+    "must_preserve": [
+      "input -> check -> result",
+      "Tall evaluation step remains at least 18 mm high"
+    ],
+    "assumptions": [],
+    "unresolved": []
+  },
+  "references": [],
+  "appearance": {
+    "layout": "Vertical aligned process with measured node clearance",
+    "typography": "TeX serif text",
+    "theme": "journal-muted",
+    "profile_id": "journal-single-column",
+    "target_width_mm": 88,
+    "minimum_text_pt": 7.5
+  },
+  "knowledge_sources": [
+    "flowchart-shapes",
+    "paths-routing"
+  ],
+  "delivery": {
+    "basename": "smart-layout",
+    "formats": [
+      "pdf"
+    ]
+  }
+}

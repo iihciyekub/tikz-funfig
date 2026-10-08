@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "cases": [
+    {"id": "explicit-large-node", "kind": "large-grid", "expect": "clean"},
+    {"id": "long-english", "kind": "long-chain", "expect": "clean"},
+    {"id": "long-cjk", "kind": "cjk-chain", "expect": "clean"},
+    {"id": "decision-shape", "kind": "decision", "expect": "clean"},
+    {"id": "nested-groups", "kind": "nested", "expect": "clean"},
+    {"id": "multiple-feedback", "kind": "feedback", "expect": "clean"},
+    {"id": "manual-obstacle", "kind": "obstacle", "expect": "clean"},
+    {"id": "mathematical-labels", "kind": "math", "expect": "clean-or-typesetting-diagnostic"},
+    {"id": "changed-text", "kind": "edit", "expect": "clean"},
+    {"id": "pinned-collision", "kind": "pins", "expect": "diagnostic"},
+    {"id": "single-column-impossible", "kind": "impossible", "expect": "diagnostic"}
+  ]
+}

@@ -9,6 +9,7 @@ from typing import Any
 from .io import load_json
 from .recipes import load_recipe
 from .theme import load_profile, load_theme
+from .layout import validate_constraints
 
 
 ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
@@ -412,12 +413,22 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                     errors.append("diagram.layout must be an object")
                     layout = {"type": "relative"}
                 layout_type = layout.get("type")
-                if layout_type not in {"manual", "relative", "grid"}:
-                    errors.append("diagram.layout.type must be manual, relative, or grid")
+                if layout_type not in {"manual", "relative", "grid", "auto"}:
+                    errors.append("diagram.layout.type must be manual, relative, grid, or auto")
                 if "auto_fit" in layout and not isinstance(layout["auto_fit"], bool):
                     errors.append("diagram.layout.auto_fit must be a boolean")
                 _validate_length(layout.get("row_gap"), "diagram.layout.row_gap", errors)
                 _validate_length(layout.get("column_gap"), "diagram.layout.column_gap", errors)
+                _validate_length(layout.get("clearance"), "diagram.layout.clearance", errors)
+                for field in ("target_width_mm", "minimum_text_pt"):
+                    value = layout.get(field)
+                    if value is not None and (isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0):
+                        errors.append(f"diagram.layout.{field} must be finite and positive")
+                if "measure" in layout and not isinstance(layout["measure"], bool):
+                    errors.append("diagram.layout.measure must be a boolean")
+                if layout.get("direction", "right") not in {"right", "down"}:
+                    errors.append("diagram.layout.direction must be right or down")
+                errors.extend(validate_constraints(layout, node_ids))
 
                 relative_graph: dict[str, set[str]] = {node_id: set() for node_id in node_ids}
                 absolute_roots = 0
@@ -439,11 +450,17 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                                 f"diagram.nodes[{index}].{legacy} is legacy 1.0 syntax; use structured 1.1 fields"
                             )
                     position = node.get("position")
+                    if not isinstance(position, dict) and layout_type == "auto":
+                        for field in ("text_width", "min_width", "min_height"):
+                            _validate_length(node.get(field), f"diagram.nodes[{index}].{field}", errors)
+                        continue
                     if not isinstance(position, dict):
                         errors.append(f"diagram.nodes[{index}].position is required in schema 1.1")
                         continue
                     position_type = position.get("type")
                     if position_type == "absolute":
+                        if any(isinstance(position.get(k), bool) or not isinstance(position.get(k), (int, float)) or not math.isfinite(position[k]) for k in ("x", "y")):
+                            errors.append(f"diagram.nodes[{index}] absolute position requires finite x/y")
                         absolute_roots += 1
                         if layout_type == "grid":
                             errors.append(f"diagram.nodes[{index}] grid layout requires grid position")
@@ -468,7 +485,7 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                             errors.append(f"diagram.nodes[{index}] duplicates grid cell ({row},{column})")
                         else:
                             grid_cells.add((row, column))
-                        if layout_type != "grid":
+                        if layout_type not in {"grid", "auto"}:
                             errors.append(f"diagram.nodes[{index}] grid position requires diagram.layout.type=grid")
                     else:
                         errors.append(f"diagram.nodes[{index}].position.type is invalid: {position_type!r}")
@@ -487,6 +504,7 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                     if not isinstance(group, dict):
                         continue
                     _validate_length(group.get("padding"), f"diagram.groups[{index}].padding", errors)
+                    _validate_length(group.get("title_gap"), f"diagram.groups[{index}].title_gap", errors)
                     for member in group.get("members", []):
                         if member not in valid_members:
                             errors.append(
@@ -549,6 +567,8 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                     if "label_sloped" in edge and not isinstance(edge["label_sloped"], bool):
                         errors.append(f"diagram.edges[{index}].label_sloped must be a boolean")
                     route = edge.get("route", "straight")
+                    if route not in {"straight", "orthogonal", "curve", "loop", "polyline"}:
+                        errors.append(f"diagram.edges[{index}].route is invalid")
                     routing = edge.get("routing") or {}
                     if route == "loop" and (has_to_edge or edge.get("from") != edge.get("to")):
                         errors.append(f"diagram.edges[{index}] route=loop requires from == to")
@@ -557,6 +577,14 @@ def validate_spec(spec: dict[str, Any], spec_path: Path | None = None) -> Valida
                     if not isinstance(routing, dict):
                         errors.append(f"diagram.edges[{index}].routing must be an object")
                     else:
+                        if route == "polyline":
+                            points = routing.get("points")
+                            if not isinstance(points, list) or not points or len(points) > 12 or set(routing) - {"points"}:
+                                errors.append(f"diagram.edges[{index}] polyline requires 1–12 waypoints in cm")
+                            elif any(not isinstance(p, dict) or set(p) != {"x", "y"} or any(isinstance(p[k], bool) or not isinstance(p[k], (int, float)) or not math.isfinite(p[k]) for k in p) for p in points):
+                                errors.append(f"diagram.edges[{index}] polyline waypoints require finite x/y")
+                        elif "points" in routing:
+                            errors.append(f"diagram.edges[{index}] waypoints require route=polyline")
                         if route == "orthogonal" and any(key in routing for key in ("bend", "side")):
                             errors.append(f"diagram.edges[{index}] orthogonal routing accepts only order")
                         if route == "curve" and any(key in routing for key in ("order", "side")):

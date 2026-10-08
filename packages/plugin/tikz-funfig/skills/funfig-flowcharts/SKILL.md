@@ -26,3 +26,7 @@ Repair spacing, wrapping, anchors and feedback routes before reducing text size.
 For diagonal labels, `label_sloped` is supported; judge clearance in the preview.
 Use sourced Expert guidance for required notation beyond this Recipe; shapes
 alone do not establish BPMN/UML conformance.
+
+For measured spacing, executable layout conditions, template suitability and
+bounded defect repair, consult shared `smart-layout.md` when relevant. Preserve
+scientific coordinates; finish by viewing the current preview.

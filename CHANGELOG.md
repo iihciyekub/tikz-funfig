@@ -4,6 +4,35 @@ All notable changes to TIKZ-FunFig are recorded here. The project follows semant
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-10-08
+
+### Added
+
+- Added measured automatic layout for structured diagrams, with final-width
+  budgets, alignment/equal-size/order/pin constraints, and editable polyline routes.
+- Added `optimize` to compare bounded layout candidates, repair measured overlaps
+  and obstructed paths, preserve figure semantics, and restore the original
+  artifacts when a candidate fails or cannot satisfy the requested constraints.
+- Added template-fit explanations, shared layout repair prescriptions, the
+  `TFF-0059` smart-layout example, 14 regression tests, and an 11-case compiled
+  benchmark covering successful repairs and intentionally infeasible requests.
+
+### Changed
+
+- Updated all six Skills and four structured-diagram Recipes to use measured
+  layout and bounded repair, while protecting fixed scientific coordinates,
+  labels, edge direction, and group membership.
+- Unified structured and Expert PDF checks for text collisions and readability
+  at publication width; missing tools and stale measurement records cannot pass
+  verification. Visual review remains tied to the current rendered preview.
+
+### Fixed
+
+- Fixed nested group/title clearance, decision-node sizing, feedback routing,
+  long-label overflow, and template proportions using actual TeX geometry.
+- Added the bilingual Example Gallery link to the portable Plugin's Website
+  metadata and description so installed plugin information exposes the site.
+
 ## [0.12.2] - 2026-10-04
 
 ### Added

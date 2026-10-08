@@ -5,6 +5,32 @@ from pathlib import Path
 from typing import Any
 
 from .paths import PROJECT_ROOT
+from .layout import profile_for
+
+
+def assess_template(item: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any]:
+    """Apply declared structural limits before lexical/aesthetic ranking."""
+    nodes = (spec.get('diagram') or {}).get('nodes', [])
+    fit = item.get('design_fit') or {}
+    limits = (item.get('edit_contract') or {}).get('structural_limits') or {}
+    reasons = []
+    if item.get('recipe_hint') != spec.get('recipe'):
+        reasons.append('recipe/family differs from requested figure')
+    for field, value in (('nodes', len(nodes)), ('decisions', sum(n.get('role') == 'decision' for n in nodes))):
+        bounds = limits.get(field) or (fit.get('node_range') if field == 'nodes' else None)
+        if bounds and not bounds[0] <= value <= bounds[1]:
+            reasons.append(f'{field}={value} outside declared range {bounds}')
+    width = profile_for(spec)['target_width_mm'] if spec.get('schema_version') == '1.1' else None
+    widths = fit.get('recommended_width_mm')
+    if widths and width and not widths[0] <= width <= widths[1]:
+        reasons.append(f'target width {width} mm outside recommended {widths}')
+    longest = max((sum(1 if ord(c) > 0x2E7F else .55 for c in n.get('label', '')) for n in nodes), default=0)
+    density = fit.get('label_density', '')
+    if 'short' in density and longest > 45:
+        reasons.append('long labels exceed the short/medium-label design; reflow required')
+    return {'eligible': not reasons, 'reasons': reasons, 'node_count': len(nodes),
+            'target_width_mm': width, 'longest_label_em': round(longest, 1),
+            'basis': 'declared template limits; confirm adapted preview'}
 
 
 def template_root() -> Path:
@@ -52,6 +78,7 @@ def search_templates(
     query: str,
     limit: int = 8,
     root: Path | None = None,
+    spec: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     tokens = [token.casefold() for token in query.split() if token.strip()]
     scored: list[tuple[int, str, dict[str, Any]]] = []
@@ -66,6 +93,10 @@ def search_templates(
             "design_fit": json.dumps(item.get("design_fit", {}), ensure_ascii=False),
         }
         score = 0
+        if spec:
+            item['suitability'] = assess_template(item, spec)
+            if item.get('recipe_hint') == spec.get('recipe'):
+                score += 10
         for token in tokens:
             if token in fields["id"].casefold():
                 score += 8
@@ -83,5 +114,5 @@ def search_templates(
                 score += 2
         if score:
             scored.append((score, item["id"], item))
-    scored.sort(key=lambda value: (-value[0], value[1]))
+    scored.sort(key=lambda value: (not value[2].get('suitability', {}).get('eligible', True), -value[0], value[1]))
     return [item for _, _, item in scored[: int(limit)]]

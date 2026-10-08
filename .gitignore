@@ -45,6 +45,7 @@ examples/**/figure.tex
 *.toc
 *.vrb
 *.xdv
+*.ffgeom
 *.pgf-plot.gnuplot
 *.pgf-plot.table
 *.gnuplot
@@ -83,4 +84,3 @@ IconKitchen/**
 # Plugin visual assets intentionally override the repository-wide image rule.
 !packages/plugin/tikz-funfig/assets/
 !packages/plugin/tikz-funfig/assets/*.png
-

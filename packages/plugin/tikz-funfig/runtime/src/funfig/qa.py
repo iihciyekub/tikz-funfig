@@ -10,7 +10,9 @@ from pathlib import Path
 from typing import Any
 
 from .io import load_json
-from .manifest import utc_now, write_manifest
+from .manifest import utc_now, write_manifest, sha256_file
+from .layout import profile_for, constraint_defects
+from .geometry import geometry_defects
 from .theme import load_profile
 
 
@@ -157,15 +159,14 @@ def _pdf_text_metrics(pdf: Path) -> dict[str, Any] | None:
     }
 
 
-def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[str, Any]:
-    figure_dir = spec_path.parent
-    basename = (spec.get("outputs") or {}).get("basename", "figure")
-    pdf = figure_dir / f"{basename}.pdf"
-    if not pdf.is_file():
-        raise QAError(f"PDF does not exist; build the figure first: {pdf}")
+def analyze_pdf(pdf: Path, *, target_width_mm: float | None = None,
+                minimum_text_pt: float = 7.5, target_source: str | None = None) -> dict[str, Any]:
+    """Common evidence-based checks for FigureSpec and sourced Expert TeX."""
     info = _pdf_info(pdf)
     text_metrics = _pdf_text_metrics(pdf)
     warnings: list[str] = []
+    if text_metrics is None:
+        warnings.append("text bounding-box check unavailable: install pdftotext and rebuild inspection")
     if info.get("pages") != 1:
         warnings.append(f"expected a single-page figure PDF, got {info.get('pages')}")
     overlap_count = int((text_metrics or {}).get("bbox_overlap_count") or 0)
@@ -180,27 +181,8 @@ def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[
             "increase node clearance or repair routing/layout before visual review"
         )
 
-    profile = None
     publication_scale = 1.0
-    projected_size: dict[str, float] | None = None
-    target_width_mm: float | None = None
-    minimum_text_pt = 0.0
-    target_source: str | None = None
-    if spec.get("schema_version") == "1.1":
-        profile_id = (spec.get("profile") or {}).get("id", "journal-single-column")
-        profile = load_profile(profile_id)
-        target_width_mm = float(profile.get("target_width_mm", 0) or 0) or None
-        minimum_text_pt = float(profile.get("minimum_text_pt", 0) or 0)
-        target_source = f"profile:{profile_id}"
-    else:
-        target_width_mm = _tex_length_mm((spec.get("canvas") or {}).get("width"))
-        if target_width_mm:
-            # Legacy/plot FigureSpec has no Publication Profile. Use the explicit
-            # canvas width as the intended physical width and the project's
-            # conservative journal baseline for text-risk projection.
-            minimum_text_pt = 7.5
-            target_source = "canvas.width"
-
+    projected_size = None
     width = info.get("width_mm")
     if target_width_mm and width:
         publication_scale = min(1.0, target_width_mm / float(width))
@@ -213,15 +195,13 @@ def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[
             warnings.append(
                 f"natural PDF width {width:.1f} mm exceeds target {target_width_mm:.1f} mm by more than 20%; inspect readability after publication scaling"
             )
-        elif width < target_width_mm * 0.35:
-            warnings.append(
-                f"natural PDF width {width:.1f} mm is much smaller than target {target_width_mm:.1f} mm; inspect line/text scale"
-            )
+        # A narrow vertical diagram need not fill the entire column. Measured
+        # text readability, rather than a minimum canvas width, gates delivery.
 
         bbox = (text_metrics or {}).get("bbox_height_pt") or {}
         median_height = bbox.get("median")
         p10_height = bbox.get("p10")
-        if minimum_text_pt and publication_scale < 1.0 and median_height and p10_height:
+        if minimum_text_pt and median_height and p10_height:
             projected_median = float(median_height) * publication_scale
             projected_p10 = float(p10_height) * publication_scale
             # Poppler word boxes are usually somewhat shorter than the declared
@@ -249,6 +229,32 @@ def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[
         "projected_height_mm": (projected_size or {}).get("height_mm"),
     }
 
+    defects = []
+    for index, warning in enumerate(warnings):
+        kind = ("check-unavailable" if "unavailable" in warning else
+                "text-overlap" if "overlapping text" in warning else
+                "text-risk" if "text" in warning and "small" in warning else
+                "publication-size" if "width" in warning else "pdf-pages")
+        defects.append({"id": f"pdf:{index}", "type": kind, "severity": "error",
+                        "objects": ["pdf"], "evidence": {"message": warning}})
+    return {"pdf": info, "text_metrics": text_metrics, "size_check": size_check,
+            "publication_projection": projected_size, "warnings": warnings, "defects": defects}
+
+
+def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[str, Any]:
+    figure_dir = spec_path.parent
+    basename = (spec.get("outputs") or {}).get("basename", "figure")
+    pdf = figure_dir / f"{basename}.pdf"
+    if not pdf.is_file():
+        raise QAError(f"PDF does not exist; build the figure first: {pdf}")
+    profile = profile_for(spec) if spec.get('schema_version') == '1.1' else None
+    target = float(profile['target_width_mm']) if profile else _tex_length_mm((spec.get('canvas') or {}).get('width'))
+    result = analyze_pdf(pdf, target_width_mm=target,
+                         minimum_text_pt=float(profile['minimum_text_pt']) if profile else 7.5,
+                         target_source=f"profile:{profile['id']}" if profile else 'canvas.width')
+    info, text_metrics, size_check = result['pdf'], result['text_metrics'], result['size_check']
+    projected_size, warnings = result['publication_projection'], result['warnings']
+    defects = result['defects']
     preview = figure_dir / ".funfig" / "preview.png"
     _render_preview(pdf, preview, dpi=dpi)
 
@@ -256,6 +262,30 @@ def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[
     if not manifest_file.is_file():
         raise QAError(f"manifest does not exist: {manifest_file}")
     manifest = load_json(manifest_file)
+    # Refuse measurements from a different source, font/theme render, or PDF.
+    layout = manifest.get('layout') or {}
+    if layout:
+        defects += manifest.get('build', {}).get('text_overflows', [])
+        geometry_path = figure_dir / '.funfig' / 'geometry.json'
+        measured = load_json(geometry_path) if geometry_path.is_file() else {}
+        current_hashes = {"spec_sha256": sha256_file(spec_path),
+                          "tex_sha256": sha256_file(figure_dir / manifest['artifacts']['tex']),
+                          "pdf_sha256": sha256_file(pdf)}
+        if measured.get('hashes') != current_hashes:
+            defects.append({"id": "geometry:stale", "type": "check-unavailable", "severity": "error",
+                            "objects": ["diagram"], "evidence": {"message": "missing or stale geometry; rebuild"}})
+        else:
+            resolved = layout['resolved_diagram']
+            defects += geometry_defects(resolved, measured)
+            defects += constraint_defects(resolved, measured['nodes'])
+            if not measured.get('converged', True):
+                defects.append({"id": "geometry:convergence", "type": "layout-not-converged",
+                                "severity": "error", "objects": ["diagram"], "evidence": {"passes": layout.get('passes')}})
+            # Actual published width takes precedence over preliminary estimates.
+            if (layout.get('report') or resolved.get('layout', {}).get('target_width_mm')) and float(info.get('width_mm') or 0) > float(target or 1e9) + .5:
+                defects.append({"id": "geometry:budget", "type": "space-infeasible", "severity": "error",
+                                "objects": ["diagram"], "evidence": {"required_width_mm": info['width_mm'], "target_width_mm": target}})
+    warnings += [f"{d['type']}: {', '.join(d['objects'])}" for d in defects if not d['id'].startswith('pdf:')]
     previous_qa = manifest.get("qa") or {}
     review_history = list(previous_qa.get("review_history") or [])
     manifest["qa"] = {
@@ -263,6 +293,7 @@ def inspect_spec(spec: dict[str, Any], spec_path: Path, dpi: int = 180) -> dict[
         "machine_checks_passed": not warnings,
         "visual_review": "pending",
         "warnings": warnings,
+        "defects": defects,
         "pdf": info,
         "text_metrics": text_metrics,
         "size_check": size_check,

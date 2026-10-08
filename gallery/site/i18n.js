@@ -105,7 +105,8 @@
     "TFF-0055":["教材式有向图", "紧凑有向图，使用非对称加权连线并分开弯曲路径。"],
     "TFF-0056":["高亮解路径的迷宫", "迷宫墙线与起点到目标的解路径清晰分离。"],
     "TFF-0057":["EPC 查询与确认回路", "四状态 EPC 流程，条件明确、间距充足且反馈路径不重叠。"],
-    "TFF-0058":["EPC 查询、收集与确认循环", "EPC 处理链，顶部重试路径与过程注释分离。"]
+    "TFF-0058":["EPC 查询、收集与确认循环", "EPC 处理链，顶部重试路径与过程注释分离。"],
+    "TFF-0059":["真实尺寸驱动的流程排版", "按 TeX 实际节点尺寸分配间距，保留较高的评估步骤和对齐条件。"]
   };
   function text(key, language) { return (messages[language] || messages.zh)[key] || key; }
   function tag(value, language) { return (language === "en" ? reverse[value] : pairs[value]) || value; }

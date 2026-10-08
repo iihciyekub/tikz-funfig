@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "id_prefix": "TFF",
-  "next_sequence": 59,
+  "next_sequence": 60,
   "policy": {
     "immutable_ids": true,
     "reuse_retired_ids": false,
@@ -451,6 +451,13 @@
       "identity": "tex:showcase/epc-query-rake-ack",
       "path": "examples/showcase/epc-query-rake-ack",
       "kind": "example",
+      "status": "active"
+    },
+    {
+      "id": "TFF-0059",
+      "identity": "figure:smart-layout",
+      "path": "examples/golden/smart-layout",
+      "kind": "golden",
       "status": "active"
     }
   ],

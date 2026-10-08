@@ -31,13 +31,13 @@ class GalleryRegistryTests(unittest.TestCase):
 
     def test_every_active_entry_resolves(self) -> None:
         data = gallery.enriched_registry(ROOT / "gallery" / "registry.json")
-        self.assertEqual(len(data["entries"]), 58)
+        self.assertEqual(len(data["entries"]), 59)
         for item in data["entries"]:
             self.assertTrue((ROOT / item["source"]).is_file(), item["id"])
 
     def test_showcase_examples_expose_origin_metadata(self) -> None:
         data = gallery.enriched_registry(ROOT / "gallery" / "registry.json")
-        showcase = [item for item in data["entries"] if item["id"] >= "TFF-0054"]
+        showcase = [item for item in data["entries"] if item['id'] in {f'TFF-{i:04d}' for i in range(54, 59)}]
         self.assertEqual(len(showcase), 5)
         for item in showcase:
             self.assertTrue(item["origin_url"].startswith("https://texample.net/"), item["id"])
@@ -50,7 +50,7 @@ class GalleryRegistryTests(unittest.TestCase):
         self.assertEqual(len(aliases), 11)
         self.assertEqual(
             len([item for item in data["entries"] if item.get("gallery_visibility") != "hidden"]),
-            47,
+            48,
         )
         by_id = {item["id"]: item for item in data["entries"]}
         for item in aliases:

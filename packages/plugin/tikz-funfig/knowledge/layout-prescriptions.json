@@ -1,0 +1,81 @@
+{
+  "version": "1.0",
+  "scope": "generic measured structured diagram repairs; project history stays local",
+  "verification": "tests/test_smart_layout.py and scripts/evaluate_smart_layout.py",
+  "prescriptions": [
+    {
+      "id": "separate-node",
+      "defects": [
+        "node-overlap"
+      ],
+      "conditions": [
+        "positions adjustable",
+        "preserve pins and constraints"
+      ],
+      "action": "move only one affected node using measured bounds, then remeasure",
+      "success": "fewer hard defects and unchanged semantic signature"
+    },
+    {
+      "id": "move-edge-label",
+      "defects": [
+        "label-node-overlap",
+        "label-overlap",
+        "edge-label-crossing"
+      ],
+      "conditions": [
+        "label meaning unchanged"
+      ],
+      "action": "try bounded position and side alternatives; retain previous best",
+      "success": "collision removed without new constraints or readability failures"
+    },
+    {
+      "id": "visibility-route",
+      "defects": [
+        "edge-node-crossing",
+        "edge-label-crossing"
+      ],
+      "conditions": [
+        "node-to-node edge",
+        "connection ports preserved when specified"
+      ],
+      "action": "find a short orthogonal route through measured free space; keep exact editable corners",
+      "success": "path clears unrelated nodes and labels"
+    },
+    {
+      "id": "reflow-budget",
+      "defects": [
+        "space-infeasible",
+        "text-risk"
+      ],
+      "conditions": [
+        "position is not scientific data",
+        "labels cannot be silently shortened"
+      ],
+      "action": "compare at most two alternative orientations using the same content and font baseline",
+      "success": "actual PDF fits the requested width and measured text remains readable"
+    },
+    {
+      "id": "separate-group-title",
+      "defects": [
+        "label-overlap"
+      ],
+      "conditions": [
+        "nested or adjacent group headings collide"
+      ],
+      "action": "move only the enclosing heading by measured title height, then rebuild and verify containment",
+      "success": "headings readable and group memberships unchanged"
+    },
+    {
+      "id": "expand-node-text",
+      "defects": [
+        "text-overflow"
+      ],
+      "conditions": [
+        "TeX reports overflowing node text",
+        "constraints rechecked after resizing"
+      ],
+      "action": "increase only affected text width by measured overflow; keep text and font unchanged",
+      "success": "no overflow and no new size/collision failure"
+    }
+  ]
+}
