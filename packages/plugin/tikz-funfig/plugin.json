@@ -19,7 +19,7 @@
       "interface": {
         "displayName": "TIKZ-FunFig",
         "shortDescription": "Turn research models and data into editable paper figures",
-        "longDescription": "Create academic 2D function/data plots, social-science and business research frameworks, mathematical or variable-relation models, flowcharts, and basic explanatory schematics from descriptions, data, sketches, reference images, or existing TikZ/PGFPlots source. Deliver editable LaTeX and PDF; request SVG when needed.",
+        "longDescription": "Create academic 2D function/data plots, social-science and business research frameworks, mathematical or variable-relation models, flowcharts, and basic explanatory schematics from descriptions, data, sketches, reference images, or existing TikZ/PGFPlots source. Deliver editable LaTeX and PDF; request SVG when needed.\n\n[示例网站 / Example Gallery（中文 / English）](https://iihciyekub.github.io/tikz-funfig/) — Browse figure examples and copy prompts / 浏览图形示例并复制提示词。",
         "developerName": "TIKZ-FunFig",
         "category": "Productivity",
         "capabilities": [
@@ -36,8 +36,10 @@
         ],
         "brandColor": "#000000",
         "composerIcon": "./assets/icon.png",
-        "logo": "./assets/logo.png"
+        "logo": "./assets/logo.png",
+        "websiteURL": "https://iihciyekub.github.io/tikz-funfig/"
       }
     }
-  }
+  },
+  "homepage": "https://iihciyekub.github.io/tikz-funfig/"
 }

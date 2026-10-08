@@ -113,6 +113,9 @@ if not helper_match or helper_match.group(1) != match.group(1):
 manifest_path = plugin / "plugin.json"
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 manifest["version"] = match.group(1)
+gallery_url = "https://iihciyekub.github.io/tikz-funfig/"
+manifest["homepage"] = gallery_url
+manifest["extensions"]["com.openai"]["interface"]["websiteURL"] = gallery_url
 manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 PY
 

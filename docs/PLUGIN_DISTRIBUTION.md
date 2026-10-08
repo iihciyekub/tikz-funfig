@@ -50,6 +50,12 @@ and ask users for their own content, dimensions and output choices.
 The Gallery supports Chinese and English, including example descriptions and
 copyable prompts, with a remembered language preference.
 
+`sync_plugin_package.sh` sets the public Gallery as both the portable `homepage`
+and OpenAI `extensions.com.openai.interface.websiteURL`. The latter supplies the
+Website link in the plugin information page; a URL in `longDescription` alone
+does not populate that field. Install the synchronized bundle to see local
+metadata changes in Codex; editing the checkout does not update an installed copy.
+
 Renderer regressions and documentation checks do not prove Skill behavior. Use
 `benchmarks/skill-behavior/` for actual isolated Codex traces and independently
 review generated previews. See its README for opt-in runs and evidence limits.
